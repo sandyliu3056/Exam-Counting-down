@@ -66,6 +66,7 @@ window.I18N = {
     inviteCodeLbl: "老師邀請碼（註冊老師帳號時需要）", cloudStudents: "雲端學生", loadCloud: "🔄 從雲端載入學生紀錄", cloudLoaded: "已載入 {n} 位學生", cloudOff: "尚未設定 Firebase（本機模式）",
     syncing: "☁️ 已同步", localOnly: "📱 本機模式", accountsTitle: "帳號管理", noAccounts: "尚無帳號。", deleteAccount: "刪除",
     studentLogin: "學生請登入後再練習，紀錄才會對應到你的帳號。",
+    bookmarks: "我的書籤", bookmark: "書籤", addBookmark: "🔖 加入書籤", removeBookmark: "🔖 已收藏", modeBookmark: "書籤單字", onlyBookmarks: "只看書籤", noBookmarks: "還沒有書籤。看到想重讀的文章或想特別記的單字，點 🔖 就會收在這裡。", bookmarkedWords: "書籤單字", bookmarkedArticles: "書籤文章", bookmarkAdded: "已加入書籤", bookmarkRemoved: "已移除書籤",
     weekdays: ["日","一","二","三","四","五","六"],
   },
   en: {
@@ -128,6 +129,7 @@ window.I18N = {
     inviteCodeLbl: "Teacher invite code (needed to register a teacher)", cloudStudents: "Cloud students", loadCloud: "🔄 Load students from cloud", cloudLoaded: "Loaded {n} students", cloudOff: "Firebase not configured (local mode)",
     syncing: "☁️ Synced", localOnly: "📱 Local mode", accountsTitle: "Accounts", noAccounts: "No accounts yet.", deleteAccount: "Delete",
     studentLogin: "Students: log in before practicing so records are tied to your account.",
+    bookmarks: "My Bookmarks", bookmark: "Bookmark", addBookmark: "🔖 Bookmark", removeBookmark: "🔖 Saved", modeBookmark: "Bookmarked words", onlyBookmarks: "Bookmarks only", noBookmarks: "No bookmarks yet. Tap 🔖 on an article or word to keep it here.", bookmarkedWords: "Bookmarked words", bookmarkedArticles: "Bookmarked articles", bookmarkAdded: "Bookmarked", bookmarkRemoved: "Bookmark removed",
     weekdays: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
   }
 };

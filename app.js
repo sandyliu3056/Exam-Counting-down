@@ -21,7 +21,7 @@
   const shuffleArr = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   /* ---------------- State ---------------- */
-  const emptyProgress = () => ({ cards: {}, readingQuizzes: [], vocabQuizzes: [], days: {} });
+  const emptyProgress = () => ({ cards: {}, readingQuizzes: [], vocabQuizzes: [], days: {}, bookmarks: { vocab: [], articles: [] } });
 
   function load() {
     let data = null;
@@ -31,6 +31,7 @@
     data.articles = data.articles || [];
     data.vocab = data.vocab || [];
     data.progress = Object.assign(emptyProgress(), data.progress || {});
+    data.progress.bookmarks = Object.assign({ vocab: [], articles: [] }, data.progress.bookmarks || {});
     data.studentReports = data.studentReports || [];
     data.accounts = data.accounts || [];
     if (!data.settings.teacherCode) data.settings.teacherCode = SEED_DATA.settings.teacherCode;
@@ -45,7 +46,7 @@
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
 
   // volatile view state
-  const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true }, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login' };
+  const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true }, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login', vocabBm: false };
 
   /* ---------------- i18n ---------------- */
   const t = (k) => (I18N[ui.lang] && I18N[ui.lang][k] !== undefined) ? I18N[ui.lang][k] : (I18N.zh[k] !== undefined ? I18N.zh[k] : k);
@@ -193,6 +194,12 @@
     if (view.page === 'students') view.page = 'home';
   }
 
+  /* ---------------- Bookmarks ---------------- */
+  const bm = () => { const p = state.progress; if (!p.bookmarks) p.bookmarks = { vocab: [], articles: [] }; return p.bookmarks; };
+  const isBm = (kind, id) => bm()[kind].includes(id);
+  function toggleBm(kind, id) { const l = bm()[kind]; const i = l.indexOf(id); if (i >= 0) l.splice(i, 1); else l.push(id); save(); toast(i >= 0 ? t('bookmarkRemoved') : t('bookmarkAdded')); }
+  const bmBtn = (kind, id, sm = true) => `<button class="btn ${sm ? 'sm' : ''} bm-btn ${isBm(kind, id) ? 'on' : ''}" data-action="toggleBm" data-kind="${kind}" data-id="${id}" title="${t('bookmark')}">${isBm(kind, id) ? t('removeBookmark') : t('addBookmark')}</button>`;
+
   /* ---------------- Speech ---------------- */
   function speak(text) {
     if (!('speechSynthesis' in window)) return;
@@ -265,10 +272,10 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
         <div class="countdown-badge ${dl <= 0 ? 'done' : ''}"><span class="mascot">${dl > 30 ? '🐣' : dl > 7 ? '🔥' : '🎯'}</span>${badge}<div class="date">${esc(ui.lang === 'zh' ? state.settings.examName : (state.settings.examNameEn || state.settings.examName))}<br>${dateLine}</div></div>
       </div>
       <div class="stat-grid">
-        <div class="stat-card"><span class="ico">🔤</span><div class="k">${t('statVocab')}</div><div class="v">${state.vocab.length}</div><div class="s">${t('statVocabS')}</div></div>
-        <div class="stat-card"><span class="ico">📖</span><div class="k">${t('statArticles')}</div><div class="v">${state.articles.length}</div><div class="s">${t('statArticlesS')}</div></div>
-        <div class="stat-card"><span class="ico">🌟</span><div class="k">${t('statMastered')}</div><div class="v">${masteredCount()} <span class="small muted">/ ${state.vocab.length}</span></div><div class="s">${t('statMasteredS')}</div></div>
-        <div class="stat-card"><span class="ico">⏰</span><div class="k">${t('statDue')}</div><div class="v">${due}</div><div class="s">${t('statDueS')}</div></div>
+        <div class="stat-card"><span class="ribbon">🔤</span><div class="k">${t('statVocab')}</div><div class="v">${state.vocab.length}</div><div class="s">${t('statVocabS')}</div></div>
+        <div class="stat-card"><span class="ribbon">📖</span><div class="k">${t('statArticles')}</div><div class="v">${state.articles.length}</div><div class="s">${t('statArticlesS')}</div></div>
+        <div class="stat-card"><span class="ribbon">🌟</span><div class="k">${t('statMastered')}</div><div class="v">${masteredCount()} <span class="small muted">/ ${state.vocab.length}</span></div><div class="s">${t('statMasteredS')}</div></div>
+        <div class="stat-card"><span class="ribbon">⏰</span><div class="k">${t('statDue')}</div><div class="v">${due}</div><div class="s">${t('statDueS')}</div></div>
       </div>
       ${state.settings.motto ? `<div class="card" style="margin-top:14px;border-style:dashed"><b>💬 ${t('motto')}：</b> ${name}${esc(state.settings.motto)}</div>` : ''}
       <h2 class="section-title">🗓️ ${t('todayPlan')}</h2>
@@ -281,14 +288,28 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
       <h2 class="section-title">🎒 ${t('servicesTitle')}</h2>
       <p class="section-sub">${t('servicesSub')}</p>
       <div class="service-grid">
-        <div class="service-card" data-action="nav" data-page="reading"><div class="deco"></div><div class="icon">📖</div><h3>${t('svcReading')}</h3><p>${t('svcReadingP')}</p></div>
-        <div class="service-card" data-action="nav" data-page="flashcards"><div class="deco"></div><div class="icon">🃏</div><h3>${t('svcFlash')}</h3><p>${t('svcFlashP')}</p></div>
-        <div class="service-card" data-action="goQuiz"><div class="deco"></div><div class="icon">📝</div><h3>${t('svcQuiz')}</h3><p>${t('svcQuizP')}</p></div>
-        <div class="service-card" data-action="nav" data-page="progress"><div class="deco"></div><div class="icon">📈</div><h3>${t('svcProgress')}</h3><p>${t('svcProgressP')}</p></div>
+        <div class="service-card" data-action="nav" data-page="reading"><div class="deco"></div><span class="ribbon ribbon-l">1</span><div class="icon">📖</div><h3>${t('svcReading')}</h3><p>${t('svcReadingP')}</p></div>
+        <div class="service-card" data-action="nav" data-page="flashcards"><div class="deco"></div><span class="ribbon ribbon-l">2</span><div class="icon">🃏</div><h3>${t('svcFlash')}</h3><p>${t('svcFlashP')}</p></div>
+        <div class="service-card" data-action="goQuiz"><div class="deco"></div><span class="ribbon ribbon-l">3</span><div class="icon">📝</div><h3>${t('svcQuiz')}</h3><p>${t('svcQuizP')}</p></div>
+        <div class="service-card" data-action="nav" data-page="progress"><div class="deco"></div><span class="ribbon ribbon-l">4</span><div class="icon">📈</div><h3>${t('svcProgress')}</h3><p>${t('svcProgressP')}</p></div>
       </div>
+      <h2 class="section-title">🔖 ${t('bookmarks')}</h2>
+      ${homeBookmarks()}
       <h2 class="section-title">🏅 ${t('recentQuiz')}</h2>
       ${recent.length ? `<div class="list">${recent.map(r => `<div class="list-item"><div class="grow"><div class="title">${esc(r.title)}</div><div class="meta">${fmtDate(r.date)}</div></div><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></div>`).join('')}</div>` : `<p class="muted">${t('noQuiz')}</p>`}
     `;
+  }
+
+  function homeBookmarks() {
+    const b = bm();
+    const words = b.vocab.map(id => state.vocab.find(v => v.id === id)).filter(Boolean);
+    const arts = b.articles.map(id => state.articles.find(a => a.id === id)).filter(Boolean);
+    if (!words.length && !arts.length) return `<div class="card bookmark-card"><span class="ribbon">🔖</span><p class="muted" style="margin:0">${t('noBookmarks')}</p></div>`;
+    return `<div class="card bookmark-card"><span class="ribbon">🔖</span>
+      ${arts.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${arts.map(a => `<button class="bm-tag" data-action="openArticleHome" data-id="${a.id}">${esc(a.title)}</button>`).join('')}</div></div>` : ''}
+      ${words.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b> <span class="small muted">(${words.length})</span><div class="bm-list">${words.map(v => `<span class="bm-tag word en" title="${esc(v.zh)}">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div>
+        <div style="margin-top:8px"><button class="btn sm accent" data-action="goFlash" data-mode="bookmark">${t('startPractice')} · ${t('modeBookmark')}</button></div></div>` : ''}
+    </div>`;
   }
 
   /* ---- Reading ---- */
@@ -304,6 +325,7 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
           <div class="meta">${esc(a.level || '')} · ${a.questions.length} ${t('questions')} ${(a.tags || []).map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>
         </div>
         ${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span><span class="chip">${t('attempts')} ${hist.length} ${t('times')}</span>` : ''}
+        ${bmBtn('articles', a.id)}
         <button class="btn sm" data-action="openArticle" data-id="${a.id}">${t('go')}</button>
         <span class="teacher-only"><button class="btn sm ghost" data-action="editArticle" data-id="${a.id}">${t('editArticle')}</button> <button class="btn sm danger" data-action="deleteArticle" data-id="${a.id}">${t('deleteArticle')}</button></span>
       </div>`;
@@ -336,7 +358,7 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
     }
     return `<button class="btn ghost sm" data-action="backList">${t('back')}</button>
       <div class="card" style="margin-top:12px">
-        <h2 style="margin:0 0 4px">${esc(a.title)}</h2>
+        <div class="row" style="align-items:flex-start"><h2 style="margin:0 0 4px;flex:1">${esc(a.title)}</h2>${bmBtn('articles', a.id)}</div>
         <div class="muted small" style="margin-bottom:12px">${esc(a.level || '')} ${(a.tags || []).map(x => `<span class="chip">${esc(x)}</span>`).join('')}</div>
         <div class="passage ${ui.font === 'clean' ? 'clean' : ''}">${esc(a.passage)}</div>
         ${qs}
@@ -389,6 +411,7 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
     if (mode === 'due') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return !c || c.seen === 0 || c.due <= todayStr(); });
     else if (mode === 'unknown') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.wrong > 0 && c.box < 2; });
     else if (mode === 'new') pool = pool.filter(v => !state.progress.cards[v.id] || state.progress.cards[v.id].seen === 0);
+    else if (mode === 'bookmark') pool = pool.filter(v => isBm('vocab', v.id));
     return pool;
   }
 
@@ -404,7 +427,8 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
             <option value="due" ${fs.mode === 'due' ? 'selected' : ''}>${t('modeDue')} + ${t('modeNew')}</option>
             <option value="all" ${fs.mode === 'all' ? 'selected' : ''}>${t('modeAll')}</option>
             <option value="unknown" ${fs.mode === 'unknown' ? 'selected' : ''}>${t('modeUnknown')}</option>
-            <option value="new" ${fs.mode === 'new' ? 'selected' : ''}>${t('modeNew')}</option></select></div>
+            <option value="new" ${fs.mode === 'new' ? 'selected' : ''}>${t('modeNew')}</option>
+            <option value="bookmark" ${fs.mode === 'bookmark' ? 'selected' : ''}>🔖 ${t('modeBookmark')}</option></select></div>
           <div class="field"><label>${t('unit')}</label>${unitSelect('fsUnit', fs.unit)}</div>
           <div class="field"><label>${t('shuffle')}</label><select class="input" id="fsShuffle"><option value="1" ${fs.shuffle ? 'selected' : ''}>✓ ${t('shuffle')}</option><option value="0" ${!fs.shuffle ? 'selected' : ''}>—</option></select></div>
         </div>
@@ -439,7 +463,7 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
       <div class="progress-bar"><div style="width:${f.idx / f.queue.length * 100}%"></div></div>
       <div class="flash-card ${f.flipped ? 'flipped' : ''}" data-action="flip">
         <div class="flash-inner">
-          <div class="flash-face flash-front"><span class="flash-box chip ${['', 'info', 'warn', 'ok'][c.box]}">${t('box')}：${t('level' + c.box)}</span>
+          <div class="flash-face flash-front"><span class="ribbon ribbon-l ribbon-${['new', 'info', 'warn', 'ok'][c.box]}" title="${t('box')}">${['🌱', '📘', '⭐', '🏆'][c.box]}</span><button class="flash-bm ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${v.id}" title="${t('bookmark')}">🔖</button>
             <div class="flash-word">${esc(v.word)}</div><div class="flash-pos">${esc(v.pos || '')}</div>
             <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="margin-top:14px">${t('speak')}</button>
             <span class="flash-hint">${t('tapToFlip')}</span></div>
@@ -508,17 +532,18 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
   /* ---- Vocab bank ---- */
   function pageVocab() {
     const s = view.vocabSearch.toLowerCase();
-    const list = state.vocab.filter(v => (!view.vocabUnit || v.unit === view.vocabUnit) && (!s || v.word.toLowerCase().includes(s) || (v.zh || '').includes(s) || (v.example || '').toLowerCase().includes(s)));
+    const list = state.vocab.filter(v => (!view.vocabUnit || v.unit === view.vocabUnit) && (!view.vocabBm || isBm('vocab', v.id)) && (!s || v.word.toLowerCase().includes(s) || (v.zh || '').includes(s) || (v.example || '').toLowerCase().includes(s)));
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
       const c = state.progress.cards[v.id] || { box: 0, seen: 0 };
-      return `<tr><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button></td><td>${esc(v.pos || '')}</td><td>${esc(v.zh)}</td><td class="example">${esc(v.example || '')}</td><td class="small muted">${esc(v.unit || '')}</td>
+      return `<tr><td class="bm-cell"><button class="bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${v.id}" title="${t('bookmark')}">🔖</button></td><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button></td><td>${esc(v.pos || '')}</td><td>${esc(v.zh)}</td><td class="example">${esc(v.example || '')}</td><td class="small muted">${esc(v.unit || '')}</td>
         <td><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
         <td class="teacher-only"><button class="btn sm ghost" data-action="editVocab" data-id="${v.id}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${v.id}">${t('del')}</button></td></tr>`;
     };
     return `<h2 class="section-title" style="margin-top:8px">${t('vocabTitle')}</h2><p class="section-sub">${t('vocabSub')}</p>
       <div class="row" style="margin-bottom:12px">
         <input type="text" id="vocabSearch" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" style="max-width:320px">
+        <button class="btn sm ${view.vocabBm ? 'accent' : 'ghost'}" data-action="toggleVocabBm">🔖 ${t('onlyBookmarks')}</button>
         <div style="min-width:220px">${unitSelect('vocabUnit', view.vocabUnit)}</div>
         <span class="muted small">${t('total')} ${list.length} ${t('items')}</span><span class="spacer"></span>
         <span class="teacher-only"><button class="btn accent sm" data-action="addVocab">${t('addVocab')}</button> <button class="btn sm" data-action="toggleBulk">${t('bulkImport')}</button></span>
@@ -527,11 +552,11 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
         <div class="grid-2"><div class="field"><label>${t('unit')}</label><input type="text" id="bulkUnit" placeholder="Unit 5 ..." value="${esc(view.vocabUnit)}"></div></div>
         <textarea id="bulkText" placeholder="adventure, n., 冒險, Life is an adventure.\nbrave | adj. | 勇敢的"></textarea>
         <div class="row" style="margin-top:8px"><span class="spacer"></span><button class="btn ghost" data-action="toggleBulk">${t('cancel')}</button><button class="btn accent" data-action="bulkImport">${t('importBtn')}</button></div></div>` : ''}
-      <div style="overflow-x:auto"><table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('pos')}</th><th>${t('meaning')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th><th class="teacher-only">${t('actions')}</th></tr></thead>
+      <div style="overflow-x:auto"><table class="vocab-table"><thead><tr><th></th><th>${t('word')}</th><th>${t('pos')}</th><th>${t('meaning')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th><th class="teacher-only">${t('actions')}</th></tr></thead>
       <tbody>${view.vocabEdit && !view.vocabEdit.id ? vocabEditRow(view.vocabEdit) : ''}${list.map(row).join('')}</tbody></table></div>`;
   }
   function vocabEditRow(v) {
-    return `<tr class="teacher-only" style="display:table-row;background:#fff8df"><td><input type="text" id="veWord" value="${esc(v.word)}" placeholder="word"></td><td><input type="text" id="vePos" value="${esc(v.pos || '')}" placeholder="n."></td><td><input type="text" id="veZh" value="${esc(v.zh)}" placeholder="中文"></td><td><input type="text" id="veEx" value="${esc(v.example || '')}" placeholder="example"></td><td><input type="text" id="veUnit" value="${esc(v.unit || '')}" placeholder="Unit"></td><td></td>
+    return `<tr class="teacher-only" style="display:table-row;background:#fff8df"><td></td><td><input type="text" id="veWord" value="${esc(v.word)}" placeholder="word"></td><td><input type="text" id="vePos" value="${esc(v.pos || '')}" placeholder="n."></td><td><input type="text" id="veZh" value="${esc(v.zh)}" placeholder="中文"></td><td><input type="text" id="veEx" value="${esc(v.example || '')}" placeholder="example"></td><td><input type="text" id="veUnit" value="${esc(v.unit || '')}" placeholder="Unit"></td><td></td>
       <td><button class="btn sm ok" data-action="saveVocab">${t('save')}</button> <button class="btn sm ghost" data-action="cancelVocab">${t('cancel')}</button></td></tr>`;
   }
 
@@ -627,6 +652,7 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
       <div class="card"><h3 style="margin-top:0">🧠 ${t('weakWords')}</h3>
         ${A.weakList.length ? `<table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
+      ${(() => { const b = rep.progress.bookmarks || { vocab: [], articles: [] }; const ws = b.vocab.map(id => state.vocab.find(v => v.id === id)).filter(Boolean); const as = b.articles.map(id => state.articles.find(a => a.id === id)).filter(Boolean); return (ws.length || as.length) ? `<div class="card bookmark-card"><span class="ribbon">🔖</span><h3 style="margin-top:0">${t('bookmarks')}</h3>${as.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${as.map(a => `<span class="bm-tag">${esc(a.title)}</span>`).join('')}</div></div>` : ''}${ws.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b><div class="bm-list">${ws.map(v => `<span class="bm-tag word en">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div></div>` : ''}</div>` : ''; })()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(rep.progress, state.vocab)}<h3>${t('activity')}</h3>${heatmap(rep.progress)}
         <h3>${t('timeline')}</h3>${A.timeline.length ? `<div class="list">${A.timeline.map(x => `<div class="list-item"><span class="small muted">${fmtDate(x.date)}</span><span>${esc(x.text)}</span></div>`).join('')}</div>` : `<p class="muted">${t('noData')}</p>`}</div>`;
   }
@@ -713,6 +739,9 @@ ${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
     goFlash(el) { view.flashSetup.mode = el.dataset.mode; view.flash = null; view.quiz = null; nav('flashcards'); },
     goQuiz() { view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
     speak(el) { speak(el.dataset.word); },
+    toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash) { const b = $('.flash-bm'); if (b) b.classList.toggle('on', isBm('vocab', el.dataset.id)); } else render(); },
+    toggleVocabBm() { view.vocabBm = !view.vocabBm; render(); },
+    openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; nav('reading'); },
     // reading
     openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; window.scrollTo({ top: 0 }); render(); },
     backList() { view.articleId = null; render(); },
