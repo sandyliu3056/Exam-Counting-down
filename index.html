@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="統測倒數">
+  <meta name="theme-color" content="#1f3b73">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <title>統測英文衝刺站 · Exam Countdown</title>
+  <meta name="description" content="高三統測英文家教系統：倒數計時、閱讀測驗、單字卡練習">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Patrick+Hand&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="navy" data-font="hand">
+
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="brand">
+      <h1 class="brand-title" data-i18n="brandTitle">統測英文 · 衝刺倒數站</h1>
+      <p class="brand-sub" data-i18n="brandSub">閱讀測驗 · 單字卡 · 考前倒數 · English for the TVE Joint College Entrance Exam</p>
+    </div>
+    <div class="header-controls">
+      <label class="ctrl">
+        <select id="langSelect" aria-label="Language">
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+      <label class="ctrl">
+        <select id="fontSelect" aria-label="Font">
+          <option value="hand" data-i18n="fontHand">手寫風</option>
+          <option value="clean" data-i18n="fontClean">標準字體</option>
+        </select>
+      </label>
+      <label class="ctrl">
+        <select id="themeSelect" aria-label="Theme">
+          <option value="navy" data-i18n="themeNavy">深藍</option>
+          <option value="forest" data-i18n="themeForest">墨綠</option>
+          <option value="plum" data-i18n="themePlum">莓紫</option>
+          <option value="sakura" data-i18n="themeSakura">櫻花粉</option>
+          <option value="mint" data-i18n="themeMint">薄荷綠</option>
+          <option value="sunset" data-i18n="themeSunset">夕陽橘</option>
+        </select>
+      </label>
+      <button class="ctrl auth-btn" id="authBtn" type="button"><span id="authBtnText">👤 登入 / 註冊</span></button>
+    </div>
+  </header>
+
+  <!-- ===== Tabs ===== -->
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tabHome">首頁</span></button>
+    <button class="tab" data-page="reading"><span class="tab-icon">📖</span><span data-i18n="tabReading">閱讀測驗</span></button>
+    <button class="tab" data-page="flashcards"><span class="tab-icon">🃏</span><span data-i18n="tabFlash">單字卡</span></button>
+    <button class="tab" data-page="vocab"><span class="tab-icon">📚</span><span data-i18n="tabVocab">單字庫</span></button>
+    <button class="tab" data-page="progress"><span class="tab-icon">📈</span><span data-i18n="tabProgress">學習紀錄</span></button>
+    <button class="tab teacher-only" data-page="students"><span class="tab-icon">🧑‍🏫</span><span data-i18n="tabStudents">學生狀況</span></button>
+    <button class="tab" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tabSettings">設定</span></button>
+  </nav>
+
+  <main id="app" class="page-wrap"></main>
+
+  <footer class="site-footer">
+    <span data-i18n="footer">加油！每天進步一點點，考場上就多一分把握。</span>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== Login / Register modal ===== -->
+  <div id="authModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="modal-close" id="authClose" type="button" aria-label="close">✕</button>
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-auth="login" data-i18n="login">登入</button>
+        <button type="button" class="auth-tab" data-auth="register" data-i18n="register">註冊</button>
+      </div>
+      <form id="authForm" autocomplete="on">
+        <div class="field"><label data-i18n="email">Email / 帳號</label><input type="text" id="auEmail" autocomplete="username" required></div>
+        <div class="field"><label data-i18n="password">密碼</label><input type="password" id="auPass" autocomplete="current-password" required minlength="4"></div>
+        <div class="register-only">
+          <div class="field"><label data-i18n="displayName">姓名 / 暱稱</label><input type="text" id="auName"></div>
+          <div class="field"><label data-i18n="role">身分</label>
+            <select class="input" id="auRole"><option value="student" data-i18n="roleStudent">學生</option><option value="teacher" data-i18n="roleTeacher">老師</option></select></div>
+          <div class="field teacher-code-field hidden"><label data-i18n="inviteCode">老師邀請碼</label><input type="text" id="auCode" autocomplete="off"></div>
+        </div>
+        <p class="small muted" id="authMode"></p>
+        <button class="btn accent" type="submit" id="authSubmit" style="width:100%;justify-content:center;font-size:18px;padding:12px"></button>
+      </form>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="data.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
