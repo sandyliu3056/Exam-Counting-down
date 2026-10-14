@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#1f3b73">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
-  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
   <title>TVE English Countdown · 統測英文衝刺站</title>
@@ -51,7 +51,7 @@
           <option value="sunset" data-i18n="themeSunset">夕陽橘</option>
         </select>
       </label>
-      <div class="exam-chip" id="examChip" title="Exam date"><span class="exam-chip-date" id="examChipDate"></span><span class="exam-chip-days" id="examChipDays"></span></div>
+      <label class="exam-chip" id="examChip" title="Tap to change the exam date"><span class="exam-chip-date" id="examChipDate"></span><span class="exam-chip-days" id="examChipDays"></span><input type="date" id="examDateInput" class="exam-chip-input" aria-label="Exam date"></label>
       <button class="ctrl auth-btn" id="authBtn" type="button"><span id="authBtnText">👤 登入 / 註冊</span></button>
     </div>
   </header>
@@ -62,7 +62,6 @@
     <button class="tab" data-page="reading"><span class="tab-icon">📖</span><span data-i18n="tabReading">閱讀測驗</span></button>
     <button class="tab" data-page="flashcards"><span class="tab-icon">🃏</span><span data-i18n="tabFlash">單字卡</span></button>
     <button class="tab" data-page="vocab"><span class="tab-icon">📚</span><span data-i18n="tabVocab">單字庫</span></button>
-    <button class="tab" data-page="timer"><span class="tab-icon">⏱️</span><span data-i18n="tabTimer">考試計時</span><span class="tab-badge hidden" id="timerBadge"></span></button>
     <button class="tab" data-page="progress"><span class="tab-icon">📈</span><span data-i18n="tabProgress">學習紀錄</span></button>
     <button class="tab teacher-only" data-page="students"><span class="tab-icon">🧑‍🏫</span><span data-i18n="tabStudents">學生狀況</span></button>
     <button class="tab" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tabSettings">設定</span></button>
@@ -103,6 +102,7 @@
   <script src="data.js"></script>
   <script src="library.js"></script>
   <script src="worldmap.js"></script>
+  <script src="daily.js"></script>
   <script src="i18n.js"></script>
   <script src="app.js"></script>
   <script>

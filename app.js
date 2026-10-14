@@ -230,89 +230,38 @@
     if (view.page === 'students') view.page = 'home';
   }
 
-  /* ---------------- Exam timer ---------------- */
-  const DEFAULT_PLAN = [['vocab', 8], ['dialog', 8], ['cloze', 14], ['reading', 40], ['writing', 15], ['check', 10], ['buffer', 5]];
-  const SEC_KEY = { vocab: 'secVocab', dialog: 'secDialog', cloze: 'secCloze', reading: 'secReading', writing: 'secWriting', check: 'secCheck', buffer: 'secBuffer' };
-  const SEC_TIP_KEY = { vocab: 'tipVocab', dialog: 'tipDialog', cloze: 'tipCloze', reading: 'tipReading', writing: 'tipWriting', check: 'tipCheck', buffer: 'tipBuffer' };
-  const SEC_TIP = new Proxy({}, { get: (_, k) => SEC_TIP_KEY[k] ? t(SEC_TIP_KEY[k]) : '' });
-  function timerPlan() { const p = state.settings.timerPlan; return Array.isArray(p) && p.length ? p : DEFAULT_PLAN.map(x => x.slice()); }
-  function loadTimer() { try { return JSON.parse(localStorage.getItem('tve_exam_timer') || 'null'); } catch (e) { return null; } }
-  let timer = loadTimer() || { running: false, startedAt: 0, elapsedBefore: 0, lastSection: -1, done: false, sound: true, vibrate: true, plan: null };
-  const saveTimer = () => localStorage.setItem('tve_exam_timer', JSON.stringify(timer));
-  const tElapsed = () => timer.elapsedBefore + (timer.running ? Date.now() - timer.startedAt : 0);
-  const tPlan = () => timer.plan || timerPlan();
-  const tTotal = () => tPlan().reduce((s, x) => s + x[1], 0) * 60000;
-  function tSectionAt(ms) { let acc = 0; const p = tPlan(); for (let i = 0; i < p.length; i++) { acc += p[i][1] * 60000; if (ms < acc) return { i, start: acc - p[i][1] * 60000, end: acc }; } return { i: p.length, start: tTotal(), end: tTotal() }; }
-  const mmss = (ms) => { ms = Math.max(0, Math.round(ms / 1000)); const m = Math.floor(ms / 60), s = ms % 60; return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; };
-  let audioCtx = null;
-  function beep(times = 1) {
-    if (timer.vibrate && navigator.vibrate) { try { navigator.vibrate(times === 1 ? 300 : [300, 150, 300, 150, 600]); } catch (e) { } }
-    if (!timer.sound) return;
-    try {
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      for (let k = 0; k < times; k++) {
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = 'sine'; o.frequency.value = k % 2 ? 660 : 880; g.gain.value = 0.25;
-        o.connect(g); g.connect(audioCtx.destination);
-        const t0 = audioCtx.currentTime + k * 0.35; o.start(t0); o.stop(t0 + 0.25);
-      }
-    } catch (e) { }
+  /* ---------------- Exam time plan (light, no timer page) ---------------- */
+  const TIME_PLAN = [['secVocab', 8, '#6f9cff'], ['secDialog', 8, '#5ccfb0'], ['secCloze', 14, '#f2b84b'], ['secReading', 40, '#ff8fab'], ['secWriting', 15, '#b28dff'], ['secCheck', 10, '#9aa7bd'], ['secBuffer', 5, '#d5dbe6']];
+  const fmtDur = (sec) => { sec = Math.max(0, Math.round(sec)); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
+  function dailySentence(dateStr = todayStr()) {
+    const list = window.DAILY_SENTENCES || []; if (!list.length) return null;
+    const dayNum = Math.floor(Date.UTC(+dateStr.slice(0, 4), +dateStr.slice(5, 7) - 1, +dateStr.slice(8, 10)) / 86400000);
+    return list[((dayNum % list.length) + list.length) % list.length];
   }
-  function timerTick() {
-    const badge = $('#timerBadge');
-    if (!timer.running) { if (badge) badge.classList.add('hidden'); return; }
-    const el = tElapsed(), total = tTotal();
-    if (badge) { badge.textContent = mmss(total - el); badge.classList.remove('hidden'); }
-    const sec = tSectionAt(el);
-    if (el >= total) {
-      timer.running = false; timer.done = true; timer.elapsedBefore = total; saveTimer(); beep(3); toast(t('timerDone'));
-      state.progress.timers = state.progress.timers || []; state.progress.timers.push({ date: new Date().toISOString(), minutes: Math.round(total / 60000) }); bumpDay(); save();
-      if (badge) badge.classList.add('hidden');
-    } else if (sec.i !== timer.lastSection) {
-      if (timer.lastSection >= 0) { beep(1); toast(t('sectionChanged') + t(SEC_KEY[tPlan()[sec.i][0]] || '') ); }
-      timer.lastSection = sec.i; saveTimer();
-    }
-    if (view.page === 'timer') render();
+  function dailyCard() {
+    const d = dailySentence(); if (!d) return '';
+    const hl = d.word ? esc(d.en).replace(new RegExp('(' + d.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i'), `<b title="${esc(d.wordZh || '')}">$1</b>`) : esc(d.en);
+    return `<div class="card daily-card"><span class="ribbon">💬</span>
+      <div class="daily-label">${t('dailyTitle')} · ${todayStr().replace(/-/g, '/')}</div>
+      <div class="daily-en">“${hl}”</div>
+      ${d.src ? `<div class="daily-src">— ${esc(d.src)}</div>` : ''}
+      <div class="daily-zh">${esc(d.zh)}</div>
+      <div class="row" style="margin-top:8px">${d.word ? `<span class="chip info"><span class="en">${esc(d.word)}</span> · ${esc(d.wordZh || '')}</span>` : ''}<span class="spacer"></span><button class="btn sm ghost" data-action="speak" data-word="${esc(d.en)}">🔊 ${t('listen')}</button></div>
+    </div>`;
   }
-  setInterval(timerTick, 1000);
-
-  function pageTimer() {
-    const plan = tPlan(), total = tTotal(), el = Math.min(tElapsed(), total), left = total - el, sec = tSectionAt(el);
-    const cur = plan[sec.i], nxt = plan[sec.i + 1];
-    const secLeft = cur ? sec.end - el : 0;
-    const cls = left <= 5 * 60000 ? 'danger' : left <= 15 * 60000 ? 'warn' : '';
-    const editable = !timer.running && el === 0;
-    const planHtml = plan.map((p, i) => `<div class="plan-item ${i === sec.i && el > 0 ? 'active' : ''} ${i < sec.i ? 'done' : ''}"><span class="order">${i + 1}</span><div class="name">${t(SEC_KEY[p[0]] || p[0])}</div>
-      <div class="mins">${editable ? `<input type="number" min="0" max="100" value="${p[1]}" data-plan="${i}">` : `<b>${p[1]}</b>`} <span class="small muted">${t('min')}</span></div><div class="hint">${SEC_TIP[p[0]] || ''}</div></div>`).join('');
-    return `<h2 class="section-title" style="margin-top:8px">⏱️ ${t('timerTitle')}</h2><p class="section-sub">${t('timerSub')}</p>
-      <div class="timer-hero">
-        <div class="small" style="opacity:.85">${t('totalTime')} ${Math.round(total / 60000)} ${t('min')} · ${t('remaining')}</div>
-        <div class="timer-total ${cls}" id="tmTotal">${mmss(left)}</div>
-        ${cur ? `<div class="timer-section"><span class="lbl">${t('currentSection')}</span>${t(SEC_KEY[cur[0]] || cur[0])} <span class="timer-secleft">${mmss(secLeft)}</span>${nxt ? `<span class="lbl">${t('nextSection')}：${t(SEC_KEY[nxt[0]] || nxt[0])} (${nxt[1]} ${t('min')})</span>` : ''}</div>` : `<div class="timer-section">${timer.done ? t('timerFinishedMsg') : ''}</div>`}
-        <div class="timer-bar"><div style="width:${total ? el / total * 100 : 0}%"></div></div>
-        <div class="small" style="opacity:.8">${el >= 50 * 60000 ? '✅ ' : '🔒 '}${t('noSubmitBefore')}</div>
-        <div class="timer-controls">
-          ${timer.running ? `<button class="btn accent" data-action="tmPause">${t('pauseTimer')}</button>` : `<button class="btn accent" data-action="tmStart" ${el >= total ? 'disabled' : ''}>${el > 0 ? t('resumeTimer') : t('startTimer')}</button>`}
-          <button class="btn" data-action="tmSkip" ${!cur || el >= total ? 'disabled' : ''}>${t('skipSection')}</button>
-          <button class="btn ghost" data-action="tmReset" style="background:transparent;color:#fff;border-color:#fff;box-shadow:none">${t('resetTimer')}</button>
-        </div>
-        <div class="timer-opts"><label><input type="checkbox" id="tmSound" ${timer.sound ? 'checked' : ''}> 🔔 ${t('sound')}</label><label><input type="checkbox" id="tmVibrate" ${timer.vibrate ? 'checked' : ''}> 📳 ${t('vibrate')}</label></div>
-      </div>
-      <div class="card" style="margin-top:14px"><h3 style="margin-top:0">🗂️ ${t('planTitle')} <span class="chip info">${Math.round(total / 60000)} ${t('min')}</span></h3><p class="small muted">${t('planHint')}</p>
-        <div class="plan-grid">${planHtml}</div>
-        ${editable ? `<div class="row" style="margin-top:10px"><span class="spacer"></span><button class="btn sm ghost" data-action="tmPlanReset">${t('planReset')}</button></div>` : ''}
-      </div>
-      <div class="card"><h3 style="margin-top:0">📋 ${t('structureTitle')}</h3>
-        ${(() => { const I = t('examInfo'); const pastel = ['var(--pastel-4)', 'var(--pastel-2)', 'var(--pastel-3)']; return `<div style="overflow-x:auto"><table class="info-table"><thead><tr>${I.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${I.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
-        <div class="score-split" style="margin-top:12px">${I.split.map((x, i) => `<div style="background:${pastel[i]}"><div class="big">${esc(x[0])}</div><div class="small">${esc(x[1])}</div></div>`).join('')}</div>
-      </div>
-      <div class="card"><h3 style="margin-top:0">📈 ${t('trendTitle')}</h3><div class="list">${I.trends.map((x, i) => `<div class="list-item"><span>0${i + 1}</span><div class="grow"><div class="title" style="font-size:16px">${esc(x[0])}</div><div class="meta">${esc(x[1])}</div></div></div>`).join('')}</div>
-      </div>
-      <div class="card"><h3 style="margin-top:0">✅ ${t('rulesTitle')}</h3><div class="list">${I.rules.map(x => `<div class="list-item"><span>${x[0]}</span><div class="grow"><div class="title" style="font-size:16px">${esc(x[1])}</div><div class="meta">${esc(x[2])}</div></div></div>`).join('')}</div>`; })()}
-        <div class="score-banner" style="margin-top:14px"><div class="big" style="font-size:24px">「${t('oneLine')}」</div></div>
-        <p class="small muted" style="margin:12px 0 0">${t('sourceNote')}</p>
-        <div class="row" style="margin-top:10px"><a class="btn ghost" href="docs/tve-english-exam-guide.pdf" target="_blank" rel="noopener">${t('pdfLink')}</a></div>
-      </div>`;
+  function timePlanCard() {
+    const total = TIME_PLAN.reduce((a, x) => a + x[1], 0);
+    const segs = TIME_PLAN.map(([k, m, c]) => `<div class="tp-seg" style="flex:${m};background:${c}" title="${esc(t(k))} ${m} ${t('min')}"><span>${m}</span></div>`).join('');
+    const legend = TIME_PLAN.map(([k, m, c]) => `<span class="tp-leg"><i style="background:${c}"></i>${esc(t(k))} <b>${m}′</b></span>`).join('');
+    const mark = (min, key) => `<div class="tp-mark" style="left:${min / total * 100}%"><span>${esc(t(key))}</span></div>`;
+    return `<div class="card timeplan">
+      <div class="row" style="justify-content:space-between"><b>${total} ${t('min')}</b><span class="small muted">${t('tpScore')}</span></div>
+      <div class="tp-bar">${segs}</div>
+      <div class="tp-marks">${mark(30, 'tpMark30')}${mark(50, 'tpMark50')}</div>
+      <div class="tp-legend">${legend}</div>
+      <ul class="tp-tips"><li>${t('tpTip1')}</li><li>${t('tpTip2')}</li><li>${t('tpTip3')}</li></ul>
+      <a class="small" href="docs/tve-english-exam-guide.pdf" target="_blank" rel="noopener">${t('pdfLink')}</a>
+    </div>`;
   }
 
   /* ---------------- Bookmarks ---------------- */
@@ -380,25 +329,18 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
   /* ---------------- Pages ---------------- */
   function pageHome() {
     const dl = daysLeft();
-    let badge;
-    if (dl > 0) badge = `<div class="label">${t('daysLeft')}</div><div class="days">${dl}<small>${t('days')}</small></div>`;
-    else if (dl === 0) badge = `<div class="label">${t('daysLeft')}</div><div class="days">${t('today')}</div>`;
-    else badge = `<div class="days">${t('examPassed')}</div>`;
-    const ex = new Date(state.settings.examDate + 'T00:00:00');
-    const dateLine = `${state.settings.examDate.replace(/-/g, '/')} (${t('weekdays')[ex.getDay()]})`;
     const due = dueCards().length, nw = newCards().length;
     const recent = state.progress.readingQuizzes.slice(-5).reverse();
     const name = state.settings.studentName ? `${esc(state.settings.studentName)}，` : '';
     return `
-      <div class="banner">${bannerSVG()}
-        <div class="countdown-badge ${dl <= 0 ? 'done' : ''}"><span class="mascot">${dl > 30 ? '🐣' : dl > 7 ? '🔥' : '🎯'}</span>${badge}<div class="date">${esc(ui.lang === 'zh' ? state.settings.examName : (state.settings.examNameEn || state.settings.examName))}<br>${dateLine}</div></div>
-      </div>
+      <div class="banner">${bannerSVG()}</div>
       <div class="stat-grid">
         <div class="stat-card"><span class="ribbon">🔤</span><div class="k">${t('statVocab')}</div><div class="v">${VOCAB.length}</div><div class="s">${VOCAB.filter(v => v.type === 'phrase').length ? `${VOCAB.filter(v => v.type === 'word').length} ${t('typeWord')} + ${VOCAB.filter(v => v.type === 'phrase').length} ${t('typePhrase')}` : t('statVocabS')}</div></div>
         <div class="stat-card"><span class="ribbon">📖</span><div class="k">${t('statArticles')}</div><div class="v">${state.articles.length}</div><div class="s">${t('statArticlesS')}</div></div>
         <div class="stat-card"><span class="ribbon">🌟</span><div class="k">${t('statMastered')}</div><div class="v">${masteredCount()} <span class="small muted">/ ${VOCAB.length}</span></div><div class="s">${t('statMasteredS')}</div></div>
         <div class="stat-card"><span class="ribbon">⏰</span><div class="k">${t('statDue')}</div><div class="v">${due}</div><div class="s">${t('statDueS')}</div></div>
       </div>
+      ${dailyCard()}
       ${state.settings.motto ? `<div class="card" style="margin-top:14px;border-style:dashed"><b>💬 ${t('motto')}：</b> ${name}${esc(state.settings.motto)}</div>` : ''}
       <h2 class="section-title">🗓️ ${t('todayPlan')}</h2>
       <p class="section-sub">${t('todayPlanSub')} · 🔥 ${t('streak')} ${streak()} ${t('streakDays')}</p>
@@ -407,14 +349,9 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
         <div class="list-item"><span>✨</span><div class="grow"><div class="title">${t('taskNew')}</div><div class="meta">${nw} ${t('statVocabS')}</div></div><button class="btn sm accent" data-action="goFlash" data-mode="new">${t('go')}</button></div>
         <div class="list-item"><span>📖</span><div class="grow"><div class="title">${t('taskRead')}</div><div class="meta">${state.articles.length} ${t('statArticlesS')}</div></div><button class="btn sm accent" data-action="nav" data-page="reading">${t('go')}</button></div>
       </div>
-      <h2 class="section-title">🎒 ${t('servicesTitle')}</h2>
-      <p class="section-sub">${t('servicesSub')}</p>
-      <div class="service-grid">
-        <div class="service-card" data-action="nav" data-page="reading"><div class="deco"></div><span class="ribbon ribbon-l">1</span><div class="icon">📖</div><h3>${t('svcReading')}</h3><p>${t('svcReadingP')}</p></div>
-        <div class="service-card" data-action="nav" data-page="flashcards"><div class="deco"></div><span class="ribbon ribbon-l">2</span><div class="icon">🃏</div><h3>${t('svcFlash')}</h3><p>${t('svcFlashP')}</p></div>
-        <div class="service-card" data-action="goQuiz"><div class="deco"></div><span class="ribbon ribbon-l">3</span><div class="icon">📝</div><h3>${t('svcQuiz')}</h3><p>${t('svcQuizP')}</p></div>
-        <div class="service-card" data-action="nav" data-page="progress"><div class="deco"></div><span class="ribbon ribbon-l">4</span><div class="icon">📈</div><h3>${t('svcProgress')}</h3><p>${t('svcProgressP')}</p></div>
-      </div>
+      <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2>
+      <p class="section-sub">${t('timePlanSub')}</p>
+      ${timePlanCard()}
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
       <h2 class="section-title">🔖 ${t('bookmarks')}</h2>
       ${homeBookmarks()}
@@ -497,7 +434,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     let scoreHtml = '';
     if (view.submitted) {
       const sc = a.questions.filter((q, i) => view.answers[i] === q.answer).length;
-      scoreHtml = `<div class="score-banner"><div>${t('yourScore')}</div><div class="big">${sc} / ${a.questions.length}</div><div>${Math.round(sc / a.questions.length * 100)}%</div><div style="margin-top:8px"><button class="btn accent" data-action="retry">${t('retry')}</button></div></div>`;
+      scoreHtml = `<div class="score-banner"><div>${t('yourScore')}</div><div class="big">${sc} / ${a.questions.length}</div><div>${Math.round(sc / a.questions.length * 100)}%</div>${view.readSecs != null ? `<div class="pace ${view.readSecs <= 600 ? 'ok' : 'slow'}">${tf('paceLine', { t: fmtDur(view.readSecs), p: '10:00' })}</div>` : ''}<div style="margin-top:8px"><button class="btn accent" data-action="retry">${t('retry')}</button></div></div>`;
     }
     return `<button class="btn ghost sm" data-action="backList">${t('back')}</button>
       <div class="card" style="margin-top:12px">
@@ -755,7 +692,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     const p = state.progress;
     const total = Object.values(p.days).reduce((a, b) => a + b, 0);
     return `<h2 class="section-title" style="margin-top:8px">${t('progressTitle')}</h2><p class="section-sub">${t('progressSub')}</p>
-      <div class="card"><div class="row"><div><b>🔥 ${t('streak')}</b> ${streak()} ${t('streakDays')}</div><div><b>${t('totalActivity')}</b> ${total}</div><div><b>⏱️ ${t('timerSessions')}</b> ${(p.timers || []).length}</div><span class="spacer"></span>
+      <div class="card"><div class="row"><div><b>🔥 ${t('streak')}</b> ${streak()} ${t('streakDays')}</div><div><b>${t('totalActivity')}</b> ${total}</div><span class="spacer"></span>
         <button class="btn accent" data-action="sendTeacher">${t('sendToTeacher')}</button></div><p class="small muted" style="margin:6px 0 0">${t('sendHint')}</p></div>
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(p, VOCAB)}<h3>${t('activity')}</h3>${heatmap(p)}</div>
       <div class="card">${quizTables(p, state.articles)}<div class="row" style="margin-top:12px"><span class="spacer"></span><button class="btn danger sm" data-action="resetProgress">${t('resetProgress')}</button></div></div>`;
@@ -857,7 +794,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
   /* ---------------- Render ---------------- */
   function render() {
     updateExamChip();
-    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, timer: pageTimer, progress: pageProgress, students: pageStudents, settings: pageSettings };
+    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, progress: pageProgress, students: pageStudents, settings: pageSettings };
 
     $('#app').innerHTML = (pages[view.page] || pageHome)();
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
@@ -910,30 +847,26 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     goFlash(el) { view.flashSetup.mode = el.dataset.mode; view.flash = null; view.quiz = null; nav('flashcards'); },
     goQuiz() { view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
     speak(el) { speak(el.dataset.word); },
-    tmStart() { if (!timer.running) { if (tElapsed() === 0) { timer.plan = timerPlan().map(x => x.slice()); timer.lastSection = -1; timer.done = false; bumpDay(); save(); } timer.running = true; timer.startedAt = Date.now(); saveTimer(); beep(1); render(); } },
-    tmPause() { if (timer.running) { timer.elapsedBefore = tElapsed(); timer.running = false; saveTimer(); render(); } },
-    tmReset() { if (tElapsed() > 0 && !timer.done && !confirm(t('confirmDel'))) return; timer = { running: false, startedAt: 0, elapsedBefore: 0, lastSection: -1, done: false, sound: timer.sound, vibrate: timer.vibrate, plan: null }; saveTimer(); const b = $('#timerBadge'); if (b) b.classList.add('hidden'); render(); },
-    tmSkip() { const el = tElapsed(); const sec = tSectionAt(el); if (sec.i >= tPlan().length) return; timer.elapsedBefore = sec.end; if (timer.running) timer.startedAt = Date.now(); saveTimer(); timerTick(); render(); },
-    tmPlanReset() { state.settings.timerPlan = DEFAULT_PLAN.map(x => x.slice()); save(); render(); },
     toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash) { const b = $('.flash-bm'); if (b) b.classList.toggle('on', isBm('vocab', el.dataset.id)); } else render(); },
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); window.scrollTo({ top: 0 }); },
-    openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; nav('reading'); },
+    openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); nav('reading'); },
     // reading
-    openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; window.scrollTo({ top: 0 }); render(); },
+    openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
     backList() { view.articleId = null; render(); },
     choose(el) { if (view.submitted) return; view.answers[+el.dataset.q] = +el.dataset.o; render(); },
     submitQuiz() {
       const a = state.articles.find(x => x.id === view.articleId);
       if (Object.keys(view.answers).length < a.questions.length) { toast(t('pleaseAnswerAll')); return; }
       view.submitted = true;
+      view.readSecs = view.readStart ? Math.round((Date.now() - view.readStart) / 1000) : null;
       const answers = a.questions.map((q, i) => ({ qi: i, q: q.q, chosen: view.answers[i], chosenText: q.options[view.answers[i]], correct: q.answer, correctText: q.options[q.answer] }));
       const score = answers.filter(x => x.chosen === x.correct).length;
-      state.progress.readingQuizzes.push({ id: uid('rq'), articleId: a.id, title: a.title, score, total: a.questions.length, date: new Date().toISOString(), answers });
+      state.progress.readingQuizzes.push({ id: uid('rq'), articleId: a.id, title: a.title, score, total: a.questions.length, date: new Date().toISOString(), secs: view.readSecs, answers });
       bumpDay(); save(); render();
       setTimeout(() => { const s = $('.score-banner'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50);
     },
-    retry() { view.answers = {}; view.submitted = false; window.scrollTo({ top: 0 }); render(); },
+    retry() { view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
     newArticle() { view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
     editArticle(el) { view.editing = clone(state.articles.find(x => x.id === el.dataset.id)); render(); },
     deleteArticle(el) { if (!confirm(t('confirmDel'))) return; state.articles = state.articles.filter(x => x.id !== el.dataset.id); save(); render(); },
@@ -1053,9 +986,6 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     else if (id === 'fsUnit') view.flashSetup.unit = e.target.value, render();
     else if (id === 'fsShuffle') view.flashSetup.shuffle = e.target.value === '1';
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
-    else if (id === 'tmSound') { timer.sound = e.target.checked; saveTimer(); }
-    else if (id === 'tmVibrate') { timer.vibrate = e.target.checked; saveTimer(); }
-    else if (e.target.dataset.plan !== undefined) { const p = timerPlan().map(x => x.slice()); p[+e.target.dataset.plan][1] = Math.max(0, Math.min(100, +e.target.value || 0)); state.settings.timerPlan = p; save(); render(); }
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
     else if (id === 'qsType') view.quizSetup.type = e.target.value;
     else if (id === 'qsUnit') view.quizSetup.unit = e.target.value;
@@ -1078,13 +1008,21 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     else if (e.key === 'ArrowRight' || e.key === 'k') actions.flashMark({ dataset: { known: '1' } });
     else if (e.key === 'ArrowLeft' || e.key === 'd') actions.flashMark({ dataset: { known: '0' } });
   });
-  $('#examChip').addEventListener('click', () => nav('home'));
+  const examInput = $('#examDateInput');
+  examInput.addEventListener('click', e => { if (typeof examInput.showPicker === 'function') { e.preventDefault(); try { examInput.showPicker(); } catch (err) { examInput.focus(); } } });
+  examInput.addEventListener('change', () => {
+    const v = examInput.value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return;
+    state.settings.examDate = v; save(); toast(t('saved')); render();
+  });
   $('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; if (b.dataset.page === 'reading') { view.articleId = null; view.editing = null; } nav(b.dataset.page); });
 
   // header controls
   const langSel = $('#langSelect'), fontSel = $('#fontSelect'), themeSel = $('#themeSelect'), authBtn = $('#authBtn');
   function updateExamChip() {
     const chip = $('#examChip'); if (!chip) return;
+    const inp = $('#examDateInput'); if (inp && inp.value !== state.settings.examDate) inp.value = state.settings.examDate;
+    chip.title = t('chipHint');
     const dl = daysLeft(), ex = new Date(state.settings.examDate + 'T00:00:00');
     $('#examChipDate').textContent = `📅 ${state.settings.examDate.replace(/-/g, '/')} (${t('weekdays')[ex.getDay()]})`;
     $('#examChipDays').textContent = dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('headerToday') : t('examChipPassed');
@@ -1141,7 +1079,8 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
   });
 
   // midnight refresh of countdown
-  setInterval(() => { if (view.page === 'home') { const b = $('.countdown-badge .days'); if (b && daysLeft() > 0 && parseInt(b.textContent) !== daysLeft()) render(); } }, 60000);
+  let lastDay = todayStr();
+  setInterval(() => { updateExamChip(); if (todayStr() !== lastDay) { lastDay = todayStr(); if (view.page === 'home') render(); } }, 60000);
 
   applyUi();
   render();

@@ -1,6 +1,6 @@
 /* 簡易離線快取：加到 iPhone 主畫面後，沒網路也能打開 */
-const CACHE = 'tve-exam-v3';
-const ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './library.js', './worldmap.js', './i18n.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CACHE = 'tve-exam-v6';
+const ASSETS = ['./', './index.html', './style.css', './app.js', './data.js', './library.js', './worldmap.js', './daily.js', './i18n.js', './manifest.json', './icons/favicon.svg', './icons/icon-32.png', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

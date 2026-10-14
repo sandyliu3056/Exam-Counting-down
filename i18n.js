@@ -75,7 +75,7 @@ window.I18N = {
     sourceNote: "資料來源：歷年統測試題統計、龍騰 109 統測英文剖析、關鍵評論網 115 統測解析。正式題數與配分以技專校院入學測驗中心公布為準。",
     range: "練習範圍", unitLv: "7000 單字 · Level {n} ({c})", unitPh: "片語", phCat1: "動詞片語 (up / down)", phCat2: "動詞片語 (out / in / into)", phCat3: "動詞片語 (on / off / over)", phCat4: "動詞片語 (away / back / through…)", phCat5: "動詞／形容詞＋介系詞", phCat6: "介系詞與副詞片語", phCat7: "連接詞與句型", phCat8: "慣用語", phCat9: "動詞搭配詞", phCat10: "商業與生活常用片語",
     seedUnits: { "Unit 1 · Study & Health": "Unit 1 · 學習與健康", "Unit 2 · Culture & Life": "Unit 2 · 文化與生活", "Unit 3 · Business & Letters": "Unit 3 · 商業與書信", "Unit 4 · High-frequency Words": "Unit 4 · 統測高頻字", "Reading · B1": "閱讀 · B1", "Reading · Practical": "閱讀 · 應用文", "Health": "健康", "Science": "科普", "Culture": "文化", "Life": "生活", "Letter": "書信", "Business": "商業" },
-    daysLeftShort: "剩 {n} 天", examChipPassed: "已結束", headerToday: "今天考試！",
+    dailyTitle: "每日一句", listen: "聽", chipHint: "點一下可以更改考試日期", daysLeftShort: "剩 {n} 天", examChipPassed: "已結束", headerToday: "今天考試！",
     mapTitle: "英文帶你看世界", mapSub: "黃色點是以英文為母語的國家，統測是出發的第一步。", youAreHere: "你在這裡",
     tipVocab: "每題約 40 秒，不會先猜再標記", tipDialog: "看清最後一句是誰說、語氣正負", tipCloze: "先看空格前後的轉折詞與時態", tipReading: "先看題目，再回文章找關鍵字", tipWriting: "拼字和時態最容易失分，寫完一定要檢查", tipCheck: "回頭看做記號的題目", tipBuffer: "預留時間，不要提早交卷",
     examInfo: {
@@ -85,6 +85,8 @@ window.I18N = {
       trends: [["閱讀份量變多", "115 年閱讀量增加、詞彙加深，題材結合時事與科技（淡江大橋、AI）。"], ["閱讀測驗鑑別度最高", "112 年分析：全卷最簡單與最難的題目都在閱讀測驗，圖表題得分率最低。"], ["對話題相對穩定", "生活情境、難度穩定，適合穩住基本分。"]],
       rules: [["⏱️", "前 30 分鐘做完前三大題", "把時間留給配分最高的閱讀測驗。"], ["⏭️", "單一難題不超過 2 分鐘", "先猜一個答案、做記號，最後再回頭。"], ["✍️", "非選擇題不留到最後", "太晚寫容易寫不完，或急著寫而拼錯。"], ["🔁", "閱讀慢就先寫非選", "確保 16–18 分的非選擇題一定有寫到。"]]
     },
+    timePlanTitle: "100 分鐘怎麼用", timePlanSub: "統測英文的時間分配，平常練習就照這個節奏。", tpScore: "選擇題 82 分 · 非選擇題 18 分", tpMark30: "30′ 前三大題做完", tpMark50: "50′ 後才能交卷",
+    tpTip1: "字彙題每題約 40 秒，不會就先猜、做記號", tpTip2: "單一難題不超過 2 分鐘，最後再回頭", tpTip3: "閱讀先看題目再找關鍵字；閱讀慢就先寫非選擇題", paceLine: "⏱ 你花了 {t}，考試節奏大約每篇 {p}",
     weekdays: ["日","一","二","三","四","五","六"],
   },
   en: {
@@ -156,7 +158,7 @@ window.I18N = {
     sourceNote: "Sources: past TVE exam statistics, Lungteng 109 exam analysis, The News Lens 115 exam review. Official question counts and marks follow the TCTE announcements.",
     range: "Range", unitLv: "7000 Words · Level {n} ({c})", unitPh: "Phrases", phCat1: "Phrasal verbs (up / down)", phCat2: "Phrasal verbs (out / in / into)", phCat3: "Phrasal verbs (on / off / over)", phCat4: "Phrasal verbs (away / back / through…)", phCat5: "Verb / adjective + preposition", phCat6: "Prepositional & adverbial phrases", phCat7: "Linking words & sentence patterns", phCat8: "Idioms", phCat9: "Verb collocations", phCat10: "Business & everyday phrases",
     seedUnits: {},
-    daysLeftShort: "{n} days left", examChipPassed: "finished", headerToday: "Exam day!",
+    dailyTitle: "Sentence of the day", listen: "Listen", chipHint: "Tap to change the exam date", daysLeftShort: "{n} days left", examChipPassed: "finished", headerToday: "Exam day!",
     mapTitle: "English takes you everywhere", mapSub: "Yellow dots are countries where English is the first language. The exam is your first step.", youAreHere: "You are here",
     tipVocab: "About 40 seconds per question; guess, mark it, and move on", tipDialog: "Check who says the last line and whether the tone is positive or negative", tipCloze: "Look at the linking words and tenses around each blank first", tipReading: "Read the questions first, then scan the passage for keywords", tipWriting: "Spelling and tenses lose the most points; always re-check", tipCheck: "Go back to the questions you marked", tipBuffer: "Keep a buffer; don't hand in early",
     examInfo: {
@@ -166,6 +168,8 @@ window.I18N = {
       trends: [["More reading", "In 2026 (115) the reading load grew and vocabulary got harder, with topics tied to current events and tech (Danjiang Bridge, AI)."], ["Reading separates scores the most", "112 analysis: both the easiest and hardest questions were in reading; chart questions had the lowest success rate."], ["Dialogue stays stable", "Everyday situations at a steady difficulty, good for securing basic marks."]],
       rules: [["⏱️", "Finish the first three parts within 30 minutes", "Save your time for reading, which carries the most marks."], ["⏭️", "No more than 2 minutes on any one question", "Guess, mark it, and come back at the end."], ["✍️", "Don't leave the writing section to the end", "Starting late means running out of time or rushing into spelling mistakes."], ["🔁", "If reading is slow, do the writing section first", "Make sure the 16–18 writing marks are always attempted."]]
     },
+    timePlanTitle: "How to use 100 minutes", timePlanSub: "The time plan for the TVE English exam. Practice at this pace.", tpScore: "Multiple choice 82 · Writing 18", tpMark30: "30′ parts 1–3 done", tpMark50: "50′ earliest hand-in",
+    tpTip1: "About 40 seconds per vocabulary question; guess, mark it, move on", tpTip2: "No more than 2 minutes on any one question", tpTip3: "Reading: questions first, then scan for keywords; if reading is slow, do the writing section first", paceLine: "⏱ You took {t} · exam pace is about {p} per passage",
     weekdays: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
   }
 };
