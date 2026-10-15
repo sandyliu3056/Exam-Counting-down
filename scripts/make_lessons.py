@@ -206,12 +206,14 @@ class Gemini:
         self.name = self.models[0]
         self.schema_field = "responseJsonSchema"  # falls back to plain JSON mode if the model rejects it
         self.errors = 0
+        self.busy = 0  # "busy, try later" replies in a row for the current model
 
     def _next_model(self, why):
         self.models.pop(0)
         if not self.models:
             raise StopRun(why)
         self.name = self.models[0]
+        self.busy = 0
         print(f"  switching to {self.name} ({why})")
 
     def write(self, system, prompt):
@@ -237,6 +239,14 @@ class Gemini:
                 if e.code == 404:
                     self._next_model("model not found")
                     continue
+                if e.code in (500, 503):  # "high demand, try again later": wait, then try another free model
+                    self.busy += 1
+                    if self.busy <= 2:
+                        print(f"  Google is busy; waiting {30 * self.busy} s")
+                        time.sleep(30 * self.busy)
+                    else:
+                        self._next_model("busy")
+                    continue
                 if e.code in (401, 403):
                     raise StopRun(f"the Gemini key was refused ({e.code}): {detail}")
                 if e.code == 400 and self.schema_field and ("schema" in detail.lower() or "unknown name" in detail.lower()):
@@ -252,7 +262,7 @@ class Gemini:
             except ValueError:
                 print("  reply was not JSON")
                 return None
-            self.errors = 0
+            self.errors = self.busy = 0
             cand = (out.get("candidates") or [{}])[0]
             if cand.get("finishReason") not in (None, "STOP"):
                 print(f"  stopped: {cand.get('finishReason')}")
