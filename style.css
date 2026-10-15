@@ -727,3 +727,20 @@ body.teacher .teacher-only.flex { display: flex; }
 .tr-model p { margin: 4px 0 8px; font-size: 17px; }
 .tr-point { background: var(--bg-soft); border-radius: 12px; padding: 8px 12px; }
 @media (max-width: 520px) { .tr-q { font-size: 19px; } }
+
+/* multiple choice + cloze */
+.mc-card { display: flex; flex-direction: column; gap: 12px; }
+.mc-q { font-size: 19px; line-height: 1.7; }
+.mc-blank { display: inline-block; min-width: 80px; border-bottom: 2px solid var(--ink); margin: 0 4px; vertical-align: baseline; }
+.mc-opts { display: flex; flex-direction: column; gap: 8px; }
+.mc-opts .option { cursor: pointer; }
+.cz-passage { white-space: normal; line-height: 2.1; }
+.cz-blank { display: inline-block; min-width: 70px; padding: 0 6px; margin: 0 2px; border-bottom: 2px solid var(--ink); border-radius: 4px 4px 0 0; }
+.cz-blank b { display: inline-block; min-width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%; background: var(--header); color: #fff; font-size: 12px; }
+.cz-blank.filled { background: var(--bg-soft); }
+.cz-blank.ok { background: #d8f3e2; } .cz-blank.bad { background: #fbe0dd; }
+.row-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.cz-zh { background: var(--bg-soft); border-radius: 12px; padding: 8px 12px; }
+.cz-zh summary { cursor: pointer; font-weight: 700; }
+.mc-review { display: flex; flex-direction: column; gap: 6px; }
+@media (max-width: 520px) { .mc-q { font-size: 17px; } .row-opts { grid-template-columns: 1fr 1fr; } }

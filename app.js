@@ -386,6 +386,138 @@
     </div>`;
   }
 
+  /* ---- Multiple choice (選擇題): window.MCQ_ITEMS (mcq.js) + cloze passages window.CLOZE_SETS (cloze.js) ---- */
+  const MC_TYPES = [['vocab', 'mcVocab', '🔤'], ['grammar', 'mcGrammar', '📐'], ['dialogue', 'mcDialogue', '💬'], ['cloze', 'mcCloze', '🧩']];
+  const mcItems = () => window.MCQ_ITEMS || [];
+  const clozeSets = () => window.CLOZE_SETS || [];
+  const mcRec = id => (state.progress.mcq || {})[id];
+  const L4 = 'ABCD';
+  function mcRecord(id, chosen, answer) {
+    const p = state.progress; p.mcq = p.mcq || {};
+    const r = p.mcq[id] || { tries: 0, ok: 0 }, ok = chosen === answer;
+    p.mcq[id] = { tries: r.tries + 1, ok: r.ok + (ok ? 1 : 0), lastOk: ok, chosen, last: new Date().toISOString() };
+  }
+  // every answerable unit: single items, and each blank of a cloze passage ("C01-2")
+  function mcUnits() {
+    const u = mcItems().map(it => ({ id: it.id, type: it.type, level: it.level, q: it.q, options: it.options, answer: it.answer, explain: it.explain }));
+    clozeSets().forEach(c => c.blanks.forEach((b, k) => u.push({ id: `${c.id}-${k + 1}`, type: 'cloze', level: c.level, q: `${c.title} (${k + 1})`, options: b.options, answer: b.answer, explain: b.explain })));
+    return u;
+  }
+  function mcStats(progress) {
+    const rec = progress.mcq || {}, units = mcUnits(), byType = {};
+    MC_TYPES.forEach(([k]) => { byType[k] = { done: 0, right: 0, total: 0 }; });
+    units.forEach(u => { const b = byType[u.type]; if (!b) return; b.total++; const r = rec[u.id]; if (r) { b.done++; if (r.lastOk) b.right++; } });
+    const wrong = units.filter(u => rec[u.id] && !rec[u.id].lastOk).map(u => Object.assign({ chosenIdx: rec[u.id].chosen, wrongTimes: rec[u.id].tries - rec[u.id].ok }, u))
+      .sort((a, b) => b.wrongTimes - a.wrongTimes);
+    const done = Object.values(byType).reduce((s, b) => s + b.done, 0), right = Object.values(byType).reduce((s, b) => s + b.right, 0);
+    return { byType, wrong, done, right, total: units.length };
+  }
+  const mcQ = q => esc(q).replace(/_{3,}/g, '<span class="mc-blank"></span>').replace(/\n/g, '<br>');
+  function pageMcq() {
+    if (!mcItems().length && !clozeSets().length) return `<h2 class="section-title" style="margin-top:8px">📝 ${t('mcTitle')}</h2><div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
+    if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
+    const f = view.mcf || (view.mcf = { type: '', level: '', status: '', mode: 'practice', count: 10 });
+    const S = mcStats(state.progress);
+    const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
+    return `<h2 class="section-title" style="margin-top:8px">📝 ${t('mcTitle')}</h2><p class="section-sub">${tf('mcSub', { n: mcItems().length, c: clozeSets().length })}</p>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="k">${t('mcAnswered')}</div><div class="v">${S.done} <span class="small muted">/ ${S.total}</span></div></div>
+        <div class="stat-card"><div class="k">${t('trRight')}</div><div class="v">${S.done ? Math.round(S.right / S.done * 100) + '%' : '—'}</div><div class="s">${S.right} / ${S.done}</div></div>
+        <div class="stat-card"><div class="k">${t('trToReview')}</div><div class="v">${S.wrong.length}</div></div>
+      </div>
+      <div class="card">
+        <div class="phr-cats" style="padding-top:0">
+          <button class="phr-cat ${!f.type ? 'on' : ''}" data-action="mcType" data-v=""><b>🎯 ${t('mcMixed')}</b><span>${mcItems().length}</span></button>
+          ${MC_TYPES.map(([k, l, ic]) => { const b = S.byType[k]; return `<button class="phr-cat ${f.type === k ? 'on' : ''}" data-action="mcType" data-v="${k}"><b>${ic} ${t(l)}</b><span>${k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : b.total}${b.done ? ` · ${Math.round(b.right / b.done * 100)}%` : ''}</span></button>`; }).join('')}
+        </div>
+        <div class="row">
+          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="mcLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="mcStatus" data-v="${v}">${l}</button>`).join('')}</div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="seg" role="group">${[['practice', '✏️ ' + t('mcPractice')], ['test', '⏱️ ' + t('mcTest')]].map(([v, l]) => `<button class="seg-btn ${f.mode === v ? 'on' : ''}" data-action="mcMode" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${(f.type === 'cloze' ? [1, 2, 4] : [10, 20, 30]).map(n => `<button class="seg-btn ${f.count === n ? 'on' : ''}" data-action="mcCount" data-v="${n}">${f.type === 'cloze' ? tf('mcNPassages', { n }) : tf('mcNQ', { n })}</button>`).join('')}</div>
+          <span class="spacer"></span>
+          <button class="btn accent" data-action="mcStart" ${count ? '' : 'disabled'}>${t('mcStart')}</button>
+        </div>
+        <p class="small muted" style="margin:8px 0 0">${t(f.mode === 'test' ? 'mcTestHint' : 'mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
+      </div>
+      ${(state.progress.mcqTests || []).length ? `<div class="card"><h3 style="margin-top:0">${t('mcRecent')}</h3><div class="list">${state.progress.mcqTests.slice(-8).reverse().map(r => `<div class="list-item"><span class="small muted">${fmtDate(r.date)}</span><span>${esc(r.type ? t((MC_TYPES.find(x => x[0] === r.type) || [0, 'mcMixed'])[1]) : t('mcMixed'))} · ${t(r.mode === 'test' ? 'mcTest' : 'mcPractice')}</span><span class="spacer"></span><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span>${r.secs != null ? `<span class="small muted">${fmtDur(r.secs)}</span>` : ''}</div>`).join('')}</div></div>` : ''}`;
+  }
+  function mcFiltered() {
+    const f = view.mcf;
+    return mcItems().filter(it => (!f.type || it.type === f.type) && (!f.level || it.level === f.level)
+      && (!f.status || (f.status === 'todo' ? !mcRec(it.id) : (mcRec(it.id) && !mcRec(it.id).lastOk))));
+  }
+  function mcClozeFiltered() {
+    const f = view.mcf;
+    return clozeSets().filter(c => (!f.level || c.level === f.level) && (!f.status || (f.status === 'todo'
+      ? c.blanks.every((b, k) => !mcRec(`${c.id}-${k + 1}`)) : c.blanks.some((b, k) => mcRec(`${c.id}-${k + 1}`) && !mcRec(`${c.id}-${k + 1}`).lastOk))));
+  }
+  function mcTimer(s) { return s.mode === 'test' ? `<span class="chip" id="mcTimer">⏱️ ${fmtDur(Math.round((Date.now() - s.start) / 1000))}</span>` : ''; }
+  function mcStage() {
+    const s = view.mc, it = mcItems().find(x => x.id === s.ids[s.i]);
+    const chosen = s.answers[it.id], revealed = s.mode === 'practice' && chosen != null;
+    return `<div class="row" style="margin:8px 0 12px"><button class="btn sm ghost" data-action="mcExit">${t('back')}</button><span class="spacer"></span>${mcTimer(s)}<span class="small muted">${tf('trProgress', { i: s.i + 1, n: s.ids.length })}</span></div>
+      <div class="card mc-card">
+        <div class="news-meta"><span class="chip">${(MC_TYPES.find(x => x[0] === it.type) || [])[2] || ''} ${esc(t((MC_TYPES.find(x => x[0] === it.type) || [0, 'mcMixed'])[1]))}</span><span class="chip">${esc(it.level || '')}</span><span class="small muted">${esc(it.id)}</span></div>
+        <div class="mc-q en">${mcQ(it.q)}</div>
+        <div class="mc-opts">${it.options.map((o, oi) => {
+          let cls = 'option';
+          if (revealed) { if (oi === it.answer) cls += ' correct'; else if (oi === chosen) cls += ' wrong'; } else if (oi === chosen) cls += ' selected';
+          return `<div class="${cls}" data-action="mcChoose" data-o="${oi}" role="button" tabindex="0"><span class="letter">${L4[oi]}</span><span class="en">${esc(o)}</span></div>`;
+        }).join('')}</div>
+        ${revealed ? `<div class="explain">${chosen === it.answer ? '✅ ' + t('correct') : '❌ ' + t('wrong')} · ${esc(it.explain || '')}</div>` : ''}
+        <div class="row"><span class="spacer"></span>${s.i > 0 && s.mode === 'test' ? `<button class="btn ghost" data-action="mcPrev">‹ ${t('pgPrev')}</button>` : ''}
+          <button class="btn accent" data-action="mcNext" ${chosen == null ? 'disabled' : ''}>${s.i < s.ids.length - 1 ? t('quizNext') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button></div>
+      </div>`;
+  }
+  function mcClozeStage() {
+    const s = view.mc, c = clozeSets().find(x => x.id === s.ids[s.i]);
+    const checked = s.checked && s.checked[c.id];
+    const passage = esc(c.passage).replace(/__(\d)__/g, (m, n) => { const a = s.answers[`${c.id}-${n}`]; const b = c.blanks[n - 1];
+      const txt = a != null ? esc(b.options[a]) : ''; const cls = checked ? (a === b.answer ? 'ok' : 'bad') : (a != null ? 'filled' : '');
+      return `<span class="cz-blank ${cls}"><b>${n}</b>${txt ? ' ' + txt : ''}</span>`; }).replace(/\n\s*\n/g, '<br><br>');
+    return `<div class="row" style="margin:8px 0 12px"><button class="btn sm ghost" data-action="mcExit">${t('back')}</button><span class="spacer"></span>${mcTimer(s)}<span class="small muted">${tf('mcPassageN', { i: s.i + 1, n: s.ids.length })}</span></div>
+      <div class="card mc-card">
+        <div class="news-meta"><span class="chip">🧩 ${t('mcCloze')}</span><span class="chip">${esc(c.level || '')}</span><span class="small muted">${esc(c.id)}</span></div>
+        <h3 class="en" style="margin:2px 0">${esc(c.title)}</h3>
+        <div class="passage cz-passage ${ui.font === 'clean' ? 'clean' : ''}">${passage}</div>
+        ${c.blanks.map((b, k) => { const id = `${c.id}-${k + 1}`, a = s.answers[id]; return `<div class="question"><div class="q">${k + 1}.</div>
+          <div class="mc-opts row-opts">${b.options.map((o, oi) => { let cls = 'option'; if (checked) { if (oi === b.answer) cls += ' correct'; else if (oi === a) cls += ' wrong'; } else if (oi === a) cls += ' selected';
+            return `<div class="${cls}" data-action="czChoose" data-id="${id}" data-o="${oi}" role="button" tabindex="0"><span class="letter">${L4[oi]}</span><span class="en">${esc(o)}</span></div>`; }).join('')}</div>
+          ${checked ? `<div class="explain">${a === b.answer ? '✅' : '❌'} ${esc(b.explain || '')}</div>` : ''}</div>`; }).join('')}
+        ${checked && c.passage_zh ? `<details class="cz-zh"><summary>${t('mcShowZh')}</summary><p>${esc(c.passage_zh).replace(/\n\s*\n/g, '<br><br>')}</p></details>` : ''}
+        <div class="row" style="margin-top:12px"><span class="spacer"></span>
+          ${!checked && s.mode === 'practice' ? `<button class="btn accent" data-action="czCheck">${t('mcCheck')}</button>` : `<button class="btn accent" data-action="czNext">${s.i < s.ids.length - 1 ? t('mcNextPassage') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button>`}</div>
+      </div>`;
+  }
+  function mcResults() {
+    const s = view.mc;
+    const units = s.kind === 'cloze'
+      ? s.ids.flatMap(cid => { const c = clozeSets().find(x => x.id === cid); return c.blanks.map((b, k) => ({ id: `${cid}-${k + 1}`, q: `${c.title} (${k + 1})`, options: b.options, answer: b.answer, explain: b.explain })); })
+      : s.ids.map(id => mcItems().find(x => x.id === id));
+    const right = units.filter(u => s.answers[u.id] === u.answer).length;
+    const wrongs = units.filter(u => s.answers[u.id] !== u.answer);
+    return `<div class="card center mc-card"><div class="big-icon">${right / units.length >= .8 ? '🎉' : '💪'}</div><h2>${t('mcResult')}</h2><p class="big">${right} / ${units.length}</p>
+        ${s.secs != null ? `<p class="muted">⏱️ ${fmtDur(s.secs)}</p>` : ''}
+        <div class="row" style="justify-content:center"><button class="btn accent" data-action="mcStart">${t('trAgain')}</button>${wrongs.length ? `<button class="btn" data-action="mcRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="mcExit">${t('back')}</button></div></div>
+      ${wrongs.length ? `<h3 class="section-title">❌ ${t('mcWrongReview')}</h3>${wrongs.map(u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
+        <div class="small">${t('studentChose')}：<span class="chip bad en">${s.answers[u.id] != null ? L4[s.answers[u.id]] + '. ' + esc(u.options[s.answers[u.id]]) : '—'}</span> → ${t('correctIs')}：<span class="chip ok en">${L4[u.answer]}. ${esc(u.options[u.answer])}</span></div>
+        <div class="explain">${esc(u.explain || '')}</div></div>`).join('')}` : ''}`;
+  }
+  function mcFinish() {
+    const s = view.mc;
+    s.secs = Math.round((Date.now() - s.start) / 1000);
+    if (s.mode === 'test') {  // in a mock test, answers are recorded at the end
+      if (s.kind === 'cloze') s.ids.forEach(cid => { const c = clozeSets().find(x => x.id === cid); c.blanks.forEach((b, k) => { const id = `${cid}-${k + 1}`; mcRecord(id, s.answers[id], b.answer); }); });
+      else s.ids.forEach(id => { const it = mcItems().find(x => x.id === id); mcRecord(id, s.answers[id], it.answer); });
+    }
+    const units = s.kind === 'cloze' ? s.ids.flatMap(cid => clozeSets().find(x => x.id === cid).blanks.map((b, k) => [`${cid}-${k + 1}`, b.answer])) : s.ids.map(id => [id, mcItems().find(x => x.id === id).answer]);
+    const p = state.progress; p.mcqTests = (p.mcqTests || []).concat([{ date: new Date().toISOString(), type: s.type, mode: s.mode, score: units.filter(([id, a]) => s.answers[id] === a).length, total: units.length, secs: s.secs }]).slice(-50);
+    s.done = true; bumpDay(); save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   /* ---- Translation practice (中譯英): window.TRANSLATION_ITEMS from translate.js ---- */
   const TR_GROUPS = ['trG1', 'trG2', 'trG3', 'trG4', 'trG5', 'trG6', 'trG7', 'trG8'];
   const trItems = () => window.TRANSLATION_ITEMS || [];
@@ -1208,6 +1340,8 @@
       ${A.wrongs.length ? A.wrongs.slice(0, 10).map(w => `<div class="pr-item"><div class="pr-meta en">${esc(w.title)}</div><div class="en">${esc(w.q)}</div><div>${t('studentChose')}：<span class="pr-bad">${w.chosen.map(esc).join('、')}</span> → ${t('correctIs')}：<span class="pr-ok">${esc(w.correct)}</span>（${tf('wrongTimes', { n: w.n })}）</div></div>`).join('') : `<p class="pr-none">${t('noWrong')}</p>`}
       <h2>🧠 ${t('weakWords')}</h2>
       ${A.weakList.length ? `<div class="pr-words">${A.weakList.slice(0, 24).map(w => `<span><b class="en">${esc(w.word)}</b> ${esc(w.zh)}</span>`).join('')}</div>` : `<p class="pr-none">${t('noWeak')}</p>`}
+      ${(() => { const M = mcStats(progress); return `<h2>📝 ${t('tabMcq')}</h2>${M.done ? `<div class="pr-words">${MC_TYPES.map(([k, l]) => { const b = M.byType[k]; return `<span><b>${t(l)}</b> ${b.done ? `${b.right} / ${b.done}（${Math.round(b.right / b.done * 100)}%）` : '—'}</span>`; }).join('')}</div>
+        ${M.wrong.slice(0, 8).map(u => `<div class="pr-item"><div class="en">${esc(u.q).replace(/\n/g, ' / ')}</div><div class="en">${t('studentChose')}：<span class="pr-bad">${u.chosenIdx != null ? esc(u.options[u.chosenIdx]) : '—'}</span> → ${t('correctIs')}：<span class="pr-ok">${esc(u.options[u.answer])}</span></div></div>`).join('')}` : `<p class="pr-none">${t('noData')}</p>`}`; })()}
       <h2>✍️ ${t('reportTranslate')}</h2>
       ${T.wrong.length ? T.wrong.slice(0, 10).map(x => `<div class="pr-item"><div>${esc(x.zh)}</div><div class="en">${t('trYours')}：<span class="pr-bad">${esc(x.answer || '—')}</span></div><div class="en">${t('trModel')}：<span class="pr-ok">${esc(x.en)}</span></div></div>`).join('') : `<p class="pr-none">${T.done ? t('trAllRight') : t('noData')}</p>`}
       <div class="pr-foot">${t('reportFoot')}</div>
@@ -1222,6 +1356,7 @@
       `${t('avgReading')}: ${A.avg === null ? '—' : A.avg + '%'} (${t('readingDone')} ${A.rq.length})`,
       `${t('statMastered')}: ${mastered} / ${VOCAB.length}`,
       T.done ? `${t('reportTranslate')}: ${T.right} / ${T.done}` : '',
+      (() => { const M = mcStats(progress); return M.done ? `${t('tabMcq')}: ${M.right} / ${M.done}` : ''; })(),
       A.wrongs.length ? `${t('wrongAnalysis')}: ` + A.wrongs.slice(0, 5).map(w => w.q).join(' | ') : '',
       A.weakList.length ? `${t('weakWords')}: ` + A.weakList.slice(0, 10).map(w => w.word).join(', ') : '',
     ].filter(Boolean).join('\n');
@@ -1324,6 +1459,9 @@
       <div class="card"><h3 style="margin-top:0">🧠 ${t('weakWords')}</h3>
         ${A.weakList.length ? `<table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
+      ${(() => { const M = mcStats(rep.progress); return M.done ? `<div class="card"><h3 style="margin-top:0">📝 ${t('tabMcq')} <span class="small muted">${M.right} / ${M.done}</span></h3>
+        <div class="row">${MC_TYPES.map(([k, l, ic]) => { const b = M.byType[k]; return b.done ? `<span class="chip ${b.right / b.done >= .8 ? 'ok' : b.right / b.done >= .6 ? 'warn' : 'bad'}">${ic} ${t(l)} ${b.right}/${b.done}</span>` : ''; }).join('')}</div>
+        ${M.wrong.length ? `<div class="list" style="margin-top:10px">${M.wrong.slice(0, 20).map(u => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title en" style="font-size:15px">${mcQ(u.q)}</div><div class="small">${t('studentChose')}：<span class="chip bad en">${u.chosenIdx != null ? esc(u.options[u.chosenIdx]) : '—'}</span> → ${t('correctIs')}：<span class="chip ok en">${esc(u.options[u.answer])}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: u.wrongTimes })}</span></div>`).join('')}</div>` : ''}</div>` : ''; })()}
       ${(() => { const T = trStats(rep.progress); return T.done ? `<div class="card"><h3 style="margin-top:0">✍️ ${t('reportTranslate')} <span class="small muted">${T.right} / ${T.done} · ${tf('trDoneOf', { n: T.done, t: T.total })}</span></h3>${T.wrong.length ? `<div class="list">${T.wrong.slice(0, 20).map(x => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title" style="font-size:16px">${esc(x.zh)}</div><div class="small en">${t('trYours')}：<span class="chip bad">${esc(x.answer || '—')}</span></div><div class="small en">${t('trModel')}：<span class="chip ok">${esc(x.en)}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: x.tries - x.ok })}</span></div>`).join('')}</div>` : `<p class="muted">${t('trAllRight')}</p>`}</div>` : ''; })()}
       ${(() => { const b = rep.progress.bookmarks || { vocab: [], articles: [] }; const ws = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean); const as = b.articles.map(articleById).filter(Boolean); return (ws.length || as.length) ? `<div class="card bookmark-card"><span class="ribbon">🔖</span><h3 style="margin-top:0">${t('bookmarks')}</h3>${as.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${as.map(a => `<span class="bm-tag">${esc(a.title)}</span>`).join('')}</div></div>` : ''}${ws.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b><div class="bm-list">${ws.map(v => `<span class="bm-tag word en">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div></div>` : ''}</div>` : ''; })()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(rep.progress, VOCAB)}<h3>${t('activity')}</h3>${heatmap(rep.progress)}
@@ -1362,7 +1500,7 @@
   /* ---------------- Render ---------------- */
   function render() {
     updateExamChip();
-    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
+    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
 
     $('#app').innerHTML = (pages[view.page] || pageHome)();
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
@@ -1436,6 +1574,44 @@
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
     vocabGo(el) { view.vocabPage = +el.dataset.p; render(); },
+    mcType(el) { view.mcf.type = el.dataset.v; view.mcf.count = el.dataset.v === 'cloze' ? 1 : (view.mcf.count > 4 ? view.mcf.count : 10); render(); },
+    mcLevel(el) { view.mcf.level = el.dataset.v; render(); },
+    mcStatus(el) { view.mcf.status = el.dataset.v; render(); },
+    mcMode(el) { view.mcf.mode = el.dataset.v; render(); },
+    mcCount(el) { view.mcf.count = +el.dataset.v; render(); },
+    mcStart() {
+      const f = view.mcf, cloze = f.type === 'cloze';
+      const ids = shuffleArr((cloze ? mcClozeFiltered() : mcFiltered()).map(x => x.id)).slice(0, f.count || (cloze ? 1 : 10));
+      if (!ids.length) { toast(t('trNoMatch')); view.mc = null; render(); return; }
+      view.mc = { kind: cloze ? 'cloze' : 'items', type: f.type, ids, i: 0, answers: {}, checked: {}, mode: f.mode, start: Date.now() };
+      window.scrollTo({ top: 0 }); render();
+    },
+    mcRedo() {
+      const s = view.mc, wrong = s.kind === 'cloze' ? s.ids.filter(cid => clozeSets().find(x => x.id === cid).blanks.some((b, k) => s.answers[`${cid}-${k + 1}`] !== b.answer)) : s.ids.filter(id => s.answers[id] !== mcItems().find(x => x.id === id).answer);
+      view.mc = Object.assign({}, s, { ids: wrong, i: 0, answers: {}, checked: {}, done: false, start: Date.now(), secs: null }); render();
+    },
+    mcExit() { view.mc = null; render(); },
+    mcChoose(el) {
+      const s = view.mc, it = mcItems().find(x => x.id === s.ids[s.i]);
+      if (s.mode === 'practice' && s.answers[it.id] != null) return;
+      s.answers[it.id] = +el.dataset.o;
+      if (s.mode === 'practice') { mcRecord(it.id, s.answers[it.id], it.answer); bumpDay(); save(); }
+      render();
+    },
+    mcPrev() { view.mc.i = Math.max(0, view.mc.i - 1); render(); },
+    mcNext() { const s = view.mc; if (s.i < s.ids.length - 1) { s.i++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } else mcFinish(); },
+    czChoose(el) { const s = view.mc, cid = s.ids[s.i]; if (s.checked[cid]) return; s.answers[el.dataset.id] = +el.dataset.o; render(); },
+    czCheck() {
+      const s = view.mc, c = clozeSets().find(x => x.id === s.ids[s.i]);
+      if (c.blanks.some((b, k) => s.answers[`${c.id}-${k + 1}`] == null)) { toast(t('pleaseAnswerAll')); return; }
+      c.blanks.forEach((b, k) => mcRecord(`${c.id}-${k + 1}`, s.answers[`${c.id}-${k + 1}`], b.answer));
+      s.checked[c.id] = true; bumpDay(); save(); render();
+    },
+    czNext() {
+      const s = view.mc, c = clozeSets().find(x => x.id === s.ids[s.i]);
+      if (s.mode === 'test' && c.blanks.some((b, k) => s.answers[`${c.id}-${k + 1}`] == null)) { toast(t('pleaseAnswerAll')); return; }
+      if (s.i < s.ids.length - 1) { s.i++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } else mcFinish();
+    },
     trGroup(el) { view.trf.group = +el.dataset.v; render(); },
     trLevel(el) { view.trf.level = el.dataset.v; render(); },
     trStatus(el) { view.trf.status = el.dataset.v; render(); },
@@ -1649,6 +1825,7 @@
     if (e.target.id === 'vocabSearch') { view.vocabSearch = e.target.value; view.vocabPage = 0; const pos = e.target.selectionStart; render(); const i = $('#vocabSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
   });
   $('#app').addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-action]')) { e.preventDefault(); e.target.click(); return; }
     if (e.target.id === 'trInput' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); actions.trCheck(); }
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
@@ -1701,6 +1878,7 @@
     }
     if (day && !day.disabled) { state.settings.examDate = day.dataset.date; save(); closeCal(); toast(t('saved')); render(); }
   });
+  setInterval(() => { const el = document.getElementById('mcTimer'); if (el && view.mc && view.mc.mode === 'test' && !view.mc.done) el.textContent = '⏱️ ' + fmtDur(Math.round((Date.now() - view.mc.start) / 1000)); }, 1000);
   document.addEventListener('click', () => { if (cal.open) closeCal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && cal.open) closeCal(); });
   window.addEventListener('resize', () => { if (cal.open) placeCal(); });
