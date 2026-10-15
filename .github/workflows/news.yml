@@ -13,16 +13,18 @@ on:
 
 permissions:
   contents: write
+  models: read      # free AI articles through GitHub Models
 
 concurrency:
   group: daily-news-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false   # let a long article run finish; the next run waits
 
 jobs:
   update:
     # only the site's branch: pushes to other branches must not commit news or spend API credit
     if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,14 +32,16 @@ jobs:
           python-version: "3.12"
       - name: Fetch headlines
         run: python3 scripts/fetch_news.py news.json
-      - name: Write full study articles (only if the ANTHROPIC_API_KEY secret is set)
+      - name: Write full study articles with Chinese translations
         continue-on-error: true   # a problem here must not stop today's headlines from being saved
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}               # free: GitHub Models
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}     # optional, paid: Claude is used if this is set
           LESSON_MODEL: ${{ vars.LESSON_MODEL }}
+          FREE_MODEL: ${{ vars.FREE_MODEL }}
+          LESSONS_MAX: ${{ vars.LESSONS_MAX }}
         run: |
-          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "No ANTHROPIC_API_KEY secret; skipping AI lessons."; exit 0; fi
-          pip install --quiet "anthropic>=1.14,<2"
+          if [ -n "$ANTHROPIC_API_KEY" ]; then pip install --quiet "anthropic>=1.14,<2"; fi
           python3 scripts/make_lessons.py news.json
       - name: Commit news.json if it changed
         run: |

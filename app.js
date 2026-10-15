@@ -600,9 +600,8 @@
     const lessons = newsLessons(), lessonOf = {}; lessons.forEach(l => { lessonOf[l.link] = l; });
     if (view.newsArticle && lessonOf[view.newsArticle]) return newsReader(lessonOf[view.newsArticle]);
     const sources = Array.from(new Set(items.map(i => i.source)));
-    // stories with a full article come first (in the order they were picked), then the other headlines
-    const order = l => { const k = lessons.findIndex(x => x.link === l); return k < 0 ? lessons.length : k; };
-    const shown = items.map((it, i) => [it, i]).filter(([it]) => !news.source || it.source === news.source).sort((a, b) => order(a[0].link) - order(b[0].link) || a[1] - b[1]);
+    // stories with a full article come first, then the others; newest first within each group
+    const shown = items.map((it, i) => [it, i]).filter(([it]) => !news.source || it.source === news.source).sort((a, b) => (lessonOf[a[0].link] ? 0 : 1) - (lessonOf[b[0].link] ? 0 : 1) || a[1] - b[1]);
     const open = view.newsOpen || (view.newsOpen = {});
     const upd = news.data && news.data.updated ? news.data.updated.slice(0, 16).replace('T', ' ').replace(/-/g, '/') : '';
     let body;

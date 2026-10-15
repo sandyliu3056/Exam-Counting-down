@@ -8,7 +8,7 @@
 | --- | --- |
 | 首頁 | 每日一句、今日任務、時間分配、世界地圖、我的書籤、最近測驗 |
 | 閱讀測驗 | 內建 13 篇統測風格文章（B1、B2、應用文：書信、公告、廣告、Email），每篇 250–420 字、5 題；文章目錄可依類型、主題、狀態篩選，練習過的會打綠色勾勾；老師也可自行出題 |
-| 每日新聞 | CNN、BBC、NPR、The Guardian、Taipei Times 的英文新聞頭條，每天早上由 GitHub Actions 自動更新，標題中 7000 單字 Level 3 以上的字會標示中文；每天挑 6 則整篇改寫成學習用文章，附逐段中文翻譯與單字、片語、文法（📖 全文＋翻譯）；其他新聞可點「📘 學習」看裡面的單字、片語與文法；附 CNN 10 等學生新聞網站 |
+| 每日新聞 | CNN、BBC、NPR、The Guardian、Taipei Times 的英文新聞頭條，每天早上由 GitHub Actions 自動更新，標題中 7000 單字 Level 3 以上的字會標示中文；每則新聞都整篇改寫成學習用文章，附逐段中文翻譯與單字、片語、文法（📖 全文＋翻譯，免費）；其他新聞可點「📘 學習」看裡面的單字、片語與文法；附 CNN 10 等學生新聞網站 |
 | 內建字庫 | 大考中心 7000 單字（Level 1–7，標示 CEFR A1–B2）共 7,213 字，加上 2,815 個 B1–B2 片語；每筆都有中文、**同義字**與例句 |
 | 單字卡 | 翻卡練習、「記得 / 不記得」、自動安排複習（間隔 0 / 1 / 3 / 7 天）、發音、背面顯示同義字；可選 B1 / B2 / 片語範圍與每輪張數 |
 | 單字小考 | 看英選中、看中選英、拼字測驗 |
@@ -132,13 +132,15 @@
 - 第一次也可以到 GitHub 的 **Actions → Daily English news → Run workflow** 手動執行。
 - 排程只在預設分支執行；本 repo 目前的預設分支就是網站所在的分支。
 
-### 全文＋翻譯（AI 改寫）
+### 全文＋翻譯（AI 改寫，免費）
 
-- 同一個排程接著執行 `scripts/make_lessons.py`：
-  1. 從當天頭條挑出 6 則最適合高中生的新聞（科學、科技、教育、環境、文化、台灣）。
-  2. 讀取每則新聞的原文網頁（`scripts/article_text.py`）當作事實來源。
-  3. 請 Claude 把**整則新聞**從頭到尾改寫成 250–400 字、B1–B2 程度的英文文章，每一段附台灣用語的中文翻譯，並整理 8 個單字、5 個片語、3 個文法重點。
-- 為了尊重著作權，網站不轉貼原文：文章是用自己的話重寫的，程式會檢查不能連續照抄原文 12 個字以上，每篇都附原文連結；原文內容不會存進 `news.json`。
-- 程式也會檢查：字數、每段都有中文翻譯、單字／片語／文法例句都真的出現在文章裡；不合格的就換下一則新聞。
-- **啟用方式**：到 GitHub repo 的 **Settings → Secrets and variables → Actions → New repository secret**，名稱填 `ANTHROPIC_API_KEY`，值填你在 console.anthropic.com 申請的 API key。設定好後到 **Actions → Daily English news → Run workflow** 執行一次，就會產生今天的文章。沒有設定時會自動略過，網站照常運作（每則新聞的「📘 學習」仍可用，它是在瀏覽器裡直接分析的）。
-- 費用：每天 6 篇大約用掉 3 萬個輸入 tokens、2 萬個輸出 tokens（預設 Claude Opus 5.5，約 0.5 美元／天）。想省錢可以在 **Settings → Secrets and variables → Actions → Variables** 新增 `LESSON_MODEL`，值填 `claude-sonnet-5-5`（約一半價格）；要改每天篇數，改 `scripts/make_lessons.py` 裡的 `LESSONS_PER_DAY`。同一天重跑不會重複產生。
+- 同一個排程接著執行 `scripts/make_lessons.py`，替**每一則**還沒有文章的新聞：
+  1. 讀取原文網頁（`scripts/article_text.py`）當作事實來源；
+  2. 請 AI 把整則新聞從頭到尾改寫成 250–400 字、B1–B2 程度的英文文章，每一段附台灣用語的中文翻譯，並整理單字、片語、文法重點。
+- **免費**：預設使用 GitHub Models（`openai/gpt-4.1-mini`），用 workflow 內建的 `GITHUB_TOKEN`（`permissions: models: read`），不用申請 key、不用付錢。GitHub 對免費用量有每日次數上限，用完就等隔天再補寫。
+- 已寫好的文章會保留到那則新聞離開列表為止，所以每天只需要替新的新聞寫文章。
+- 為了尊重著作權，網站不轉貼原文：文章用自己的話重寫，程式會檢查不能連續照抄原文 12 個字以上，每篇都附原文連結；原文內容不會存進 `news.json`。
+- 程式也會檢查字數、每段都有中文翻譯、單字／片語／文法例句都真的出現在文章裡；不合格的就跳過。
+- 選用（付費）：若在 **Settings → Secrets and variables → Actions** 加上 `ANTHROPIC_API_KEY`，就改用 Claude 撰寫（預設每天 6 篇，可用變數 `LESSONS_MAX` 調整，`LESSON_MODEL` 換模型）。
+- 其他可調整的變數（Settings → Secrets and variables → Actions → Variables）：`FREE_MODEL` 換免費模型、`LESSONS_MAX` 每次最多寫幾篇（免費預設 40）。
+- 每則沒有全文的新聞也有「🌐 整篇中文翻譯」按鈕，會用 Google 翻譯開啟原文的中文版本。
