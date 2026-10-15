@@ -65,10 +65,12 @@
 7. 部署後，在網站上用你的 email 註冊（身分選學生即可）。再回 **SQL Editor** 執行這一行，把你自己升級成老師：
 
    ```sql
-   update public.profiles set role = 'teacher' where id = (select id from auth.users where email = lower('你的email@example.com'));
+   update public.profiles set role = 'teacher'
+   where id = (select id from auth.users where email = lower('你的email@example.com'))
+   returning email, role;
    ```
 
-   下方結果顯示 `UPDATE 1` 才算成功（`UPDATE 0` 表示 email 打錯或還沒註冊）。登出再登入後就是老師。
+   下方結果出現一列、role 是 `teacher` 才算成功（沒有任何一列表示 email 打錯，或還沒註冊 / 還沒確認 email）。登出再登入後就是老師。
 
    之後若有其他老師，到「設定」設定老師邀請碼（至少 8 個字，建議 10 個字以上、不要用好猜的字），他們註冊時選「老師」並填這個碼即可。用完把邀請碼清空，就沒有人能再註冊成老師。有人連續猜錯 20 次，邀請碼會自動作廢，重設一個新的就好。
 

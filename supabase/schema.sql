@@ -231,7 +231,8 @@ create policy "content: teachers update" on public.content
 -- 第一個老師帳號：先在網頁上用你的 email 註冊（身分選學生就好），
 -- 然後把下面這行的 email 換成你的，拿掉開頭的 -- 再按 Run：
 --
--- update public.profiles set role = 'teacher' where id = (select id from auth.users where email = lower('你的email@example.com'));
+-- update public.profiles set role = 'teacher' where id = (select id from auth.users where email = lower('你的email@example.com')) returning email, role;
+-- 結果出現一列、role 是 teacher 才算成功。
 --
 -- 之後若有其他老師，到網頁「設定」頁設定老師邀請碼（至少 8 個字，建議 10 個字以上、不要用好猜的字），
 -- 他們註冊時填這個碼就會是老師；用完清空即可關閉老師註冊。
