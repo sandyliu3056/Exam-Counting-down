@@ -10,7 +10,8 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const uid = (p = 'id') => p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const str = (s) => { try { return String(s ?? ''); } catch (e) { return ''; } };
+  const esc = (s) => str(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const clone = (o) => JSON.parse(JSON.stringify(o));
   const todayStr = (d = new Date()) => {
     const z = n => String(n).padStart(2, '0');
@@ -30,17 +31,19 @@
     const when = d => typeof d === 'string' && /^[0-9T:.+\-Z ]{4,40}$/.test(d) ? d : '';
     const idx = x => x == null || x === '' || !Number.isFinite(Number(x)) ? null : Number(x);
     const okKey = k => k !== '__proto__' && k !== 'constructor' && k !== 'prototype';
+    const sv = x => x == null ? x : str(x); // text fields stay text
     const out = Object.assign(emptyProgress(), obj(p));
     out.days = {}; Object.entries(obj(p && p.days)).forEach(([d, n]) => { if (isDay(d)) out.days[d] = Math.max(0, num(n)); });
     const cards = {}; Object.entries(obj(out.cards)).filter(([id]) => okKey(id)).forEach(([id, c]) => { c = obj(c); cards[id] = Object.assign({}, c, { box: Math.min(3, Math.max(0, Math.round(num(c.box)))), seen: num(c.seen), correct: num(c.correct), wrong: num(c.wrong), last: when(c.last) || null, due: isDay(c.due) ? c.due : todayStr() }); }); out.cards = cards;
-    out.readingQuizzes = arr(out.readingQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs),
-      answers: arr(r.answers).map(a => Object.assign({}, a, { qi: num(a.qi), chosen: idx(a.chosen), correct: num(a.correct) })) }));
-    out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong).map(w => Object.assign({}, w, { vocabId: String(w.vocabId ?? '') })).filter(w => okKey(w.vocabId)) }));
-    ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).filter(([id]) => okKey(id)).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok) }, k === 'mcq' ? { chosen: idx(r.chosen) } : {}); }); out[k] = m; });
+    out.readingQuizzes = arr(out.readingQuizzes).map(r => Object.assign({}, r, { id: sv(r.id), articleId: sv(r.articleId), title: sv(r.title), date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs),
+      answers: arr(r.answers).map(a => Object.assign({}, a, { qi: num(a.qi), chosen: idx(a.chosen), correct: num(a.correct), q: sv(a.q), chosenText: sv(a.chosenText), correctText: sv(a.correctText) })) }));
+    out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { id: sv(r.id), type: ['choice', 'choiceRev', 'spell'].includes(r.type) ? r.type : 'choice', date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong).map(w => Object.assign({}, w, { vocabId: str(w.vocabId), word: sv(w.word), zh: sv(w.zh), given: sv(w.given) })).filter(w => okKey(w.vocabId)) }));
+    ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).filter(([id]) => okKey(id)).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok), lastOk: !!r.lastOk, last: when(r.last) || null }, k === 'mcq' ? { chosen: idx(r.chosen) } : { answer: sv(r.answer) }); }); out[k] = m; });
     if (out.myWords !== undefined) out.myWords = cleanItems(out.myWords, 'vocab');
     if (out.cities !== undefined) { const m = {}; Object.entries(obj(out.cities)).filter(([id]) => okKey(id) && SAFE_ID.test(id)).forEach(([id, r]) => { r = obj(r); m[id] = { visited: isDay(r.visited) ? r.visited : null, best: Math.min(3, Math.max(0, Math.round(num(r.best)))) }; }); out.cities = m; }
-    if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
+    if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { type: typeof r.type === 'string' && SAFE_ID.test(r.type) ? r.type : '', mode: r.mode === 'test' ? 'test' : 'practice', date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
     const b = obj(out.bookmarks); out.bookmarks = { vocab: arr0(b.vocab), articles: arr0(b.articles) };
+    if (out.resetAt !== undefined) { if (when(out.resetAt)) out.resetAt = when(out.resetAt); else delete out.resetAt; }
     return out;
   }
   const arr0 = x => Array.isArray(x) ? x.filter(y => typeof y === 'string') : [];
@@ -51,12 +54,14 @@
   function cleanItems(list, kind) {
     return (Array.isArray(list) ? list : []).filter(isObj).map(x => {
       x = Object.assign({}, x);
-      if (typeof x.id !== 'string' || !SAFE_ID.test(x.id)) x.id = uid(kind === 'article' ? 'art' : 'v');
+      // an unsafe id gets a replacement derived from it, so importing the same file twice gives the same id
+      if (typeof x.id !== 'string' || !SAFE_ID.test(x.id)) { const raw = str(x.id); let h = 5381; for (let i = 0; i < raw.length; i++) h = ((h << 5) + h + raw.charCodeAt(i)) | 0; x.id = (kind === 'article' ? 'art_' : 'v_') + (raw ? (h >>> 0).toString(36) : uid('n').slice(2)); }
+      const text = keys => keys.forEach(k => { if (x[k] != null) x[k] = str(x[k]); });
       if (kind === 'article') {
-        x.title = String(x.title ?? ''); x.passage = String(x.passage ?? ''); x.tags = Array.isArray(x.tags) ? x.tags.map(String) : [];
+        x.title = str(x.title); x.passage = str(x.passage); x.tags = Array.isArray(x.tags) ? x.tags.map(str) : []; text(['title_zh', 'passage_zh', 'level']);
         x.questions = (Array.isArray(x.questions) ? x.questions : []).filter(q => isObj(q) && Array.isArray(q.options))
-          .map(q => Object.assign({}, q, { q: String(q.q ?? ''), options: q.options.map(o => String(o ?? '')), answer: Number.isInteger(q.answer) ? q.answer : 0 }));
-      } else x.word = String(x.word ?? '');
+          .map(q => Object.assign({}, q, { q: str(q.q), options: q.options.map(str), answer: Number.isInteger(q.answer) ? q.answer : 0 }, q.explain != null ? { explain: str(q.explain) } : {}));
+      } else { x.word = str(x.word); text(['pos', 'zh', 'syn', 'example', 'unit', 'type', 'level', 'cefr']); }
       return x;
     });
   }
@@ -82,6 +87,8 @@
     data.hiddenVocab = cleanIds(data.hiddenVocab);
     data.hiddenArticles = cleanIds(data.hiddenArticles);
     if (typeof data.progressOwner !== 'string') data.progressOwner = null;
+    if (typeof data.progressBase !== 'string') data.progressBase = null;
+    if (!isObj(data.progressSnap) || !['bv', 'ba', 'mw'].every(k => Array.isArray(data.progressSnap[k]))) data.progressSnap = null;
     const OLD_UNITS = { 'Unit 1 學習與健康': 'Unit 1 · Study & Health', 'Unit 2 文化與生活': 'Unit 2 · Culture & Life', 'Unit 3 商業與書信': 'Unit 3 · Business & Letters', 'Unit 4 統測高頻字': 'Unit 4 · High-frequency Words', '統測 B 級': 'Reading · B1', '統測 應用文': 'Reading · Practical' };
     const OLD_TAGS = { '健康': 'Health', '科普': 'Science', '文化': 'Culture', '生活': 'Life', '書信': 'Letter', '商業': 'Business' };
     data.vocab.forEach(v => { if (OLD_UNITS[v.unit]) v.unit = OLD_UNITS[v.unit]; });
@@ -198,14 +205,25 @@
   }
 
   /* ---------------- Auth (local or Supabase) ---------------- */
-  // busy: an account is loading, so nothing is uploaded yet. contentOk: the shared material was read from the
-  // cloud on this device, so a teacher's save may replace it.
-  // epoch: bumped by every login and logout, so a slow, older account load can never apply its result
-  const cloud = { configured: false, enabled: false, ready: null, sb: null, syncTimer: null, seq: 0, epoch: 0, busy: 0, contentOk: false, lastContent: '', teacherCode: '', warned: false };
+  // Records are synced by MERGING, never by blindly replacing them. Each upload is written only on top of the cloud
+  // version this device already includes (updated_at works as a version number); if another device wrote in between,
+  // the upload reads the newer copy, merges it in and tries again.
+  // epoch: bumped by every login and logout, so a slow, older request can never apply its result.
+  // busy: an account is loading, so nothing is uploaded yet. dirty: this tab has practice that was not uploaded.
+  const cloud = { configured: false, enabled: false, ready: null, sb: null, syncTimer: null, seq: 0, epoch: 0, busy: 0, dirty: false, lastPush: 0, lock: Promise.resolve(),
+    contentOk: false, lastContent: '', teacherCode: '', warned: false };
   const LS_UNSYNCED = 'tve_exam_unsynced_v1'; // id of the account whose latest practice has not reached the cloud
-  const LS_STASH = 'tve_exam_stash_v1'; // { accountId: progress } practice set aside when that account signed out before uploading
-  const readStash = () => { try { const s = JSON.parse(localStorage.getItem(LS_STASH) || '{}'); return isObj(s) ? s : {}; } catch (e) { return {}; } };
+  const LS_STASH = 'tve_exam_stash_v1'; // { accountId: { progress, base } } practice set aside when that account signed out before uploading
+  const LS_CONTENT = 'tve_exam_content_v1'; // { owner, base, dirty } this device's copy of the class material
+  const readJSON = k => { try { const s = JSON.parse(localStorage.getItem(k) || '{}'); return isObj(s) ? s : {}; } catch (e) { return {}; } };
+  const readStash = () => readJSON(LS_STASH);
   const writeStash = (s) => { if (Object.keys(s).length) localStorage.setItem(LS_STASH, JSON.stringify(s)); else localStorage.removeItem(LS_STASH); };
+  const stashOf = (s, id) => { const x = s[id]; return !x ? null : isObj(x.progress) ? x : { progress: x, base: null, snap: null }; };
+  const stashEntry = () => ({ progress: state.progress, base: state.progressBase || null, snap: state.progressSnap || null });
+  const readCS = () => readJSON(LS_CONTENT);
+  const writeCS = (s) => localStorage.setItem(LS_CONTENT, JSON.stringify(s));
+  const persist = () => localStorage.setItem(LS_DATA, JSON.stringify(state));
+  const withLock = fn => (cloud.lock = cloud.lock.then(fn, fn));
   async function sha(str) {
     if (window.crypto && crypto.subtle && window.TextEncoder) {
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -215,6 +233,45 @@
   }
   const loadScript = (src) => new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = () => { el.remove(); rej(new Error('cannot load ' + src)); }; document.head.appendChild(el); });
   const sbCheck = ({ data, error }) => { if (error) throw error; return data; };
+
+  // does a record hold any practice at all? (an empty record must never replace real practice)
+  const hasPractice = p => isObj(p) && ['cards', 'days', 'mcq', 'translate', 'cities'].some(k => isObj(p[k]) && Object.keys(p[k]).length) || isObj(p) && ['readingQuizzes', 'vocabQuizzes', 'mcqTests', 'myWords'].some(k => Array.isArray(p[k]) && p[k].length) || isObj(p) && isObj(p.bookmarks) && ['vocab', 'articles'].some(k => Array.isArray(p.bookmarks[k]) && p.bookmarks[k].length);
+  const hash36 = x => { const t = JSON.stringify(x) || ''; let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+  // what this device last saw in the cloud, for the lists where removing something must stick (bookmarks, own words)
+  const progressSnap = p => ({ bv: p.bookmarks.vocab.slice(), ba: p.bookmarks.articles.slice(), mw: (p.myWords || []).map(w => w.id) });
+  // three-way set merge: keep what both have, plus what either side added since the base; removals on either side stick
+  const merge3 = (L, R, B) => { const l = new Set(L), r = new Set(R), base = B ? new Set(B) : null;
+    return Array.from(new Set(R.concat(L))).filter(x => (l.has(x) && r.has(x)) || !base || (l.has(x) ? !base.has(x) : !base.has(x))); };
+  // Combine two copies of one person's record (a = this device, b = the cloud) without losing practice from either.
+  // snap: what this device last saw in the cloud (null when unknown, e.g. practice done before logging in).
+  function mergeProgress(a, b, snap) {
+    a = cleanProgress(a); b = cleanProgress(b);
+    // "start over" on one device wins over older practice from the other
+    const cut = String(a.resetAt || '') > String(b.resetAt || '') ? a.resetAt : b.resetAt || '';
+    if (cut) [a, b].forEach(x => { if (String(x.resetAt || '') >= cut) return;
+      Object.keys(x.cards).forEach(id => { if (String(x.cards[id].last || '') < cut) delete x.cards[id]; });
+      Object.keys(x.days).forEach(d => { if (d < cut.slice(0, 10)) delete x.days[d]; });
+      ['readingQuizzes', 'vocabQuizzes', 'mcqTests'].forEach(k => { if (x[k]) x[k] = x[k].filter(r => String(r.date || '') >= cut); });
+      ['mcq', 'translate', 'cities'].forEach(k => { if (x[k]) x[k] = {}; });
+      x.bookmarks = { vocab: [], articles: [] }; if (x.myWords) x.myWords = []; });
+    const out = Object.assign({}, b, a);
+    if (cut) out.resetAt = cut;
+    out.cards = Object.assign({}, b.cards);
+    Object.entries(a.cards).forEach(([id, c]) => { const o = b.cards[id]; out.cards[id] = !o ? c : (c.last || '') !== (o.last || '') ? ((c.last || '') > (o.last || '') ? c : o) : (c.seen >= o.seen ? c : o); });
+    out.days = Object.assign({}, b.days); Object.entries(a.days).forEach(([d, n]) => { out.days[d] = Math.max(n, b.days[d] || 0); });
+    const union = (x, y, key) => { const seen = new Set(); return (y || []).concat(x || []).filter(r => { const k = key(r); return !seen.has(k) && seen.add(k); }).sort((p, q) => String(p.date || '').localeCompare(String(q.date || ''))); };
+    const quizKey = r => r.id || [r.date, r.title, r.type, r.score, r.total].join('|');
+    out.readingQuizzes = union(a.readingQuizzes, b.readingQuizzes, quizKey);
+    out.vocabQuizzes = union(a.vocabQuizzes, b.vocabQuizzes, quizKey);
+    if (a.mcqTests || b.mcqTests) out.mcqTests = union(a.mcqTests, b.mcqTests, r => [r.date, r.type, r.mode, r.score, r.total].join('|')).slice(-50);
+    ['mcq', 'translate'].forEach(k => { if (!a[k] && !b[k]) return; const m = Object.assign({}, b[k]); Object.entries(a[k] || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o || r.tries > o.tries || (r.tries === o.tries && String(r.last || '') >= String(o.last || '')) ? r : o; }); out[k] = m; });
+    if (a.cities || b.cities) { const m = Object.assign({}, b.cities); Object.entries(a.cities || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o ? r : { visited: String(r.visited || '') > String(o.visited || '') ? r.visited : o.visited, best: Math.max(r.best, o.best) }; }); out.cities = m; }
+    const sn = cut ? null : snap;
+    out.bookmarks = { vocab: merge3(a.bookmarks.vocab, b.bookmarks.vocab, sn && sn.bv), articles: merge3(a.bookmarks.articles, b.bookmarks.articles, sn && sn.ba) };
+    if (a.myWords || b.myWords) { const all = new Map((b.myWords || []).concat(a.myWords || []).map(w => [w.id, w])), keep = new Set(merge3((a.myWords || []).map(w => w.id), (b.myWords || []).map(w => w.id), sn && sn.mw)); out.myWords = Array.from(all.values()).filter(w => keep.has(w.id)); }
+    return out;
+  }
+
   function initCloud() {
     const cfg = window.SUPABASE_CONFIG;
     if (!cfg || !/^https:\/\/[^\s/]+/.test(cfg.url || '') || !cfg.anonKey) return;
@@ -222,16 +279,26 @@
     const ep = cloud.epoch;
     cloud.ready = (async () => {
       if (!window.supabase) await loadScript('vendor/supabase.js');
-      if (!cloud.sb) cloud.sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+      if (!cloud.sb) {
+        cloud.sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+        // another tab (or the server) signed this browser out or into another account
+        cloud.sb.auth.onAuthStateChange((event, session) => {
+          // only after start-up has settled; this tab's own login and logout are not "elsewhere"
+          if (event === 'INITIAL_SESSION' || !cloud.enabled || cloud.busy || !ui.user || !ui.user.cloud) return;
+          const sid = session && session.user && session.user.id;
+          if (event === 'SIGNED_OUT' || (sid && sid !== ui.user.id)) setTimeout(() => { if (ui.user && ui.user.cloud && (!sid || sid !== ui.user.id)) accountChangedElsewhere(); }, 0);
+        });
+      }
       const { data, error } = await cloud.sb.auth.getSession();
       // offline: keep the saved account and try again when the connection is back
       if (error && window.supabase.isAuthRetryableFetchError && window.supabase.isAuthRetryableFetchError(error)) throw error;
       const u = data && data.session && data.session.user;
-      if (u) await cloudAfterLogin(u, ep);
+      if (u && ep !== cloud.epoch && !ui.user) dropSession(); // logged out while this was loading
+      else if (u) await cloudAfterLogin(u, ep);
       else if (ui.user && ep === cloud.epoch) { if (ui.user.cloud) leaveCloudAccount(ui.user); ui.user = null; saveUi(); }
       cloud.enabled = true;
       try { await pullContent(); } catch (e) { console.warn(e); }
-      if (u && localStorage.getItem(LS_UNSYNCED) === u.id) syncNow().catch(e => console.warn(e));
+      if (ui.user && ui.user.cloud && localStorage.getItem(LS_UNSYNCED) === ui.user.id) syncNow().catch(e => console.warn(e));
       applyUi(); render();
     })().catch(e => { console.warn('Supabase init failed', e); cloud.enabled = false; toast('☁️ ' + t('cloudDown')); });
   }
@@ -241,88 +308,180 @@
     if (!cloud.enabled) initCloud();
     else if (ui.user && ui.user.cloud && localStorage.getItem(LS_UNSYNCED) === ui.user.id) syncNow().catch(e => console.warn(e));
   });
+  // another tab logged out or switched account: keep this tab's unsent practice for its owner, then start again
+  function accountChangedElsewhere() {
+    if (!ui.user || !ui.user.cloud) return;
+    if (cloud.dirty && state.progressOwner === ui.user.id) {
+      const s = readStash(), prev = stashOf(s, ui.user.id);
+      s[ui.user.id] = prev ? Object.assign(stashEntry(), { progress: mergeProgress(state.progress, prev.progress) }) : stashEntry(); writeStash(s);
+    }
+    cloud.epoch++; location.reload();
+  }
+  window.addEventListener('storage', e => {
+    if (e.key !== LS_UI || !cloud.configured) return;
+    let nu = null; try { nu = (JSON.parse(e.newValue || '{}') || {}).user || null; } catch (x) { }
+    if ((nu && nu.id) !== (ui.user && ui.user.id)) accountChangedElsewhere();
+  });
   async function cloudAfterLogin(u, ep) {
     cloud.busy++;
     try {
       const prof = sbCheck(await cloud.sb.from('profiles').select('name, role').eq('id', u.id).maybeSingle()) || {};
       const user = { id: u.id, email: u.email, name: prof.name || u.email, role: prof.role === 'teacher' ? 'teacher' : 'student', cloud: true };
       const teacherCode = user.role === 'teacher' ? sbCheck(await cloud.sb.rpc('get_teacher_code')) || '' : '';
-      const row = sbCheck(await cloud.sb.from('progress').select('data').eq('user_id', u.id).maybeSingle());
+      const row = sbCheck(await cloud.sb.from('progress').select('data, updated_at').eq('user_id', u.id).maybeSingle());
       if (ep !== cloud.epoch) return false; // someone logged in or out meanwhile
       // whose practice is on this device? (decided after loading, so practice done while loading counts)
       const owner = state.progressOwner || null, flag = localStorage.getItem(LS_UNSYNCED), stash = readStash();
-      if (owner && owner !== u.id && flag === owner) { stash[owner] = state.progress; writeStash(stash); } // another account's unsent work
-      let push = false;
-      if (stash[u.id]) { state.progress = cleanProgress(stash[u.id]); push = true; }
-      else if (owner === u.id && flag === u.id) push = true;
-      else if (row && isObj(row.data) && Object.keys(row.data).length) state.progress = cleanProgress(row.data);
-      else if (!owner || owner === u.id) push = true; // practice done before signing up becomes this account's
-      else state.progress = emptyProgress();
+      if (owner && owner !== u.id && flag === owner) { const prev = stashOf(stash, owner); stash[owner] = prev ? Object.assign(stashEntry(), { progress: mergeProgress(state.progress, prev.progress) }) : stashEntry(); writeStash(stash); }
+      const remote = row ? cleanProgress(row.data) : null;
+      let local = null, base = null, snap = null;
+      const mine = stashOf(stash, u.id);
+      if (mine) { local = mine.progress; base = mine.base; snap = mine.snap; if (owner === u.id && flag === u.id) local = mergeProgress(state.progress, local); delete stash[u.id]; writeStash(stash); }
+      else if (owner === u.id && flag === u.id) { local = state.progress; base = state.progressBase || null; snap = state.progressSnap || null; }
+      else if (!owner && hasPractice(state.progress)) local = state.progress; // practised on this device before logging in
+      if (local) {
+        // keep this device's practice: merge with the cloud copy unless the cloud has nothing newer than what it already includes
+        state.progress = cleanProgress(row && hasPractice(remote) && row.updated_at !== base ? mergeProgress(local, remote, base ? snap : null) : local);
+        localStorage.setItem(LS_UNSYNCED, u.id); // protected until it is uploaded
+      } else state.progress = remote || emptyProgress();
+      state.progressBase = row ? row.updated_at : null;
+      state.progressSnap = progressSnap(remote || emptyProgress());
       state.progressOwner = u.id;
-      if (user.role !== 'teacher' && !state.settings.studentName) state.settings.studentName = user.name;
-      localStorage.setItem(LS_DATA, JSON.stringify(state));
-      if (push) {
+      if (user.role !== 'teacher' && (owner !== u.id || !state.settings.studentName)) state.settings.studentName = user.name;
+      persist();
+      if (local) {
         const seq = cloud.seq;
-        await pushProgress(u.id);
-        const s = readStash(); delete s[u.id]; writeStash(s);
-        if (seq === cloud.seq && localStorage.getItem(LS_UNSYNCED) === u.id) localStorage.removeItem(LS_UNSYNCED);
+        if (await pushProgress(u.id, ep) && seq === cloud.seq && localStorage.getItem(LS_UNSYNCED) === u.id) localStorage.removeItem(LS_UNSYNCED);
       }
       if (ep !== cloud.epoch) return false;
-      ui.user = user; saveUi(); cloud.teacherCode = teacherCode;
+      ui.user = user; saveUi(); cloud.teacherCode = teacherCode; cloud.dirty = false;
       // the invite code typed at sign-up is only needed once, by the database
       if (u.user_metadata && u.user_metadata.teacher_code) cloud.sb.auth.updateUser({ data: { teacher_code: null } }).catch(() => {});
       return true;
     } finally { cloud.busy--; }
   }
-  const CONTENT_SETTINGS = ['examName', 'examNameEn', 'examDate', 'motto', 'teacherEmail'];
-  async function pullContent() {
-    if (!cloud.sb || !ui.user || !ui.user.cloud) return;
-    const row = sbCheck(await cloud.sb.from('content').select('data').eq('id', 'main').maybeSingle());
-    const c = row && row.data;
-    if (isObj(c) && Object.keys(c).length) {
-      if (Array.isArray(c.articles)) state.articles = cleanItems(c.articles, 'article'); if (Array.isArray(c.vocab)) state.vocab = cleanItems(c.vocab, 'vocab');
-      if (Array.isArray(c.hiddenVocab)) state.hiddenVocab = cleanIds(c.hiddenVocab); if (Array.isArray(c.hiddenArticles)) state.hiddenArticles = cleanIds(c.hiddenArticles);
-      // an empty teacher setting never wipes what the student typed (e.g. the teacher email)
-      const cs = cleanSettings(c.settings); CONTENT_SETTINGS.forEach(k => { if (cs[k]) state.settings[k] = cs[k]; });
-      rebuildVocab(); rebuildArticles();
-      localStorage.setItem(LS_DATA, JSON.stringify(state));
-      cloud.lastContent = JSON.stringify(contentPayload());
-      cloud.contentOk = true;
-    } else {
-      cloud.contentOk = true; // nothing shared yet: the first teacher save creates it
-      if (ui.teacher) await pushContent();
+  // Upload this device's record on top of the cloud version it already includes; if someone else wrote in between, merge and retry.
+  async function pushProgress(id, ep = cloud.epoch) {
+    if (!cloud.sb || !id || state.progressOwner !== id) return false;
+    const stale = () => ep !== cloud.epoch || state.progressOwner !== id;
+    for (let tries = 0; tries < 4; tries++) {
+      const data = state.progress, base = state.progressBase || null;
+      const res = base ? await cloud.sb.from('progress').update({ data }).eq('user_id', id).eq('updated_at', base).select('updated_at')
+        : await cloud.sb.from('progress').insert({ user_id: id, data }).select('updated_at');
+      if (res.error && res.error.code === '54000') { await new Promise(r => setTimeout(r, 3300)); continue; } // the database asks for a short pause
+      if (res.error && res.error.code !== '23505') throw res.error;
+      if (stale()) return false;
+      if (!res.error && res.data && res.data.length) { state.progressBase = res.data[0].updated_at; state.progressSnap = progressSnap(cleanProgress(data)); persist(); return true; }
+      const row = sbCheck(await cloud.sb.from('progress').select('data, updated_at').eq('user_id', id).maybeSingle());
+      if (stale()) return false;
+      const remote = row ? cleanProgress(row.data) : emptyProgress();
+      if (row && hasPractice(remote)) state.progress = mergeProgress(state.progress, remote, base ? state.progressSnap : null);
+      state.progressBase = row ? row.updated_at : null; state.progressSnap = progressSnap(remote); persist();
     }
+    throw new Error(t('syncBusy'));
   }
+
+  // ---- class material (teachers write it, everyone reads it) ----
+  const CONTENT_SETTINGS = ['examName', 'examNameEn', 'examDate', 'motto', 'teacherEmail'];
   function contentPayload() {
     const settings = {}; CONTENT_SETTINGS.forEach(k => { settings[k] = state.settings[k] || ''; });
     return { articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [], settings };
   }
-  async function pushContent() {
-    if (!cloud.sb || !ui.teacher || !ui.user.cloud) return;
-    // never replace the class material from a device that could not read it first
-    if (!cloud.contentOk) { if (!cloud.warned) { cloud.warned = true; toast(t('contentNotLoaded')); } return; }
-    const data = contentPayload(), json = JSON.stringify(data);
-    if (json === cloud.lastContent) return;
-    sbCheck(await cloud.sb.from('content').upsert({ id: 'main', data }));
-    cloud.lastContent = json;
+  const hasContent = c => isObj(c) && Object.keys(c).length > 0;
+  const contentFrom = c => ({ articles: cleanItems(c.articles, 'article'), vocab: cleanItems(c.vocab, 'vocab'), hiddenVocab: cleanIds(c.hiddenVocab), hiddenArticles: cleanIds(c.hiddenArticles), settings: cleanSettings(c.settings) });
+  function applyContent(c) {
+    state.articles = c.articles; state.vocab = c.vocab; state.hiddenVocab = c.hiddenVocab; state.hiddenArticles = c.hiddenArticles;
+    // an empty teacher setting never wipes what the student typed (e.g. the teacher email)
+    CONTENT_SETTINGS.forEach(k => { if (c.settings[k]) state.settings[k] = c.settings[k]; });
+    rebuildVocab(); rebuildArticles(); persist();
   }
-  async function pushProgress(id = ui.user && ui.user.cloud && ui.user.id) {
-    if (!cloud.sb || !id || state.progressOwner !== id) return;
-    sbCheck(await cloud.sb.from('progress').upsert({ user_id: id, data: state.progress }));
+  // what this device last saw in the cloud: a fingerprint of every item, the settings and the hidden lists
+  const contentSnap = c => { const i = {}; c.articles.forEach(x => { i['a:' + x.id] = hash36(x); }); c.vocab.forEach(x => { i['v:' + x.id] = hash36(x); }); return { s: Object.assign({}, c.settings), i, ha: c.hiddenArticles.slice(), hv: c.hiddenVocab.slice() }; };
+  // a device that never synced counts the built-in material as its starting point
+  const seedSnap = () => contentSnap(contentFrom({ articles: SEED_DATA.articles, vocab: SEED_DATA.vocab, settings: SEED_DATA.settings }));
+  // Three-way merge of the class material: for every item and setting, take this device's version only if it changed
+  // here since the last sync, otherwise the cloud's. Removing an item sticks unless the other side edited it meanwhile.
+  function mergeContent(local, remote, snap) {
+    const pick = (L, R, k) => {
+      const lm = new Map(L.map(x => [x.id, x])), rm = new Map(R.map(x => [x.id, x])), out = [];
+      R.map(x => x.id).concat(L.map(x => x.id).filter(id => !rm.has(id))).forEach(id => {
+        const l = lm.get(id), r = rm.get(id), b = snap.i[k + ':' + id];
+        const lChanged = b === undefined ? !!l : (!l || hash36(l) !== b), rChanged = b === undefined ? !!r : (!r || hash36(r) !== b);
+        const v = lChanged && !(!l && rChanged && r) ? l : r;
+        if (v) out.push(v);
+      });
+      return out;
+    };
+    const settings = {}; CONTENT_SETTINGS.forEach(k => { const lv = local.settings[k] || '', rv = remote.settings[k] || ''; settings[k] = lv !== (snap.s[k] || '') ? lv : rv; });
+    return { articles: pick(local.articles, remote.articles, 'a'), vocab: pick(local.vocab, remote.vocab, 'v'), hiddenVocab: merge3(local.hiddenVocab, remote.hiddenVocab, snap.hv), hiddenArticles: merge3(local.hiddenArticles, remote.hiddenArticles, snap.ha), settings };
+  }
+  async function pullContent() {
+    if (!cloud.sb || !ui.user || !ui.user.cloud) return;
+    const ep = cloud.epoch, me = ui.user.id;
+    const row = sbCheck(await cloud.sb.from('content').select('data, updated_at').eq('id', 'main').maybeSingle());
+    if (ep !== cloud.epoch || !ui.user || ui.user.id !== me) return;
+    const remote = row && hasContent(row.data) ? contentFrom(row.data) : null, cs = readCS();
+    cloud.contentOk = true;
+    if (!ui.teacher) { if (remote) applyContent(remote); writeCS({ owner: me, base: row ? row.updated_at : null, dirty: false }); cloud.lastContent = JSON.stringify(contentPayload()); return; }
+    const first = cs.owner !== me, dirty = !first && !!cs.dirty;
+    if (!remote) { writeCS({ owner: me, base: row ? row.updated_at : null, dirty: true, snap: seedSnap() }); cloud.lastContent = ''; await pushContent(ep); return; } // nothing shared yet: this device creates it
+    if (first || (dirty && cs.base !== row.updated_at)) applyContent(mergeContent(contentFrom(contentPayload()), remote, first || !cs.snap ? seedSnap() : cs.snap)); // keep this teacher's unsent work
+    else if (!dirty) applyContent(remote);
+    const rs = {}; CONTENT_SETTINGS.forEach(k => { rs[k] = remote.settings[k] || ''; });
+    const same = JSON.stringify(contentFrom(contentPayload())) === JSON.stringify(Object.assign({}, remote, { settings: rs }));
+    writeCS({ owner: me, base: row.updated_at, dirty: !same, snap: contentSnap(remote) });
+    cloud.lastContent = same ? JSON.stringify(contentPayload()) : '';
+    if (!same) await pushContent(ep);
+  }
+  function markContentDirty() {
+    if (!ui.teacher || !ui.user || !ui.user.cloud) return;
+    if (JSON.stringify(contentPayload()) === cloud.lastContent) return;
+    const cs = readCS(); if (cs.owner !== ui.user.id) return; // not synced on this device yet: the next pull merges it
+    if (!cs.dirty) writeCS(Object.assign(cs, { dirty: true }));
+  }
+  async function pushContent(ep = cloud.epoch) {
+    if (!cloud.sb || !ui.user || !ui.teacher || !ui.user.cloud) return true;
+    // never write the class material from a device that could not read it first; the edits stay here and are merged later
+    if (!cloud.contentOk) { if (!cloud.warned) { cloud.warned = true; toast(t('contentNotLoaded')); } return false; }
+    const me = ui.user.id;
+    for (let tries = 0; tries < 4; tries++) {
+      const cs = readCS(), data = contentPayload(), json = JSON.stringify(data);
+      if (json === cloud.lastContent && !cs.dirty) return true;
+      const res = cs.base ? await cloud.sb.from('content').update({ data }).eq('id', 'main').eq('updated_at', cs.base).select('updated_at')
+        : await cloud.sb.from('content').insert({ id: 'main', data }).select('updated_at');
+      if (res.error && res.error.code !== '23505') throw res.error;
+      if (ep !== cloud.epoch || !ui.user || ui.user.id !== me) return false;
+      if (!res.error && res.data && res.data.length) { writeCS({ owner: me, base: res.data[0].updated_at, dirty: JSON.stringify(contentPayload()) !== json, snap: contentSnap(contentFrom(data)) }); cloud.lastContent = json; return true; }
+      // another device changed the material since this one read it: combine and try again
+      const row = sbCheck(await cloud.sb.from('content').select('data, updated_at').eq('id', 'main').maybeSingle());
+      if (ep !== cloud.epoch || !ui.user || ui.user.id !== me) return false;
+      const remote = row && hasContent(row.data) ? contentFrom(row.data) : null;
+      if (remote) { applyContent(mergeContent(contentFrom(contentPayload()), remote, cs.snap || seedSnap())); toast(t('contentMerged')); }
+      writeCS({ owner: me, base: row ? row.updated_at : null, dirty: true, snap: remote ? contentSnap(remote) : cs.snap || seedSnap() });
+    }
+    throw new Error(t('syncBusy'));
   }
   async function syncNow() {
     if (!cloud.enabled || cloud.busy || !ui.user || !ui.user.cloud) return;
-    const seq = cloud.seq, id = ui.user.id;
-    await Promise.all([pushProgress(id), pushContent()]);
-    if (seq === cloud.seq && localStorage.getItem(LS_UNSYNCED) === id) localStorage.removeItem(LS_UNSYNCED);
+    const id = ui.user.id, ep = cloud.epoch;
+    return withLock(async () => {
+      if (ep !== cloud.epoch || !ui.user || ui.user.id !== id) return;
+      const seq = cloud.seq;
+      const [okP] = await Promise.all([pushProgress(id, ep), pushContent(ep)]);
+      cloud.lastPush = Date.now();
+      // the flag is cleared only when the record really reached the cloud
+      if (okP && seq === cloud.seq) { cloud.dirty = false; if (localStorage.getItem(LS_UNSYNCED) === id) localStorage.removeItem(LS_UNSYNCED); }
+    });
   }
   function scheduleSync() {
     if (!ui.user || !ui.user.cloud) return;
     // remembered even offline or while the account is still loading, so the practice is uploaded later
-    cloud.seq++; localStorage.setItem(LS_UNSYNCED, ui.user.id);
+    cloud.seq++; cloud.dirty = true; localStorage.setItem(LS_UNSYNCED, ui.user.id);
+    markContentDirty();
     if (!cloud.enabled || cloud.busy) return;
     clearTimeout(cloud.syncTimer);
-    cloud.syncTimer = setTimeout(() => { syncNow().catch(e => toast('☁️ ' + e.message)); }, 1500);
+    // the database refuses large records rewritten within 3 seconds, so uploads are spaced out
+    cloud.syncTimer = setTimeout(() => { syncNow().catch(e => toast('☁️ ' + e.message)); }, Math.max(1500, 3300 - (Date.now() - cloud.lastPush)));
   }
   // the list holds names only; a student's record is downloaded when the teacher opens it
   async function loadCloudStudents() {
@@ -394,23 +553,32 @@
   // practice that could not be uploaded is set aside for this account (and uploaded at its next login);
   // the next person on this device starts with a clean record
   function leaveCloudAccount(me) {
-    if (localStorage.getItem(LS_UNSYNCED) === me.id && state.progressOwner === me.id) { const s = readStash(); s[me.id] = state.progress; writeStash(s); }
-    localStorage.removeItem(LS_UNSYNCED);
-    state.progress = emptyProgress(); state.progressOwner = null;
-    if (state.settings.studentName === me.name) state.settings.studentName = '';
-    localStorage.setItem(LS_DATA, JSON.stringify(state));
+    cloud.epoch++;
+    if (localStorage.getItem(LS_UNSYNCED) === me.id && state.progressOwner === me.id) {
+      const s = readStash(), prev = stashOf(s, me.id);
+      s[me.id] = prev ? Object.assign(stashEntry(), { progress: mergeProgress(state.progress, prev.progress) }) : stashEntry(); writeStash(s);
+    }
+    if (localStorage.getItem(LS_UNSYNCED) === me.id) localStorage.removeItem(LS_UNSYNCED);
+    state.progress = emptyProgress(); state.progressOwner = null; state.progressBase = null; state.progressSnap = null; state.settings.studentName = '';
+    persist(); cloud.dirty = false;
+  }
+  // tell the server (waiting at most 2 s), then forget the login on this device in any case,
+  // even if the Supabase library never loaded
+  async function dropSession() {
+    if (cloud.sb) await Promise.race([cloud.sb.auth.signOut({ scope: 'local' }).catch(() => {}), new Promise(r => setTimeout(r, 2000))]);
+    Object.keys(localStorage).filter(k => /^sb-.+-auth-token/.test(k)).forEach(k => localStorage.removeItem(k));
   }
   async function logoutUser() {
-    cloud.epoch++;
     if (ui.user && ui.user.cloud) {
       const me = ui.user;
       clearTimeout(cloud.syncTimer);
-      try { await syncNow(); } catch (e) { }
+      // upload first, but never keep the person waiting more than a few seconds
+      try { await Promise.race([syncNow(), new Promise(r => setTimeout(r, 4000))]); } catch (e) { }
       leaveCloudAccount(me);
       // 'local' signs out this device only, so a student's phone stays signed in
-      if (cloud.sb) try { await cloud.sb.auth.signOut({ scope: 'local' }); } catch (e) { }
+      await dropSession();
       cloud.lastContent = ''; cloud.teacherCode = ''; cloud.contentOk = false; cloud.warned = false;
-    }
+    } else cloud.epoch++;
     ui.user = null; saveUi(); view.cloudStudents = []; view.cloudAccounts = null;
     if (view.page === 'students') view.page = 'home';
   }
@@ -935,6 +1103,9 @@
       const r = await fetch('news.json', { cache: 'no-cache' });
       if (!r.ok) throw new Error(r.status);
       news.data = await r.json();
+      // only web links: a story or lesson with any other kind of link is dropped
+      const web = x => isObj(x) && typeof x.link === 'string' && /^https?:\/\//i.test(x.link);
+      news.data.items = (news.data.items || []).filter(web); news.data.lessons = (news.data.lessons || []).filter(web);
       news.status = (news.data.items || []).length ? 'ok' : 'empty';
     } catch (e) { news.status = 'error'; }
     if (view.page === 'news') render();
@@ -1119,7 +1290,7 @@
     const item = ((news.data && news.data.items) || []).find(i => i.link === les.link) || {};
     return `<div class="row reader-nav" style="margin:8px auto 12px"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>
       <article class="card news-reader">
-        <div class="news-meta"><span class="news-src ${SRC_CLASS[les.source] || ''}">${esc(les.source)}</span>${les.topic ? `<span class="chip">${esc(les.topic)}</span>` : ''}<span class="small muted">${tf('lessonWords', { n: les.words || full.split(/\s+/).filter(Boolean).length })}${item.date ? ' · ' + ago(item.date) : ''}</span></div>
+        <div class="news-meta"><span class="news-src ${SRC_CLASS[les.source] || ''}">${esc(les.source)}</span>${les.topic ? `<span class="chip">${esc(les.topic)}</span>` : ''}<span class="small muted">${tf('lessonWords', { n: Number(les.words) || full.split(/\s+/).filter(Boolean).length })}${item.date ? ' · ' + ago(item.date) : ''}</span></div>
         <h2 class="reader-title en">${esc(les.title)}</h2>
         ${les.title_zh ? `<p class="reader-title-zh">${esc(les.title_zh)}</p>` : ''}
         <div class="reader-tools">
@@ -1179,7 +1350,7 @@
     let body;
     if (news.status === 'loading' || news.status === 'idle') body = `<p class="muted">${t('newsLoading')}</p>`;
     else if (!items.length) body = `<div class="card news-empty">📭 ${t('newsEmpty')}</div>`;
-    else body = `<div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${upd} UTC</span>` : ''}</div>
+    else body = `<div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${esc(upd)} UTC</span>` : ''}</div>
       ${!lessons.length ? `<p class="small muted news-nolesson">📖 ${t(ui.teacher ? 'lessonsNoneTeacher' : 'lessonsNone')}</p>` : ''}
       <div class="news-list">${shown.map(([it, i]) => { const les = lessonOf[it.link]; return `<article class="news-card${les ? ' has-article' : ''}${open[i] ? ' open' : ''}">
         <div class="news-meta"><span class="news-src ${SRC_CLASS[it.source] || ''}">${esc(it.source)}</span><span class="chip">${esc(it.topic || '')}</span>${les ? `<span class="chip ai-chip">📖 ${t('newsFullBadge')}</span>` : ''}<span class="small muted">${ago(it.date)}</span></div>
@@ -1568,7 +1739,7 @@
     const vq = progress.vocabQuizzes.slice().reverse().slice(0, 30);
     const typeName = { choice: t('quizChoice'), choiceRev: t('quizChoiceRev'), spell: t('quizSpell') };
     return `<h3>${t('quizHistory')}</h3>${rq.length ? `<table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('article')}</th><th>${t('score')}</th></tr></thead><tbody>${rq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(r.title)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noData')}</p>`}
-      <h3>${t('vocabQuizHistory')}</h3>${vq.length ? `<table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('vocabQuiz')}</th><th>${t('score')}</th></tr></thead><tbody>${vq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${typeName[r.type] || r.type}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noData')}</p>`}`;
+      <h3>${t('vocabQuizHistory')}</h3>${vq.length ? `<table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('vocabQuiz')}</th><th>${t('score')}</th></tr></thead><tbody>${vq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(typeName[r.type] || r.type)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noData')}</p>`}`;
   }
   function pageProgress() {
     const p = state.progress;
@@ -1827,9 +1998,9 @@
     if (obj.type === 'student-report') { addReport(obj); return 'report'; }
     if (!Array.isArray(obj.articles) && !Array.isArray(obj.vocab) && !obj.settings) throw new Error('bad');
     if (mode === 'replace') {
-      state = { settings: Object.assign(clone(SEED_DATA.settings), cleanSettings(obj.settings)), articles: cleanItems(obj.articles, 'article'), vocab: cleanItems(obj.vocab, 'vocab'), hiddenVocab: cleanIds(obj.hiddenVocab), hiddenArticles: cleanIds(obj.hiddenArticles), progress: cleanProgress(obj.progress), progressOwner: state.progressOwner || null, studentReports: cleanReports(obj.studentReports), accounts: Array.isArray(obj.accounts) ? cleanAccounts(obj.accounts) : state.accounts };
+      state = { settings: Object.assign(clone(SEED_DATA.settings), cleanSettings(obj.settings)), articles: cleanItems(obj.articles, 'article'), vocab: cleanItems(obj.vocab, 'vocab'), hiddenVocab: cleanIds(obj.hiddenVocab), hiddenArticles: cleanIds(obj.hiddenArticles), seedArticles: state.seedArticles, progress: cleanProgress(obj.progress), progressOwner: state.progressOwner || null, progressBase: state.progressBase || null, studentReports: cleanReports(obj.studentReports), accounts: Array.isArray(obj.accounts) ? cleanAccounts(obj.accounts) : state.accounts };
     } else {
-      if (obj.settings) { const keep = state.settings.teacherCode, ns = cleanSettings(obj.settings); state.settings = Object.assign(state.settings, ns); if (!ns.teacherCode) state.settings.teacherCode = keep; }
+      if (obj.settings) { const ns = cleanSettings(obj.settings); delete ns.teacherCode; delete ns.teacherEmail; delete ns.studentName; Object.assign(state.settings, ns); }
       cleanItems(obj.articles, 'article').forEach(a => { const i = state.articles.findIndex(x => x.id === a.id); if (i >= 0) state.articles[i] = a; else state.articles.push(a); });
       cleanItems(obj.vocab, 'vocab').forEach(v => { const i = state.vocab.findIndex(x => x.id === v.id || (!v.override && x.word.toLowerCase() === v.word.toLowerCase())); if (i >= 0) state.vocab[i] = Object.assign({}, state.vocab[i], v); else state.vocab.push(v); });
       if (Array.isArray(obj.hiddenVocab)) state.hiddenVocab = Array.from(new Set((state.hiddenVocab || []).concat(cleanIds(obj.hiddenVocab))));
@@ -2074,7 +2245,7 @@
       const obj = { type: 'student-report', studentName: state.settings.studentName || t('roleStudent'), exportedAt: new Date().toISOString(), progress: state.progress };
       shareOrDownload(`progress-${state.settings.studentName || 'student'}-${todayStr()}.json`, obj, t('sendToTeacher'));
     },
-    resetProgress() { if (!confirm(t('confirmReset'))) return; state.progress = emptyProgress(); save(); render(); },
+    resetProgress() { if (!confirm(t('confirmReset'))) return; state.progress = Object.assign(emptyProgress(), { resetAt: new Date().toISOString() }); save(); render(); },
     deleteReport(el) { if (!confirm(t('confirmDel'))) return; state.studentReports = state.studentReports.filter(r => r.id !== el.dataset.id); view.studentSource = 'local'; save(); render(); },
     // settings
     saveSettings() {
@@ -2094,7 +2265,7 @@
     },
     exportAll() { download(`tve-exam-all-${todayStr()}.json`, state); },
     exportContent() { shareOrDownload(`tve-exam-material-${todayStr()}.json`, { settings: { examName: state.settings.examName, examNameEn: state.settings.examNameEn, examDate: state.settings.examDate, motto: state.settings.motto }, articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [] }, t('exportContent')); },
-    resetAll() { if (!confirm(t('confirmResetAll'))) return; const p = state.progress, code = state.settings.teacherCode; state = { settings: Object.assign(clone(SEED_DATA.settings), { teacherCode: code }), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), hiddenVocab: [], progress: p, studentReports: state.studentReports, accounts: state.accounts }; save(); render(); },
+    resetAll() { if (!confirm(t('confirmResetAll'))) return; const p = state.progress, code = state.settings.teacherCode; state = { settings: Object.assign(clone(SEED_DATA.settings), { teacherCode: code }), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), hiddenVocab: [], hiddenArticles: [], seedArticles: state.seedArticles, progress: p, progressOwner: state.progressOwner || null, progressBase: state.progressBase || null, studentReports: state.studentReports, accounts: state.accounts }; save(); render(); },
     deleteAccount(el) { if (!confirm(t('confirmDel'))) return; state.accounts = state.accounts.filter(a => a.id !== el.dataset.id); save(); render(); },
     openAuth() { openAuth('login'); },
     openCity(el) { openCity(el.dataset.id, el); },
@@ -2135,7 +2306,9 @@
     else if (id === 'qsCount') view.quizSetup.count = +e.target.value;
     else if (id === 'vocabUnit') view.vocabUnit = e.target.value, view.vocabPage = 0, render();
     else if (id === 'studentSource') view.studentSource = e.target.value, render();
-    else if (id === 'importFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { try { const r = importJSON(obj, $('#importMode').value); toast(r === 'report' ? t('reportImported') : t('imported')); if (r === 'report' && ui.teacher) view.page = 'students'; render(); } catch (x) { toast(t('importFail')); } }); }
+    else if (id === 'importFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { try {
+      // in cloud mode a teacher's import changes the material of the whole class: say what will change first
+      if (cloud.configured && ui.teacher && obj && obj.type !== 'student-report' && !confirm(tf('importClassConfirm', { a: Array.isArray(obj.articles) ? obj.articles.length : 0, v: Array.isArray(obj.vocab) ? obj.vocab.length : 0 }))) return; const r = importJSON(obj, $('#importMode').value); toast(r === 'report' ? t('reportImported') : t('imported')); if (r === 'report' && ui.teacher) view.page = 'students'; render(); } catch (x) { toast(t('importFail')); } }); }
     else if (id === 'reportFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { if (obj && obj.type === 'student-report') { addReport(obj); toast(t('reportImported')); render(); } else toast(t('notReport')); }); }
   });
   $('#app').addEventListener('input', e => {
@@ -2246,7 +2419,7 @@
   }
   function closeAuth() { modal.classList.add('hidden'); $('#authForm').reset(); }
   authBtn.addEventListener('click', async () => {
-    if (ui.user) { await logoutUser(); toast(t('loggedOut')); applyUi(); render(); } else openAuth('login');
+    if (ui.user) { authBtn.disabled = true; try { await logoutUser(); } finally { authBtn.disabled = false; } toast(t('loggedOut')); applyUi(); render(); } else openAuth('login');
   });
   $('#authClose').addEventListener('click', closeAuth);
   modal.addEventListener('click', e => { if (e.target === modal) closeAuth(); });

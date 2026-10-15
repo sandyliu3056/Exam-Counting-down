@@ -24,9 +24,14 @@ create table if not exists public.profiles (
 -- 每個帳號的學習紀錄（一整包 JSON）
 create table if not exists public.progress (
   user_id uuid primary key default auth.uid() references auth.users (id) on delete cascade,
-  data jsonb not null default '{}'::jsonb check (octet_length(data::text) <= 5000000),
+  data jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
+
+-- 一份紀錄最多 2 MB（實際使用通常不到 1 MB）
+alter table public.progress drop constraint if exists progress_data_check;
+alter table public.progress drop constraint if exists progress_size;
+alter table public.progress add constraint progress_size check (octet_length(data::text) <= 2000000);
 
 -- 老師的共用教材（只有一列，id = 'main'）
 create table if not exists public.content (
@@ -75,6 +80,21 @@ begin
 end;
 $$;
 
+-- 大份紀錄 3 秒內只能改一次，避免有人用大量寫入塞爆免費方案的空間（網站本身的同步間隔比這更長）
+create or replace function public.progress_guard() returns trigger
+language plpgsql set search_path = ''
+as $$
+begin
+  if octet_length(new.data::text) > 300000 and old.updated_at > now() - interval '3 seconds' then
+    raise exception 'progress saved too often' using errcode = '54000';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists progress_guard on public.progress;
+create trigger progress_guard before update on public.progress
+  for each row execute function public.progress_guard();
+
 drop trigger if exists progress_touch on public.progress;
 create trigger progress_touch before insert or update on public.progress
   for each row execute function public.touch_updated_at();
@@ -82,7 +102,8 @@ drop trigger if exists content_touch on public.content;
 create trigger content_touch before insert or update on public.content
   for each row execute function public.touch_updated_at();
 
--- ---------- 4. 註冊時自動建立 profile ----------
+-- ---------- 4. email 確認後自動建立 profile ----------
+-- 還沒確認 email 的註冊不會出現在老師的名單上（關掉 Confirm email 時，註冊當下就算確認）。
 -- 角色一律是 student；只有註冊時填的邀請碼和老師設定的一樣（至少 8 個字），才會變成 teacher。
 -- 有人連續猜錯 20 次，邀請碼會自動作廢，老師到「設定」重設一個新的即可。
 
@@ -99,6 +120,7 @@ begin
   if given is not null and secret is not null then
     if char_length(secret) >= 8 and given = secret then
       make_teacher := true;
+      delete from private.app_secrets where key = 'teacher_code_misses';
     else
       insert into private.app_secrets (key, value) values ('teacher_code_misses', '1')
       on conflict (key) do update set value = ((private.app_secrets.value)::int + 1)::text
@@ -122,11 +144,14 @@ $$;
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
-  for each row execute function public.handle_new_user();
+  for each row when (new.email_confirmed_at is not null) execute function public.handle_new_user();
+drop trigger if exists on_auth_user_confirmed on auth.users;
+create trigger on_auth_user_confirmed after update of email_confirmed_at on auth.users
+  for each row when (old.email_confirmed_at is null and new.email_confirmed_at is not null) execute function public.handle_new_user();
 
--- 在這份設定之前就已經註冊的帳號，補上 profile（一律是學生）
+-- 在這份設定之前就已經註冊（並確認 email）的帳號，補上 profile（一律是學生）
 insert into public.profiles (id, email, name)
-select id, email, left(split_part(coalesce(email, ''), '@', 1), 60) from auth.users
+select id, email, left(split_part(coalesce(email, ''), '@', 1), 60) from auth.users where email_confirmed_at is not null
 on conflict (id) do nothing;
 
 -- ---------- 5. 老師設定 / 查看邀請碼（網頁的「設定」頁會用到） ----------
@@ -160,7 +185,7 @@ as $$
 $$;
 
 revoke execute on function public.is_teacher(), public.set_teacher_code(text), public.get_teacher_code(),
-  public.handle_new_user(), public.touch_updated_at() from public, anon, authenticated;
+  public.handle_new_user(), public.touch_updated_at(), public.progress_guard() from public, anon, authenticated;
 grant execute on function public.is_teacher(), public.set_teacher_code(text), public.get_teacher_code() to authenticated;
 
 -- ---------- 6. 誰可以讀寫哪些資料 ----------
@@ -206,7 +231,7 @@ create policy "content: teachers update" on public.content
 -- 第一個老師帳號：先在網頁上用你的 email 註冊（身分選學生就好），
 -- 然後把下面這行的 email 換成你的，拿掉開頭的 -- 再按 Run：
 --
--- update public.profiles set role = 'teacher' where email = lower('你的email@example.com');
+-- update public.profiles set role = 'teacher' where id = (select id from auth.users where email = lower('你的email@example.com'));
 --
 -- 之後若有其他老師，到網頁「設定」頁設定老師邀請碼（至少 8 個字，建議 10 個字以上、不要用好猜的字），
 -- 他們註冊時填這個碼就會是老師；用完清空即可關閉老師註冊。

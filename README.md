@@ -65,7 +65,7 @@
 7. 部署後，在網站上用你的 email 註冊（身分選學生即可）。再回 **SQL Editor** 執行這一行，把你自己升級成老師：
 
    ```sql
-   update public.profiles set role = 'teacher' where email = lower('你的email@example.com');
+   update public.profiles set role = 'teacher' where id = (select id from auth.users where email = lower('你的email@example.com'));
    ```
 
    下方結果顯示 `UPDATE 1` 才算成功（`UPDATE 0` 表示 email 打錯或還沒註冊）。登出再登入後就是老師。
