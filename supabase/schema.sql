@@ -83,7 +83,8 @@ create trigger content_touch before insert or update on public.content
   for each row execute function public.touch_updated_at();
 
 -- ---------- 4. 註冊時自動建立 profile ----------
--- 角色一律是 student；只有註冊時填的邀請碼和老師設定的一樣（至少 6 個字），才會變成 teacher。
+-- 角色一律是 student；只有註冊時填的邀請碼和老師設定的一樣（至少 8 個字），才會變成 teacher。
+-- 有人連續猜錯 20 次，邀請碼會自動作廢，老師到「設定」重設一個新的即可。
 
 create or replace function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = ''
@@ -91,14 +92,28 @@ as $$
 declare
   given text := nullif(btrim(coalesce(new.raw_user_meta_data ->> 'teacher_code', '')), '');
   secret text;
+  misses int;
+  make_teacher boolean := false;
 begin
   select value into secret from private.app_secrets where key = 'teacher_code';
+  if given is not null and secret is not null then
+    if char_length(secret) >= 8 and given = secret then
+      make_teacher := true;
+    else
+      insert into private.app_secrets (key, value) values ('teacher_code_misses', '1')
+      on conflict (key) do update set value = ((private.app_secrets.value)::int + 1)::text
+      returning value::int into misses;
+      if misses >= 20 then
+        delete from private.app_secrets where key in ('teacher_code', 'teacher_code_misses');
+      end if;
+    end if;
+  end if;
   insert into public.profiles (id, email, name, role)
   values (
     new.id,
     new.email,
     left(coalesce(nullif(btrim(new.raw_user_meta_data ->> 'name'), ''), split_part(coalesce(new.email, ''), '@', 1)), 60),
-    case when given is not null and char_length(secret) >= 6 and given = secret then 'teacher' else 'student' end
+    case when make_teacher then 'teacher' else 'student' end
   )
   on conflict (id) do nothing;
   return new;
@@ -115,6 +130,7 @@ select id, email, left(split_part(coalesce(email, ''), '@', 1), 60) from auth.us
 on conflict (id) do nothing;
 
 -- ---------- 5. 老師設定 / 查看邀請碼（網頁的「設定」頁會用到） ----------
+-- 空白＝清除邀請碼（關閉老師註冊）。
 
 create or replace function public.set_teacher_code(new_code text) returns void
 language plpgsql security definer set search_path = ''
@@ -124,8 +140,13 @@ begin
     raise exception 'only teachers can change the invite code' using errcode = '42501';
   end if;
   new_code := btrim(coalesce(new_code, ''));
-  if char_length(new_code) < 6 or char_length(new_code) > 100 then
-    raise exception 'invite code must be 6-100 characters' using errcode = '22023';
+  delete from private.app_secrets where key = 'teacher_code_misses';
+  if new_code = '' then
+    delete from private.app_secrets where key = 'teacher_code';
+    return;
+  end if;
+  if char_length(new_code) < 8 or char_length(new_code) > 100 then
+    raise exception 'invite code must be 8-100 characters' using errcode = '22023';
   end if;
   insert into private.app_secrets (key, value) values ('teacher_code', new_code)
   on conflict (key) do update set value = excluded.value;
@@ -185,7 +206,8 @@ create policy "content: teachers update" on public.content
 -- 第一個老師帳號：先在網頁上用你的 email 註冊（身分選學生就好），
 -- 然後把下面這行的 email 換成你的，拿掉開頭的 -- 再按 Run：
 --
--- update public.profiles set role = 'teacher' where email = '你的email@example.com';
+-- update public.profiles set role = 'teacher' where email = lower('你的email@example.com');
 --
--- 之後到網頁「設定」頁設定老師邀請碼（至少 6 個字），其他老師註冊時填這個碼就會是老師。
+-- 之後若有其他老師，到網頁「設定」頁設定老師邀請碼（至少 8 個字，建議 10 個字以上、不要用好猜的字），
+-- 他們註冊時填這個碼就會是老師；用完清空即可關閉老師註冊。
 -- =====================================================================

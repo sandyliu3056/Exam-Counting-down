@@ -29,31 +29,58 @@
     const num = x => { const n = Number(x); return Number.isFinite(n) ? n : 0; }, isDay = d => /^\d{4}-\d{2}-\d{2}$/.test(d);
     const when = d => typeof d === 'string' && /^[0-9T:.+\-Z ]{4,40}$/.test(d) ? d : '';
     const idx = x => x == null || x === '' || !Number.isFinite(Number(x)) ? null : Number(x);
+    const okKey = k => k !== '__proto__' && k !== 'constructor' && k !== 'prototype';
     const out = Object.assign(emptyProgress(), obj(p));
     out.days = {}; Object.entries(obj(p && p.days)).forEach(([d, n]) => { if (isDay(d)) out.days[d] = Math.max(0, num(n)); });
-    const cards = {}; Object.entries(obj(out.cards)).forEach(([id, c]) => { c = obj(c); cards[id] = Object.assign({}, c, { box: Math.min(3, Math.max(0, Math.round(num(c.box)))), seen: num(c.seen), correct: num(c.correct), wrong: num(c.wrong), last: when(c.last) || null, due: isDay(c.due) ? c.due : todayStr() }); }); out.cards = cards;
+    const cards = {}; Object.entries(obj(out.cards)).filter(([id]) => okKey(id)).forEach(([id, c]) => { c = obj(c); cards[id] = Object.assign({}, c, { box: Math.min(3, Math.max(0, Math.round(num(c.box)))), seen: num(c.seen), correct: num(c.correct), wrong: num(c.wrong), last: when(c.last) || null, due: isDay(c.due) ? c.due : todayStr() }); }); out.cards = cards;
     out.readingQuizzes = arr(out.readingQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs),
       answers: arr(r.answers).map(a => Object.assign({}, a, { qi: num(a.qi), chosen: idx(a.chosen), correct: num(a.correct) })) }));
-    out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong) }));
-    ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok) }, k === 'mcq' ? { chosen: idx(r.chosen) } : {}); }); out[k] = m; });
+    out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong).map(w => Object.assign({}, w, { vocabId: String(w.vocabId ?? '') })).filter(w => okKey(w.vocabId)) }));
+    ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).filter(([id]) => okKey(id)).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok) }, k === 'mcq' ? { chosen: idx(r.chosen) } : {}); }); out[k] = m; });
+    if (out.myWords !== undefined) out.myWords = cleanItems(out.myWords, 'vocab');
     if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
     const b = obj(out.bookmarks); out.bookmarks = { vocab: arr0(b.vocab), articles: arr0(b.articles) };
     return out;
   }
   const arr0 = x => Array.isArray(x) ? x.filter(y => typeof y === 'string') : [];
+  // Ids end up in HTML attributes and lookups, so anything from outside this device (files, the cloud) is checked.
+  const SAFE_ID = /^[A-Za-z0-9_.:-]{1,80}$/;
+  const isObj = x => !!x && typeof x === 'object' && !Array.isArray(x);
+  const cleanIds = list => Array.isArray(list) ? list.filter(id => typeof id === 'string' && SAFE_ID.test(id)) : [];
+  function cleanItems(list, kind) {
+    return (Array.isArray(list) ? list : []).filter(isObj).map(x => {
+      x = Object.assign({}, x);
+      if (typeof x.id !== 'string' || !SAFE_ID.test(x.id)) x.id = uid(kind === 'article' ? 'art' : 'v');
+      if (kind === 'article') {
+        x.title = String(x.title ?? ''); x.passage = String(x.passage ?? ''); x.tags = Array.isArray(x.tags) ? x.tags.map(String) : [];
+        x.questions = (Array.isArray(x.questions) ? x.questions : []).filter(q => isObj(q) && Array.isArray(q.options))
+          .map(q => Object.assign({}, q, { q: String(q.q ?? ''), options: q.options.map(o => String(o ?? '')), answer: Number.isInteger(q.answer) ? q.answer : 0 }));
+      } else x.word = String(x.word ?? '');
+      return x;
+    });
+  }
+  const SETTING_KEYS = ['examName', 'examNameEn', 'examDate', 'studentName', 'motto', 'teacherCode', 'teacherEmail'];
+  function cleanSettings(st) {
+    const out = {}; if (isObj(st)) SETTING_KEYS.forEach(k => { if (typeof st[k] === 'string') out[k] = st[k]; });
+    if (out.examDate && !/^\d{4}-\d{2}-\d{2}$/.test(out.examDate)) delete out.examDate;
+    return out;
+  }
+  const cleanReports = list => (Array.isArray(list) ? list : []).filter(isObj).map(r => ({ id: typeof r.id === 'string' && SAFE_ID.test(r.id) ? r.id : uid('rep'), name: String(r.name ?? ''), exportedAt: typeof r.exportedAt === 'string' ? r.exportedAt : null, progress: cleanProgress(r.progress) }));
+  const cleanAccounts = list => (Array.isArray(list) ? list : []).filter(isObj).map(a => Object.assign({}, a, { id: typeof a.id === 'string' && SAFE_ID.test(a.id) ? a.id : uid('u'), email: String(a.email ?? ''), name: String(a.name ?? ''), role: a.role === 'teacher' ? 'teacher' : 'student' }));
 
   function load() {
     let data = null;
     try { data = JSON.parse(localStorage.getItem(LS_DATA) || 'null'); } catch (e) { data = null; }
     if (!data) data = { settings: clone(SEED_DATA.settings), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), progress: emptyProgress(), studentReports: [], accounts: [] };
-    data.settings = Object.assign(clone(SEED_DATA.settings), data.settings || {});
-    data.articles = data.articles || [];
-    data.vocab = data.vocab || [];
-    data.progress = Object.assign(emptyProgress(), data.progress || {});
-    data.progress.bookmarks = Object.assign({ vocab: [], articles: [] }, data.progress.bookmarks || {});
-    data.studentReports = data.studentReports || [];
-    data.accounts = data.accounts || [];
-    data.hiddenVocab = data.hiddenVocab || [];
+    data.settings = Object.assign(clone(SEED_DATA.settings), cleanSettings(data.settings));
+    data.articles = cleanItems(data.articles, 'article');
+    data.vocab = cleanItems(data.vocab, 'vocab');
+    data.progress = cleanProgress(data.progress);
+    data.studentReports = cleanReports(data.studentReports);
+    data.accounts = cleanAccounts(data.accounts);
+    data.hiddenVocab = cleanIds(data.hiddenVocab);
+    data.hiddenArticles = cleanIds(data.hiddenArticles);
+    if (typeof data.progressOwner !== 'string') data.progressOwner = null;
     const OLD_UNITS = { 'Unit 1 學習與健康': 'Unit 1 · Study & Health', 'Unit 2 文化與生活': 'Unit 2 · Culture & Life', 'Unit 3 商業與書信': 'Unit 3 · Business & Letters', 'Unit 4 統測高頻字': 'Unit 4 · High-frequency Words', '統測 B 級': 'Reading · B1', '統測 應用文': 'Reading · Practical' };
     const OLD_TAGS = { '健康': 'Health', '科普': 'Science', '文化': 'Culture', '生活': 'Life', '書信': 'Letter', '商業': 'Business' };
     data.vocab.forEach(v => { if (OLD_UNITS[v.unit]) v.unit = OLD_UNITS[v.unit]; });
@@ -167,8 +194,14 @@
   }
 
   /* ---------------- Auth (local or Supabase) ---------------- */
-  const cloud = { configured: false, enabled: false, ready: null, sb: null, syncTimer: null, seq: 0, lastContent: '', teacherCode: '' };
-  const LS_UNSYNCED = 'tve_exam_unsynced_v1';
+  // busy: an account is loading, so nothing is uploaded yet. contentOk: the shared material was read from the
+  // cloud on this device, so a teacher's save may replace it.
+  // epoch: bumped by every login and logout, so a slow, older account load can never apply its result
+  const cloud = { configured: false, enabled: false, ready: null, sb: null, syncTimer: null, seq: 0, epoch: 0, busy: 0, contentOk: false, lastContent: '', teacherCode: '', warned: false };
+  const LS_UNSYNCED = 'tve_exam_unsynced_v1'; // id of the account whose latest practice has not reached the cloud
+  const LS_STASH = 'tve_exam_stash_v1'; // { accountId: progress } practice set aside when that account signed out before uploading
+  const readStash = () => { try { const s = JSON.parse(localStorage.getItem(LS_STASH) || '{}'); return isObj(s) ? s : {}; } catch (e) { return {}; } };
+  const writeStash = (s) => { if (Object.keys(s).length) localStorage.setItem(LS_STASH, JSON.stringify(s)); else localStorage.removeItem(LS_STASH); };
   async function sha(str) {
     if (window.crypto && crypto.subtle && window.TextEncoder) {
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -176,87 +209,136 @@
     }
     let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return 'x' + (h >>> 0).toString(16);
   }
-  const loadScript = (src) => new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = () => rej(new Error('cannot load ' + src)); document.head.appendChild(el); });
+  const loadScript = (src) => new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = () => { el.remove(); rej(new Error('cannot load ' + src)); }; document.head.appendChild(el); });
   const sbCheck = ({ data, error }) => { if (error) throw error; return data; };
   function initCloud() {
     const cfg = window.SUPABASE_CONFIG;
     if (!cfg || !/^https:\/\/[^\s/]+/.test(cfg.url || '') || !cfg.anonKey) return;
     cloud.configured = true;
+    const ep = cloud.epoch;
     cloud.ready = (async () => {
       if (!window.supabase) await loadScript('vendor/supabase.js');
-      cloud.sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-      const { data } = await cloud.sb.auth.getSession();
-      cloud.enabled = true;
+      if (!cloud.sb) cloud.sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+      const { data, error } = await cloud.sb.auth.getSession();
+      // offline: keep the saved account and try again when the connection is back
+      if (error && window.supabase.isAuthRetryableFetchError && window.supabase.isAuthRetryableFetchError(error)) throw error;
       const u = data && data.session && data.session.user;
-      // changes made on this device that never reached the cloud win over the cloud copy
-      if (u) await cloudAfterLogin(u, localStorage.getItem(LS_UNSYNCED) === u.id);
-      else if (ui.user) { ui.user = null; saveUi(); }
+      if (u) await cloudAfterLogin(u, ep);
+      else if (ui.user && ep === cloud.epoch) { if (ui.user.cloud) leaveCloudAccount(ui.user); ui.user = null; saveUi(); }
+      cloud.enabled = true;
       try { await pullContent(); } catch (e) { console.warn(e); }
+      if (u && localStorage.getItem(LS_UNSYNCED) === u.id) syncNow().catch(e => console.warn(e));
       applyUi(); render();
-    })().catch(e => { console.warn('Supabase init failed', e); cloud.enabled = false; toast('☁️ ' + e.message); });
+    })().catch(e => { console.warn('Supabase init failed', e); cloud.enabled = false; toast('☁️ ' + t('cloudDown')); });
   }
-  async function cloudAfterLogin(u, keepLocal) {
-    const prof = sbCheck(await cloud.sb.from('profiles').select('name, role').eq('id', u.id).maybeSingle()) || {};
-    ui.user = { id: u.id, email: u.email, name: prof.name || u.email, role: prof.role === 'teacher' ? 'teacher' : 'student', cloud: true }; saveUi();
-    // the invite code typed at sign-up is only needed once, by the database
-    if (u.user_metadata && u.user_metadata.teacher_code) cloud.sb.auth.updateUser({ data: { teacher_code: null } }).catch(() => {});
-    if (ui.teacher) cloud.teacherCode = sbCheck(await cloud.sb.rpc('get_teacher_code')) || '';
-    const row = sbCheck(await cloud.sb.from('progress').select('data').eq('user_id', u.id).maybeSingle());
-    if (row && row.data && Object.keys(row.data).length && !keepLocal) state.progress = cleanProgress(row.data);
-    else { await pushProgress(); localStorage.removeItem(LS_UNSYNCED); }
-    if (!ui.teacher && !state.settings.studentName) state.settings.studentName = ui.user.name;
-    localStorage.setItem(LS_DATA, JSON.stringify(state));
+  // back online after starting offline: connect again and upload what was practised meanwhile
+  window.addEventListener('online', () => {
+    if (!cloud.configured) return;
+    if (!cloud.enabled) initCloud();
+    else if (ui.user && ui.user.cloud && localStorage.getItem(LS_UNSYNCED) === ui.user.id) syncNow().catch(e => console.warn(e));
+  });
+  async function cloudAfterLogin(u, ep) {
+    cloud.busy++;
+    try {
+      const prof = sbCheck(await cloud.sb.from('profiles').select('name, role').eq('id', u.id).maybeSingle()) || {};
+      const user = { id: u.id, email: u.email, name: prof.name || u.email, role: prof.role === 'teacher' ? 'teacher' : 'student', cloud: true };
+      const teacherCode = user.role === 'teacher' ? sbCheck(await cloud.sb.rpc('get_teacher_code')) || '' : '';
+      const row = sbCheck(await cloud.sb.from('progress').select('data').eq('user_id', u.id).maybeSingle());
+      if (ep !== cloud.epoch) return false; // someone logged in or out meanwhile
+      // whose practice is on this device? (decided after loading, so practice done while loading counts)
+      const owner = state.progressOwner || null, flag = localStorage.getItem(LS_UNSYNCED), stash = readStash();
+      if (owner && owner !== u.id && flag === owner) { stash[owner] = state.progress; writeStash(stash); } // another account's unsent work
+      let push = false;
+      if (stash[u.id]) { state.progress = cleanProgress(stash[u.id]); push = true; }
+      else if (owner === u.id && flag === u.id) push = true;
+      else if (row && isObj(row.data) && Object.keys(row.data).length) state.progress = cleanProgress(row.data);
+      else if (!owner || owner === u.id) push = true; // practice done before signing up becomes this account's
+      else state.progress = emptyProgress();
+      state.progressOwner = u.id;
+      if (user.role !== 'teacher' && !state.settings.studentName) state.settings.studentName = user.name;
+      localStorage.setItem(LS_DATA, JSON.stringify(state));
+      if (push) {
+        const seq = cloud.seq;
+        await pushProgress(u.id);
+        const s = readStash(); delete s[u.id]; writeStash(s);
+        if (seq === cloud.seq && localStorage.getItem(LS_UNSYNCED) === u.id) localStorage.removeItem(LS_UNSYNCED);
+      }
+      if (ep !== cloud.epoch) return false;
+      ui.user = user; saveUi(); cloud.teacherCode = teacherCode;
+      // the invite code typed at sign-up is only needed once, by the database
+      if (u.user_metadata && u.user_metadata.teacher_code) cloud.sb.auth.updateUser({ data: { teacher_code: null } }).catch(() => {});
+      return true;
+    } finally { cloud.busy--; }
   }
   const CONTENT_SETTINGS = ['examName', 'examNameEn', 'examDate', 'motto', 'teacherEmail'];
   async function pullContent() {
-    if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
+    if (!cloud.sb || !ui.user || !ui.user.cloud) return;
     const row = sbCheck(await cloud.sb.from('content').select('data').eq('id', 'main').maybeSingle());
     const c = row && row.data;
-    if (c && Object.keys(c).length) {
-      if (Array.isArray(c.articles)) state.articles = c.articles; if (Array.isArray(c.vocab)) state.vocab = c.vocab;
-      if (Array.isArray(c.hiddenVocab)) state.hiddenVocab = c.hiddenVocab; if (Array.isArray(c.hiddenArticles)) state.hiddenArticles = c.hiddenArticles;
+    if (isObj(c) && Object.keys(c).length) {
+      if (Array.isArray(c.articles)) state.articles = cleanItems(c.articles, 'article'); if (Array.isArray(c.vocab)) state.vocab = cleanItems(c.vocab, 'vocab');
+      if (Array.isArray(c.hiddenVocab)) state.hiddenVocab = cleanIds(c.hiddenVocab); if (Array.isArray(c.hiddenArticles)) state.hiddenArticles = cleanIds(c.hiddenArticles);
       // an empty teacher setting never wipes what the student typed (e.g. the teacher email)
-      if (c.settings) CONTENT_SETTINGS.forEach(k => { const v = c.settings[k]; if (typeof v === 'string' && v) state.settings[k] = v; });
+      const cs = cleanSettings(c.settings); CONTENT_SETTINGS.forEach(k => { if (cs[k]) state.settings[k] = cs[k]; });
       rebuildVocab(); rebuildArticles();
       localStorage.setItem(LS_DATA, JSON.stringify(state));
       cloud.lastContent = JSON.stringify(contentPayload());
-    } else if (ui.teacher) { await pushContent(); }
+      cloud.contentOk = true;
+    } else {
+      cloud.contentOk = true; // nothing shared yet: the first teacher save creates it
+      if (ui.teacher) await pushContent();
+    }
   }
   function contentPayload() {
     const settings = {}; CONTENT_SETTINGS.forEach(k => { settings[k] = state.settings[k] || ''; });
     return { articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [], settings };
   }
   async function pushContent() {
-    if (!cloud.enabled || !ui.teacher || !ui.user.cloud) return;
+    if (!cloud.sb || !ui.teacher || !ui.user.cloud) return;
+    // never replace the class material from a device that could not read it first
+    if (!cloud.contentOk) { if (!cloud.warned) { cloud.warned = true; toast(t('contentNotLoaded')); } return; }
     const data = contentPayload(), json = JSON.stringify(data);
     if (json === cloud.lastContent) return;
     sbCheck(await cloud.sb.from('content').upsert({ id: 'main', data }));
     cloud.lastContent = json;
   }
-  async function pushProgress() {
-    if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
-    sbCheck(await cloud.sb.from('progress').upsert({ user_id: ui.user.id, data: state.progress }));
+  async function pushProgress(id = ui.user && ui.user.cloud && ui.user.id) {
+    if (!cloud.sb || !id || state.progressOwner !== id) return;
+    sbCheck(await cloud.sb.from('progress').upsert({ user_id: id, data: state.progress }));
   }
   async function syncNow() {
-    const seq = cloud.seq;
-    await Promise.all([pushProgress(), pushContent()]);
-    if (seq === cloud.seq) localStorage.removeItem(LS_UNSYNCED);
+    if (!cloud.enabled || cloud.busy || !ui.user || !ui.user.cloud) return;
+    const seq = cloud.seq, id = ui.user.id;
+    await Promise.all([pushProgress(id), pushContent()]);
+    if (seq === cloud.seq && localStorage.getItem(LS_UNSYNCED) === id) localStorage.removeItem(LS_UNSYNCED);
   }
   function scheduleSync() {
-    if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
+    if (!ui.user || !ui.user.cloud) return;
+    // remembered even offline or while the account is still loading, so the practice is uploaded later
     cloud.seq++; localStorage.setItem(LS_UNSYNCED, ui.user.id);
+    if (!cloud.enabled || cloud.busy) return;
     clearTimeout(cloud.syncTimer);
     cloud.syncTimer = setTimeout(() => { syncNow().catch(e => toast('☁️ ' + e.message)); }, 1500);
   }
+  // the list holds names only; a student's record is downloaded when the teacher opens it
   async function loadCloudStudents() {
     const [profs, rows] = await Promise.all([
       cloud.sb.from('profiles').select('id, email, name').eq('role', 'student').order('name').then(sbCheck),
-      cloud.sb.from('progress').select('user_id, data, updated_at').then(sbCheck)]);
-    const byId = new Map(rows.map(r => [r.user_id, r]));
-    view.cloudStudents = profs.map(p => { const r = byId.get(p.id); return { id: 'cloud_' + p.id, name: p.name || p.email || t('roleStudent'), email: p.email || '', exportedAt: r ? r.updated_at : null, progress: cleanProgress(r && r.data) }; });
+      cloud.sb.from('progress').select('user_id, updated_at').then(sbCheck)]);
+    const when = new Map(rows.map(r => [r.user_id, r.updated_at]));
+    view.cloudStudents = profs.map(p => ({ id: 'cloud_' + p.id, uid: p.id, name: p.name || p.email || t('roleStudent'), email: p.email || '', exportedAt: when.get(p.id) || null, progress: null }));
+  }
+  async function loadStudentProgress(rep) {
+    if (rep.tried) return; rep.tried = true;
+    try {
+      const row = sbCheck(await cloud.sb.from('progress').select('data, updated_at').eq('user_id', rep.uid).maybeSingle());
+      rep.progress = cleanProgress(row && row.data); if (row) rep.exportedAt = row.updated_at;
+    } catch (e) { rep.progress = emptyProgress(); toast('☁️ ' + e.message); }
+    render();
   }
   async function cloudReady() {
     if (cloud.ready) await cloud.ready;
+    if (cloud.configured && !cloud.enabled) { initCloud(); await cloud.ready; } // the connection may be back
     if (cloud.configured && !cloud.enabled) throw new Error(t('cloudDown'));
     return cloud.enabled;
   }
@@ -266,9 +348,11 @@
     if (await cloudReady()) {
       if (role === 'teacher' && !code) throw new Error(t('badCode'));
       const meta = role === 'teacher' ? { name, teacher_code: code } : { name };
+      const ep = ++cloud.epoch;
       const data = sbCheck(await cloud.sb.auth.signUp({ email, password: pass, options: { data: meta, emailRedirectTo: location.origin + location.pathname } }));
       if (!data.session) { const e = new Error(t('checkEmail')); e.notice = true; throw e; }
-      await cloudAfterLogin(data.user); await pullContent();
+      if (!await cloudAfterLogin(data.user, ep)) throw new Error(t('cloudDown'));
+      try { await pullContent(); } catch (e) { console.warn(e); }
       return role === 'teacher' && !ui.teacher ? 'teacherCodeRejected' : null;
     }
     if (role === 'teacher' && code !== (state.settings.teacherCode || '')) throw new Error(t('badCode'));
@@ -283,8 +367,10 @@
   async function loginUser({ email, pass }) {
     if (!email || !pass) throw new Error(t('needFields'));
     if (await cloudReady()) {
+      const ep = ++cloud.epoch;
       const data = sbCheck(await cloud.sb.auth.signInWithPassword({ email, password: pass }));
-      await cloudAfterLogin(data.user); await pullContent();
+      if (!await cloudAfterLogin(data.user, ep)) throw new Error(t('cloudDown'));
+      try { await pullContent(); } catch (e) { console.warn(e); }
       return;
     }
     const key = email.trim().toLowerCase();
@@ -293,13 +379,25 @@
     ui.user = { id: acc.id, email: key, name: acc.name, role: acc.role, cloud: false }; saveUi();
     if (acc.role === 'student' && !state.settings.studentName) { state.settings.studentName = acc.name; save(); }
   }
+  // practice that could not be uploaded is set aside for this account (and uploaded at its next login);
+  // the next person on this device starts with a clean record
+  function leaveCloudAccount(me) {
+    if (localStorage.getItem(LS_UNSYNCED) === me.id && state.progressOwner === me.id) { const s = readStash(); s[me.id] = state.progress; writeStash(s); }
+    localStorage.removeItem(LS_UNSYNCED);
+    state.progress = emptyProgress(); state.progressOwner = null;
+    if (state.settings.studentName === me.name) state.settings.studentName = '';
+    localStorage.setItem(LS_DATA, JSON.stringify(state));
+  }
   async function logoutUser() {
-    if (cloud.enabled && ui.user && ui.user.cloud) {
+    cloud.epoch++;
+    if (ui.user && ui.user.cloud) {
+      const me = ui.user;
       clearTimeout(cloud.syncTimer);
       try { await syncNow(); } catch (e) { }
+      leaveCloudAccount(me);
       // 'local' signs out this device only, so a student's phone stays signed in
-      try { await cloud.sb.auth.signOut({ scope: 'local' }); } catch (e) { }
-      localStorage.removeItem(LS_UNSYNCED); cloud.lastContent = ''; cloud.teacherCode = '';
+      if (cloud.sb) try { await cloud.sb.auth.signOut({ scope: 'local' }); } catch (e) { }
+      cloud.lastContent = ''; cloud.teacherCode = ''; cloud.contentOk = false; cloud.warned = false;
     }
     ui.user = null; saveUi(); view.cloudStudents = [];
     if (view.page === 'students') view.page = 'home';
@@ -343,7 +441,7 @@
   const bm = () => { const p = state.progress; if (!p.bookmarks) p.bookmarks = { vocab: [], articles: [] }; return p.bookmarks; };
   const isBm = (kind, id) => bm()[kind].includes(id);
   function toggleBm(kind, id) { const l = bm()[kind]; const i = l.indexOf(id); if (i >= 0) l.splice(i, 1); else l.push(id); save(); toast(i >= 0 ? t('bookmarkRemoved') : t('bookmarkAdded')); }
-  const bmBtn = (kind, id, sm = true) => `<button class="btn ${sm ? 'sm' : ''} bm-btn ${isBm(kind, id) ? 'on' : ''}" data-action="toggleBm" data-kind="${kind}" data-id="${id}" title="${t('bookmark')}">${isBm(kind, id) ? t('removeBookmark') : t('addBookmark')}</button>`;
+  const bmBtn = (kind, id, sm = true) => `<button class="btn ${sm ? 'sm' : ''} bm-btn ${isBm(kind, id) ? 'on' : ''}" data-action="toggleBm" data-kind="${kind}" data-id="${esc(id)}" title="${t('bookmark')}">${isBm(kind, id) ? t('removeBookmark') : t('addBookmark')}</button>`;
 
   /* ---------------- Speech ---------------- */
   function speak(text) {
@@ -434,7 +532,7 @@
     const arts = b.articles.map(articleById).filter(Boolean);
     if (!words.length && !arts.length) return `<div class="card bookmark-card"><span class="ribbon">🔖</span><p class="muted" style="margin:0">${t('noBookmarks')}</p></div>`;
     return `<div class="card bookmark-card"><span class="ribbon">🔖</span>
-      ${arts.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${arts.map(a => `<button class="bm-tag" data-action="openArticleHome" data-id="${a.id}">${esc(a.title)}</button>`).join('')}</div></div>` : ''}
+      ${arts.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${arts.map(a => `<button class="bm-tag" data-action="openArticleHome" data-id="${esc(a.id)}">${esc(a.title)}</button>`).join('')}</div></div>` : ''}
       ${words.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b> <span class="small muted">(${words.length})</span><div class="bm-list">${words.map(v => `<span class="bm-tag word en" title="${esc(v.zh)}">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div>
         <div style="margin-top:8px"><button class="btn sm accent" data-action="goFlash" data-mode="bookmark">${t('startPractice')} · ${t('modeBookmark')}</button></div></div>` : ''}
     </div>`;
@@ -539,7 +637,7 @@
         <div class="passage cz-passage ${ui.font === 'clean' ? 'clean' : ''}">${passage}</div>
         ${c.blanks.map((b, k) => { const id = `${c.id}-${k + 1}`, a = s.answers[id]; return `<div class="question"><div class="q">${k + 1}.</div>
           <div class="mc-opts row-opts">${b.options.map((o, oi) => { let cls = 'option'; if (checked) { if (oi === b.answer) cls += ' correct'; else if (oi === a) cls += ' wrong'; } else if (oi === a) cls += ' selected';
-            return `<div class="${cls}" data-action="czChoose" data-id="${id}" data-o="${oi}" role="button" tabindex="0"><span class="letter">${L4[oi]}</span><span class="en">${esc(o)}</span></div>`; }).join('')}</div>
+            return `<div class="${cls}" data-action="czChoose" data-id="${esc(id)}" data-o="${oi}" role="button" tabindex="0"><span class="letter">${L4[oi]}</span><span class="en">${esc(o)}</span></div>`; }).join('')}</div>
           ${checked ? `<div class="explain">${a === b.answer ? '✅' : '❌'} ${esc(b.explain || '')}</div>` : ''}</div>`; }).join('')}
         ${checked && c.passage_zh ? `<details class="cz-zh"><summary>${t('mcShowZh')}</summary><p>${esc(c.passage_zh).replace(/\n\s*\n/g, '<br><br>')}</p></details>` : ''}
         <div class="row" style="margin-top:12px"><span class="spacer"></span>
@@ -605,7 +703,7 @@
           <button class="btn accent" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
         </div>
       </div>
-      <div class="tr-list">${list.map(it => `<button class="tr-row" data-action="trOne" data-id="${it.id}">${mark(it)}<span class="tr-zh">${esc(it.zh)}</span><span class="chip">${esc(it.level || '')}</span></button>`).join('') || `<p class="muted">${t('trNoMatch')}</p>`}</div>`;
+      <div class="tr-list">${list.map(it => `<button class="tr-row" data-action="trOne" data-id="${esc(it.id)}">${mark(it)}<span class="tr-zh">${esc(it.zh)}</span><span class="chip">${esc(it.level || '')}</span></button>`).join('') || `<p class="muted">${t('trNoMatch')}</p>`}</div>`;
   }
   function trStage() {
     const s = view.tr, it = trItems().find(x => x.id === s.ids[s.i]);
@@ -991,15 +1089,15 @@
       const best = isDone ? Math.max(...hist.map(r => Math.round(r.score / r.total * 100))) : null;
       return `<div class="list-item read-item ${isDone ? 'is-done' : ''}">
         <span class="read-check" title="${isDone ? t('readDone') : t('readTodo')}">${isDone ? '✓' : ''}</span>
-        <div class="grow" data-action="openArticle" data-id="${a.id}" style="cursor:pointer">
+        <div class="grow" data-action="openArticle" data-id="${esc(a.id)}" style="cursor:pointer">
           <div class="title">${esc(a.title)}</div>
           ${a.title_zh ? `<div class="small muted">${esc(a.title_zh)}</div>` : ''}
           <div class="meta">${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
         </div>
         ${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span><span class="chip">${t('attempts')} ${hist.length} ${t('times')}</span>` : ''}
         ${bmBtn('articles', a.id)}
-        <button class="btn sm" data-action="openArticle" data-id="${a.id}">${isDone ? t('retry') : t('go')}</button>
-        <span class="teacher-only"><button class="btn sm ghost" data-action="editArticle" data-id="${a.id}">${t('editArticle')}</button> <button class="btn sm danger" data-action="deleteArticle" data-id="${a.id}">${t('deleteArticle')}</button></span>
+        <button class="btn sm" data-action="openArticle" data-id="${esc(a.id)}">${isDone ? t('retry') : t('go')}</button>
+        <span class="teacher-only"><button class="btn sm ghost" data-action="editArticle" data-id="${esc(a.id)}">${t('editArticle')}</button> <button class="btn sm danger" data-action="deleteArticle" data-id="${esc(a.id)}">${t('deleteArticle')}</button></span>
       </div>`;
     };
     const filtering = rf.topic || rf.status || q;
@@ -1192,7 +1290,7 @@
       <div class="progress-bar"><div style="width:${f.idx / f.queue.length * 100}%"></div></div>
       <div class="flash-card ${f.flipped ? 'flipped' : ''}" data-action="flip">
         <div class="flash-inner">
-          <div class="flash-face flash-front"><span class="ribbon ribbon-l ribbon-${['new', 'info', 'warn', 'ok'][c.box]}" title="${t('box')}">${['🌱', '📘', '⭐', '🏆'][c.box]}</span><button class="flash-bm ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${v.id}" title="${t('bookmark')}">🔖</button>
+          <div class="flash-face flash-front"><span class="ribbon ribbon-l ribbon-${['new', 'info', 'warn', 'ok'][c.box]}" title="${t('box')}">${['🌱', '📘', '⭐', '🏆'][c.box]}</span><button class="flash-bm ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" title="${t('bookmark')}">🔖</button>
             <div class="flash-word">${esc(v.word)}</div><div class="flash-pos">${esc(v.pos || '')}</div>
             <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="margin-top:14px">${t('speak')}</button>
             <span class="flash-hint">${t('tapToFlip')}</span></div>
@@ -1244,7 +1342,7 @@
     } else {
       const rev = q.type === 'choiceRev';
       body = `<div class="quiz-word" ${rev ? 'style="font-family:var(--font-body)"' : ''}>${esc(rev ? v.zh : v.word)} ${!rev ? `<button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}">🔊</button>` : `<span class="muted" style="font-size:18px">${esc(v.pos || '')}</span>`}</div>
-        <div class="quiz-options">${cur.opts.map(oid => { const o = byId(oid); if (!o) return ''; let cls = 'quiz-opt'; if (q.answered) { if (oid === v.id) cls += ' correct'; else if (q.chosen === oid) cls += ' wrong'; } return `<button class="${cls}" data-action="quizChoose" data-id="${oid}" ${q.answered ? 'disabled' : ''}><span class="${rev ? 'en' : ''}">${esc(rev ? o.word : o.zh)}</span></button>`; }).join('')}</div>
+        <div class="quiz-options">${cur.opts.map(oid => { const o = byId(oid); if (!o) return ''; let cls = 'quiz-opt'; if (q.answered) { if (oid === v.id) cls += ' correct'; else if (q.chosen === oid) cls += ' wrong'; } return `<button class="${cls}" data-action="quizChoose" data-id="${esc(oid)}" ${q.answered ? 'disabled' : ''}><span class="${rev ? 'en' : ''}">${esc(rev ? o.word : o.zh)}</span></button>`; }).join('')}</div>
         ${q.answered ? `<div class="center" style="margin-top:14px"><div class="muted en">${esc(v.word)} ${esc(v.pos || '')}${v.syn ? ` ≈ ${esc(v.syn)}` : ''} — ${esc(v.example || '')}</div><button class="btn accent" data-action="quizNext" style="margin-top:8px">${t('next')}</button></div>` : ''}`;
     }
     return `<div class="card" style="max-width:800px;margin:0 auto">${head}${body}</div>`;
@@ -1290,9 +1388,9 @@
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
       const c = state.progress.cards[v.id] || { box: 0, seen: 0 };
-      return `<tr><td class="bm-cell"><button class="bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${v.id}" title="${t('bookmark')}">🔖</button></td><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td class="pos">${esc(v.pos || '')}</td><td class="zh">${esc(v.zh)}</td><td class="syn en">${v.syn ? `<span class="wb-lbl">≈ </span>` : ''}${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted unit">${esc(unitLabel(v.unit))}</td>
+      return `<tr><td class="bm-cell"><button class="bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" title="${t('bookmark')}">🔖</button></td><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td class="pos">${esc(v.pos || '')}</td><td class="zh">${esc(v.zh)}</td><td class="syn en">${v.syn ? `<span class="wb-lbl">≈ </span>` : ''}${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted unit">${esc(unitLabel(v.unit))}</td>
         <td class="box"><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
-        <td class="teacher-only acts"><button class="btn sm ghost" data-action="editVocab" data-id="${v.id}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${v.id}">${t('del')}</button></td></tr>`;
+        <td class="teacher-only acts"><button class="btn sm ghost" data-action="editVocab" data-id="${esc(v.id)}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${esc(v.id)}">${t('del')}</button></td></tr>`;
     };
     return `<h2 class="section-title" style="margin-top:8px">${t('vocabTitle')}</h2><p class="section-sub">${t('vocabSub')}</p>
       <div class="row" style="margin-bottom:12px">
@@ -1455,7 +1553,7 @@
 
   /* ---- Students (teacher) ---- */
   function analyzeReport(progress, name) {
-    const wrongMap = {};
+    const wrongMap = Object.create(null);
     progress.readingQuizzes.forEach(r => (r.answers || []).forEach(a => {
       if (a.chosen === a.correct) return;
       const key = r.articleId + '|' + a.qi;
@@ -1465,7 +1563,7 @@
       wrongMap[key].n++; wrongMap[key].chosen.push(a.chosenText || (q && q.options[a.chosen]) || '—');
     }));
     const wrongs = Object.values(wrongMap).sort((a, b) => b.n - a.n);
-    const weak = {};
+    const weak = Object.create(null);
     Object.entries(progress.cards).forEach(([id, c]) => { if (c.wrong > 0) weak[id] = { missed: c.wrong, quiz: 0, typed: [], box: c.box }; });
     progress.vocabQuizzes.forEach(r => (r.wrong || []).forEach(w => { const k = w.vocabId; if (!weak[k]) weak[k] = { missed: 0, quiz: 0, typed: [], box: 0 }; weak[k].quiz++; if (w.given) weak[k].typed.push(w.given); weak[k].word = w.word; weak[k].zh = w.zh; }));
     const weakList = Object.entries(weak).map(([id, w]) => { const v = VOCAB.find(x => x.id === id); return Object.assign({ id, word: v ? v.word : w.word, zh: v ? v.zh : w.zh }, w); }).filter(w => w.word).sort((a, b) => (b.missed + b.quiz) - (a.missed + a.quiz)).slice(0, 40);
@@ -1488,17 +1586,18 @@
     if (!ui.teacher) return pageGate();
     const reports = state.studentReports;
     const src = view.studentSource;
-    const rep = src === 'local' ? { name: state.settings.studentName || t('localDevice'), progress: state.progress, exportedAt: null } : (reports.find(r => r.id === src) || view.cloudStudents.find(r => r.id === src));
+    let rep = src === 'local' ? { name: state.settings.studentName || t('localDevice'), progress: state.progress, exportedAt: null } : (reports.find(r => r.id === src) || view.cloudStudents.find(r => r.id === src));
     if (!rep) { view.studentSource = 'local'; return pageStudents(); }
+    if (!rep.progress) { const cs = rep; if (!cs.tried) setTimeout(() => loadStudentProgress(cs)); rep = Object.assign({}, cs, { progress: emptyProgress() }); }
     const A = analyzeReport(rep.progress, rep.name);
     const mastered = VOCAB.filter(v => (rep.progress.cards[v.id] || {}).box === 3).length;
     return `<h2 class="section-title" style="margin-top:8px">${t('studentsTitle')}</h2><p class="section-sub">${t('studentsSub')}</p>
       <div class="card"><div class="row">
-        <div class="field" style="margin:0;min-width:260px"><label>${t('source')}</label><select class="input" id="studentSource"><option value="local" ${src === 'local' ? 'selected' : ''}>${t('localDevice')}</option>${view.cloudStudents.map(r => `<option value="${r.id}" ${src === r.id ? 'selected' : ''}>☁️ ${esc(r.name)}${r.exportedAt ? ' · ' + fmtDate(r.exportedAt) : ''}</option>`).join('')}${reports.map(r => `<option value="${r.id}" ${src === r.id ? 'selected' : ''}>📄 ${esc(r.name)} · ${fmtDate(r.exportedAt)}</option>`).join('')}</select></div>
+        <div class="field" style="margin:0;min-width:260px"><label>${t('source')}</label><select class="input" id="studentSource"><option value="local" ${src === 'local' ? 'selected' : ''}>${t('localDevice')}</option>${view.cloudStudents.map(r => `<option value="${esc(r.id)}" ${src === r.id ? 'selected' : ''}>☁️ ${esc(r.name)}${r.exportedAt ? ' · ' + fmtDate(r.exportedAt) : ''}</option>`).join('')}${reports.map(r => `<option value="${esc(r.id)}" ${src === r.id ? 'selected' : ''}>📄 ${esc(r.name)} · ${fmtDate(r.exportedAt)}</option>`).join('')}</select></div>
         <span class="spacer"></span>
         ${cloud.enabled ? `<button class="btn" data-action="loadCloud">${t('loadCloud')}</button>` : `<span class="small muted">${t('cloudOff')}</span>`}
         <label class="btn"><span>${t('importReport')}</span><input type="file" id="reportFile" accept="application/json" style="display:none"></label>
-        ${src !== 'local' && !src.startsWith('cloud_') ? `<button class="btn danger sm" data-action="deleteReport" data-id="${src}">${t('deleteReport')}</button>` : ''}
+        ${src !== 'local' && !src.startsWith('cloud_') ? `<button class="btn danger sm" data-action="deleteReport" data-id="${esc(src)}">${t('deleteReport')}</button>` : ''}
       </div></div>
       <div class="stat-grid">
         <div class="stat-card"><div class="k">${t('reportFrom')}</div><div class="v" style="font-size:22px">${esc(rep.name)}</div><div class="s">${rep.exportedAt ? t('exportedAt') + ' ' + fmtDate(rep.exportedAt) : ''}</div></div>
@@ -1548,7 +1647,7 @@
         <div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>
       </div>
       ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">👥 ${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
-        ${state.accounts.length ? `<table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${a.id}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
+        ${state.accounts.length ? `<table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${esc(a.id)}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
   }
 
   /* ---------------- Render ---------------- */
@@ -1583,18 +1682,18 @@
     if (obj.type === 'student-report') { addReport(obj); return 'report'; }
     if (!Array.isArray(obj.articles) && !Array.isArray(obj.vocab) && !obj.settings) throw new Error('bad');
     if (mode === 'replace') {
-      state = { settings: Object.assign(clone(SEED_DATA.settings), obj.settings || {}), articles: obj.articles || [], vocab: obj.vocab || [], hiddenVocab: obj.hiddenVocab || [], hiddenArticles: obj.hiddenArticles || [], progress: Object.assign(emptyProgress(), obj.progress || {}), studentReports: obj.studentReports || [], accounts: obj.accounts || state.accounts };
+      state = { settings: Object.assign(clone(SEED_DATA.settings), cleanSettings(obj.settings)), articles: cleanItems(obj.articles, 'article'), vocab: cleanItems(obj.vocab, 'vocab'), hiddenVocab: cleanIds(obj.hiddenVocab), hiddenArticles: cleanIds(obj.hiddenArticles), progress: cleanProgress(obj.progress), progressOwner: state.progressOwner || null, studentReports: cleanReports(obj.studentReports), accounts: Array.isArray(obj.accounts) ? cleanAccounts(obj.accounts) : state.accounts };
     } else {
-      if (obj.settings) { const keep = state.settings.teacherCode; state.settings = Object.assign(state.settings, obj.settings); if (!obj.settings.teacherCode) state.settings.teacherCode = keep; }
-      (obj.articles || []).forEach(a => { const i = state.articles.findIndex(x => x.id === a.id); if (i >= 0) state.articles[i] = a; else state.articles.push(a); });
-      (obj.vocab || []).forEach(v => { const i = state.vocab.findIndex(x => x.id === v.id || (!v.override && x.word.toLowerCase() === v.word.toLowerCase())); if (i >= 0) state.vocab[i] = Object.assign({}, state.vocab[i], v); else state.vocab.push(v); });
-      if (Array.isArray(obj.hiddenVocab)) state.hiddenVocab = Array.from(new Set((state.hiddenVocab || []).concat(obj.hiddenVocab)));
-      if (Array.isArray(obj.hiddenArticles)) state.hiddenArticles = Array.from(new Set((state.hiddenArticles || []).concat(obj.hiddenArticles)));
+      if (obj.settings) { const keep = state.settings.teacherCode, ns = cleanSettings(obj.settings); state.settings = Object.assign(state.settings, ns); if (!ns.teacherCode) state.settings.teacherCode = keep; }
+      cleanItems(obj.articles, 'article').forEach(a => { const i = state.articles.findIndex(x => x.id === a.id); if (i >= 0) state.articles[i] = a; else state.articles.push(a); });
+      cleanItems(obj.vocab, 'vocab').forEach(v => { const i = state.vocab.findIndex(x => x.id === v.id || (!v.override && x.word.toLowerCase() === v.word.toLowerCase())); if (i >= 0) state.vocab[i] = Object.assign({}, state.vocab[i], v); else state.vocab.push(v); });
+      if (Array.isArray(obj.hiddenVocab)) state.hiddenVocab = Array.from(new Set((state.hiddenVocab || []).concat(cleanIds(obj.hiddenVocab))));
+      if (Array.isArray(obj.hiddenArticles)) state.hiddenArticles = Array.from(new Set((state.hiddenArticles || []).concat(cleanIds(obj.hiddenArticles))));
     }
     save(); return 'data';
   }
   function addReport(obj) {
-    const rep = { id: uid('rep'), name: obj.studentName || t('roleStudent'), exportedAt: obj.exportedAt || new Date().toISOString(), progress: cleanProgress(obj.progress) };
+    const rep = { id: uid('rep'), name: typeof obj.studentName === 'string' && obj.studentName ? obj.studentName : t('roleStudent'), exportedAt: typeof obj.exportedAt === 'string' ? obj.exportedAt : new Date().toISOString(), progress: cleanProgress(obj.progress) };
     state.studentReports.unshift(rep); state.studentReports = state.studentReports.slice(0, 20); save();
     view.studentSource = rep.id;
   }
@@ -1841,9 +1940,10 @@
       if ($('#stTeacherEmail')) s.teacherEmail = $('#stTeacherEmail').value.trim();
       const code = ui.teacher && $('#stCode') ? $('#stCode').value.trim() : '';
       // in cloud mode the invite code lives only in the database, never in the shared material
-      if (cloud.configured && code && code !== cloud.teacherCode) {
-        if (code.length < 6) { toast(t('inviteTooShort')); return; }
-        if (cloud.enabled && ui.user && ui.user.cloud) cloud.sb.rpc('set_teacher_code', { new_code: code }).then(sbCheck).then(() => { cloud.teacherCode = code; toast(t('inviteSaved')); }, e => toast('☁️ ' + e.message));
+      if (cloud.configured && ui.teacher && code !== cloud.teacherCode) {
+        if (code && code.length < 8) { toast(t('inviteTooShort')); return; }
+        if (!code && !confirm(t('inviteClearConfirm'))) return;
+        if (cloud.enabled && ui.user.cloud) cloud.sb.rpc('set_teacher_code', { new_code: code }).then(sbCheck).then(() => { cloud.teacherCode = code; toast(t(code ? 'inviteSaved' : 'inviteCleared')); }, e => toast('☁️ ' + e.message));
       } else if (!cloud.configured && code) s.teacherCode = code;
       save(); toast(t('saved')); render();
     },
@@ -1876,7 +1976,7 @@
     else if (id === 'vocabUnit') view.vocabUnit = e.target.value, view.vocabPage = 0, render();
     else if (id === 'studentSource') view.studentSource = e.target.value, render();
     else if (id === 'importFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { try { const r = importJSON(obj, $('#importMode').value); toast(r === 'report' ? t('reportImported') : t('imported')); if (r === 'report' && ui.teacher) view.page = 'students'; render(); } catch (x) { toast(t('importFail')); } }); }
-    else if (id === 'reportFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { if (obj && obj.type === 'student-report') { addReport(obj); toast(t('reportImported')); render(); } else { try { importJSON(obj, 'merge'); toast(t('imported')); render(); } catch (x) { toast(t('importFail')); } } }); }
+    else if (id === 'reportFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { if (obj && obj.type === 'student-report') { addReport(obj); toast(t('reportImported')); render(); } else toast(t('notReport')); }); }
   });
   $('#app').addEventListener('input', e => {
     if (e.target.id === 'readSearch') { view.readFilter.q = e.target.value; const pos = e.target.selectionStart; render(); const i = $('#readSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }

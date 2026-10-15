@@ -44,9 +44,10 @@
 
 1. 到 <https://supabase.com> 註冊，按 **New project** 建立專案（Region 選 **Northeast Asia (Tokyo)**，資料庫密碼自己保管好）。
 2. 左側 **SQL Editor → New query**，把 `supabase/schema.sql` 整份貼上，按 **Run**。看到 Success 就好（重複執行也安全）。
-3. **Authentication → Sign In / Providers → Email**：
-   - 小班 / 家教建議把 **Confirm email** 關掉：註冊完馬上能用。Supabase 內建的寄信服務每小時只能寄很少封，全班同時註冊會卡住。
-   - 若要保留 email 確認，學生註冊後要先到信箱點連結，再回網站登入。
+3. **Authentication → Sign In / Providers → Email**，二選一：
+   - **保留 Confirm email（較安全）**：學生註冊後要先到信箱點確認連結，再回網站登入。Supabase 內建的寄信服務每小時只能寄幾封，全班同時註冊可能要分批。
+   - **關掉 Confirm email（較方便）**：註冊完馬上能用，但系統不會確認 email 是不是本人的，任何人都可以用別人的 email 註冊。老師要在「學生狀況」確認每個帳號都是自己的學生。
+   - 不論哪一種，**全班都註冊好之後**，建議把同一頁的 **Allow new users to sign up** 關掉，陌生人就不能再註冊；有新學生時再暫時打開。
 4. **Authentication → URL Configuration**：Site URL 填你的網址（例如 `https://funenglishlearning.com`），Redirect URLs 加上 `https://funenglishlearning.com/**` 和 `https://www.funenglishlearning.com/**`。
 5. 按上方 **Connect**（或 **Project Settings → API Keys**），複製：
    - **Project URL**（`https://xxxx.supabase.co`）
@@ -64,15 +65,18 @@
 7. 部署後，在網站上用你的 email 註冊（身分選學生即可）。再回 **SQL Editor** 執行這一行，把你自己升級成老師：
 
    ```sql
-   update public.profiles set role = 'teacher' where email = '你的email@example.com';
+   update public.profiles set role = 'teacher' where email = lower('你的email@example.com');
    ```
 
-   重新登入後就是老師。之後若有其他老師，到「設定」設定老師邀請碼（至少 6 個字），他們註冊時選「老師」並填這個碼即可。
+   下方結果顯示 `UPDATE 1` 才算成功（`UPDATE 0` 表示 email 打錯或還沒註冊）。登出再登入後就是老師。
+
+   之後若有其他老師，到「設定」設定老師邀請碼（至少 8 個字，建議 10 個字以上、不要用好猜的字），他們註冊時選「老師」並填這個碼即可。用完把邀請碼清空，就沒有人能再註冊成老師。有人連續猜錯 20 次，邀請碼會自動作廢，重設一個新的就好。
 
 雲端模式的安全規則（都在資料庫裡執行，網頁改不了）：
 
 - 學生只能讀寫自己的紀錄，看不到其他學生。
-- 老師看得到所有學生的紀錄，但不能改學生的紀錄；只有老師能改共用教材。
+- 老師看得到所有學生的紀錄，但不能改學生的紀錄；只有老師帳號能改共用教材。
+- 同一台電腦換人登入時，前一個人的紀錄不會跑到下一個人的帳號；登出時還沒上傳的練習，會在本人下次登入時補上傳。
 - 身分（學生 / 老師）由資料庫決定；邀請碼存在資料庫的 private 區，任何人都讀不到。
 - 學生把名字取成奇怪的程式碼也沒用：老師頁面一律當文字顯示。
 
