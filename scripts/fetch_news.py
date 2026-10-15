@@ -22,8 +22,7 @@ FEEDS = [
     ("CNN 10", "Student news", "http://rss.cnn.com/services/podcasting/cnn10/rss.xml"),
     ("BBC", "Science", "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml"),
     ("BBC", "Tech", "https://feeds.bbci.co.uk/news/technology/rss.xml"),
-    ("BBC", "Health", "https://feeds.bbci.co.uk/news/health/rss.xml"),
-    ("BBC", "Culture", "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"),
+    ("BBC", "Education", "https://feeds.bbci.co.uk/news/education/rss.xml"),
     ("NPR", "Science", "https://feeds.npr.org/1007/rss.xml"),
     ("NPR", "Health", "https://feeds.npr.org/1128/rss.xml"),
     ("NPR", "Tech", "https://feeds.npr.org/1019/rss.xml"),
@@ -32,9 +31,9 @@ FEEDS = [
     ("The Guardian", "Science", "https://www.theguardian.com/science/rss"),
     ("Taipei Times", "Taiwan", "https://www.taipeitimes.com/xml/index.rss"),
 ]
-CNN_SECTIONS = {"world": "World", "tech": "Tech", "health": "Health", "science": "Science", "climate": "Environment",
-                "travel": "Travel", "style": "Culture", "entertainment": "Culture", "sport": "Sports", "sports": "Sports",
-                "business": "Business", "weather": "Weather", "food": "Food"}
+CNN_SECTIONS = {"tech": "Tech", "health": "Health", "science": "Science", "climate": "Environment", "travel": "Travel",
+                "style": "Culture", "sport": "Sports", "sports": "Sports", "business": "Business", "weather": "Weather", "food": "Food"}
+SKIP_PREFIX = re.compile(r"^(video|watch|listen|podcast|live|opinion|quiz|in pictures)\b", re.I)
 PER_SOURCE_TOPIC = 3
 PER_SOURCE = 7
 MAX_ITEMS = 30
@@ -92,36 +91,38 @@ def parse_cnn_lite(data, source):
 
 
 def parse_feed(data, source, topic):
-    """Parse RSS 2.0 or Atom bytes (or the CNN Lite page) into a list of item dicts."""
-    if b"<rss" not in data[:2000] and b"<feed" not in data[:2000]:
-        return parse_cnn_lite(data, source)
+    """Parse RSS 2.0, RSS 1.0 (RDF) or Atom bytes into a list of item dicts."""
     root = ET.fromstring(data)
-    atom = "{http://www.w3.org/2005/Atom}"
+    local = lambda el: el.tag.rsplit("}", 1)[-1].lower()
+
+    def child(el, *names):
+        for c in el:
+            if local(c) in names:
+                return c
+        return None
+
     out = []
-    if root.tag.endswith("rss") or root.find("channel") is not None:
-        for it in root.iter("item"):
-            out.append({
-                "title": clean(text(it.find("title")), 200),
-                "link": text(it.find("link")),
-                "date": parse_date(text(it.find("pubDate"))),
-                "summary": clean(text(it.find("description"))),
-            })
-    else:
-        for it in root.iter(atom + "entry"):
-            link_el = it.find(atom + "link")
-            out.append({
-                "title": clean(text(it.find(atom + "title")), 200),
-                "link": link_el.get("href", "") if link_el is not None else "",
-                "date": parse_date(text(it.find(atom + "updated")) or text(it.find(atom + "published"))),
-                "summary": clean(text(it.find(atom + "summary")) or text(it.find(atom + "content"))),
-            })
+    # works for RSS 2.0 <item>, RSS 1.0 / RDF <item> (namespaced) and Atom <entry>
+    for it in root.iter():
+        if local(it) not in ("item", "entry"):
+            continue
+        link_el = child(it, "link")
+        link = (link_el.get("href") or (link_el.text or "")).strip() if link_el is not None else ""
+        date_el = child(it, "pubdate", "date", "updated", "published")
+        sum_el = child(it, "description", "summary", "content")
+        out.append({
+            "title": clean(text(child(it, "title")), 200),
+            "link": link,
+            "date": parse_date(text(date_el)),
+            "summary": clean(text(sum_el)),
+        })
     for o in out:
         o["source"], o["topic"] = source, topic
     return out
 
 
 def suitable(item, now):
-    if not item["title"] or not item["link"].startswith(("http://", "https://")):
+    if not item["title"] or not item["link"].startswith(("http://", "https://")) or SKIP_PREFIX.search(item["title"]):
         return False
     if AVOID.search(item["title"]) or AVOID.search(item["summary"]):
         return False
@@ -157,7 +158,8 @@ def main(out_path="news.json"):
     items, ok, failed = [], [], []
     for source, topic, url in FEEDS:
         try:
-            got = parse_feed(fetch(url), source, topic)
+            data = fetch(url)
+            got = parse_cnn_lite(data, source) if "lite.cnn.com" in url else parse_feed(data, source, topic)
             usable = sum(1 for g in got if suitable(g, now))
             print(f"  {source}/{topic or 'all'}: {len(got)} items, {usable} usable")
             items += got
