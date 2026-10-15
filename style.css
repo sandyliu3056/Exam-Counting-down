@@ -704,3 +704,26 @@ body.teacher .teacher-only.flex { display: flex; }
 .phr-ex { background: var(--bg-soft); border-radius: 10px; padding: 6px 10px; font-size: 15px; line-height: 1.55; }
 .phr-acts { margin-top: auto; }
 @media (max-width: 520px) { .phr-grid { grid-template-columns: 1fr; } }
+
+/* reading translation + translation practice */
+.passage-zh { white-space: normal; display: flex; flex-direction: column; gap: 10px; }
+.passage-zh .rp { background: transparent; padding: 0; }
+.passage-zh .rp-en { font-size: inherit; line-height: 1.8; }
+.tr-list { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+.tr-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 2px solid color-mix(in srgb, var(--line) 25%, transparent); background: var(--card); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.tr-row:hover { border-color: var(--line); }
+.tr-zh { flex: 1; }
+.tr-mark { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: var(--bg-soft); color: var(--ink-soft); font-weight: 800; }
+.tr-mark.ok { background: #d8f3e2; color: #1f7a45; }
+.tr-mark.bad { background: #fbe0dd; color: #b03a2e; }
+.tr-card { display: flex; flex-direction: column; gap: 12px; }
+.tr-q { font-size: 22px; font-weight: 700; line-height: 1.5; }
+.tr-hint .chip { margin: 2px; }
+.tr-input { width: 100%; box-sizing: border-box; font-size: 18px; line-height: 1.6; padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--ink); resize: vertical; }
+.tr-input[readonly] { background: var(--bg-soft); }
+.tr-result { display: flex; flex-direction: column; gap: 10px; }
+.tr-keys { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tr-model { background: #eef8f1; border: 2px solid #9fd3b0; border-radius: 14px; padding: 10px 14px; }
+.tr-model p { margin: 4px 0 8px; font-size: 17px; }
+.tr-point { background: var(--bg-soft); border-radius: 12px; padding: 8px 12px; }
+@media (max-width: 520px) { .tr-q { font-size: 19px; } }

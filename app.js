@@ -377,6 +377,68 @@
     </div>`;
   }
 
+  /* ---- Translation practice (中譯英): window.TRANSLATION_ITEMS from translate.js ---- */
+  const TR_GROUPS = ['trG1', 'trG2', 'trG3', 'trG4', 'trG5', 'trG6', 'trG7', 'trG8'];
+  const trItems = () => window.TRANSLATION_ITEMS || [];
+  const trGroupOf = it => Math.min(TR_GROUPS.length, Math.max(1, Math.ceil((parseInt(String(it.id).replace(/\D/g, ''), 10) || 1) / 25)));
+  const trRec = id => (state.progress.translate || {})[id];
+  function trFiltered() {
+    const f = view.trf || (view.trf = { group: 0, level: '', status: '' });
+    return trItems().filter(it => (!f.group || trGroupOf(it) === f.group) && (!f.level || it.level === f.level)
+      && (!f.status || (f.status === 'todo' ? !trRec(it.id) : (trRec(it.id) && !trRec(it.id).lastOk))));
+  }
+  function trKeyHits(it, answer) { return (it.keys || []).map(k => ({ k, hit: noteRe(k.en).test(answer || '') })); }
+  function pageTranslate() {
+    const items = trItems();
+    if (!items.length) return `<h2 class="section-title" style="margin-top:8px">✍️ ${t('trTitle')}</h2><div class="card"><p class="muted" style="margin:0">${t('trNoItems')}</p></div>`;
+    if (view.tr) return view.tr.i >= view.tr.ids.length ? trSummary() : trStage();
+    const f = view.trf || (view.trf = { group: 0, level: '', status: '' });
+    const S = trStats(state.progress), list = trFiltered();
+    const mark = it => { const r = trRec(it.id); return r ? (r.lastOk ? '<span class="tr-mark ok">✓</span>' : '<span class="tr-mark bad">✗</span>') : '<span class="tr-mark">·</span>'; };
+    return `<h2 class="section-title" style="margin-top:8px">✍️ ${t('trTitle')}</h2><p class="section-sub">${tf('trSub', { n: items.length })}</p>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="k">${t('trPractised')}</div><div class="v">${S.done} <span class="small muted">/ ${items.length}</span></div></div>
+        <div class="stat-card"><div class="k">${t('trRight')}</div><div class="v">${S.right}</div><div class="s">${S.done ? Math.round(S.right / S.done * 100) + '%' : ''}</div></div>
+        <div class="stat-card"><div class="k">${t('trToReview')}</div><div class="v">${S.wrong.length}</div></div>
+      </div>
+      <div class="card">
+        <div class="phr-cats" style="padding-top:0">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<button class="phr-cat ${f.group === g ? 'on' : ''}" data-action="trGroup" data-v="${g}"><b>${g ? t(TR_GROUPS[g - 1]) : t('newsAll')}</b><span>${g ? items.filter(it => trGroupOf(it) === g).length : items.length}</span></button>`).join('')}</div>
+        <div class="row">
+          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="trStatus" data-v="${v}">${l}</button>`).join('')}</div>
+          <span class="spacer"></span>
+          <button class="btn accent" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
+        </div>
+      </div>
+      <div class="tr-list">${list.map(it => `<button class="tr-row" data-action="trOne" data-id="${it.id}">${mark(it)}<span class="tr-zh">${esc(it.zh)}</span><span class="chip">${esc(it.level || '')}</span></button>`).join('') || `<p class="muted">${t('trNoMatch')}</p>`}</div>`;
+  }
+  function trStage() {
+    const s = view.tr, it = trItems().find(x => x.id === s.ids[s.i]);
+    if (!it) { view.tr = null; return pageTranslate(); }
+    if (s.i >= s.ids.length) return '';
+    const top = `<div class="row" style="margin:8px 0 12px"><button class="btn sm ghost" data-action="trExit">${t('back')}</button><span class="spacer"></span><span class="small muted">${tf('trProgress', { i: s.i + 1, n: s.ids.length })} · ✓ ${s.right}</span></div>`;
+    const hits = s.checked ? trKeyHits(it, s.answer) : [];
+    return `${top}<div class="card tr-card">
+      <div class="news-meta"><span class="chip">${esc(t(TR_GROUPS[trGroupOf(it) - 1]))}</span><span class="chip">${esc(it.level || '')}</span><span class="small muted">${esc(it.id)}</span></div>
+      <div class="tr-q">${esc(it.zh)}</div>
+      ${s.checked ? '' : `<div class="tr-hint">${s.hint ? `💡 ${(it.keys || []).map(k => `<span class="chip"><span class="en">${esc(k.en)}</span> ${esc(k.zh)}</span>`).join(' ')}` : `<button class="btn sm ghost" data-action="trHint">💡 ${t('trShowHint')}</button>`}</div>`}
+      <textarea id="trInput" class="tr-input en" rows="3" placeholder="${t('trPlaceholder')}" ${s.checked ? 'readonly' : ''} autocapitalize="sentences" spellcheck="false">${esc(s.answer || '')}</textarea>
+      ${s.checked ? `<div class="tr-result">
+          <div class="tr-keys">${hits.map(h => `<span class="chip ${h.hit ? 'ok' : 'bad'}">${h.hit ? '✓' : '✗'} <span class="en">${esc(h.k.en)}</span> ${esc(h.k.zh)}</span>`).join(' ')}<span class="small muted">${tf('trKeysHit', { n: hits.filter(h => h.hit).length, t: hits.length })}</span></div>
+          <div class="tr-model"><b>${t('trModel')}</b><p class="en">${esc(it.en)} <button class="btn sm ghost" data-action="speak" data-word="${esc(it.en)}" aria-label="${t('speak')}">🔊</button></p>
+            ${(it.alt || []).length ? `<b>${t('trAlso')}</b>${it.alt.map(a => `<p class="en">${esc(a)}</p>`).join('')}` : ''}</div>
+          ${it.point ? `<div class="tr-point">📐 ${esc(it.point)}</div>` : ''}
+          <p class="small muted" style="margin:4px 0 0">${t('trSelfCheck')}</p>
+          <div class="row"><button class="btn accent" data-action="trMark" data-ok="1">✅ ${t('trSelfRight')}</button><button class="btn" data-action="trMark" data-ok="0">❌ ${t('trSelfWrong')}</button></div>
+        </div>` : `<div class="row"><button class="btn accent" data-action="trCheck">${t('trCheck')}</button><span class="small muted">${t('trCtrlEnter')}</span></div>`}
+    </div>`;
+  }
+  function trSummary() {
+    const s = view.tr;
+    return `<div class="card center tr-card"><div class="big-icon">🎉</div><h2>${t('trDone')}</h2><p class="big">${s.right} / ${s.ids.length}</p>
+      <div class="row" style="justify-content:center"><button class="btn accent" data-action="trStart">${t('trAgain')}</button>${s.right < s.ids.length ? `<button class="btn" data-action="trRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="trExit">${t('back')}</button></div></div>`;
+  }
+
   /* ---- Phrases tab: the 2,800+ built-in phrases by category ---- */
   function pagerHTML(cur, pages, action, labelOf) {
     if (pages <= 1) return '';
@@ -501,7 +563,7 @@
   const termRe = s => new RegExp(`\\b${s.trim().split(/\s+/).map(escRe).join('[\\s,]+')}\\b`, 'gi');
 
   // Phrases from the built-in list as regular expressions: verb forms, "be" forms, and gaps for sb/sth/one's.
-  const IRREG = { be: 'am is are was were been being', have: 'has had having', do: 'does did done doing', go: 'goes went gone going', get: 'gets got gotten getting', make: 'made', take: 'took taken', give: 'gave given', come: 'came', keep: 'kept', bring: 'brought', find: 'found', hold: 'held', stand: 'stood', catch: 'caught', think: 'thought', run: 'ran running', put: 'putting', set: 'setting', cut: 'cutting', let: 'letting', break: 'broke broken', fall: 'fell fallen', grow: 'grew grown', show: 'shown', see: 'saw seen', know: 'knew known', tell: 'told', say: 'said', pay: 'paid', lead: 'led', leave: 'left', sit: 'sat sitting', wear: 'wore worn', throw: 'threw thrown', draw: 'drew drawn', write: 'wrote written', drive: 'drove driven', eat: 'ate eaten', begin: 'began begun beginning', deal: 'dealt', feel: 'felt', hang: 'hung', lay: 'laid', lie: 'lay lain lying', lose: 'lost', mean: 'meant', meet: 'met', send: 'sent', sell: 'sold', spend: 'spent', stick: 'stuck', strike: 'struck', teach: 'taught', buy: 'bought', fight: 'fought', win: 'won winning', speak: 'spoke spoken', wake: 'woke woken', rise: 'rose risen', ride: 'rode ridden', fly: 'flew flown', shake: 'shook shaken', choose: 'chose chosen', forget: 'forgot forgotten', hide: 'hid hidden', build: 'built', light: 'lit', shoot: 'shot', blow: 'blew blown', dig: 'dug digging', swim: 'swam swum swimming', stop: 'stopped stopping', drop: 'dropped dropping', plan: 'planned planning', shut: 'shutting', hit: 'hitting', step: 'stepped stepping', carry: 'carried carries', try: 'tried tries', rely: 'relied relies', apply: 'applied applies', worry: 'worried worries' };
+  const IRREG = { be: "am is are was were been being isn't aren't wasn't weren't", can: "can't cannot could couldn't", will: "won't would wouldn't", understand: 'understood', become: 'became', sleep: 'slept', wake: 'woke woken', have: 'has had having', do: 'does did done doing', go: 'goes went gone going', get: 'gets got gotten getting', make: 'made', take: 'took taken', give: 'gave given', come: 'came', keep: 'kept', bring: 'brought', find: 'found', hold: 'held', stand: 'stood', catch: 'caught', think: 'thought', run: 'ran running', put: 'putting', set: 'setting', cut: 'cutting', let: 'letting', break: 'broke broken', fall: 'fell fallen', grow: 'grew grown', show: 'shown', see: 'saw seen', know: 'knew known', tell: 'told', say: 'said', pay: 'paid', lead: 'led', leave: 'left', sit: 'sat sitting', wear: 'wore worn', throw: 'threw thrown', draw: 'drew drawn', write: 'wrote written', drive: 'drove driven', eat: 'ate eaten', begin: 'began begun beginning', deal: 'dealt', feel: 'felt', hang: 'hung', lay: 'laid', lie: 'lay lain lying', lose: 'lost', mean: 'meant', meet: 'met', send: 'sent', sell: 'sold', spend: 'spent', stick: 'stuck', strike: 'struck', teach: 'taught', buy: 'bought', fight: 'fought', win: 'won winning', speak: 'spoke spoken', wake: 'woke woken', rise: 'rose risen', ride: 'rode ridden', fly: 'flew flown', shake: 'shook shaken', choose: 'chose chosen', forget: 'forgot forgotten', hide: 'hid hidden', build: 'built', light: 'lit', shoot: 'shot', blow: 'blew blown', dig: 'dug digging', swim: 'swam swum swimming', stop: 'stopped stopping', drop: 'dropped dropping', plan: 'planned planning', shut: 'shutting', hit: 'hitting', step: 'stepped stepping', carry: 'carried carries', try: 'tried tries', rely: 'relied relies', apply: 'applied applies', worry: 'worried worries' };
   const NOT_VERB = new Set('a an the in on at by for of to as from with out up off over under into onto all so no not and or but than more most less least very too much many such what how when where who which one each every this that these those it its after before about around'.split(' '));
   const POSS = "(?:my|your|his|her|its|our|their|one's|[a-z]+'s)";
   const PARTICLES = new Set('on up off out down in over away back around about through along apart aside'.split(' '));
@@ -511,6 +573,7 @@
     if (/e$/.test(v)) { f.add(v.slice(0, -1) + 'ing'); f.add(v + 'd'); }
     if (/(s|x|z|ch|sh|o)$/.test(v)) f.add(v + 'es');
     if (/[^aeiou]y$/.test(v)) { f.add(v.slice(0, -1) + 'ies'); f.add(v.slice(0, -1) + 'ied'); }
+    if (/[^aeiou][aeiou][bdgklmnprt]$/.test(v)) { f.add(v + v.slice(-1) + 'ed'); f.add(v + v.slice(-1) + 'ing'); }  // jog → jogging
     (IRREG[v] || '').split(' ').filter(Boolean).forEach(x => f.add(x));
     return Array.from(f).sort((a, b) => b.length - a.length);
   }
@@ -521,16 +584,19 @@
     const gap = x => /^(sb|sth|sb\/sth|someone|something|somebody)$/.test(x);
     while (toks.length && gap(toks[toks.length - 1])) toks.pop();
     if (!toks.length) return /$^/g;
+    // every content word may be inflected, and up to 4 extra words may come in between ("cares deeply about")
+    const sep = "(?:[\\s,]+[\\w'’-]+){0,4}[\\s,]+";
     let src = '\\b';
     toks.forEach((x, i) => {
       if (gap(x)) { src += "(?:[\\w'’-]+[\\s,]+){1,3}"; return; }
+      x = { "can't": 'can', cannot: 'can', "won't": 'will', "isn't": 'be', "aren't": 'be', "don't": 'do', "doesn't": 'do', "didn't": 'do' }[x] || x;
       let w;
       if (/^(one's|sb's)$/.test(x)) w = POSS;
-      else if ((i === 0 || toks.length === 1) && /^[a-z]+$/.test(x) && !NOT_VERB.has(x)) w = `(?:${verbForms(x).join('|')})`;
-      else w = escRe(x);
-      src += w + (i < toks.length - 1 ? '[\\s,]+' : '');
+      else if (/^[a-z]+$/.test(x) && (!NOT_VERB.has(x) || IRREG[x])) w = `(?:${verbForms(x).map(escRe).join('|').replace(/'/g, "['’]")})`;
+      else w = escRe(x).replace(/'/g, "['’]");
+      src += w + (i < toks.length - 1 ? (gap(toks[i + 1]) ? '[\\s,]+' : sep) : '');
     });
-    return new RegExp(src + '\\b', 'gi');
+    return new RegExp(src + '(?![\\w])', 'gi');
   }
   let PHRASE_RES = null;
   function phraseRes() {
@@ -759,10 +825,18 @@
       ${state.articles.length ? toc + groups : `<p class="muted">${t('noArticles')}</p>`}`;
   }
 
+  // Chinese translation of a reading passage: the teacher's own (passage_zh) or the built-in one (reading-zh.js)
+  function readingZh(a) {
+    const en = String(a.passage || '').split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
+    if (a.passage_zh) { const zh = String(a.passage_zh).split(/\n\s*\n/).map(x => x.trim()).filter(Boolean); return zh.length ? { title: a.title_zh || '', en, zh } : null; }
+    const b = !a.edited && (window.READING_ZH || {})[a.id];
+    return b && b.paragraphs.length === en.length ? { title: b.title_zh || '', en, zh: b.paragraphs } : null;
+  }
   function articleView() {
     const a = state.articles.find(x => x.id === view.articleId);
     if (!a) { view.articleId = null; return pageReading(); }
     const L = 'ABCD';
+    const Z = readingZh(a), showZh = !!Z && (view.readZh != null ? view.readZh : view.submitted);  // translation shows after answering, or on request
     const qs = a.questions.map((q, qi) => {
       const chosen = view.answers[qi];
       return `<div class="question"><div class="q">${qi + 1}. ${esc(q.q)}</div>
@@ -783,8 +857,11 @@
     return `<button class="btn ghost sm" data-action="backList">${t('back')}</button>
       <div class="card" style="margin-top:12px">
         <div class="row" style="align-items:flex-start"><h2 style="margin:0 0 4px;flex:1">${esc(a.title)}</h2>${bmBtn('articles', a.id)}</div>
+        ${showZh && Z.title ? `<div class="reader-title-zh" style="margin:-2px 0 6px">${esc(Z.title)}</div>` : ''}
         <div class="muted small" style="margin-bottom:12px">${esc(unitLabel(a.level || ''))} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
-        <div class="passage ${ui.font === 'clean' ? 'clean' : ''}">${esc(a.passage)}</div>
+        ${Z ? `<div class="reader-tools" style="margin-bottom:10px"><div class="seg" role="group" aria-label="${t('newsTransLabel')}" style="margin-left:0"><button class="seg-btn ${showZh ? 'on' : ''}" data-action="readZh" data-v="1" aria-pressed="${showZh}">${t('newsBoth')}</button><button class="seg-btn ${!showZh ? 'on' : ''}" data-action="readZh" data-v="0" aria-pressed="${!showZh}">${t('newsEnOnly')}</button></div>${!view.submitted && !showZh ? `<span class="small muted">${t('readZhHint')}</span>` : ''}</div>` : ''}
+        ${showZh ? `<div class="passage passage-zh ${ui.font === 'clean' ? 'clean' : ''}">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
+          : `<div class="passage ${ui.font === 'clean' ? 'clean' : ''}">${esc(a.passage)}</div>`}
         ${qs}
         ${view.submitted ? scoreHtml : `<div class="center" style="margin-top:18px"><button class="btn accent" data-action="submitQuiz" style="font-size:18px;padding:12px 30px">${t('submit')}</button></div>`}
       </div>`;
@@ -806,6 +883,7 @@
           <div class="field"><label>${t('tagsLbl')}</label><input type="text" id="edTags" value="${esc((a.tags || []).join(', '))}"></div>
         </div>
         <div class="field"><label>${t('passage')}</label><textarea id="edPassage" style="min-height:220px">${esc(a.passage)}</textarea></div>
+        <div class="field"><label>${t('passageZh')}</label><textarea id="edPassageZh" style="min-height:160px" placeholder="${t('passageZhHint')}">${esc(a.passage_zh != null ? a.passage_zh : (() => { const z = !a.edited && (window.READING_ZH || {})[a.id]; return z ? z.paragraphs.join('\n\n') : ''; })())}</textarea></div>
         <h3>${t('qList')}</h3>
         <div id="qEditors">${qHtml}</div>
         <div class="row"><button class="btn ghost" data-action="addQ">${t('addQ')}</button><span class="spacer"></span><button class="btn accent" data-action="saveArticle">${t('save')}</button></div>
@@ -816,6 +894,7 @@
     a.title = $('#edTitle').value.trim(); a.level = $('#edLevel').value.trim();
     a.tags = $('#edTags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean);
     a.passage = $('#edPassage').value;
+    if ($('#edPassageZh')) a.passage_zh = $('#edPassageZh').value.trim();
     $$('#qEditors .q-editor').forEach((box, i) => {
       const q = a.questions[i];
       q.q = $('[data-f=q]', box).value.trim();
@@ -1221,6 +1300,7 @@
       <div class="card"><h3 style="margin-top:0">🧠 ${t('weakWords')}</h3>
         ${A.weakList.length ? `<table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
+      ${(() => { const T = trStats(rep.progress); return T.done ? `<div class="card"><h3 style="margin-top:0">✍️ ${t('reportTranslate')} <span class="small muted">${T.right} / ${T.done} · ${tf('trDoneOf', { n: T.done, t: T.total })}</span></h3>${T.wrong.length ? `<div class="list">${T.wrong.slice(0, 20).map(x => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title" style="font-size:16px">${esc(x.zh)}</div><div class="small en">${t('trYours')}：<span class="chip bad">${esc(x.answer || '—')}</span></div><div class="small en">${t('trModel')}：<span class="chip ok">${esc(x.en)}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: x.tries - x.ok })}</span></div>`).join('')}</div>` : `<p class="muted">${t('trAllRight')}</p>`}</div>` : ''; })()}
       ${(() => { const b = rep.progress.bookmarks || { vocab: [], articles: [] }; const ws = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean); const as = b.articles.map(id => state.articles.find(a => a.id === id)).filter(Boolean); return (ws.length || as.length) ? `<div class="card bookmark-card"><span class="ribbon">🔖</span><h3 style="margin-top:0">${t('bookmarks')}</h3>${as.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${as.map(a => `<span class="bm-tag">${esc(a.title)}</span>`).join('')}</div></div>` : ''}${ws.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b><div class="bm-list">${ws.map(v => `<span class="bm-tag word en">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div></div>` : ''}</div>` : ''; })()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(rep.progress, VOCAB)}<h3>${t('activity')}</h3>${heatmap(rep.progress)}
         <h3>${t('timeline')}</h3>${A.timeline.length ? `<div class="list">${A.timeline.map(x => `<div class="list-item"><span class="small muted">${fmtDate(x.date)}</span><span>${esc(x.text)}</span></div>`).join('')}</div>` : `<p class="muted">${t('noData')}</p>`}</div>`;
@@ -1258,7 +1338,7 @@
   /* ---------------- Render ---------------- */
   function render() {
     updateExamChip();
-    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
+    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
 
     $('#app').innerHTML = (pages[view.page] || pageHome)();
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
@@ -1330,16 +1410,35 @@
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
     vocabGo(el) { view.vocabPage = +el.dataset.p; render(); },
+    trGroup(el) { view.trf.group = +el.dataset.v; render(); },
+    trLevel(el) { view.trf.level = el.dataset.v; render(); },
+    trStatus(el) { view.trf.status = el.dataset.v; render(); },
+    trStart() { const ids = shuffleArr(trFiltered().map(x => x.id)).slice(0, 10); if (!ids.length) { view.tr = null; render(); return; } view.tr = { ids, i: 0, right: 0, wrong: [] }; window.scrollTo({ top: 0 }); render(); },
+    trOne(el) { view.tr = { ids: [el.dataset.id], i: 0, right: 0, wrong: [] }; window.scrollTo({ top: 0 }); render(); },
+    trRedo() { const ids = view.tr.wrong.slice(); view.tr = { ids, i: 0, right: 0, wrong: [] }; render(); },
+    trExit() { view.tr = null; render(); },
+    trHint() { view.tr.hint = true; view.tr.answer = ($('#trInput') || {}).value || ''; render(); const i = $('#trInput'); if (i) i.focus(); },
+    trCheck() { const v = (($('#trInput') || {}).value || '').trim(); if (!v) { toast(t('trTypeFirst')); return; } Object.assign(view.tr, { answer: v, checked: true }); render(); },
+    trMark(el) {
+      const s = view.tr, id = s.ids[s.i], ok = el.dataset.ok === '1', p = state.progress;
+      p.translate = p.translate || {};
+      const r = p.translate[id] || { tries: 0, ok: 0 };
+      p.translate[id] = { tries: r.tries + 1, ok: r.ok + (ok ? 1 : 0), lastOk: ok, answer: s.answer, last: new Date().toISOString() };
+      if (ok) s.right++; else s.wrong.push(id);
+      Object.assign(s, { i: s.i + 1, answer: '', checked: false, hint: false });
+      bumpDay(); save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
     phrGo(el) { view.phr.page = +el.dataset.p; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
     phrCat(el) { Object.assign(view.phr, { cat: el.dataset.v, page: 0 }); render(); },
     phrLevel(el) { Object.assign(view.phr, { level: el.dataset.v, page: 0 }); render(); },
     phrBm() { Object.assign(view.phr, { bm: !view.phr.bm, page: 0 }); render(); },
     phrFlash() { Object.assign(view.flashSetup, { mode: 'due', unit: view.phr.cat || '@phrase' }); view.flash = null; view.quiz = null; nav('flashcards'); },
     phrQuiz() { view.quizSetup.unit = view.phr.cat || '@phrase'; view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
-    openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); nav('reading'); },
+    openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); nav('reading'); },
     // reading
-    openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
+    openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
     backList() { view.articleId = null; render(); },
+    readZh(el) { view.readZh = el.dataset.v === '1'; render(); },
     choose(el) { if (view.submitted) return; view.answers[+el.dataset.q] = +el.dataset.o; render(); },
     submitQuiz() {
       const a = state.articles.find(x => x.id === view.articleId);
@@ -1352,7 +1451,7 @@
       bumpDay(); save(); render();
       setTimeout(() => { const s = $('.score-banner'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50);
     },
-    retry() { view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
+    retry() { view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
     newArticle() { view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
     editArticle(el) { view.editing = clone(state.articles.find(x => x.id === el.dataset.id)); render(); },
     deleteArticle(el) { if (!confirm(t('confirmDel'))) return; state.articles = state.articles.filter(x => x.id !== el.dataset.id); save(); render(); },
@@ -1517,6 +1616,7 @@
     if (e.target.id === 'vocabSearch') { view.vocabSearch = e.target.value; view.vocabPage = 0; const pos = e.target.selectionStart; render(); const i = $('#vocabSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
   });
   $('#app').addEventListener('keydown', e => {
+    if (e.target.id === 'trInput' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); actions.trCheck(); }
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
   document.addEventListener('keydown', e => {

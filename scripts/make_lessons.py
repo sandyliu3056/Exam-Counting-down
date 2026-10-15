@@ -129,7 +129,9 @@ QUOTE = re.compile(r'[“"]([^”"]{1,600})[”"]')
 
 
 IRREGULAR = {
-    "be": "am is are was were been being", "have": "has had having", "do": "does did done doing",
+    "be": "am is are was were been being isn't aren't wasn't weren't 's 're 'm", "can": "can't cannot could couldn't",
+    "will": "won't would wouldn't 'll", "must": "mustn't", "should": "shouldn't", "may": "might",
+    "understand": "understood", "become": "became", "sleep": "slept", "wake": "woke woken", "fly": "flew flown flies", "have": "has had having", "do": "does did done doing",
     "go": "goes went gone going", "get": "got gotten", "make": "made", "take": "took taken", "give": "gave given",
     "come": "came", "keep": "kept", "bring": "brought", "find": "found", "hold": "held", "stand": "stood",
     "catch": "caught", "think": "thought", "run": "ran running", "put": "putting", "set": "setting", "cut": "cutting",
@@ -144,6 +146,7 @@ IRREGULAR = {
 }
 NOT_VERB = set("a an the in on at by for of to as from with out up off over under into all so no not and or but".split())
 GAP = {"sb", "sth", "sb/sth", "someone", "something", "somebody"}
+NEGATIVE = {"can't": "can", "cannot": "can", "won't": "will", "isn't": "be", "aren't": "be", "don't": "do", "doesn't": "do", "didn't": "do"}
 POSS = r"(?:my|your|his|her|its|our|their|one's|[a-z]+['’]s)"
 
 
@@ -167,17 +170,21 @@ def note_pattern(note):
     while toks and toks[-1] in GAP:
         toks.pop()
     parts = []
+    # every content word may be inflected, and up to 4 extra words may come between the words of a
+    # phrase ("cares deeply about", "made a lot of good friends", "wasn't used to")
+    sep = r"(?:[\s,]+[\w'’-]+){0,4}[\s,]+"
     for i, t in enumerate(toks):
         if t in GAP:
             parts.append(r"(?:[\w'’-]+[\s,]+){1,3}")
             continue
+        t = NEGATIVE.get(t, t)  # "can't help" also matches "couldn't help"
         if t in ("one's", "sb's"):
             word = POSS
-        elif (i == 0 or len(toks) == 1) and re.fullmatch(r"[a-z]+", t) and t not in NOT_VERB:
+        elif re.fullmatch(r"[a-z]+", t) and (t not in NOT_VERB or t in IRREGULAR):
             word = "(?:" + "|".join(map(re.escape, forms(t))) + ")"
         else:
-            word = re.escape(t)
-        parts.append(word + (r"[\s,]+" if i < len(toks) - 1 else ""))
+            word = re.escape(t).replace("'", "['’]")
+        parts.append(word + (sep if i < len(toks) - 1 and toks[i + 1] not in GAP else (r"[\s,]+" if i < len(toks) - 1 else "")))
     return r"\b" + "".join(parts) + r"\b" if parts else None
 
 
