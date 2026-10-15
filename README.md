@@ -25,7 +25,7 @@
 ## 帳號與權限
 
 - 右上角「登入 / 註冊」。身分分為 **學生** 與 **老師**。
-- 註冊老師帳號需要 **老師邀請碼**，預設為 `teacher2028`，老師登入後可在「設定」更改。
+- 註冊老師帳號需要 **老師邀請碼**。本機模式預設為 `teacher2028`，老師登入後可在「設定」更改；雲端模式的第一個老師用 SQL 升級（見下方），邀請碼由老師自己設定。
 - 只有老師登入後才看得到「學生狀況」分頁與編輯功能（新增文章、單字）。
 - 學生不登入也能練習，但建議登入，紀錄才會對應到名字。
 
@@ -38,43 +38,46 @@
 - 老師在自己的裝置出題後，到「設定 → 只匯出教材」，把 JSON 檔傳給學生，學生用「匯入 JSON」即可更新教材。
 - 學生在「學習紀錄 → 傳送學習紀錄給老師」，iPhone 會直接開分享選單（LINE / Email）。老師在「學生狀況 → 匯入學生傳來的紀錄」查看。
 
-### 2. 雲端模式（選配，Firebase 免費方案）
+### 2. 雲端模式（選配，Supabase 免費方案）
 
-填好 Firebase 後，老師與學生各自註冊，學生的練習紀錄會自動同步，老師在任何裝置登入都能看到所有學生；老師改教材，學生打開就是最新版。
+設定 Supabase 後，老師與學生各自註冊，學生的練習紀錄會自動同步，老師在任何裝置登入都能看到所有學生；老師改教材，學生登入後就是最新版。
 
-1. 到 <https://console.firebase.google.com> 建立專案。
-2. **Authentication → Sign-in method** 啟用「電子郵件 / 密碼」。
-3. **Firestore Database** 建立資料庫（正式模式），然後在「規則」貼上：
+1. 到 <https://supabase.com> 註冊，按 **New project** 建立專案（Region 選 **Northeast Asia (Tokyo)**，資料庫密碼自己保管好）。
+2. 左側 **SQL Editor → New query**，把 `supabase/schema.sql` 整份貼上，按 **Run**。看到 Success 就好（重複執行也安全）。
+3. **Authentication → Sign In / Providers → Email**：
+   - 小班 / 家教建議把 **Confirm email** 關掉：註冊完馬上能用。Supabase 內建的寄信服務每小時只能寄很少封，全班同時註冊會卡住。
+   - 若要保留 email 確認，學生註冊後要先到信箱點連結，再回網站登入。
+4. **Authentication → URL Configuration**：Site URL 填你的網址（例如 `https://funenglishlearning.com`），Redirect URLs 加上 `https://funenglishlearning.com/**` 和 `https://www.funenglishlearning.com/**`。
+5. 按上方 **Connect**（或 **Project Settings → API Keys**），複製：
+   - **Project URL**（`https://xxxx.supabase.co`）
+   - **Publishable key**（`sb_publishable_` 開頭），或舊版的 **anon public** key
+6. 打開 `supabase-config.js`，把 `window.SUPABASE_CONFIG = null;` 換成：
 
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       function isTeacher() {
-         return request.auth != null &&
-           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
-       }
-       match /users/{uid} {
-         allow read: if request.auth != null;
-         allow create, update: if request.auth != null && request.auth.uid == uid;
-       }
-       match /progress/{uid} {
-         allow read: if request.auth != null && (request.auth.uid == uid || isTeacher());
-         allow write: if request.auth != null && request.auth.uid == uid;
-       }
-       match /content/{doc} {
-         allow read: if true;
-         allow write: if isTeacher();
-       }
-     }
-   }
+   ```js
+   window.SUPABASE_CONFIG = {
+     url: "https://xxxx.supabase.co",
+     anonKey: "sb_publishable_xxxx"
+   };
    ```
 
-4. **專案設定 → 一般 → 你的應用程式 → 新增網頁應用程式**，複製 `firebaseConfig`。
-5. 打開 `firebase-config.js`，把 `window.FIREBASE_CONFIG = null;` 換成你的設定物件。
-6. **Authentication → Settings → 授權網域** 加入你的 GitHub Pages 網域（例如 `你的帳號.github.io`）。
+   這兩個值本來就是公開的（網頁一定看得到），資料安全靠第 2 步的規則保護。**絕對不要**把 `service_role` / `secret` key 放進網站或傳給任何人。
+7. 部署後，在網站上用你的 email 註冊（身分選學生即可）。再回 **SQL Editor** 執行這一行，把你自己升級成老師：
 
-> 雲端模式的邀請碼檢查在前端進行，適合家教 / 小班使用；若要更嚴格，可在 Firestore 規則內再限制老師帳號的 email。
+   ```sql
+   update public.profiles set role = 'teacher' where email = '你的email@example.com';
+   ```
+
+   重新登入後就是老師。之後若有其他老師，到「設定」設定老師邀請碼（至少 6 個字），他們註冊時選「老師」並填這個碼即可。
+
+雲端模式的安全規則（都在資料庫裡執行，網頁改不了）：
+
+- 學生只能讀寫自己的紀錄，看不到其他學生。
+- 老師看得到所有學生的紀錄，但不能改學生的紀錄；只有老師能改共用教材。
+- 身分（學生 / 老師）由資料庫決定；邀請碼存在資料庫的 private 區，任何人都讀不到。
+- 學生把名字取成奇怪的程式碼也沒用：老師頁面一律當文字顯示。
+
+> 免費專案若連續 7 天沒有人使用會自動暫停（寒暑假可能發生），到 Supabase 後台按 **Restore** 即可恢復。暫停超過 90 天就不能一鍵恢復，放長假前後記得登入看看。
+> 想把某位學生改成老師、刪除帳號：Supabase 後台 **Table Editor → profiles** 改 `role`，或 **Authentication → Users** 刪除（紀錄會一起刪除）。
 
 ## 部署到 GitHub Pages
 
@@ -110,7 +113,9 @@
 | `daily.js` | 每日一句（610 句） |
 | `docs/tve-english-exam-guide.pdf` | 統測英文題型分析與時間分配（考試計時頁可下載） |
 | `i18n.js` | 中 / 英介面文字 |
-| `firebase-config.js` | 雲端模式設定（預設關閉） |
+| `supabase-config.js` | 雲端模式設定（預設關閉） |
+| `supabase/schema.sql` | 雲端模式的資料表與安全規則（貼到 Supabase SQL Editor 執行） |
+| `vendor/` | 內附的第三方程式（Supabase、html2pdf，MIT 授權，授權檔在同資料夾） |
 | `manifest.json` / `sw.js` / `icons/` | PWA（加入主畫面、離線） |
 
 ## 考試日期

@@ -17,11 +17,30 @@
     return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
   };
   const addDays = (s, n) => { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + n); return todayStr(d); };
-  const fmtDate = (iso) => iso ? iso.replace('T', ' ').slice(0, 16) : '';
+  const fmtDate = (iso) => iso ? esc(String(iso).replace('T', ' ').slice(0, 16)) : '';
   const shuffleArr = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   /* ---------------- State ---------------- */
   const emptyProgress = () => ({ cards: {}, readingQuizzes: [], vocabQuizzes: [], days: {}, bookmarks: { vocab: [], articles: [] } });
+  // Records from other devices (cloud sync, imported files) are shown on the teacher's pages. Keep their shape and
+  // force every number and date to be one, so nothing inside a record can turn into HTML.
+  function cleanProgress(p) {
+    const obj = x => (x && typeof x === 'object' && !Array.isArray(x)) ? x : {}, arr = x => Array.isArray(x) ? x.filter(y => y && typeof y === 'object') : [];
+    const num = x => { const n = Number(x); return Number.isFinite(n) ? n : 0; }, isDay = d => /^\d{4}-\d{2}-\d{2}$/.test(d);
+    const when = d => typeof d === 'string' && /^[0-9T:.+\-Z ]{4,40}$/.test(d) ? d : '';
+    const idx = x => x == null || x === '' || !Number.isFinite(Number(x)) ? null : Number(x);
+    const out = Object.assign(emptyProgress(), obj(p));
+    out.days = {}; Object.entries(obj(p && p.days)).forEach(([d, n]) => { if (isDay(d)) out.days[d] = Math.max(0, num(n)); });
+    const cards = {}; Object.entries(obj(out.cards)).forEach(([id, c]) => { c = obj(c); cards[id] = Object.assign({}, c, { box: Math.min(3, Math.max(0, Math.round(num(c.box)))), seen: num(c.seen), correct: num(c.correct), wrong: num(c.wrong), last: when(c.last) || null, due: isDay(c.due) ? c.due : todayStr() }); }); out.cards = cards;
+    out.readingQuizzes = arr(out.readingQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs),
+      answers: arr(r.answers).map(a => Object.assign({}, a, { qi: num(a.qi), chosen: idx(a.chosen), correct: num(a.correct) })) }));
+    out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong) }));
+    ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok) }, k === 'mcq' ? { chosen: idx(r.chosen) } : {}); }); out[k] = m; });
+    if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
+    const b = obj(out.bookmarks); out.bookmarks = { vocab: arr0(b.vocab), articles: arr0(b.articles) };
+    return out;
+  }
+  const arr0 = x => Array.isArray(x) ? x.filter(y => typeof y === 'string') : [];
 
   function load() {
     let data = null;
@@ -147,8 +166,9 @@
     return Math.round((ex - td) / 86400000);
   }
 
-  /* ---------------- Auth (local or Firebase) ---------------- */
-  const cloud = { enabled: false, ready: null, auth: null, db: null, syncTimer: null };
+  /* ---------------- Auth (local or Supabase) ---------------- */
+  const cloud = { configured: false, enabled: false, ready: null, sb: null, syncTimer: null, seq: 0, lastContent: '', teacherCode: '' };
+  const LS_UNSYNCED = 'tve_exam_unsynced_v1';
   async function sha(str) {
     if (window.crypto && crypto.subtle && window.TextEncoder) {
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -156,87 +176,115 @@
     }
     let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return 'x' + (h >>> 0).toString(16);
   }
-  const loadScript = (src) => new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = rej; document.head.appendChild(el); });
+  const loadScript = (src) => new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = () => rej(new Error('cannot load ' + src)); document.head.appendChild(el); });
+  const sbCheck = ({ data, error }) => { if (error) throw error; return data; };
   function initCloud() {
-    const cfg = window.FIREBASE_CONFIG;
-    if (!cfg || !cfg.apiKey || !cfg.projectId) return;
-    const V = '10.12.0';
+    const cfg = window.SUPABASE_CONFIG;
+    if (!cfg || !/^https:\/\/[^\s/]+/.test(cfg.url || '') || !cfg.anonKey) return;
+    cloud.configured = true;
     cloud.ready = (async () => {
-      await loadScript(`https://www.gstatic.com/firebasejs/${V}/firebase-app-compat.js`);
-      await loadScript(`https://www.gstatic.com/firebasejs/${V}/firebase-auth-compat.js`);
-      await loadScript(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore-compat.js`);
-      firebase.initializeApp(cfg); cloud.auth = firebase.auth(); cloud.db = firebase.firestore(); cloud.enabled = true;
-      await new Promise(res => { const off = cloud.auth.onAuthStateChanged(async u => { off(); if (u) await cloudAfterLogin(u); else if (ui.user && ui.user.cloud) { ui.user = null; saveUi(); } res(); }); });
+      if (!window.supabase) await loadScript('vendor/supabase.js');
+      cloud.sb = window.supabase.createClient(cfg.url, cfg.anonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+      const { data } = await cloud.sb.auth.getSession();
+      cloud.enabled = true;
+      const u = data && data.session && data.session.user;
+      // changes made on this device that never reached the cloud win over the cloud copy
+      if (u) await cloudAfterLogin(u, localStorage.getItem(LS_UNSYNCED) === u.id);
+      else if (ui.user) { ui.user = null; saveUi(); }
       try { await pullContent(); } catch (e) { console.warn(e); }
       applyUi(); render();
-    })().catch(e => { console.warn('Firebase init failed', e); cloud.enabled = false; toast('Firebase: ' + e.message); });
+    })().catch(e => { console.warn('Supabase init failed', e); cloud.enabled = false; toast('☁️ ' + e.message); });
   }
-  async function cloudAfterLogin(u) {
-    const snap = await cloud.db.collection('users').doc(u.uid).get();
-    const prof = snap.exists ? snap.data() : { name: u.email, role: 'student' };
-    ui.user = { id: u.uid, email: u.email, name: prof.name || u.email, role: prof.role || 'student', cloud: true }; saveUi();
-    if (ui.user.role === 'student') {
-      const ps = await cloud.db.collection('progress').doc(u.uid).get();
-      if (ps.exists && ps.data().progress) state.progress = Object.assign(emptyProgress(), ps.data().progress);
-      if (!state.settings.studentName) state.settings.studentName = ui.user.name;
-      localStorage.setItem(LS_DATA, JSON.stringify(state));
-    }
+  async function cloudAfterLogin(u, keepLocal) {
+    const prof = sbCheck(await cloud.sb.from('profiles').select('name, role').eq('id', u.id).maybeSingle()) || {};
+    ui.user = { id: u.id, email: u.email, name: prof.name || u.email, role: prof.role === 'teacher' ? 'teacher' : 'student', cloud: true }; saveUi();
+    // the invite code typed at sign-up is only needed once, by the database
+    if (u.user_metadata && u.user_metadata.teacher_code) cloud.sb.auth.updateUser({ data: { teacher_code: null } }).catch(() => {});
+    if (ui.teacher) cloud.teacherCode = sbCheck(await cloud.sb.rpc('get_teacher_code')) || '';
+    const row = sbCheck(await cloud.sb.from('progress').select('data').eq('user_id', u.id).maybeSingle());
+    if (row && row.data && Object.keys(row.data).length && !keepLocal) state.progress = cleanProgress(row.data);
+    else { await pushProgress(); localStorage.removeItem(LS_UNSYNCED); }
+    if (!ui.teacher && !state.settings.studentName) state.settings.studentName = ui.user.name;
+    localStorage.setItem(LS_DATA, JSON.stringify(state));
   }
+  const CONTENT_SETTINGS = ['examName', 'examNameEn', 'examDate', 'motto', 'teacherEmail'];
   async function pullContent() {
-    if (!cloud.enabled) return;
-    const snap = await cloud.db.collection('content').doc('main').get();
-    if (snap.exists) {
-      const c = snap.data();
-      if (c.articles) state.articles = c.articles; if (c.vocab) state.vocab = c.vocab; if (c.hiddenVocab) state.hiddenVocab = c.hiddenVocab; if (c.hiddenArticles) state.hiddenArticles = c.hiddenArticles; rebuildVocab(); rebuildArticles();
-      if (c.settings) state.settings = Object.assign(state.settings, c.settings);
+    if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
+    const row = sbCheck(await cloud.sb.from('content').select('data').eq('id', 'main').maybeSingle());
+    const c = row && row.data;
+    if (c && Object.keys(c).length) {
+      if (Array.isArray(c.articles)) state.articles = c.articles; if (Array.isArray(c.vocab)) state.vocab = c.vocab;
+      if (Array.isArray(c.hiddenVocab)) state.hiddenVocab = c.hiddenVocab; if (Array.isArray(c.hiddenArticles)) state.hiddenArticles = c.hiddenArticles;
+      // an empty teacher setting never wipes what the student typed (e.g. the teacher email)
+      if (c.settings) CONTENT_SETTINGS.forEach(k => { const v = c.settings[k]; if (typeof v === 'string' && v) state.settings[k] = v; });
+      rebuildVocab(); rebuildArticles();
       localStorage.setItem(LS_DATA, JSON.stringify(state));
+      cloud.lastContent = JSON.stringify(contentPayload());
     } else if (ui.teacher) { await pushContent(); }
   }
+  function contentPayload() {
+    const settings = {}; CONTENT_SETTINGS.forEach(k => { settings[k] = state.settings[k] || ''; });
+    return { articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [], settings };
+  }
   async function pushContent() {
-    if (!cloud.enabled || !ui.teacher) return;
-    const { examName, examNameEn, examDate, motto, teacherCode } = state.settings, teacherEmail = state.settings.teacherEmail || '';
-    await cloud.db.collection('content').doc('main').set({ articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [], settings: { examName, examNameEn, examDate, motto, teacherCode, teacherEmail }, updatedAt: new Date().toISOString() });
+    if (!cloud.enabled || !ui.teacher || !ui.user.cloud) return;
+    const data = contentPayload(), json = JSON.stringify(data);
+    if (json === cloud.lastContent) return;
+    sbCheck(await cloud.sb.from('content').upsert({ id: 'main', data }));
+    cloud.lastContent = json;
   }
   async function pushProgress() {
     if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
-    await cloud.db.collection('progress').doc(ui.user.id).set({ name: ui.user.name, progress: state.progress, updatedAt: new Date().toISOString() });
+    sbCheck(await cloud.sb.from('progress').upsert({ user_id: ui.user.id, data: state.progress }));
+  }
+  async function syncNow() {
+    const seq = cloud.seq;
+    await Promise.all([pushProgress(), pushContent()]);
+    if (seq === cloud.seq) localStorage.removeItem(LS_UNSYNCED);
   }
   function scheduleSync() {
     if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
+    cloud.seq++; localStorage.setItem(LS_UNSYNCED, ui.user.id);
     clearTimeout(cloud.syncTimer);
-    cloud.syncTimer = setTimeout(() => { Promise.all([pushProgress(), pushContent()]).catch(e => toast('☁️ ' + e.message)); }, 1500);
+    cloud.syncTimer = setTimeout(() => { syncNow().catch(e => toast('☁️ ' + e.message)); }, 1500);
   }
   async function loadCloudStudents() {
-    const qs = await cloud.db.collection('users').where('role', '==', 'student').get();
-    const list = [];
-    for (const d of qs.docs) {
-      const ps = await cloud.db.collection('progress').doc(d.id).get();
-      list.push({ id: 'cloud_' + d.id, name: d.data().name || d.data().email || d.id, email: d.data().email || '', exportedAt: ps.exists ? ps.data().updatedAt : null, progress: Object.assign(emptyProgress(), ps.exists ? ps.data().progress : {}) });
-    }
-    view.cloudStudents = list;
+    const [profs, rows] = await Promise.all([
+      cloud.sb.from('profiles').select('id, email, name').eq('role', 'student').order('name').then(sbCheck),
+      cloud.sb.from('progress').select('user_id, data, updated_at').then(sbCheck)]);
+    const byId = new Map(rows.map(r => [r.user_id, r]));
+    view.cloudStudents = profs.map(p => { const r = byId.get(p.id); return { id: 'cloud_' + p.id, name: p.name || p.email || t('roleStudent'), email: p.email || '', exportedAt: r ? r.updated_at : null, progress: cleanProgress(r && r.data) }; });
+  }
+  async function cloudReady() {
+    if (cloud.ready) await cloud.ready;
+    if (cloud.configured && !cloud.enabled) throw new Error(t('cloudDown'));
+    return cloud.enabled;
   }
 
   async function registerUser({ email, pass, name, role, code }) {
     if (!email || !pass || !name) throw new Error(t('needFields'));
-    if (role === 'teacher' && code !== (state.settings.teacherCode || '')) throw new Error(t('badCode'));
-    if (cloud.enabled) {
-      const cred = await cloud.auth.createUserWithEmailAndPassword(email, pass);
-      await cloud.db.collection('users').doc(cred.user.uid).set({ name, role, email, createdAt: new Date().toISOString() });
-      await cloudAfterLogin(cred.user); await pullContent();
-      return;
+    if (await cloudReady()) {
+      if (role === 'teacher' && !code) throw new Error(t('badCode'));
+      const meta = role === 'teacher' ? { name, teacher_code: code } : { name };
+      const data = sbCheck(await cloud.sb.auth.signUp({ email, password: pass, options: { data: meta, emailRedirectTo: location.origin + location.pathname } }));
+      if (!data.session) { const e = new Error(t('checkEmail')); e.notice = true; throw e; }
+      await cloudAfterLogin(data.user); await pullContent();
+      return role === 'teacher' && !ui.teacher ? 'teacherCodeRejected' : null;
     }
+    if (role === 'teacher' && code !== (state.settings.teacherCode || '')) throw new Error(t('badCode'));
     const key = email.trim().toLowerCase();
     if (state.accounts.some(a => a.email === key)) throw new Error(t('userExists'));
     const acc = { id: uid('u'), email: key, name, role, hash: await sha(key + ':' + pass), createdAt: new Date().toISOString() };
     state.accounts.push(acc); save();
     ui.user = { id: acc.id, email: key, name, role, cloud: false }; saveUi();
     if (role === 'student' && !state.settings.studentName) { state.settings.studentName = name; save(); }
+    return null;
   }
   async function loginUser({ email, pass }) {
     if (!email || !pass) throw new Error(t('needFields'));
-    if (cloud.enabled) {
-      const cred = await cloud.auth.signInWithEmailAndPassword(email, pass);
-      await cloudAfterLogin(cred.user); await pullContent();
+    if (await cloudReady()) {
+      const data = sbCheck(await cloud.sb.auth.signInWithPassword({ email, password: pass }));
+      await cloudAfterLogin(data.user); await pullContent();
       return;
     }
     const key = email.trim().toLowerCase();
@@ -246,7 +294,13 @@
     if (acc.role === 'student' && !state.settings.studentName) { state.settings.studentName = acc.name; save(); }
   }
   async function logoutUser() {
-    if (cloud.enabled && cloud.auth.currentUser) { try { await Promise.all([pushProgress(), pushContent()]); } catch (e) { } await cloud.auth.signOut(); }
+    if (cloud.enabled && ui.user && ui.user.cloud) {
+      clearTimeout(cloud.syncTimer);
+      try { await syncNow(); } catch (e) { }
+      // 'local' signs out this device only, so a student's phone stays signed in
+      try { await cloud.sb.auth.signOut({ scope: 'local' }); } catch (e) { }
+      localStorage.removeItem(LS_UNSYNCED); cloud.lastContent = ''; cloud.teacherCode = '';
+    }
     ui.user = null; saveUi(); view.cloudStudents = [];
     if (view.page === 'students') view.page = 'home';
   }
@@ -1481,7 +1535,7 @@
           <div class="field"><label>${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>
         </div>
         <div class="field"><label>${t('mottoLbl')}</label><input type="text" id="stMotto" value="${esc(s.motto || '')}"></div>
-        <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(s.teacherCode || '')}" autocomplete="off"></div>
+        <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(cloud.configured ? cloud.teacherCode : (s.teacherCode || ''))}" autocomplete="off"${cloud.configured ? ` placeholder="${t('inviteCodeCloudPh')}"` : ''}></div>
         <div class="row"><span class="muted small">${t('teacherHint')}</span><span class="spacer"></span><button class="btn accent" data-action="saveSettings">${t('save')}</button></div>
       </div>
       <div class="card"><h3 style="margin-top:0">${t('dataTitle')}</h3><p class="small muted">${t('dataSub')}</p>
@@ -1493,7 +1547,7 @@
         </div>
         <div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>
       </div>
-      ${ui.teacher && !cloud.enabled ? `<div class="card"><h3 style="margin-top:0">👥 ${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
+      ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">👥 ${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
         ${state.accounts.length ? `<table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${a.id}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
   }
 
@@ -1540,7 +1594,7 @@
     save(); return 'data';
   }
   function addReport(obj) {
-    const rep = { id: uid('rep'), name: obj.studentName || t('roleStudent'), exportedAt: obj.exportedAt || new Date().toISOString(), progress: Object.assign(emptyProgress(), obj.progress || {}) };
+    const rep = { id: uid('rep'), name: obj.studentName || t('roleStudent'), exportedAt: obj.exportedAt || new Date().toISOString(), progress: cleanProgress(obj.progress) };
     state.studentReports.unshift(rep); state.studentReports = state.studentReports.slice(0, 20); save();
     view.studentSource = rep.id;
   }
@@ -1785,7 +1839,12 @@
       if ($('#stExamDate').value) s.examDate = $('#stExamDate').value;
       s.studentName = $('#stStudent').value.trim(); s.motto = $('#stMotto').value.trim();
       if ($('#stTeacherEmail')) s.teacherEmail = $('#stTeacherEmail').value.trim();
-      if (ui.teacher && $('#stCode')) s.teacherCode = $('#stCode').value.trim() || s.teacherCode;
+      const code = ui.teacher && $('#stCode') ? $('#stCode').value.trim() : '';
+      // in cloud mode the invite code lives only in the database, never in the shared material
+      if (cloud.configured && code && code !== cloud.teacherCode) {
+        if (code.length < 6) { toast(t('inviteTooShort')); return; }
+        if (cloud.enabled && ui.user && ui.user.cloud) cloud.sb.rpc('set_teacher_code', { new_code: code }).then(sbCheck).then(() => { cloud.teacherCode = code; toast(t('inviteSaved')); }, e => toast('☁️ ' + e.message));
+      } else if (!cloud.configured && code) s.teacherCode = code;
       save(); toast(t('saved')); render();
     },
     exportAll() { download(`tve-exam-all-${todayStr()}.json`, state); },
@@ -1918,8 +1977,10 @@
     $$('.auth-tab').forEach(b => b.classList.toggle('active', b.dataset.auth === view.authMode));
     modal.classList.toggle('login-mode', view.authMode === 'login');
     $('#authSubmit').textContent = view.authMode === 'login' ? t('loginBtn') : t('registerBtn');
-    $('#authMode').textContent = cloud.enabled ? t('authCloudNote') : t('authLocalNote');
+    $('#authMode').textContent = cloud.configured ? t('authCloudNote') : t('authLocalNote');
     $('#auPass').autocomplete = view.authMode === 'login' ? 'current-password' : 'new-password';
+    // Supabase needs 6+ characters for new passwords; older local accounts may still use 4
+    $('#auPass').minLength = view.authMode === 'login' ? 1 : cloud.configured ? 6 : 4;
     $('.teacher-code-field').classList.toggle('hidden', $('#auRole').value !== 'teacher' || view.authMode === 'login');
     const wasOpen = !modal.classList.contains('hidden'); modal.classList.remove('hidden'); if (!wasOpen) setTimeout(() => { if (!modal.contains(document.activeElement)) $('#auEmail').focus(); }, 50);
   }
@@ -1936,14 +1997,17 @@
     const btn = $('#authSubmit'); btn.disabled = true;
     try {
       const email = $('#auEmail').value.trim(), pass = $('#auPass').value;
+      let note = null;
       if (view.authMode === 'login') await loginUser({ email, pass });
-      else await registerUser({ email, pass, name: $('#auName').value.trim(), role: $('#auRole').value, code: $('#auCode').value.trim() });
-      closeAuth(); toast(tf('welcome', { n: ui.user.name }));
+      else note = await registerUser({ email, pass, name: $('#auName').value.trim(), role: $('#auRole').value, code: $('#auCode').value.trim() });
+      closeAuth(); toast(note ? t(note) : tf('welcome', { n: ui.user.name }));
       if (ui.teacher && view.page === 'home') view.page = 'students';
       applyUi(); render();
     } catch (err) {
-      const map = { 'auth/email-already-in-use': t('userExists'), 'auth/invalid-credential': t('loginFail'), 'auth/user-not-found': t('loginFail'), 'auth/wrong-password': t('loginFail'), 'auth/invalid-email': t('needFields'), 'auth/weak-password': t('needFields') };
-      toast(map[err.code] || err.message);
+      // sign-up worked but the email must be confirmed first: keep the form open on the login tab with the note
+      if (err.notice) { openAuth('login'); $('#authMode').textContent = err.message; toast(err.message); return; }
+      const map = { user_already_exists: 'userExists', email_exists: 'userExists', invalid_credentials: 'loginFail', weak_password: 'weakPass', email_not_confirmed: 'emailNotConfirmed', over_email_send_rate_limit: 'tooManyTries', over_request_rate_limit: 'tooManyTries', email_address_invalid: 'badEmail' };
+      toast(map[err.code] ? t(map[err.code]) : err.message);
     } finally { btn.disabled = false; }
   });
 
