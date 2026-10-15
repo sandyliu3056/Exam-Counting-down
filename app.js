@@ -289,6 +289,7 @@
     const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.9;
     speechSynthesis.speak(u);
   }
+  function speakStop() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 
   /* ---------------- Pages ---------------- */
   function pageHome() {
@@ -388,10 +389,178 @@
     } catch (e) { news.status = 'error'; }
     if (view.page === 'news') render();
   }
-  let hardWords = null;
+  /* ---- News study notes: key words, phrases and grammar in a story ---- */
+  let WORDMAP = null;
+  function lemmas(w) {
+    w = w.toLowerCase(); const out = [w];
+    const add = x => { if (x.length > 2 && !out.includes(x)) out.push(x); };
+    if (/ies$/.test(w)) add(w.slice(0, -3) + 'y');
+    if (/(s|x|ch|sh)es$/.test(w)) add(w.slice(0, -2));
+    if (/[^s]s$/.test(w)) add(w.slice(0, -1));
+    if (/ied$/.test(w)) add(w.slice(0, -3) + 'y');
+    if (/ed$/.test(w)) { add(w.slice(0, -1)); add(w.slice(0, -2)); if (/(.)\1ed$/.test(w)) add(w.slice(0, -3)); }
+    if (/ing$/.test(w)) { add(w.slice(0, -3) + 'e'); add(w.slice(0, -3)); if (/(.)\1ing$/.test(w)) add(w.slice(0, -4)); }
+    if (/ly$/.test(w)) add(w.slice(0, -2));
+    return out;
+  }
+  function findWord(w, minLevel = 0) {
+    if (!WORDMAP) { WORDMAP = {}; LIBRARY.forEach(v => { if (v.type === 'word' && /^[a-z]+$/.test(v.word) && !WORDMAP[v.word]) WORDMAP[v.word] = v; }); }
+    for (const x of lemmas(w)) { const v = WORDMAP[x]; if (v) return v.level >= minLevel ? v : null; }
+    return null;
+  }
   function highlightWords(title) {
-    if (!hardWords) { hardWords = {}; LIBRARY.forEach(v => { if (v.type === 'word' && v.level >= 3 && /^[a-z]+$/.test(v.word)) hardWords[v.word] = v; }); }
-    return esc(title).replace(/\b([A-Za-z]{4,})\b/g, (m, w) => { const v = hardWords[w.toLowerCase()]; return v ? `<span class="nw" title="${esc(v.zh)}">${m}</span>` : m; });
+    return esc(title).replace(/\b([A-Za-z]{4,})\b/g, (m, w) => { const v = findWord(w, 3); return v ? `<span class="nw" title="${esc(v.zh)}">${m}</span>` : m; });
+  }
+  const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Wrap matches of each term in <span class="..">, escaping everything else. Longer terms win where they overlap.
+  function markTerms(text, terms) {
+    const hits = [];
+    terms.forEach(tm => { tm.re.lastIndex = 0; let m; while ((m = tm.re.exec(text))) { if (!m[0]) { tm.re.lastIndex++; continue; } hits.push({ s: m.index, e: m.index + m[0].length, tm }); } });
+    hits.sort((a, b) => (b.e - b.s) - (a.e - a.s) || a.s - b.s);
+    const used = []; hits.forEach(h => { if (!used.some(u => h.s < u.e && u.s < h.e)) used.push(h); });
+    used.sort((a, b) => a.s - b.s);
+    let out = '', i = 0;
+    used.forEach(h => { out += esc(text.slice(i, h.s)) + `<span class="${h.tm.cls}"${h.tm.title ? ` title="${esc(h.tm.title)}"` : ''}>${esc(text.slice(h.s, h.e))}</span>`; i = h.e; });
+    return out + esc(text.slice(i));
+  }
+  const termRe = s => new RegExp(`\\b${s.trim().split(/\s+/).map(escRe).join('[\\s,]+')}\\b`, 'gi');
+
+  // Phrases from the built-in list as regular expressions: verb forms, "be" forms, and gaps for sb/sth/one's.
+  const IRREG = { be: 'am is are was were been being', have: 'has had having', do: 'does did done doing', go: 'goes went gone going', get: 'gets got gotten getting', make: 'made', take: 'took taken', give: 'gave given', come: 'came', keep: 'kept', bring: 'brought', find: 'found', hold: 'held', stand: 'stood', catch: 'caught', think: 'thought', run: 'ran running', put: 'putting', set: 'setting', cut: 'cutting', let: 'letting', break: 'broke broken', fall: 'fell fallen', grow: 'grew grown', show: 'shown', see: 'saw seen', know: 'knew known', tell: 'told', say: 'said', pay: 'paid', lead: 'led', leave: 'left', sit: 'sat sitting', wear: 'wore worn', throw: 'threw thrown', draw: 'drew drawn', write: 'wrote written', drive: 'drove driven', eat: 'ate eaten', begin: 'began begun beginning', deal: 'dealt', feel: 'felt', hang: 'hung', lay: 'laid', lie: 'lay lain lying', lose: 'lost', mean: 'meant', meet: 'met', send: 'sent', sell: 'sold', spend: 'spent', stick: 'stuck', strike: 'struck', teach: 'taught', buy: 'bought', fight: 'fought', win: 'won winning', speak: 'spoke spoken', wake: 'woke woken', rise: 'rose risen', ride: 'rode ridden', fly: 'flew flown', shake: 'shook shaken', choose: 'chose chosen', forget: 'forgot forgotten', hide: 'hid hidden', build: 'built', light: 'lit', shoot: 'shot', blow: 'blew blown', dig: 'dug digging', swim: 'swam swum swimming', stop: 'stopped stopping', drop: 'dropped dropping', plan: 'planned planning', shut: 'shutting', hit: 'hitting', step: 'stepped stepping', carry: 'carried carries', try: 'tried tries', rely: 'relied relies', apply: 'applied applies', worry: 'worried worries' };
+  const NOT_VERB = new Set('a an the in on at by for of to as from with out up off over under into onto all so no not and or but than more most less least very too much many such what how when where who which one each every this that these those it its after before about around'.split(' '));
+  const POSS = "(?:my|your|his|her|its|our|their|one's|[a-z]+'s)";
+  const PARTICLES = new Set('on up off out down in over away back around about through along apart aside'.split(' '));
+  const PHRASE_SKIP = new Set(['come to sth', 'come to']);
+  function verbForms(v) {
+    const f = new Set([v, v + 's', v + 'ed', v + 'd', v + 'ing']);
+    if (/e$/.test(v)) { f.add(v.slice(0, -1) + 'ing'); f.add(v + 'd'); }
+    if (/(s|x|z|ch|sh|o)$/.test(v)) f.add(v + 'es');
+    if (/[^aeiou]y$/.test(v)) { f.add(v.slice(0, -1) + 'ies'); f.add(v.slice(0, -1) + 'ied'); }
+    (IRREG[v] || '').split(' ').filter(Boolean).forEach(x => f.add(x));
+    return Array.from(f).sort((a, b) => b.length - a.length);
+  }
+  let PHRASE_RES = null;
+  function phraseRes() {
+    if (PHRASE_RES) return PHRASE_RES;
+    PHRASE_RES = [];
+    LIBRARY.forEach(v => {
+      if (v.type !== 'phrase') return;
+      const toks = v.word.replace(/\([^)]*\)/g, ' ').replace(/[…]|\.\.\./g, ' ').split(/\s+/).map(x => x.replace(/[,;:!?]+$/, '')).filter(Boolean);
+      const isGap = x => /^(sb|sth|sb\/sth|someone|something|somebody|V|v-ing|V-ing|A|B|Z)$/.test(x);
+      if (PHRASE_SKIP.has(v.word)) return;
+      while (toks.length && isGap(toks[0])) toks.shift();
+      const tailGap = toks.length && isGap(toks[toks.length - 1]);
+      while (toks.length && isGap(toks[toks.length - 1])) toks.pop();
+      const lit = toks.filter(x => !isGap(x) && !/^(one's|sb's)$/.test(x));
+      if (lit.length < 2 || lit.join('').length < 6) return;
+      const parts = toks.map((x, i) => {
+        if (isGap(x)) return null;
+        if (/^(one's|sb's)$/.test(x)) return POSS;
+        const lx = x.toLowerCase();
+        if (i === 0 && !NOT_VERB.has(lx) && /^[a-z]+$/.test(lx)) return `(?:${verbForms(lx).join('|')})`;
+        return escRe(x);
+      });
+      let src = '\\b';
+      // "V sb on/up/off…" with nothing after the particle: allow only a one-word object (him, it, Tom) to avoid false hits
+      const shortGap = !tailGap && PARTICLES.has(toks[toks.length - 1]);
+      parts.forEach((p, i) => {
+        if (p === null) { src += (shortGap && i === parts.length - 2) ? "[\\w'’-]+[\\s,]+" : "(?:[\\w'’-]+[\\s,]+){1,3}"; return; }
+        src += p + (i < parts.length - 1 ? '[\\s,]+' : '');
+      });
+      src += '\\b';
+      try { PHRASE_RES.push({ v, re: new RegExp(src, 'gi'), len: lit.join(' ').length }); } catch (e) { /* skip odd entries */ }
+    });
+    return PHRASE_RES;
+  }
+  const PP = "(?:\\w{3,}ed|known|made|given|taken|seen|found|built|shown|done|held|written|sold|told|paid|kept|left|brought|thought|caught|taught|bought|chosen|driven|eaten|fallen|forgotten|hidden|broken|spoken|stolen|worn|won|grown|thrown|drawn|led|met|hurt|cut|set|put|lost|sent|spent|struck|hung|begun)";
+  const FEEL = '(?:interested|excited|worried|tired|bored|surprised|pleased|scared|married|concerned|related|based|supposed|used|need|feed|seed|speed|indeed|hundred|bleed|breed|proceed|succeed|exceed)\\b';
+  const NOT_EST = '(?:forest|interest|west|request|guest|protest|contest|honest|rest|test|nest|chest|quest|harvest|modest|digest|suggest|arrest|manifest|conquest|priest|pest|vest|crest|unrest|everest|midwest|southwest|northwest|latest)\\b';
+  const GRAMMAR = [
+    ['passive', new RegExp(`\\b(?:am|is|are|was|were|be|been|being|gets?|got)\\s+(?:\\w+ly\\s+)?(?!${FEEL})${PP}\\b`, 'i')],
+    ['perfect', new RegExp(`\\b(?:has|have|had|'ve|’ve)\\s+(?:not\\s+|never\\s+|already\\s+|just\\s+|ever\\s+|\\w+ly\\s+)?(?:been|become|come|gone|run|${PP})\\b`, 'i')],
+    ['relative', /\b[A-Za-z]+,?\s+(?:who|which|whose|whom)\b/],
+    ['compare', new RegExp(`\\b(?:more|less)\\s+\\w{3,}\\s+than\\b|\\b(?!rather|other)\\w{2,}er\\s+than\\b|\\bthe\\s+(?:most|least)\\s+\\w+|\\bthe\\s+(?!${NOT_EST})(?:best|worst|\\w{2,}est)\\b|\\bas\\s+\\w+\\s+as\\b`, 'i')],
+    ['modal', /\b(?:[Cc]an|[Cc]ould|[Mm]ight|[Mm]ust|[Ss]hould|[Ww]ould|[Mm]ay)\s+(?:not\s+|never\s+|also\s+|still\s+)?(?:be\s+)?[a-z]+\b/],
+    ['future', /\b(?:[Ww]ill|[Ww]on't|'ll|’ll)\s+(?:not\s+|never\s+|also\s+|soon\s+)?[a-z]+\b|\b(?:is|are|am)\s+going\s+to\s+[a-z]+\b/],
+    ['ifClause', /\b(?:[Ii]f|[Uu]nless)\b/],
+    ['whTo', /\b(?:[Hh]ow|[Ww]hat|[Ww]here|[Ww]hen|[Ww]hether)\s+to\s+[a-z]+\b/],
+    ['thereBe', /\b[Tt]here\s+(?:is|are|was|were|will be|has been|have been)\b/],
+    ['gerund', /^(?!(?:During|Nothing|Something|Anything|Everything|Morning|Evening|Spring|String|King|Thing|Wedding|Breaking|Ceiling|Bring|Sing|Ring|Swing|Wing|Darling|Sterling|Beijing|Viking|Pudding)\b)[A-Z][a-z]{2,}ing\b[^,.;:?!]{0,60}?\b(?:is|was|has|can|could|may|might|will|would|should|must|helps|makes|takes|gives|seems|becomes|means|keeps|requires|improves|lets)\b/],
+    ['question', /\?\s*["”’']?$/],
+  ];
+  const gramText = k => { const g = t('gram')[k] || ['', '']; return { point: g[0], explain: g[1] }; };
+  function analyzeStory(it) {
+    const text = [it.title, it.summary].filter(Boolean).join('\n');
+    const words = [], seenW = new Set();
+    // Skip capitalised names (Turkey, Monarch, Legend of Zelda) unless the word starts a sentence or the headline is in Title Case
+    const tw = (it.title || '').match(/[A-Za-z]+/g) || [];
+    const titleCase = tw.length > 2 && tw.filter(w => /^[A-Z]/.test(w)).length / tw.length > 0.6;
+    const re = /[A-Za-z]{4,}/g; let m;
+    while ((m = re.exec(text))) {
+      const w = m[0], before = text.slice(Math.max(0, m.index - 3), m.index);
+      const starts = m.index === 0 || /[.!?:\n"“‘']\s*$/.test(before);
+      if (/^[A-Z]/.test(w) && !starts && !(titleCase && m.index < (it.title || '').length)) continue;
+      const v = findWord(w, 3); if (v && !seenW.has(v.word)) { seenW.add(v.word); words.push({ v, form: w }); }
+    }
+    const phrases = [], spans = [];
+    phraseRes().forEach(p => { p.re.lastIndex = 0; const m = p.re.exec(text); if (m) phrases.push({ v: p.v, s: m.index, e: m.index + m[0].length, len: p.len }); });
+    phrases.sort((a, b) => b.len - a.len);
+    const ph = []; phrases.forEach(p => { if (!spans.some(s => p.s < s.e && s.s < p.e)) { spans.push(p); ph.push(p); } });
+    const sentences = text.split(/\n|(?<=[.!?])\s+(?=[A-Z"“‘'])/).map(s => s.trim()).filter(Boolean);
+    const grammar = [];
+    GRAMMAR.forEach(([k, re]) => {
+      if (grammar.length >= 4) return;
+      for (const s of sentences) { const m = re.exec(s); if (m) { grammar.push(Object.assign({ k, sentence: s, s: m.index, e: m.index + m[0].length }, gramText(k))); break; } }
+    });
+    return { words: words.slice(0, 8), phrases: ph.slice(0, 5), grammar };
+  }
+  function vocabEntry(word) { const lw = word.toLowerCase(); return VOCAB.find(x => x.word.toLowerCase() === lw) || findWord(word); }
+  function saveWordBtn(word, pos, zh, ex) {
+    const v = vocabEntry(word), on = v && isBm('vocab', v.id);
+    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}">${on ? '★' : '☆'}</button>`;
+  }
+  const sentenceWith = (text, word) => (text.split(/(?<=[.!?])\s+/).find(s => termRe(word).test(s)) || '').trim();
+  function lessonView(les) {
+    const terms = les.vocab.map(v => ({ re: termRe(v.word), cls: 'lw', title: v.zh })).concat(les.phrases.map(p => ({ re: termRe(p.phrase), cls: 'lp', title: p.zh })));
+    const paras = les.passage.split(/\n\s*\n/).map(p => `<p>${markTerms(p, terms)}</p>`).join('');
+    return `<article class="card lesson-card">
+      <div class="news-meta"><span class="news-src ${SRC_CLASS[les.source] || ''}">${esc(les.source)}</span>${les.topic ? `<span class="chip">${esc(les.topic)}</span>` : ''}<span class="chip ai-chip">✍️ ${t('lessonBadge')}</span><span class="small muted">${tf('lessonWords', { n: les.passage.split(/\s+/).filter(Boolean).length })}</span></div>
+      <h3 class="lesson-title en">${esc(les.title)}</h3>
+      ${les.title_zh ? `<p class="lesson-title-zh">${esc(les.title_zh)}</p>` : ''}
+      <div class="lesson-passage en">${paras}</div>
+      <div class="row"><button class="btn sm" data-action="speak" data-word="${esc(les.passage)}">🔊 ${t('lessonListen')}</button><button class="btn sm ghost" data-action="speakStop">⏹</button><span class="spacer"></span><a class="btn sm ghost" href="${esc(les.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(les.source) })} ↗</a></div>
+      <div class="lesson-grid">
+        <section class="lesson-box lb-words"><h4>🔤 ${t('lessonVocab')}</h4><ul>${les.vocab.map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(les.passage, v.word))}</li>`).join('')}</ul></section>
+        <section class="lesson-box lb-phrases"><h4>🧩 ${t('lessonPhrases')}</h4><ul>${les.phrases.map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
+        <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${les.grammar.map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${esc(g.example)}”</p></div>`).join('')}</section>
+      </div>
+    </article>`;
+  }
+  // Show about 70 characters on each side of a match, cut at word boundaries
+  function clipAround(str, s, e, pad = 70) {
+    let a = Math.max(0, s - pad), b = Math.min(str.length, e + pad);
+    if (a > 0) { const k = str.indexOf(' ', a); a = k >= 0 && k < s ? k + 1 : a; }
+    if (b < str.length) { const k = str.lastIndexOf(' ', b); b = k > e ? k : b; }
+    return { a, b, pre: a > 0 ? '…' : '', post: b < str.length ? '…' : '' };
+  }
+  function studyPanel(it, les, i) {
+    const a = analyzeStory(it);
+    const text = [it.title, it.summary].filter(Boolean).join(' ');
+    const none = !a.words.length && !a.phrases.length && !a.grammar.length;
+    return `<div class="study-panel">
+      ${les ? `<button class="btn sm accent" data-action="openLesson" data-link="${esc(it.link)}">✍️ ${t('studyOpenLesson')}</button>` : ''}
+      ${a.words.length ? `<div class="study-sec"><b>🔤 ${t('lessonVocab')}</b><ul>${a.words.map(({ v, form }) => `<li><span class="lw-word en">${esc(v.word)}</span>${form.toLowerCase() !== v.word ? ` <span class="small muted en">(${esc(form)})</span>` : ''} <span class="small muted">${esc(v.pos || '')} · ${esc(v.cefr || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, text)}</li>`).join('')}</ul></div>` : ''}
+      ${a.phrases.length ? `<div class="study-sec"><b>🧩 ${t('lessonPhrases')}</b><ul>${a.phrases.map(p => `<li><span class="lp-word en">${esc(p.v.word)}</span> <span class="lw-zh">${esc(p.v.zh)}</span></li>`).join('')}</ul></div>` : ''}
+      ${a.grammar.length ? `<div class="study-sec"><b>📐 ${t('lessonGrammar')}</b>${a.grammar.map(g => { const w = clipAround(g.sentence, g.s, g.e); return `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${w.pre}${esc(g.sentence.slice(w.a, g.s))}<mark>${esc(g.sentence.slice(g.s, g.e))}</mark>${esc(g.sentence.slice(g.e, w.b))}${w.post}”</p></div>`; }).join('')}</div>` : ''}
+      ${none ? `<p class="small muted">${t('studyNone')}</p>` : ''}
+      <p class="small muted study-foot">${t('studyAuto')}</p>
+    </div>`;
+  }
+  function lessonsSection(lessons) {
+    if (!lessons.length) return `<div class="card lesson-empty"><b>✍️ ${t('lessonsTitle')}</b><p class="small muted" style="margin:6px 0 0">${t(ui.teacher ? 'lessonsNoneTeacher' : 'lessonsNone')}</p></div>`;
+    const idx = Math.min(view.lessonIdx || 0, lessons.length - 1);
+    return `<div class="lesson-tabs" role="tablist">${lessons.map((l, i) => `<button class="lesson-tab ${i === idx ? 'on' : ''}" role="tab" aria-selected="${i === idx}" data-action="lessonPick" data-i="${i}"><span class="lt-n">${i + 1}</span><span class="lt-t en">${esc(l.title)}</span></button>`).join('')}</div>
+      ${lessonView(lessons[idx])}`;
   }
   function ago(iso) {
     if (!iso) return '';
@@ -402,18 +571,26 @@
   function pageNews() {
     if (news.status === 'idle') loadNews();
     const items = (news.data && news.data.items) || [];
+    const links = new Set(items.map(i => i.link));
+    const lessons = ((news.data && news.data.lessons) || []).filter(l => links.has(l.link) && l.passage);
+    const lessonOf = {}; lessons.forEach(l => { lessonOf[l.link] = l; });
     const sources = Array.from(new Set(items.map(i => i.source)));
-    const shown = items.filter(i => !news.source || i.source === news.source);
+    const shown = items.map((it, i) => [it, i]).filter(([it]) => !news.source || it.source === news.source);
+    const open = view.newsOpen || (view.newsOpen = {});
     const upd = news.data && news.data.updated ? news.data.updated.slice(0, 16).replace('T', ' ').replace(/-/g, '/') : '';
     let body;
     if (news.status === 'loading' || news.status === 'idle') body = `<p class="muted">${t('newsLoading')}</p>`;
     else if (!items.length) body = `<div class="card news-empty">📭 ${t('newsEmpty')}</div>`;
-    else body = `<div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${upd} UTC</span>` : ''}</div>
-      <div class="news-list">${shown.map(i => `<article class="news-card">
-        <div class="news-meta"><span class="news-src ${SRC_CLASS[i.source] || ''}">${esc(i.source)}</span><span class="chip">${esc(i.topic || '')}</span><span class="small muted">${ago(i.date)}</span></div>
-        <h3 class="news-title en"><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${highlightWords(i.title)}</a></h3>
-        ${i.summary ? `<p class="news-sum en">${esc(i.summary)}</p>` : ''}
-        <div class="row"><a class="btn sm" href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(i.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(i.title)}">🔊</button></div>
+    else body = `<h2 class="section-title" id="lessonTop" style="margin-top:12px">✍️ ${t('lessonsTitle')}</h2><p class="section-sub">${t('lessonsSub')}</p>
+      ${lessonsSection(lessons)}
+      <h2 class="section-title">🗞️ ${t('newsHeadlines')}</h2><p class="section-sub">${t('newsHeadlinesSub')}</p>
+      <div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${upd} UTC</span>` : ''}</div>
+      <div class="news-list">${shown.map(([it, i]) => `<article class="news-card${open[i] ? ' open' : ''}">
+        <div class="news-meta"><span class="news-src ${SRC_CLASS[it.source] || ''}">${esc(it.source)}</span><span class="chip">${esc(it.topic || '')}</span>${lessonOf[it.link] ? `<span class="chip ai-chip">✍️ ${t('lessonBadge')}</span>` : ''}<span class="small muted">${ago(it.date)}</span></div>
+        <h3 class="news-title en"><a href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${highlightWords(it.title)}</a></h3>
+        ${it.summary ? `<p class="news-sum en">${esc(it.summary)}</p>` : ''}
+        <div class="row"><button class="btn sm study-btn ${open[i] ? 'accent' : ''}" data-action="newsStudy" data-i="${i}" aria-expanded="${!!open[i]}">📘 ${t('studyBtn')}</button><a class="btn sm ghost" href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(it.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(it.title)}" aria-label="${t('lessonListen')}">🔊</button></div>
+        ${open[i] ? studyPanel(it, lessonOf[it.link], i) : ''}
       </article>`).join('')}</div>
       <p class="small muted">💡 ${t('newsWordHint')}</p>`;
     const CUR = [
@@ -928,6 +1105,20 @@
     goQuiz() { view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
     speak(el) { speak(el.dataset.word); },
     newsSource(el) { news.source = el.dataset.src; render(); },
+    newsStudy(el) { const o = view.newsOpen || (view.newsOpen = {}); o[el.dataset.i] = !o[el.dataset.i]; render(); },
+    lessonPick(el) { view.lessonIdx = +el.dataset.i; speakStop(); render(); },
+    openLesson(el) {
+      const ls = ((news.data && news.data.lessons) || []).filter(l => (news.data.items || []).some(i => i.link === l.link) && l.passage);
+      const i = ls.findIndex(l => l.link === el.dataset.link); if (i < 0) return;
+      view.lessonIdx = i; render(); const h = document.getElementById('lessonTop'); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+    speakStop() { speakStop(); },
+    saveNewsWord(el) {
+      const d = el.dataset; let v = vocabEntry(d.word);
+      if (v && !VMAP[v.id]) v = null;
+      if (!v) { v = { id: uid('v'), word: d.word, pos: d.pos, zh: d.zh, syn: '', example: d.ex, unit: 'news' }; state.vocab.push(v); rebuildVocab(); }
+      toggleBm('vocab', v.id); render();
+    },
     readTopic(el) { view.readFilter.topic = el.dataset.v; render(); },
     readStatus(el) { view.readFilter.status = el.dataset.v; render(); },
     jumpGroup(el) { const g = document.getElementById(el.dataset.target); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); },

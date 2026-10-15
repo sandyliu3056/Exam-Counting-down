@@ -177,6 +177,16 @@ def main(out_path="news.json"):
         "updated": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "items": [{**{k: v for k, v in it.items() if k != "date"}, "date": it["date"].strftime("%Y-%m-%dT%H:%M:%SZ") if it["date"] else ""} for it in picked],
     }
+    # keep earlier AI lessons (scripts/make_lessons.py) whose stories are still in today's list
+    try:
+        with open(out_path, encoding="utf-8") as f:
+            old = json.load(f)
+        links = {i["link"] for i in data["items"]}
+        kept = [l for l in old.get("lessons", []) if l.get("link") in links]
+        if kept:
+            data["lessons"], data["lessonsDate"] = kept, old.get("lessonsDate", "")
+    except (OSError, ValueError):
+        pass
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
     return 0

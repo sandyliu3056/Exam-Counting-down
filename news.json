@@ -241,5 +241,191 @@
    "topic": "Health",
    "date": "2026-10-12T21:39:54Z"
   }
- ]
+ ],
+ "lessons": [
+  {
+   "link": "https://www.theguardian.com/science/2026/oct/14/focus-on-sounds-to-help-learn-a-language-study-suggests",
+   "source": "The Guardian",
+   "topic": "Science",
+   "title": "Stop making sense: focus on sounds to help learn a language, study suggests",
+   "title_zh": "別急著弄懂意思：研究指出，專注聽聲音有助於學語言",
+   "passage": "Many students learn a new language by memorizing long lists of words. However, a new study suggests that this may not be the best place to start. According to the research, the best language learners hear unfamiliar foreign speech sounds in a special way. They process these sounds more like non-speech sounds instead of trying to make sense of every word right away.\n\nThis idea could be useful for anyone learning English, French or Arabic. Before you worry about the meaning of every sentence, try listening carefully to how the language sounds. Pay attention to its rhythm and the way words are connected. Training your ears in this way may help you understand and speak more naturally. For students preparing for an exam, listening practice is just as important as learning vocabulary.",
+   "vocab": [
+    {
+     "word": "memorizing",
+     "pos": "v.",
+     "zh": "背誦、記住"
+    },
+    {
+     "word": "unfamiliar",
+     "pos": "adj.",
+     "zh": "不熟悉的"
+    },
+    {
+     "word": "process",
+     "pos": "v.",
+     "zh": "處理"
+    },
+    {
+     "word": "rhythm",
+     "pos": "n.",
+     "zh": "節奏"
+    },
+    {
+     "word": "naturally",
+     "pos": "adv.",
+     "zh": "自然地"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "make sense of",
+     "zh": "理解、弄懂"
+    },
+    {
+     "phrase": "Pay attention to",
+     "zh": "注意"
+    },
+    {
+     "phrase": "just as important as",
+     "zh": "和…一樣重要"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "原級比較 (as + adj. + as)",
+     "explain": "用「as + 形容詞 + as」表示兩者程度一樣，前面加 just 表示「完全一樣」。",
+     "example": "For students preparing for an exam, listening practice is just as important as learning vocabulary."
+    },
+    {
+     "point": "動名詞當主詞 (gerund as subject)",
+     "explain": "V-ing 開頭的片語可以當句子的主詞，動詞用單數。",
+     "example": "Training your ears in this way may help you understand and speak more naturally."
+    }
+   ]
+  },
+  {
+   "link": "https://www.npr.org/2026/10/13/nx-s1-5986256-e1/researchers-are-tracking-monarch-butterflies-to-learn-more-about-their-journey",
+   "source": "NPR",
+   "topic": "Science",
+   "title": "Researchers are tracking Monarch butterflies to learn more about their journey",
+   "title_zh": "研究人員追蹤帝王斑蝶，想更了解牠們的遷徙之旅",
+   "passage": "Every autumn, Monarch butterflies begin a long migration to Mexico. Now researchers all over North America are trying to learn more about this amazing journey. They are attaching tiny transmitters to the butterflies as the insects begin to fly south. These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way.\n\nThe researchers also want to understand the challenges the butterflies face during the trip. A long journey like this is not easy for such a small insect. The information they collect could help people protect the places that are important to the butterflies. The study shows how modern technology can help us take care of nature, even something as small and light as a butterfly.",
+   "vocab": [
+    {
+     "word": "migration",
+     "pos": "n.",
+     "zh": "遷徙"
+    },
+    {
+     "word": "attaching",
+     "pos": "v.",
+     "zh": "裝上、附加"
+    },
+    {
+     "word": "transmitters",
+     "pos": "n.",
+     "zh": "發射器"
+    },
+    {
+     "word": "challenges",
+     "pos": "n.",
+     "zh": "挑戰"
+    },
+    {
+     "word": "protect",
+     "pos": "v.",
+     "zh": "保護"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "learn more about",
+     "zh": "更了解"
+    },
+    {
+     "phrase": "find out",
+     "zh": "查出、發現"
+    },
+    {
+     "phrase": "take care of",
+     "zh": "照顧、愛護"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "現在進行式 (present progressive)",
+     "explain": "be + V-ing 表示「現在正在進行」的動作。",
+     "example": "They are attaching tiny transmitters to the butterflies as the insects begin to fly south."
+    },
+    {
+     "point": "間接問句 (indirect question)",
+     "explain": "疑問詞放進句子當受詞時，後面要用「主詞 + 動詞」的直述句語序。",
+     "example": "These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way."
+    }
+   ]
+  },
+  {
+   "link": "https://www.npr.org/2026/10/13/nx-s1-6000614/how-colleges-are-creating-programs-for-a-changing-u-s-job-market",
+   "source": "NPR",
+   "topic": "Education",
+   "title": "How colleges are creating programs for a changing U.S. job market",
+   "title_zh": "美國大學開設新科系，因應不斷變化的就業市場",
+   "passage": "The job market is changing quickly, and colleges in the United States are changing too. In the last few years, many schools have launched new degree programs in areas such as influencing, artificial intelligence (AI) and health sciences. These programs are designed to attract students who are looking for a new career path.\n\nWhat do these subjects have in common? Colleges see all of them as ways into new kinds of careers. For high school students in Taiwan, this news is a useful reminder. The skills that employers want can change fast, so it is a good idea to keep learning and stay open to new fields. When you choose what to study, think about your interests as well as the future job market.",
+   "vocab": [
+    {
+     "word": "launched",
+     "pos": "v.",
+     "zh": "推出、開辦"
+    },
+    {
+     "word": "degree",
+     "pos": "n.",
+     "zh": "學位"
+    },
+    {
+     "word": "attract",
+     "pos": "v.",
+     "zh": "吸引"
+    },
+    {
+     "word": "career",
+     "pos": "n.",
+     "zh": "職業、生涯"
+    },
+    {
+     "word": "employers",
+     "pos": "n.",
+     "zh": "雇主"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "have in common",
+     "zh": "有共同點"
+    },
+    {
+     "phrase": "looking for",
+     "zh": "尋找"
+    },
+    {
+     "phrase": "as well as",
+     "zh": "以及、和…一樣"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "現在完成式 (present perfect)",
+     "explain": "have/has + p.p. 表示從過去到現在已經完成或持續的事，常和 in the last few years 連用。",
+     "example": "In the last few years, many schools have launched new degree programs in areas such as influencing, artificial intelligence (AI) and health sciences."
+    },
+    {
+     "point": "被動語態 (passive voice)",
+     "explain": "be + p.p. 表示主詞「被…」，這裡是課程「被設計來」吸引學生。",
+     "example": "These programs are designed to attract students who are looking for a new career path."
+    }
+   ]
+  }
+ ],
+ "lessonsDate": "2026-10-15"
 }
