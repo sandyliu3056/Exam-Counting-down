@@ -157,7 +157,9 @@
   const pickRandom = (arr, n, excludeId) => { const out = [], used = new Set(); let guard = 0; while (out.length < n && guard++ < n * 20 && used.size < arr.length) { const i = Math.floor(Math.random() * arr.length); if (used.has(i)) continue; used.add(i); const x = arr[i]; if (x.id === excludeId) continue; out.push(x); } return out; };
   let ui = Object.assign({ lang: 'zh', font: 'hand', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
-  const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user })); } catch (e) { } };
+  const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2 })); } catch (e) { } };
+  // the old site saved English as its default on every device; switch those to Chinese once (a later English choice sticks)
+  if (ui.uiv !== 2) { if (ui.lang === 'en') ui.lang = 'zh'; ui.uiv = 2; saveUi(); }
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
 
   // volatile view state
@@ -711,7 +713,10 @@
     const last = rq.length ? articleById(rq[rq.length - 1].articleId) : null, lv = (last && last.level) || 'Reading · B1';
     return ARTICLES.find(a => a.level === lv && !done.has(a.id)) || ARTICLES.find(a => !done.has(a.id)) || ARTICLES[0] || null;
   }
-  const lvShort = lv => lv === 'Reading · B1' ? 'B1' : lv === 'Reading · B2' ? 'B2' : lv === 'Reading · Practical' ? t('grpPracticalShort') : unitLabel(lv || '');
+  const PRACTICAL_TAGS = ['Notice', 'Advertisement', 'Email', 'Letter', 'Schedule', 'Instructions'];
+  const practicalText = a => a.level === 'Reading · Practical' || (a.tags || []).some(x => PRACTICAL_TAGS.includes(x));
+  const LV_SHORT = { 'Reading · A2': 'A2', 'Reading · B1': 'B1', 'Reading · B2': 'B2', 'Reading · C1': 'C1' };
+  const lvShort = lv => LV_SHORT[lv] || (lv === 'Reading · Practical' ? t('grpPracticalShort') : unitLabel(lv || ''));
   function todayPlan() {
     const td = todayStr(), p = state.progress, tasks = [];
     const due = dueCards().length;
@@ -1037,7 +1042,7 @@
           ${MC_TYPES.map(([k, l, ic]) => { const b = S.byType[k]; return `<button class="phr-cat ${f.type === k ? 'on' : ''}" data-action="mcType" data-v="${k}"><b>${ic} ${t(l)}</b><span>${k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : b.total}${b.done ? ` · ${Math.round(b.right / b.done * 100)}%` : ''}</span></button>`; }).join('')}
         </div>
         <div class="row">
-          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="mcLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="mcLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="mcStatus" data-v="${v}">${l}</button>`).join('')}</div>
         </div>
         <div class="row" style="margin-top:10px">
@@ -1126,7 +1131,7 @@
   }
 
   /* ---- Translation practice (中譯英): window.TRANSLATION_ITEMS from translate.js ---- */
-  const TR_GROUPS = ['trG1', 'trG2', 'trG3', 'trG4', 'trG5', 'trG6', 'trG7', 'trG8'];
+  const TR_GROUPS = ['trG1', 'trG2', 'trG3', 'trG4', 'trG5', 'trG6', 'trG7', 'trG8', 'trG9', 'trG10']; // 9: A2 starter (T201-T225), 10: C1 challenge (T226-T250)
   const trItems = () => window.TRANSLATION_ITEMS || [];
   const trGroupOf = it => Math.min(TR_GROUPS.length, Math.max(1, Math.ceil((parseInt(String(it.id).replace(/\D/g, ''), 10) || 1) / 25)));
   const trRec = id => (state.progress.translate || {})[id];
@@ -1159,7 +1164,7 @@
       <div class="card">
         <div class="phr-cats" style="padding-top:0">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<button class="phr-cat ${f.group === g ? 'on' : ''}" data-action="trGroup" data-v="${g}"><b>${g ? t(TR_GROUPS[g - 1]) : t('newsAll')}</b><span>${g ? items.filter(it => trGroupOf(it) === g).length : items.length}</span></button>`).join('')}</div>
         <div class="row">
-          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="trStatus" data-v="${v}">${l}</button>`).join('')}</div>
           <span class="spacer"></span>
           <button class="btn accent block-cta" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
@@ -1545,7 +1550,7 @@
     rf.more = rf.more || {}; rf.q = rf.q || '';
     const histOf = id => state.progress.readingQuizzes.filter(r => r.articleId === id);
     const done = a => histOf(a.id).length > 0;
-    const RG = [['Reading · B1', 'grpB1', '📗', 'B1'], ['Reading · B2', 'grpB2', '📘', 'B2'], ['Reading · Practical', 'grpPractical', '✉️', t('grpPracticalShort')]];
+    const RG = [['Reading · A2', 'grpA2', '📒', 'A2'], ['Reading · B1', 'grpB1', '📗', 'B1'], ['Reading · B2', 'grpB2', '📘', 'B2'], ['Reading · C1', 'grpC1', '📕', 'C1'], ['Reading · Practical', 'grpPractical', '✉️', t('grpPracticalShort')]];
     const groupOfA = a => RG.some(g => g[0] === a.level) ? a.level : '_other';
     const topics = Array.from(new Set(ARTICLES.flatMap(a => a.tags || [])));
     const q = rf.q.trim().toLowerCase();
@@ -1622,8 +1627,8 @@
         <div class="muted small" style="margin-bottom:12px">${esc(unitLabel(a.level || ''))} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
         ${Z ? `<div class="reader-tools" style="margin-bottom:10px"><div class="seg" role="group" aria-label="${t('newsTransLabel')}" style="margin-left:0"><button class="seg-btn ${showZh ? 'on' : ''}" data-action="readZh" data-v="1" aria-pressed="${showZh}">${t('newsBoth')}</button><button class="seg-btn ${!showZh ? 'on' : ''}" data-action="readZh" data-v="0" aria-pressed="${!showZh}">${t('newsEnOnly')}</button></div>${!view.submitted && !showZh ? `<span class="small muted">${t('readZhHint')}</span>` : ''}</div>` : ''}
         <div class="article-layout">
-          <div class="art-left">${showZh ? `<div class="passage passage-zh${a.level === 'Reading · Practical' ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
-            : `<div class="passage${a.level === 'Reading · Practical' ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${paras}</div>`}</div>
+          <div class="art-left">${showZh ? `<div class="passage passage-zh${practicalText(a) ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
+            : `<div class="passage${practicalText(a) ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${paras}</div>`}</div>
           <div class="art-right" id="artQs">${qs}
             ${view.submitted ? scoreHtml : `<div class="action-bar"><button class="btn accent" data-action="submitQuiz">${t('submit')}（${k}/${n}）</button></div>`}</div>
         </div>
@@ -2904,8 +2909,18 @@
     $('#examChipDays').textContent = dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('headerToday') : t('examChipPassed');
     chip.classList.toggle('soon', dl >= 0 && dl <= 30);
   }
+  // today's date and the time under the site title; refreshed on the minute and whenever the page comes back into view
+  function updateNow() {
+    const el = $('#nowClock'); if (!el) return;
+    const d = new Date(), hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'), wd = t('weekdays')[d.getDay()];
+    el.textContent = ui.lang === 'zh' ? `今天 ${d.getMonth() + 1}/${d.getDate()}（${wd}）${hm}` : `Today · ${wd}, ${t('monthsShort')[d.getMonth()].charAt(0)}${t('monthsShort')[d.getMonth()].slice(1).toLowerCase()} ${d.getDate()} · ${hm}`;
+    el.setAttribute('datetime', `${todayStr()}T${hm}`);
+  }
+  (function tick() { updateNow(); setTimeout(tick, 60000 - Date.now() % 60000 + 50); })();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { updateNow(); updateExamChip(); } });
   function applyUi() {
     document.body.dataset.font = ui.font; document.body.dataset.theme = ui.theme;
+    updateNow();
     document.body.classList.toggle('teacher', ui.teacher);
     authBtn.classList.toggle('logged', !!ui.user);
     updateExamChip();
