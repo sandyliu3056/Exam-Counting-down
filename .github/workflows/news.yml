@@ -33,12 +33,14 @@ jobs:
         run: python3 scripts/fetch_news.py news.json
       - name: Write full study articles with Chinese translations
         continue-on-error: true   # a problem here must not stop today's headlines from being saved
+        timeout-minutes: 45       # leaves time for the commit step, which saves what was written
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}           # free: Google Gemini free tier
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}     # optional, paid: Claude is used if this is set
           LESSON_MODEL: ${{ vars.LESSON_MODEL }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           LESSONS_MAX: ${{ vars.LESSONS_MAX }}
+          PYTHONUNBUFFERED: "1"   # show progress in the log as it happens
         run: |
           if [ -n "$ANTHROPIC_API_KEY" ]; then pip install --quiet "anthropic>=1.14,<2"; fi
           python3 scripts/make_lessons.py news.json
