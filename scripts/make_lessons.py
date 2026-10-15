@@ -29,6 +29,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from article_text import UA, fetch_text  # noqa: E402
 
 MIN_SOURCE_WORDS = 150
+MIN_WORDS = 150          # shortest article accepted (the prompt asks for 250-400)
 SOURCE_WORD_LIMIT = 1500  # the facts are in the first part; keeps requests small
 MAX_COPY_RUN = 12         # reject an article that repeats 12 or more words in a row from the source (quotes aside)
 MAX_QUOTE_WORDS = 15
@@ -58,7 +59,7 @@ Publisher: {source}
 </source_article>
 
 Retell the WHOLE story above for the students, from beginning to end, covering every main point.
-- "paragraphs": 4-7 paragraphs, 250-400 words in total, clear B1-B2 English with some exam-level
+- "paragraphs": 4-7 paragraphs, 250-400 words in total (never fewer than 250), clear B1-B2 English with some exam-level
   vocabulary. Each paragraph has "en" (your English) and "zh" (a faithful, natural Traditional Chinese
   translation using Taiwan wording, 台灣用語).
 - Use ONLY facts from the source article. Do not invent numbers, names, quotes, dates or details.
@@ -143,7 +144,7 @@ def validate(les, story, source_text):
         return None, "a paragraph has no Chinese translation"
     english = "\n\n".join(p["en"] for p in paras)
     count = len(english.split())
-    if not 200 <= count <= 460:
+    if not MIN_WORDS <= count <= 460:
         return None, f"{count} words"
     quotes = QUOTE.findall(english)
     if len(quotes) > 2 or any(len(q.split()) > MAX_QUOTE_WORDS for q in quotes):
@@ -155,7 +156,7 @@ def validate(les, story, source_text):
     vocab = [v for v in les.get("vocab", []) if v["word"].strip() and contains(english, v["word"]) and has_cjk(v["zh"])][:10]
     phrases = [p for p in les.get("phrases", []) if p["phrase"].strip() and contains(english, p["phrase"]) and has_cjk(p["zh"])][:6]
     grammar = [g for g in les.get("grammar", []) if g["example"].strip() and norm(g["example"]).rstrip(".!?\"”") in text][:4]
-    if len(vocab) < 4 or len(phrases) < 2 or not grammar:
+    if len(vocab) < 3 or not phrases or not grammar:
         return None, "too few study notes found in the text"
     return {
         "link": story["link"], "source": story["source"], "topic": story.get("topic", ""),
@@ -202,22 +203,27 @@ class Gemini:
 
     def __init__(self, key):
         self.key = key
-        self.models = list(dict.fromkeys(GEMINI_MODELS))
-        self.name = self.models[0]
+        self.available = list(dict.fromkeys(GEMINI_MODELS))  # best first; models that are missing or used up are removed
+        self.name = self.available[0]
         self.schema_field = "responseJsonSchema"  # falls back to plain JSON mode if the model rejects it
         self.errors = 0
-        self.busy = 0  # "busy, try later" replies in a row for the current model
 
-    def _next_model(self, why):
-        self.models.pop(0)
-        if not self.models:
-            raise StopRun(why)
-        self.name = self.models[0]
-        self.busy = 0
-        print(f"  switching to {self.name} ({why})")
+    def _drop(self, model, why):
+        if model in self.available:
+            self.available.remove(model)
+            print(f"  not using {model} any more ({why})")
+        if not self.available:
+            raise StopRun(f"no free Gemini model left ({why})")
 
     def write(self, system, prompt):
+        """Each story starts with the best model; when Google is busy, wait once, then try the next model."""
+        i, waited = 0, False
         while True:
+            if i >= len(self.available):
+                print("  every free model is busy right now; skipping this story")
+                return None
+            model = self.available[i]
+            self.name = model
             config = {"temperature": 0.4, "maxOutputTokens": 16384, "responseMimeType": "application/json"}
             if self.schema_field:
                 config[self.schema_field] = WRITE_SCHEMA
@@ -226,26 +232,26 @@ class Gemini:
                 text = prompt + "\nReply with one JSON object with the keys title_zh, paragraphs (list of {en, zh}), vocab (list of {word, pos, zh}), phrases (list of {phrase, zh}), grammar (list of {point, explain, example})."
             body = {"systemInstruction": {"parts": [{"text": system}]},
                     "contents": [{"role": "user", "parts": [{"text": text}]}], "generationConfig": config}
-            req = urllib.request.Request(GEMINI_URL.format(model=self.name), data=json.dumps(body).encode("utf-8"),
+            req = urllib.request.Request(GEMINI_URL.format(model=model), data=json.dumps(body).encode("utf-8"),
                                          headers={"Content-Type": "application/json", "x-goog-api-key": self.key, "User-Agent": UA})
             try:
                 with urllib.request.urlopen(req, timeout=240) as r:
                     out = json.loads(r.read())
             except urllib.error.HTTPError as e:
                 detail = e.read()[:300].decode("utf-8", "replace")
-                if e.code == 429:
-                    self._next_model("free daily or per-minute limit reached")
-                    continue
                 if e.code == 404:
-                    self._next_model("model not found")
+                    self._drop(model, "not found")
                     continue
-                if e.code in (500, 503):  # "high demand, try again later": wait, then try another free model
-                    self.busy += 1
-                    if self.busy <= 2:
-                        print(f"  Google is busy; waiting {30 * self.busy} s")
-                        time.sleep(30 * self.busy)
+                if e.code == 429:
+                    self._drop(model, "free limit reached")
+                    continue
+                if e.code in (500, 503):  # "high demand, try again later"
+                    if not waited:
+                        print(f"  {model} is busy; waiting 30 s")
+                        time.sleep(30)
+                        waited = True
                     else:
-                        self._next_model("busy")
+                        i += 1
                     continue
                 if e.code in (401, 403):
                     raise StopRun(f"the Gemini key was refused ({e.code}): {detail}")
@@ -262,7 +268,7 @@ class Gemini:
             except ValueError:
                 print("  reply was not JSON")
                 return None
-            self.errors = self.busy = 0
+            self.errors = 0
             cand = (out.get("candidates") or [{}])[0]
             if cand.get("finishReason") not in (None, "STOP"):
                 print(f"  stopped: {cand.get('finishReason')}")
@@ -309,13 +315,22 @@ def write_articles(items, have, provider, limit, on_new=lambda lesson: None):
         if n < MIN_SOURCE_WORDS:
             continue
         text = " ".join(source_text.split()[:SOURCE_WORD_LIMIT]) if n > SOURCE_WORD_LIMIT else source_text
+        prompt = WRITE_PROMPT.format(title=story["title"], source=story["source"], text=text)
+        lesson, why = None, ""
         try:
-            les = provider.write(WRITE_SYSTEM, WRITE_PROMPT.format(title=story["title"], source=story["source"], text=text))
+            for attempt in range(2):  # one more try, with feedback, if a draft is too short or copies the source
+                les = provider.write(WRITE_SYSTEM, prompt if attempt == 0 else prompt + "\nYour previous draft was rejected: " + why
+                                     + ". Write it again: 250-400 words in your own words, never more than 8 words in a row from the source.")
+                if not les:
+                    break
+                lesson, why = validate(les, story, source_text)
+                if lesson or not any(k in why for k in ("words", "copies", "paragraphs")):
+                    break
+                print(f"  retrying: {why}")
         except StopRun as e:
             print(f"  stopping: {e}")
             break
         if les:
-            lesson, why = validate(les, story, source_text)
             if lesson:
                 lesson["model"] = provider.name
                 new.append(lesson)
