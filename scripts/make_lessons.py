@@ -10,12 +10,12 @@ For each story that doesn't have one yet:
    The source text itself is never saved.
 
 Which model writes the articles:
-- Free (default): GitHub Models, using the workflow's own GITHUB_TOKEN (permission "models: read").
-  No key and no payment; GitHub limits how many requests an account can make per day.
+- Free: Google Gemini's free tier, if the GEMINI_API_KEY repository secret is set (a free key from
+  Google AI Studio; no credit card). Google limits how many requests a free key can make per day,
+  so a run stops at the limit and the next run carries on.
 - Claude: if the ANTHROPIC_API_KEY repository secret is set, Claude is used instead (paid).
-Runs in GitHub Actions after fetch_news.py. If no model is reachable, nothing changes.
+Runs in GitHub Actions after fetch_news.py. Without either key, nothing changes.
 """
-import gzip
 import json
 import os
 import re
@@ -29,19 +29,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from article_text import UA, fetch_text  # noqa: E402
 
 MIN_SOURCE_WORDS = 150
-SOURCE_WORD_LIMIT = 1500  # keeps each request within GitHub Models' free per-request size
+SOURCE_WORD_LIMIT = 1500  # the facts are in the first part; keeps requests small
 MAX_COPY_RUN = 12         # reject an article that repeats 12 or more words in a row from the source (quotes aside)
 MAX_QUOTE_WORDS = 15
 TAIWAN = timezone(timedelta(hours=8))
 CLAUDE_MODEL = os.environ.get("LESSON_MODEL") or "claude-opus-5-5"
-FREE_MODELS = [m for m in [os.environ.get("FREE_MODEL"), "openai/gpt-4.1-mini", "openai/gpt-4o-mini"] if m]
-GITHUB_MODELS = "https://models.github.ai"
-# request styles to try, newest first; the first one that answers properly is used for the whole run
-GITHUB_HEADER_STYLES = [
-    {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2026-03-10"},
-    {"Accept": "application/json"},
-    {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
-]
+GEMINI_MODELS = [m for m in [os.environ.get("GEMINI_MODEL"), "gemini-flash-latest", "gemini-2.5-flash",
+                                "gemini-flash-lite-latest", "gemini-2.5-flash-lite"] if m]
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 AUDIENCE = ("Taiwanese senior-high students (age 16-18, CEFR B1-B2) preparing for the TVE joint "
             "college entrance exam (統測)")
@@ -202,90 +197,50 @@ class Claude:
         return json.loads(next(b.text for b in response.content if b.type == "text"))
 
 
-class GitHubModels:
-    """Free: GitHub Models with the workflow's GITHUB_TOKEN (needs "permissions: models: read")."""
+class Gemini:
+    """Free: Google Gemini API free tier (needs the GEMINI_API_KEY secret)."""
 
-    def __init__(self, token):
-        self.token = token
-        self.models = list(dict.fromkeys(FREE_MODELS))
+    def __init__(self, key):
+        self.key = key
+        self.models = list(dict.fromkeys(GEMINI_MODELS))
         self.name = self.models[0]
-        self.json_schema = True
-        self.errors = 0  # consecutive failed requests
-        self.style = GITHUB_HEADER_STYLES[0]
-        self.probe()
+        self.schema_field = "responseJsonSchema"  # falls back to plain JSON mode if the model rejects it
+        self.errors = 0
 
-    def _request(self, path, body=None, style=None):
-        headers = dict(style or self.style, **{"Authorization": f"Bearer {self.token}", "User-Agent": UA,
-                                                "Accept-Encoding": "identity"})
-        data = None
-        if body is not None:
-            data, headers["Content-Type"] = json.dumps(body).encode("utf-8"), "application/json"
-        req = urllib.request.Request(GITHUB_MODELS + path, data=data, headers=headers, method="POST" if data else "GET")
-        with urllib.request.urlopen(req, timeout=180) as r:
-            raw = r.read()
-            if "gzip" in (r.headers.get("Content-Encoding") or ""):
-                raw = gzip.decompress(raw)
-            if not raw.strip():
-                raise ValueError(f"empty reply (HTTP {r.status}, {r.headers.get('Content-Type')}, {r.geturl()})")
-            try:
-                return json.loads(raw)
-            except ValueError:
-                raise ValueError(f"not JSON (HTTP {r.status}, {r.headers.get('Content-Type')}, {r.geturl()}): {raw[:120]!r}")
-
-    def _post(self, body):
-        return self._request("/inference/chat/completions", body)
-
-    def probe(self):
-        """Check access, list the free models and find a request style that works (costs one small request)."""
-        try:
-            catalog = self._request("/catalog/models")
-            ids = [m.get("id") for m in catalog] if isinstance(catalog, list) else []
-            print(f"GitHub Models catalog: {len(ids)} models; ours available: {[m for m in self.models if m in ids]}")
-            usable = [m for m in self.models if m in ids]
-            if usable:
-                self.models = usable
-                self.name = usable[0]
-        except Exception as e:  # the catalog is only a check; keep going
-            print(f"catalog check failed: {e}")
-        tiny = {"model": self.name, "max_tokens": 20, "messages": [{"role": "user", "content": 'Reply with {"ok": true}'}]}
-        for style in GITHUB_HEADER_STYLES:
-            try:
-                out = self._request("/inference/chat/completions", tiny, style)
-                if isinstance(out, dict) and out.get("choices"):
-                    self.style = style
-                    print(f"GitHub Models works with headers {style}")
-                    return
-                print(f"probe {style}: unexpected reply {str(out)[:120]}")
-            except urllib.error.HTTPError as e:
-                print(f"probe {style}: HTTP {e.code} {e.read()[:200]!r}")
-            except Exception as e:
-                print(f"probe {style}: {e}")
-        raise StopRun("GitHub Models did not answer in any known request style")
+    def _next_model(self, why):
+        self.models.pop(0)
+        if not self.models:
+            raise StopRun(why)
+        self.name = self.models[0]
+        print(f"  switching to {self.name} ({why})")
 
     def write(self, system, prompt):
         while True:
-            fmt = ({"type": "json_schema", "json_schema": {"name": "study_article", "strict": True, "schema": WRITE_SCHEMA}}
-                   if self.json_schema else {"type": "json_object"})
-            body = {"model": self.name, "max_tokens": 3500, "temperature": 0.4, "response_format": fmt,
-                    "messages": [{"role": "system", "content": system},
-                                 {"role": "user", "content": prompt + ("" if self.json_schema else "\nReply with one JSON object with the keys title_zh, paragraphs, vocab, phrases, grammar.")}]}
+            config = {"temperature": 0.4, "maxOutputTokens": 16384, "responseMimeType": "application/json"}
+            if self.schema_field:
+                config[self.schema_field] = WRITE_SCHEMA
+                text = prompt
+            else:
+                text = prompt + "\nReply with one JSON object with the keys title_zh, paragraphs (list of {en, zh}), vocab (list of {word, pos, zh}), phrases (list of {phrase, zh}), grammar (list of {point, explain, example})."
+            body = {"systemInstruction": {"parts": [{"text": system}]},
+                    "contents": [{"role": "user", "parts": [{"text": text}]}], "generationConfig": config}
+            req = urllib.request.Request(GEMINI_URL.format(model=self.name), data=json.dumps(body).encode("utf-8"),
+                                         headers={"Content-Type": "application/json", "x-goog-api-key": self.key, "User-Agent": UA})
             try:
-                out = self._post(body)
+                with urllib.request.urlopen(req, timeout=240) as r:
+                    out = json.loads(r.read())
             except urllib.error.HTTPError as e:
                 detail = e.read()[:300].decode("utf-8", "replace")
                 if e.code == 429:
-                    raise StopRun("GitHub Models daily/minute limit reached")
-                if e.code in (401, 403):
-                    raise StopRun(f"no access to GitHub Models ({e.code}): {detail}")
-                if e.code == 404 or (e.code == 400 and "model" in detail.lower() and "unknown" in detail.lower()):
-                    self.models.pop(0)
-                    if not self.models:
-                        raise StopRun("none of the free models is available")
-                    self.name = self.models[0]
-                    print(f"  switching to {self.name}")
+                    self._next_model("free daily or per-minute limit reached")
                     continue
-                if e.code == 400 and self.json_schema and "response_format" in detail:
-                    self.json_schema = False  # this model doesn't take a JSON schema; ask for plain JSON instead
+                if e.code == 404:
+                    self._next_model("model not found")
+                    continue
+                if e.code in (401, 403):
+                    raise StopRun(f"the Gemini key was refused ({e.code}): {detail}")
+                if e.code == 400 and self.schema_field and ("schema" in detail.lower() or "unknown name" in detail.lower()):
+                    self.schema_field = "responseSchema" if self.schema_field == "responseJsonSchema" else None
                     continue
                 print(f"  HTTP {e.code}: {detail}")
                 self.errors += 1
@@ -294,20 +249,17 @@ class GitHubModels:
                 return None
             except (urllib.error.URLError, TimeoutError) as e:
                 raise StopRun(f"network: {e}")
-            except ValueError as e:
-                print(f"  bad reply: {e}")
-                self.errors += 1
-                if self.errors >= 3:
-                    raise StopRun("three requests in a row failed")
+            except ValueError:
+                print("  reply was not JSON")
                 return None
             self.errors = 0
-            choice = out["choices"][0]
-            if choice.get("finish_reason") == "length":
-                print("  cut off (too long)")
+            cand = (out.get("candidates") or [{}])[0]
+            if cand.get("finishReason") not in (None, "STOP"):
+                print(f"  stopped: {cand.get('finishReason')}")
                 return None
             try:
-                return json.loads(choice["message"]["content"])
-            except (ValueError, TypeError):
+                return json.loads("".join(p.get("text", "") for p in cand["content"]["parts"]))
+            except (KeyError, ValueError, TypeError):
                 print("  reply was not valid JSON")
                 return None
 
@@ -315,9 +267,8 @@ class GitHubModels:
 def pick_provider():
     if os.environ.get("ANTHROPIC_API_KEY"):
         return Claude()
-    token = os.environ.get("GITHUB_TOKEN")
-    if token:
-        return GitHubModels(token)
+    if os.environ.get("GEMINI_API_KEY"):
+        return Gemini(os.environ["GEMINI_API_KEY"])
     return None
 
 
@@ -362,7 +313,7 @@ def write_articles(items, have, provider, limit, on_new=lambda lesson: None):
                 print(f"  ok: {lesson['words']} words, {len(lesson['vocab'])} words, {len(lesson['phrases'])} phrases")
             else:
                 print(f"  skipped: {why}")
-        time.sleep(float(os.environ.get("LESSON_PAUSE", "4")))  # stay well under the per-minute limit
+        time.sleep(float(os.environ.get("LESSON_PAUSE", "8")))  # stay under the free per-minute limit
     return new
 
 
@@ -373,7 +324,7 @@ def main(path="news.json"):
         print(f"No model available: {e}")
         return 0
     if not provider:
-        print("No ANTHROPIC_API_KEY or GITHUB_TOKEN; skipping articles.")
+        print("No GEMINI_API_KEY or ANTHROPIC_API_KEY secret; skipping articles.")
         return 0
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
@@ -385,7 +336,7 @@ def main(path="news.json"):
     # keep finished articles for stories still in the list; hand-written samples (no "model") get rewritten
     keep = [l for l in data.get("lessons", []) if l.get("link") in links and l.get("paragraphs") and l.get("model")]
     have = {l["link"] for l in keep}
-    default_limit = 6 if isinstance(provider, Claude) else 40
+    default_limit = 6 if isinstance(provider, Claude) else 30
     limit = int(os.environ.get("LESSONS_MAX") or default_limit)
     order = {i["link"]: k for k, i in enumerate(items)}
     samples = [l for l in data.get("lessons", []) if l.get("link") in links and l not in keep]

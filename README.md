@@ -8,7 +8,7 @@
 | --- | --- |
 | 首頁 | 每日一句、今日任務、時間分配、世界地圖、我的書籤、最近測驗 |
 | 閱讀測驗 | 內建 13 篇統測風格文章（B1、B2、應用文：書信、公告、廣告、Email），每篇 250–420 字、5 題；文章目錄可依類型、主題、狀態篩選，練習過的會打綠色勾勾；老師也可自行出題 |
-| 每日新聞 | CNN、BBC、NPR、The Guardian、Taipei Times 的英文新聞頭條，每天早上由 GitHub Actions 自動更新，標題中 7000 單字 Level 3 以上的字會標示中文；每則新聞都整篇改寫成學習用文章，附逐段中文翻譯與單字、片語、文法（📖 全文＋翻譯，免費）；其他新聞可點「📘 學習」看裡面的單字、片語與文法；附 CNN 10 等學生新聞網站 |
+| 每日新聞 | CNN、BBC、NPR、The Guardian、Taipei Times 的英文新聞頭條，每天早上由 GitHub Actions 自動更新，標題中 7000 單字 Level 3 以上的字會標示中文；每則新聞都整篇改寫成學習用文章，附逐段中文翻譯與單字、片語、文法（📖 全文＋翻譯，可用 Gemini 免費額度）；其他新聞可點「📘 學習」看裡面的單字、片語與文法；附 CNN 10 等學生新聞網站 |
 | 內建字庫 | 大考中心 7000 單字（Level 1–7，標示 CEFR A1–B2）共 7,213 字，加上 2,815 個 B1–B2 片語；每筆都有中文、**同義字**與例句 |
 | 單字卡 | 翻卡練習、「記得 / 不記得」、自動安排複習（間隔 0 / 1 / 3 / 7 天）、發音、背面顯示同義字；可選 B1 / B2 / 片語範圍與每輪張數 |
 | 單字小考 | 看英選中、看中選英、拼字測驗 |
@@ -137,10 +137,15 @@
 - 同一個排程接著執行 `scripts/make_lessons.py`，替**每一則**還沒有文章的新聞：
   1. 讀取原文網頁（`scripts/article_text.py`）當作事實來源；
   2. 請 AI 把整則新聞從頭到尾改寫成 250–400 字、B1–B2 程度的英文文章，每一段附台灣用語的中文翻譯，並整理單字、片語、文法重點。
-- **免費**：預設使用 GitHub Models（`openai/gpt-4.1-mini`），用 workflow 內建的 `GITHUB_TOKEN`（`permissions: models: read`），不用申請 key、不用付錢。GitHub 對免費用量有每日次數上限，用完就等隔天再補寫。
+- **免費做法：Google Gemini 免費額度**
+  1. 到 https://aistudio.google.com/apikey 用 Google 帳號登入，按 **Create API key**（免費，不用信用卡）。
+  2. 到 GitHub repo 的 **Settings → Secrets and variables → Actions → New repository secret**，Name 填 `GEMINI_API_KEY`，貼上 key。
+  3. 到 **Actions → Daily English news → Run workflow** 執行一次。
+  - Google 對免費 key 有每日次數上限（約每天數十到數百次，依帳號而定），用完就停，隔天自動接著寫。
+  - 免費方案下，Google 可能用送出的內容改善模型；這裡送出的只有公開新聞內容。
+- 選用（付費）：若加上 `ANTHROPIC_API_KEY`，就改用 Claude 撰寫（預設每天 6 篇，`LESSONS_MAX`、`LESSON_MODEL` 可調整）。
 - 已寫好的文章會保留到那則新聞離開列表為止，所以每天只需要替新的新聞寫文章。
 - 為了尊重著作權，網站不轉貼原文：文章用自己的話重寫，程式會檢查不能連續照抄原文 12 個字以上，每篇都附原文連結；原文內容不會存進 `news.json`。
 - 程式也會檢查字數、每段都有中文翻譯、單字／片語／文法例句都真的出現在文章裡；不合格的就跳過。
-- 選用（付費）：若在 **Settings → Secrets and variables → Actions** 加上 `ANTHROPIC_API_KEY`，就改用 Claude 撰寫（預設每天 6 篇，可用變數 `LESSONS_MAX` 調整，`LESSON_MODEL` 換模型）。
-- 其他可調整的變數（Settings → Secrets and variables → Actions → Variables）：`FREE_MODEL` 換免費模型、`LESSONS_MAX` 每次最多寫幾篇（免費預設 40）。
-- 每則沒有全文的新聞也有「🌐 整篇中文翻譯」按鈕，會用 Google 翻譯開啟原文的中文版本。
+- 每則沒有全文的新聞也有「🌐 整篇中文翻譯」按鈕，會用 Google 翻譯開啟原文的中文版本（不用任何設定）。
+- 註：GitHub Models 已於 2026/7/30 停止服務，所以不使用。

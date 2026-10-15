@@ -13,7 +13,6 @@ on:
 
 permissions:
   contents: write
-  models: read      # free AI articles through GitHub Models
 
 concurrency:
   group: daily-news-${{ github.ref }}
@@ -35,10 +34,10 @@ jobs:
       - name: Write full study articles with Chinese translations
         continue-on-error: true   # a problem here must not stop today's headlines from being saved
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}               # free: GitHub Models
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}           # free: Google Gemini free tier
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}     # optional, paid: Claude is used if this is set
           LESSON_MODEL: ${{ vars.LESSON_MODEL }}
-          FREE_MODEL: ${{ vars.FREE_MODEL }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           LESSONS_MAX: ${{ vars.LESSONS_MAX }}
         run: |
           if [ -n "$ANTHROPIC_API_KEY" ]; then pip install --quiet "anthropic>=1.14,<2"; fi
