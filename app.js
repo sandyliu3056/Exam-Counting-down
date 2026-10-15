@@ -983,12 +983,19 @@
       && (!f.status || (f.status === 'todo' ? !trRec(it.id) : (trRec(it.id) && !trRec(it.id).lastOk))));
   }
   function trKeyHits(it, answer) { return (it.keys || []).map(k => ({ k, hit: noteRe(k.en).test(answer || '') })); }
+  const TR_PAGE = 20;
+  // after changing page, bring the start of the list (not the top of the page) into view
+  const trScrollTop = () => { const el = $('#trListTop'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
   function pageTranslate() {
     const items = trItems();
     if (!items.length) return `<h2 class="section-title" style="margin-top:8px">✍️ ${t('trTitle')}</h2><div class="card"><p class="muted" style="margin:0">${t('trNoItems')}</p></div>`;
     if (view.tr) return view.tr.i >= view.tr.ids.length ? trSummary() : trStage();
     const f = view.trf || (view.trf = { group: 0, level: '', status: '' });
     const S = trStats(state.progress), list = trFiltered();
+    // 20 questions per page, with page numbers above and below the list
+    const pages = Math.max(1, Math.ceil(list.length / TR_PAGE)), cur = f.page = Math.min(f.page || 0, pages - 1);
+    const shown = list.slice(cur * TR_PAGE, cur * TR_PAGE + TR_PAGE);
+    const pager = pagerHTML(cur, pages, 'trGo', i => { const z = (list[i * TR_PAGE] || {}).zh || ''; return z.length > 14 ? z.slice(0, 14) + '…' : z; });
     const mark = it => { const r = trRec(it.id); return r ? (r.lastOk ? '<span class="tr-mark ok">✓</span>' : '<span class="tr-mark bad">✗</span>') : '<span class="tr-mark">·</span>'; };
     return `<h2 class="section-title" style="margin-top:8px">✍️ ${t('trTitle')}</h2><p class="section-sub">${tf('trSub', { n: items.length })}</p>
       <div class="stat-grid">
@@ -1005,7 +1012,8 @@
           <button class="btn accent" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
         </div>
       </div>
-      <div class="tr-list">${list.map(it => `<button class="tr-row" data-action="trOne" data-id="${esc(it.id)}">${mark(it)}<span class="tr-zh">${esc(it.zh)}</span><span class="chip">${esc(it.level || '')}</span></button>`).join('') || `<p class="muted">${t('trNoMatch')}</p>`}</div>`;
+      ${list.length ? `<p class="small muted tr-range" id="trListTop">${tf('trRange', { a: cur * TR_PAGE + 1, b: cur * TR_PAGE + shown.length, n: list.length })}</p>` : ''}${pager}
+      <div class="tr-list">${shown.map(it => `<button class="tr-row" data-action="trOne" data-id="${esc(it.id)}">${mark(it)}<span class="tr-zh">${esc(it.zh)}</span><span class="chip">${esc(it.level || '')}</span></button>`).join('') || `<p class="muted">${t('trNoMatch')}</p>`}</div>${pager}`;
   }
   function trStage() {
     const s = view.tr, it = trItems().find(x => x.id === s.ids[s.i]);
@@ -2081,9 +2089,10 @@
       if (s.mode === 'test' && c.blanks.some((b, k) => s.answers[`${c.id}-${k + 1}`] == null)) { toast(t('pleaseAnswerAll')); return; }
       if (s.i < s.ids.length - 1) { s.i++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } else mcFinish();
     },
-    trGroup(el) { view.trf.group = +el.dataset.v; render(); },
-    trLevel(el) { view.trf.level = el.dataset.v; render(); },
-    trStatus(el) { view.trf.status = el.dataset.v; render(); },
+    trGroup(el) { view.trf.group = +el.dataset.v; view.trf.page = 0; render(); },
+    trLevel(el) { view.trf.level = el.dataset.v; view.trf.page = 0; render(); },
+    trStatus(el) { view.trf.status = el.dataset.v; view.trf.page = 0; render(); },
+    trGo(el) { view.trf.page = +el.dataset.p; render(); trScrollTop(); },
     trStart() { const ids = shuffleArr(trFiltered().map(x => x.id)).slice(0, 10); if (!ids.length) { view.tr = null; render(); return; } view.tr = { ids, i: 0, right: 0, wrong: [] }; window.scrollTo({ top: 0 }); render(); },
     trOne(el) { view.tr = { ids: [el.dataset.id], i: 0, right: 0, wrong: [] }; window.scrollTo({ top: 0 }); render(); },
     trRedo() { const ids = view.tr.wrong.slice(); view.tr = { ids, i: 0, right: 0, wrong: [] }; render(); },
@@ -2300,6 +2309,7 @@
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
     else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'phrGo') view.phr.page = +e.target.value, render();
+    else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'trGo') view.trf.page = +e.target.value, render(), trScrollTop();
     else if (e.target.classList.contains('pager-sel')) view.vocabPage = +e.target.value, render();
     else if (id === 'qsType') view.quizSetup.type = e.target.value;
     else if (id === 'qsUnit') view.quizSetup.unit = e.target.value;
