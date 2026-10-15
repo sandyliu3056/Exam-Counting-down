@@ -931,10 +931,16 @@
     const opt = u => `<option value="${esc(u)}" ${u === val ? 'selected' : ''}>${esc(unitLabel(u))}</option>`;
     const grp = (label, arr) => arr.length ? `<optgroup label="${esc(label)}">${arr.map(opt).join('')}</optgroup>` : '';
     const presets = [['@B1', t('presetB1')], ['@B2', t('presetB2')], ['@A', t('presetA')], ['@phrase', t('presetPhrase')], ['@custom', t('presetCustom')]].filter(p => (p[0] === '@custom' ? custom.length : p[0] === '@phrase' ? phrases.length : words.length));
-    return `<select class="input" id="${id}"><option value="">${t('allUnits')}</option>${presets.map(p => `<option value="${p[0]}" ${p[0] === val ? 'selected' : ''}>${p[1]}</option>`).join('')}${grp(t('presetCustom'), custom)}${grp(t('libWords'), words)}${grp(t('libPhrases'), phrases)}</select>`;
+    const hf = HF_SETS ? `<optgroup label="${esc(t('hfGroup'))}"><option value="@hf" ${val === '@hf' ? 'selected' : ''}>${tf('hfAll', { n: (window.HIGH_FREQ || []).length })}</option>${Array.from({ length: HF_SETS }, (_, i) => `<option value="@hf:${i + 1}" ${val === '@hf:' + (i + 1) ? 'selected' : ''}>${tf('hfSet', { n: i + 1, a: i * 100 + 1, b: Math.min((i + 1) * 100, window.HIGH_FREQ.length) })}</option>`).join('')}</optgroup>` : '';
+    return `<select class="input" id="${id}"><option value="">${t('allUnits')}</option>${presets.map(p => `<option value="${p[0]}" ${p[0] === val ? 'selected' : ''}>${p[1]}</option>`).join('')}${hf}${grp(t('presetCustom'), custom)}${grp(t('libWords'), words)}${grp(t('libPhrases'), phrases)}</select>`;
   }
+  // 統測高頻 3000 (highfreq.js): ids in order, most frequent first, in sets of 100
+  const HF_RANK = {}; (window.HIGH_FREQ || []).forEach((id, i) => { HF_RANK[id] = i; });
+  const HF_SETS = Math.ceil((window.HIGH_FREQ || []).length / 100);
   function inUnit(v, unit) {
     if (!unit) return true;
+    if (unit === '@hf') return HF_RANK[v.id] !== undefined;
+    if (unit.startsWith('@hf:')) { const r = HF_RANK[v.id], n = +unit.slice(4); return r !== undefined && r >= (n - 1) * 100 && r < n * 100; }
     if (unit === '@B1') return v.type === 'word' && (v.level === 3 || v.level === 4);
     if (unit === '@B2') return v.type === 'word' && (v.level === 5 || v.level === 6 || v.level === 7);
     if (unit === '@A') return v.type === 'word' && (v.level === 1 || v.level === 2);
@@ -1074,6 +1080,7 @@
     const s = view.vocabSearch.toLowerCase();
     const ty = view.vocabType || '';
     const list = VOCAB.filter(v => inUnit(v, view.vocabUnit) && (!ty || (ty === 'custom' ? (!LIBMAP[v.id] || v.override) : v.type === ty)) && (!view.vocabBm || isBm('vocab', v.id)) && (!s || v.word.toLowerCase().includes(s) || (v.zh || '').includes(s) || (v.syn || '').toLowerCase().includes(s) || (v.example || '').toLowerCase().includes(s)));
+    if (String(view.vocabUnit).startsWith('@hf')) list.sort((a, b) => HF_RANK[a.id] - HF_RANK[b.id]);  // most frequent first
     const PAGE = 50, pages = Math.max(1, Math.ceil(list.length / PAGE));
     view.vocabPage = Math.min(Math.max(0, view.vocabPage || 0), pages - 1);
     const pageList = list.slice(view.vocabPage * PAGE, view.vocabPage * PAGE + PAGE);
@@ -1111,7 +1118,7 @@
         <span class="teacher-only"><button class="btn accent sm" data-action="addVocab">${t('addVocab')}</button> <button class="btn sm" data-action="toggleBulk">${t('bulkImport')}</button></span>
       </div>
       ${view.bulkOpen ? `<div class="card teacher-only block" style="margin-bottom:12px"><b>${t('bulkTitle')}</b><p class="small muted">${t('bulkHint')}</p>
-        <div class="grid-2"><div class="field"><label>${t('unit')}</label><input type="text" id="bulkUnit" placeholder="Unit 5 ..." value="${esc(view.vocabUnit)}"></div></div>
+        <div class="grid-2"><div class="field"><label>${t('unit')}</label><input type="text" id="bulkUnit" placeholder="Unit 5 ..." value="${esc(String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit)}"></div></div>
         <textarea id="bulkText" placeholder="adventure, n., 冒險, Life is an adventure.&#10;brave | adj. | 勇敢的"></textarea>
         <div class="row" style="margin-top:8px"><span class="spacer"></span><button class="btn ghost" data-action="toggleBulk">${t('cancel')}</button><button class="btn accent" data-action="bulkImport">${t('importBtn')}</button></div></div>` : ''}
       ${pager}
@@ -1524,7 +1531,7 @@
     quizAgain() { buildQuiz(); render(); },
     quizExit() { view.quiz = null; render(); },
     // vocab
-    addVocab() { view.vocabEdit = { id: '', word: '', pos: '', zh: '', example: '', unit: view.vocabUnit }; render(); setTimeout(() => $('#veWord') && $('#veWord').focus(), 30); },
+    addVocab() { view.vocabEdit = { id: '', word: '', pos: '', zh: '', example: '', unit: String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit }; render(); setTimeout(() => $('#veWord') && $('#veWord').focus(), 30); },
     editVocab(el) { view.vocabEdit = clone(VOCAB.find(x => x.id === el.dataset.id)); render(); },
     cancelVocab() { view.vocabEdit = null; render(); },
     saveVocab() {
