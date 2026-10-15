@@ -38,6 +38,7 @@
     out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong).map(w => Object.assign({}, w, { vocabId: String(w.vocabId ?? '') })).filter(w => okKey(w.vocabId)) }));
     ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).filter(([id]) => okKey(id)).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok) }, k === 'mcq' ? { chosen: idx(r.chosen) } : {}); }); out[k] = m; });
     if (out.myWords !== undefined) out.myWords = cleanItems(out.myWords, 'vocab');
+    if (out.cities !== undefined) { const m = {}; Object.entries(obj(out.cities)).filter(([id]) => okKey(id) && SAFE_ID.test(id)).forEach(([id, r]) => { r = obj(r); m[id] = { visited: isDay(r.visited) ? r.visited : null, best: Math.min(3, Math.max(0, Math.round(num(r.best)))) }; }); out.cities = m; }
     if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
     const b = obj(out.bookmarks); out.bookmarks = { vocab: arr0(b.vocab), articles: arr0(b.articles) };
     return out;
@@ -124,6 +125,9 @@
   }
   // Built-in reading library (reading-library.js) + the teacher's own and edited passages (state.articles)
   const READ_LIB = (window.READING_LIBRARY || []).map(a => Object.assign({ lib: true }, a));
+  const CITIES = window.CITY_CARDS || [];
+  const cityById = id => CITIES.find(c => c.id === id);
+  const cityName = c => ui.lang === 'zh' ? c.name_zh : c.name;
   let ARTICLES = [];
   function rebuildArticles() {
     const hidden = new Set(state.hiddenArticles || []), own = new Set(state.articles.map(a => a.id));
@@ -328,6 +332,14 @@
     const when = new Map(rows.map(r => [r.user_id, r.updated_at]));
     view.cloudStudents = profs.map(p => ({ id: 'cloud_' + p.id, uid: p.id, name: p.name || p.email || t('roleStudent'), email: p.email || '', exportedAt: when.get(p.id) || null, progress: null }));
   }
+  // every account in the project (teachers can read all profiles), newest first, with the last practice time
+  async function loadCloudAccounts() {
+    const [profs, rows] = await Promise.all([
+      cloud.sb.from('profiles').select('id, email, name, role, created_at').order('created_at', { ascending: false }).then(sbCheck),
+      cloud.sb.from('progress').select('user_id, updated_at').then(sbCheck)]);
+    const when = new Map(rows.map(r => [r.user_id, r.updated_at]));
+    view.cloudAccounts = profs.map(p => ({ id: p.id, name: p.name || '', email: p.email || '', role: p.role === 'teacher' ? 'teacher' : 'student', created: p.created_at || '', last: when.get(p.id) || '' }));
+  }
   async function loadStudentProgress(rep) {
     if (rep.tried) return; rep.tried = true;
     try {
@@ -399,7 +411,7 @@
       if (cloud.sb) try { await cloud.sb.auth.signOut({ scope: 'local' }); } catch (e) { }
       cloud.lastContent = ''; cloud.teacherCode = ''; cloud.contentOk = false; cloud.warned = false;
     }
-    ui.user = null; saveUi(); view.cloudStudents = [];
+    ui.user = null; saveUi(); view.cloudStudents = []; view.cloudAccounts = null;
     if (view.page === 'students') view.page = 'home';
   }
 
@@ -512,20 +524,142 @@
       + Object.entries(paths).map(([k, d]) => `<path d="${d}" stroke="${COL[k]}" stroke-width="7.6" stroke-linecap="round"/>`).join('')
       + `<path d="${shine}" stroke="#ffffff" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round"/>`;
     const xy = (lon, lat) => [((lon + 180) / W.step) * step, ((W.lat0 - lat) / W.step) * step + step / 2];
-    const [tx, ty] = xy(121, 23.5), [lx, ly] = xy(-118, 34), [nx, ny] = xy(-74, 40.7), [ux, uy] = xy(-0.1, 51.5), [sx, sy] = xy(151, -33.9), [cx, cy] = xy(-79.4, 43.7);
-    const pin = (x, y, label, anchor = 'start') => `<circle cx="${x}" cy="${y}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${x + (anchor === 'end' ? -12 : 12)}" y="${y + 6}" class="map-pin-label desk-only" text-anchor="${anchor}">${esc(label)}</text>`;
+    const [tx, ty] = xy(121, 23.5), [lx, ly] = xy(-118, 34);
+    // each city is a button: tap it (or its chip below the map) to fly there and open its card
+    const ANCHOR = { london: 'end', toronto: 'end', singapore: 'end' };
+    // plain labels when the city cards are not available
+    const MAP_LABELS = [{ id: 'losangeles', name: 'Los Angeles', lon: -118, lat: 34 }, { id: 'newyork', name: 'New York', lon: -74, lat: 40.7 }, { id: 'london', name: 'London', lon: -0.1, lat: 51.5 }, { id: 'sydney', name: 'Sydney', lon: 151, lat: -33.9 }, { id: 'toronto', name: 'Toronto', lon: -79.4, lat: 43.7 }];
+    const pin = c => { const [x, y] = xy(c.lon, c.lat), a = ANCHOR[c.id] || 'start';
+      return `<g class="map-city" data-action="openCity" data-id="${esc(c.id)}" role="button" tabindex="0" aria-label="${esc(cityName(c))}"><circle cx="${x}" cy="${y}" r="26" fill="transparent"/><circle class="map-pulse" cx="${x}" cy="${y}" r="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="${x}" cy="${y}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${x + (a === 'end' ? -12 : 12)}" y="${y + 6}" class="map-pin-label desk-only" text-anchor="${a}">${esc(c.name)}</text></g>`; };
+    const home = cityById('taipei');
     const arc = tx < lx ? `M${tx},${ty} Q${(tx + lx) / 2},${Math.min(ty, ly) - 140} ${lx},${ly}` : `M${tx},${ty} Q${tx + 300},${ty - 160} ${cols * step},${ly - 60}`;
+    const done = state.progress.cities || {};
     return `<div class="map-card"><span class="map-count">📅 ${state.settings.examDate.replace(/-/g, '/')} · ${dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('today') : t('examChipPassed')}</span>
       <h3>🌍 ${t('mapTitle')}</h3><p>${t('mapSub')}</p>
-      <svg viewBox="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${dots}
+      <svg viewBox="0 0 ${cols * step} ${rows * step}" data-full="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg">${dots}
         <path d="${arc}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <g><g transform="scale(1.5)"><path d="M14 0 4 -2.4 -2 -12 -6 -12 -2.6 -2.4 -10 -2.4 -13 -6.5 -15.5 -6.5 -13.5 0 -15.5 6.5 -13 6.5 -10 2.4 -2.6 2.4 -6 12 -2 12 4 2.4Z" fill="#ffffff" stroke="#1f3b73" stroke-width="1.2" stroke-linejoin="round"/></g><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/></g>
-        ${pin(lx, ly, 'Los Angeles')}${pin(nx, ny, 'New York')}${pin(ux, uy, 'London', 'end')}${pin(sx, sy, 'Sydney')}${pin(cx, cy, 'Toronto', 'end')}
-        <g transform="translate(${tx},${ty})"><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/><animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/></g>
+        ${(CITIES.length ? CITIES : MAP_LABELS).filter(c => c.id !== 'taipei').map(c => CITIES.length ? pin(c) : `<circle cx="${xy(c.lon, c.lat)[0]}" cy="${xy(c.lon, c.lat)[1]}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${xy(c.lon, c.lat)[0] + (ANCHOR[c.id] ? -12 : 12)}" y="${xy(c.lon, c.lat)[1] + 6}" class="map-pin-label desk-only" text-anchor="${ANCHOR[c.id] || 'start'}">${esc(c.name)}</text>`).join('')}
+        <g transform="translate(${tx},${ty})"${home ? ` class="map-city" data-action="openCity" data-id="taipei" role="button" tabindex="0" aria-label="${esc(cityName(home))}"` : ''}><circle r="30" fill="transparent"/><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/><animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/></g>
         <text x="20" y="6" class="map-pin-label desk-only">Taiwan · ${esc(t('youAreHere'))}</text><text x="-26" y="-26" class="map-pin-label mobile-only" text-anchor="end">Taiwan · ${esc(t('youAreHere'))}</text></g>
-      </svg></div>`;
+      </svg>
+      ${CITIES.length ? `<div class="city-chips"><span class="city-hint">👆 ${t('cityHint')}</span>${CITIES.map(c => `<button class="city-chip${done[c.id] ? ' done' : ''}" data-action="openCity" data-id="${esc(c.id)}">${done[c.id] ? '✓' : '📍'} ${esc(cityName(c))}</button>`).join('')}</div>` : ''}</div>`;
   }
+  /* ---------------- City cards (tap a city on the world map) ---------------- */
+  const SCENE_ICON = { airport: '✈️', transport: '🚆', food: '🍜', directions: '🧭', shopping: '🛍️', hotel: '🏨', signs: '🪧', sightseeing: '📸', emergency: '🆘' };
+  const cityTime = (tz, d = new Date()) => new Date(d.toLocaleString('en-US', { timeZone: tz }));
+  function cityClock(c) {
+    let time = '', diff = 0;
+    try {
+      const now = new Date();
+      time = new Intl.DateTimeFormat(ui.lang === 'zh' ? 'zh-TW' : 'en-GB', { timeZone: c.tz, hour: '2-digit', minute: '2-digit', weekday: 'short', hour12: false }).format(now);
+      diff = Math.round((cityTime(c.tz, now) - cityTime('Asia/Taipei', now)) / 1800000) / 2;
+    } catch (e) { return ''; }
+    const rel = diff === 0 ? t('citySameTime') : tf(diff > 0 ? 'cityAhead' : 'cityBehind', { n: Math.abs(diff) });
+    return `🕒 ${esc(time)} · ${rel}`;
+  }
+  // fly the map into the city (or back out); skipped when the user prefers less motion
+  function zoomMap(c, zoomIn, done) {
+    const svg = $('.map-card svg'), full = svg && (svg.dataset.full || '').split(' ').map(Number);
+    if (!svg || full.length !== 4 || matchMedia('(prefers-reduced-motion: reduce)').matches) { if (svg && full.length === 4) svg.setAttribute('viewBox', full.join(' ')); done && done(); return; }
+    const W = window.WORLD_DOTS, x = ((c.lon + 180) / W.step) * 10, y = ((W.lat0 - c.lat) / W.step) * 10 + 5;
+    const w = full[2] / 5, h = full[3] / 5, box = [Math.min(Math.max(x - w / 2, 0), full[2] - w), Math.min(Math.max(y - h / 2, 0), full[3] - h), w, h];
+    const from = zoomIn ? full : box, to = zoomIn ? box : full, t0 = performance.now(), dur = zoomIn ? 750 : 500;
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      svg.setAttribute('viewBox', k < 1 ? from.map((v, i) => (v + (to[i] - v) * e).toFixed(1)).join(' ') : to.join(' '));
+      if (k < 1) requestAnimationFrame(step); else if (done) done();
+    };
+    requestAnimationFrame(step);
+  }
+  let cityTimer = null, cityOpener = null;
+  const cityModal = $('#cityModal');
+  function openCity(id, opener) {
+    const c = cityById(id); if (!c || view.city) return;
+    cityOpener = opener || null; view.city = id; view.cityQuiz = {}; view.cityZh = false;
+    const p = state.progress; p.cities = p.cities || {};
+    const rec = p.cities[id] || (p.cities[id] = { visited: null, best: 0 });
+    rec.visited = todayStr(); save();
+    if (news.status === 'idle') loadNews().then(() => { if (view.city === id) renderCity(); }, () => {});
+    zoomMap(c, true, () => {
+      if (view.city !== id) return;
+      renderCity(); cityModal.classList.remove('hidden'); document.body.classList.add('city-open');
+      const box = $('#citySheet'); if (box) box.scrollTop = 0;
+      requestAnimationFrame(() => { const btn = $('#cityClose'); if (btn && view.city === id) btn.focus({ preventScroll: true }); });
+      clearInterval(cityTimer); cityTimer = setInterval(() => { const el = $('#cityClock'); if (el) el.innerHTML = cityClock(c); }, 20000);
+    });
+  }
+  function closeCity(leaving) {
+    const c = cityById(view.city); if (!c) return;
+    view.city = null; speakStop(); clearInterval(cityTimer);
+    cityModal.classList.add('hidden'); document.body.classList.remove('city-open');
+    if (leaving) return;
+    render(); // the map shows the new ✓ on the chip
+    zoomMap(c, false);
+    const back = cityOpener && document.querySelector(`[data-action="openCity"][data-id="${c.id}"]`); if (back) back.focus();
+  }
+  function cityHTML(c) {
+    const zh = view.cityZh, q = view.cityQuiz || {}, answered = c.quiz.filter((_, i) => q[i] != null).length;
+    const score = c.quiz.filter((x, i) => q[i] === x.answer).length;
+    const sp = (text, cls = '') => `<button class="icon-btn speak-btn ${cls}" data-action="citySpeak" data-word="${esc(text)}" aria-label="${t('listen')}">🔊</button>`;
+    const vocabBtn = w => { const v = vocabEntry(w.word), on = v && isBm('vocab', v.id);
+      return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="citySaveWord" data-id="${v ? esc(v.id) : ''}" data-word="${esc(v ? v.word : w.word)}" data-pos="${esc(w.pos)}" data-zh="${esc(w.zh)}" data-ex="${esc(w.example)}" aria-pressed="${!!on}" title="${t(on ? 'removeBookmark' : 'addBookmark')}">${on ? '★' : '☆'}</button>`; };
+    const keys = (c.keywords || []).map(k => k.toLowerCase());
+    const hit = text => keys.some(k => (text || '').toLowerCase().includes(k));
+    const reads = (c.related || []).map(articleById).filter(Boolean);
+    // today's news about this place that has a full article with translation
+    const lessonLinks = new Set(newsLessons().map(l => l.link));
+    const todays = ((news.data && news.data.items) || []).filter(it => lessonLinks.has(it.link) && (hit(it.title) || hit(it.summary))).slice(0, 3);
+    const signLines = String(c.sign.en).split('\n');
+    return `<button class="city-close" id="cityClose" data-action="closeCity" aria-label="${t('close')}">✕</button>
+      <div class="city-hero"><img src="img/city/${esc(c.id)}.svg" alt="${esc(c.landmark)}" width="800" height="340">
+        <div class="city-head"><h2 id="cityTitle">${esc(c.name_zh)} <span class="en">${esc(c.name)}</span></h2><div class="city-sub">${esc(c.country_zh)} · ${esc(ui.lang === 'zh' ? c.landmark_zh : c.landmark)}</div><div class="city-clock" id="cityClock">${cityClock(c)}</div></div></div>
+      <div class="city-body">
+        <div class="row city-tools"><div class="seg"><button class="seg-btn ${zh ? '' : 'on'}" data-action="cityZh" data-v="0" aria-pressed="${!zh}">English</button><button class="seg-btn ${zh ? 'on' : ''}" data-action="cityZh" data-v="1" aria-pressed="${zh}">${t('withChinese')}</button></div></div>
+        <p class="en city-intro">${esc(c.intro)} ${sp(c.intro)}</p>${zh ? `<p class="city-zh">${esc(c.intro_zh)}</p>` : ''}
+        <h3>🗣️ ${t('cityPhrases')}</h3>
+        <div class="city-phrases">${c.phrases.map(ph => `<div class="city-phrase"><span class="scene" title="${esc(ph.scene)}">${SCENE_ICON[ph.scene] || '💬'}</span><div class="grow"><div class="en">${esc(ph.en)}</div><div class="city-zh">${esc(ph.zh)}</div>${ph.tip ? `<div class="small muted">💡 ${esc(ph.tip)}</div>` : ''}</div>${sp(ph.en)}</div>`).join('')}</div>
+        <h3>💬 ${esc(c.dialogue.title)} <span class="small muted">${esc(c.dialogue.title_zh)}</span> <button class="btn sm" data-action="cityPlay">▶ ${t('playAll')}</button></h3>
+        <div class="city-dialogue">${c.dialogue.lines.map((l, i) => `<div class="city-line ${l.who === 'You' ? 'me' : ''}" data-line="${i}"><b>${esc(l.who === 'You' ? t('cityYou') : l.who)}</b><div class="grow"><div class="en">${esc(l.en)}</div>${zh ? `<div class="city-zh">${esc(l.zh)}</div>` : ''}</div>${sp(l.en)}</div>`).join('')}</div>
+        <h3>🪧 ${t('citySign')}</h3>
+        <div class="city-signbox"><div class="city-sign sign-${esc(c.sign.style)}">${signLines.map((x, i) => `<div class="${i ? 'sub' : 'main'}">${esc(x)}</div>`).join('')}</div>
+          <div class="grow"><div class="city-zh"><b>${esc(c.sign.zh)}</b></div><div class="small">${esc(c.sign.note)}</div>${sp(signLines.join('. '))}</div></div>
+        <h3>🔤 ${t('cityWords')}</h3>
+        <div class="city-words">${c.words.map(w => `<div class="city-word"><div class="row"><b class="en">${esc(w.word)}</b><span class="small muted">${esc(w.pos)}</span>${sp(w.word)}<span class="spacer"></span>${vocabBtn(w)}</div><div>${esc(w.zh)}${w.us ? ` <span class="chip info">${t('cityUS')} ${esc(w.us)}</span>` : ''}</div><div class="small en muted">${esc(w.example)}</div></div>`).join('')}</div>
+        <div class="city-note"><b>💡 ${t('cityNote')}</b><p class="en">${esc(c.english_note.en)}</p><p class="city-zh">${esc(c.english_note.zh)}</p></div>
+        <h3>📝 ${t('cityQuiz')} ${answered === c.quiz.length ? `<span class="chip ${score === c.quiz.length ? 'ok' : score ? 'warn' : 'bad'}">${score} / ${c.quiz.length}</span>` : ''}</h3>
+        ${c.quiz.map((x, i) => `<div class="city-q"><div class="en"><b>${i + 1}.</b> ${esc(x.q)}</div><div class="city-opts">${x.options.map((o, oi) => { const picked = q[i] === oi, done = q[i] != null;
+          return `<button class="city-opt en ${done && oi === x.answer ? 'right' : ''} ${picked && oi !== x.answer ? 'wrong' : ''}" data-action="cityAnswer" data-q="${i}" data-o="${oi}" ${done ? 'disabled' : ''}>(${'ABCD'[oi]}) ${esc(o)}</button>`; }).join('')}</div>${q[i] != null ? `<div class="small city-explain">${esc(x.explain)}</div>` : ''}</div>`).join('')}
+        ${reads.length || todays.length ? `<h3>📖 ${t('cityMore')}</h3><div class="list">${reads.map(a => `<button class="list-item city-link" data-action="cityRead" data-id="${esc(a.id)}"><span>📖</span><div class="grow"><div class="title en">${esc(a.title)}</div>${a.title_zh ? `<div class="meta">${esc(a.title_zh)}</div>` : ''}</div></button>`).join('')}${todays.map(it => `<button class="list-item city-link" data-action="cityNews" data-link="${esc(it.link)}"><span>📰</span><div class="grow"><div class="title en">${esc(it.title)}</div><div class="meta">${esc(it.source || '')} · ${t('todayNews')}</div></div></button>`).join('')}</div>` : ''}
+      </div>`;
+  }
+  function renderCity() {
+    const c = cityById(view.city), box = $('#citySheet'); if (!c || !box) return;
+    // redraw in place: keep the scroll position and the keyboard focus on the same control
+    const a = document.activeElement, key = a && box.contains(a) && a.dataset ? ['action', 'q', 'o', 'v', 'word'].map(k => a.dataset[k] || '').join('|') : null;
+    const top = box.scrollTop; box.innerHTML = cityHTML(c); box.scrollTop = top;
+    if (key !== null) { const same = $$('#citySheet [data-action]').find(el => ['action', 'q', 'o', 'v', 'word'].map(k => el.dataset[k] || '').join('|') === key); (same && !same.disabled ? same : box).focus({ preventScroll: true }); }
+  }
+  // speak a list of lines one after another in the city's accent
+  function speakLines(lines, lang) {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    lines.forEach(text => { const u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = 0.9; speechSynthesis.speak(u); });
+  }
+  cityModal.addEventListener('click', e => {
+    if (e.target === cityModal) { closeCity(); return; }
+    const el = e.target.closest('[data-action]'); if (!el || !cityModal.contains(el)) return;
+    const fn = actions[el.dataset.action]; if (fn) { e.preventDefault(); fn(el); }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && view.city) { e.stopPropagation(); closeCity(); } });
+  cityModal.addEventListener('keydown', e => {
+    if (e.key !== 'Tab') return; // keep focus inside the card
+    const f = $$('#citySheet button:not([disabled])'); if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  });
+
   function homeBookmarks() {
     const b = bm();
     const words = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean);
@@ -1621,6 +1755,16 @@
         <h3>${t('timeline')}</h3>${A.timeline.length ? `<div class="list">${A.timeline.map(x => `<div class="list-item"><span class="small muted">${fmtDate(x.date)}</span><span>${esc(x.text)}</span></div>`).join('')}</div>` : `<p class="muted">${t('noData')}</p>`}</div>`;
   }
 
+  function cloudAccountsCard() {
+    const list = view.cloudAccounts;
+    const head = `<h3 style="margin-top:0">👥 ${t('accountsAll')} <span class="cloud-badge">☁️ Supabase</span></h3>`;
+    if (!list) return `<div class="card">${head}<p class="small muted">${t('accountsAllSub')}</p><button class="btn" data-action="loadAccounts">${t('loadAccounts')}</button></div>`;
+    const nT = list.filter(a => a.role === 'teacher').length;
+    return `<div class="card">${head}<div class="row"><span class="small">${tf('accountsCount', { n: list.length, s: list.length - nT, t: nT })}</span><span class="spacer"></span><button class="btn sm" data-action="loadAccounts">🔄</button></div>
+      ${list.length ? `<div class="list acct-list">${list.map(a => `<div class="list-item"><div class="grow"><div class="title">${esc(a.name || a.email)} <span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></div><div class="meta en">${esc(a.email)}</div><div class="meta">${t('registeredAt')} ${fmtDate(a.created)} · ${t('lastPractice')} ${a.last ? fmtDate(a.last) : t('never')}</div></div></div>`).join('')}</div>` : `<p class="muted">${t('noAccounts')}</p>`}
+      <p class="small muted" style="margin-bottom:0">${t('accountsAllNote')}</p></div>`;
+  }
+
   /* ---- Settings ---- */
   function pageSettings() {
     const s = state.settings;
@@ -1646,6 +1790,7 @@
         </div>
         <div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>
       </div>
+      ${ui.teacher && cloud.configured ? cloudAccountsCard() : ''}
       ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">👥 ${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
         ${state.accounts.length ? `<table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${esc(a.id)}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
   }
@@ -1952,6 +2097,21 @@
     resetAll() { if (!confirm(t('confirmResetAll'))) return; const p = state.progress, code = state.settings.teacherCode; state = { settings: Object.assign(clone(SEED_DATA.settings), { teacherCode: code }), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), hiddenVocab: [], progress: p, studentReports: state.studentReports, accounts: state.accounts }; save(); render(); },
     deleteAccount(el) { if (!confirm(t('confirmDel'))) return; state.accounts = state.accounts.filter(a => a.id !== el.dataset.id); save(); render(); },
     openAuth() { openAuth('login'); },
+    openCity(el) { openCity(el.dataset.id, el); },
+    closeCity() { closeCity(); },
+    citySpeak(el) { const c = cityById(view.city); speakLines([el.dataset.word], c ? c.lang : 'en-US'); },
+    cityPlay() { const c = cityById(view.city); if (c) speakLines(c.dialogue.lines.map(l => l.en), c.lang); },
+    cityZh(el) { view.cityZh = el.dataset.v === '1'; renderCity(); },
+    cityAnswer(el) {
+      const c = cityById(view.city), q = view.cityQuiz, i = +el.dataset.q; if (!c || q[i] != null) return;
+      q[i] = +el.dataset.o;
+      if (c.quiz.every((_, k) => q[k] != null)) { const rec = state.progress.cities[c.id]; rec.best = Math.max(rec.best || 0, c.quiz.filter((x, k) => q[k] === x.answer).length); bumpDay(); save(); }
+      renderCity();
+    },
+    citySaveWord(el) { actions.saveNewsWord(el); renderCity(); },
+    cityRead(el) { closeCity(true); actions.openArticleHome(el); },
+    cityNews(el) { closeCity(true); view.newsArticle = el.dataset.link; nav('news'); },
+    async loadAccounts() { try { await loadCloudAccounts(); render(); } catch (e) { toast('☁️ ' + e.message); } },
     async loadCloud() { try { await loadCloudStudents(); toast(tf('cloudLoaded', { n: view.cloudStudents.length })); if (view.cloudStudents.length && view.studentSource === 'local') view.studentSource = view.cloudStudents[0].id; render(); } catch (e) { toast('☁️ ' + e.message); } }
   };
 
@@ -1984,7 +2144,7 @@
     if (e.target.id === 'vocabSearch') { view.vocabSearch = e.target.value; view.vocabPage = 0; const pos = e.target.selectionStart; render(); const i = $('#vocabSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
   });
   $('#app').addEventListener('keydown', e => {
-    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-action]')) { e.preventDefault(); e.target.click(); return; }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-action]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); return; } // SVG elements have no .click()
     if (e.target.id === 'trInput' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); actions.trCheck(); }
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
