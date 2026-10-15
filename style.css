@@ -688,3 +688,19 @@ body.teacher .teacher-only.flex { display: flex; }
 .pr-none { color: #4a5a78; }
 .pr-foot { margin-top: 18px; font-size: 11px; color: #8a96ad; text-align: center; }
 .report-card { border-style: dashed; }
+
+/* phrases tab */
+.phr-cats { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; scrollbar-width: thin; }
+.phr-cat { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 12px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; box-shadow: 2px 2px 0 var(--line); max-width: 220px; text-align: left; }
+.phr-cat span { font-size: 12px; color: var(--ink-soft); }
+.phr-cat.on { background: var(--accent); color: var(--accent-ink); }
+.phr-cat.on span { color: var(--accent-ink); }
+.phr-tools .seg { margin-left: 0; }
+.phr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 8px; }
+.phr-card { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; box-shadow: 3px 3px 0 var(--line); }
+.phr-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.phr-word { font-size: 18px; font-weight: 800; color: var(--header); }
+.phr-zh { font-size: 16px; }
+.phr-ex { background: var(--bg-soft); border-radius: 10px; padding: 6px 10px; font-size: 15px; line-height: 1.55; }
+.phr-acts { margin-top: auto; }
+@media (max-width: 520px) { .phr-grid { grid-template-columns: 1fr; } }

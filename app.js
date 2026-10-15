@@ -377,6 +377,67 @@
     </div>`;
   }
 
+  /* ---- Phrases tab: the 2,800+ built-in phrases by category ---- */
+  function pagerHTML(cur, pages, action, labelOf) {
+    if (pages <= 1) return '';
+    const span = window.innerWidth < 600 ? 1 : 2;
+    const set = new Set([0, pages - 1]);
+    for (let i = cur - span; i <= cur + span; i++) if (i >= 0 && i < pages) set.add(i);
+    if (cur <= span + 2) for (let i = 0; i < Math.min(pages, span * 2 + 3); i++) set.add(i);
+    if (cur >= pages - span - 3) for (let i = Math.max(0, pages - span * 2 - 3); i < pages; i++) set.add(i);
+    const arr = [...set].sort((a, b) => a - b), nums = [];
+    arr.forEach((n, i) => { if (i && n - arr[i - 1] > 1) nums.push('…'); nums.push(n); });
+    return `<div class="pager">
+      <button class="pg-btn" data-action="${action}" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
+      ${nums.map(n => n === '…' ? '<span class="pg-gap">…</span>' : `<button class="pg-btn pg-num ${n === cur ? 'on' : ''}" data-action="${action}" data-p="${n}" ${n === cur ? 'aria-current="page"' : ''}>${n + 1}</button>`).join('')}
+      <button class="pg-btn" data-action="${action}" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button>
+      <select class="input pager-sel" data-pager="${action}" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1}${labelOf ? ' · ' + esc(labelOf(i)) : ''}</option>`).join('')}</select>
+    </div>`;
+  }
+  const PHR_PAGE = 24;
+  function pagePhrases() {
+    const f = view.phr || (view.phr = { cat: '', level: '', q: '', bm: false, page: 0 });
+    const all = VOCAB.filter(v => v.type === 'phrase');
+    const cats = Array.from({ length: 10 }, (_, i) => 'ph' + (i + 1));
+    const box = id => (state.progress.cards[id] || {}).box || 0;
+    const q = f.q.trim().toLowerCase();
+    const list = all.filter(v => (!f.cat || v.unit === f.cat) && (!f.level || v.cefr === f.level) && (!f.bm || isBm('vocab', v.id))
+      && (!q || v.word.toLowerCase().includes(q) || (v.zh || '').includes(f.q.trim()) || (v.syn || '').toLowerCase().includes(q)));
+    const pages = Math.max(1, Math.ceil(list.length / PHR_PAGE)), cur = Math.min(f.page, pages - 1);
+    const shown = list.slice(cur * PHR_PAGE, cur * PHR_PAGE + PHR_PAGE);
+    const inCat = f.cat ? all.filter(v => v.unit === f.cat) : all;
+    const mastered = inCat.filter(v => box(v.id) === 3).length;
+    const exampleHTML = v => { if (!v.example) return ''; const re = noteRe(v.word.replace(/\([^)]*\)/g, ' ').replace(/…|\.\.\./g, ' ')); return markTerms(v.example, [{ re, cls: 'lp' }]); };
+    const pager = pagerHTML(cur, pages, 'phrGo', i => (list[i * PHR_PAGE] || {}).word || '');
+    return `<h2 class="section-title" style="margin-top:8px">🧩 ${t('phrTitle')}</h2><p class="section-sub">${tf('phrSub', { n: all.length })}</p>
+      <div class="phr-cats">
+        <button class="phr-cat ${!f.cat ? 'on' : ''}" data-action="phrCat" data-v=""><b>${t('newsAll')}</b><span>${all.length}</span></button>
+        ${cats.map(c => { const n = all.filter(v => v.unit === c).length; return n ? `<button class="phr-cat ${f.cat === c ? 'on' : ''}" data-action="phrCat" data-v="${c}"><b>${esc(t('phCat' + c.slice(2)))}</b><span>${n}</span></button>` : ''; }).join('')}
+      </div>
+      <div class="card phr-tools">
+        <div class="row">
+          <input type="text" id="phrSearch" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" style="max-width:300px">
+          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="phrLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <button class="btn sm ${f.bm ? 'accent' : 'ghost'}" data-action="phrBm">🔖 ${t('modeBookmark')}</button>
+          <span class="spacer"></span>
+          <span class="small muted">${tf('phrMastered', { n: mastered, t: inCat.length })}</span>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn accent" data-action="phrFlash">🃏 ${t('phrPractice')}</button>
+          <button class="btn" data-action="phrQuiz">📝 ${t('phrQuiz')}</button>
+          <span class="small muted">${f.cat ? esc(t('phCat' + f.cat.slice(2))) : t('phrAllCats')}</span>
+        </div>
+      </div>
+      <p class="small muted" style="margin:6px 2px">${tf('phrCount', { n: list.length })}</p>
+      ${list.length ? `<div class="phr-grid">${shown.map(v => `<article class="phr-card">
+        <div class="phr-head"><span class="phr-word en">${esc(v.word)}</span><span class="chip">${esc(v.cefr || '')}</span>${box(v.id) === 3 ? `<span class="chip ok">✓ ${t('level3')}</span>` : ''}</div>
+        <div class="phr-zh">${esc(v.zh)}</div>
+        ${v.example ? `<div class="phr-ex en">${exampleHTML(v)}</div>` : ''}
+        ${v.syn ? `<div class="small muted en">≈ ${esc(v.syn)}</div>` : ''}
+        <div class="row phr-acts"><button class="btn sm ghost" data-action="speak" data-word="${esc(v.example || v.word)}" aria-label="${t('speak')}">🔊</button>${bmBtn('vocab', v.id)}<span class="spacer"></span><span class="small muted">${esc(t('phCat' + String(v.unit || '').slice(2)))}</span></div>
+      </article>`).join('')}</div>${pager}` : `<div class="card"><p class="muted" style="margin:0">${t('phrNone')}</p></div>`}`;
+  }
+
   /* ---- Daily English news (news.json is refreshed every morning by a GitHub Action) ---- */
   const news = { status: 'idle', data: null, source: '' };
   async function loadNews() {
@@ -1197,7 +1258,7 @@
   /* ---------------- Render ---------------- */
   function render() {
     updateExamChip();
-    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
+    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
 
     $('#app').innerHTML = (pages[view.page] || pageHome)();
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
@@ -1269,6 +1330,12 @@
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
     vocabGo(el) { view.vocabPage = +el.dataset.p; render(); },
+    phrGo(el) { view.phr.page = +el.dataset.p; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+    phrCat(el) { Object.assign(view.phr, { cat: el.dataset.v, page: 0 }); render(); },
+    phrLevel(el) { Object.assign(view.phr, { level: el.dataset.v, page: 0 }); render(); },
+    phrBm() { Object.assign(view.phr, { bm: !view.phr.bm, page: 0 }); render(); },
+    phrFlash() { Object.assign(view.flashSetup, { mode: 'due', unit: view.phr.cat || '@phrase' }); view.flash = null; view.quiz = null; nav('flashcards'); },
+    phrQuiz() { view.quizSetup.unit = view.phr.cat || '@phrase'; view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
     openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); nav('reading'); },
     // reading
     openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
@@ -1435,6 +1502,7 @@
     else if (id === 'fsShuffle') view.flashSetup.shuffle = e.target.value === '1';
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
+    else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'phrGo') view.phr.page = +e.target.value, render();
     else if (e.target.classList.contains('pager-sel')) view.vocabPage = +e.target.value, render();
     else if (id === 'qsType') view.quizSetup.type = e.target.value;
     else if (id === 'qsUnit') view.quizSetup.unit = e.target.value;
@@ -1445,6 +1513,7 @@
     else if (id === 'reportFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { if (obj && obj.type === 'student-report') { addReport(obj); toast(t('reportImported')); render(); } else { try { importJSON(obj, 'merge'); toast(t('imported')); render(); } catch (x) { toast(t('importFail')); } } }); }
   });
   $('#app').addEventListener('input', e => {
+    if (e.target.id === 'phrSearch') { view.phr.q = e.target.value; view.phr.page = 0; const pos = e.target.selectionStart; render(); const i = $('#phrSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
     if (e.target.id === 'vocabSearch') { view.vocabSearch = e.target.value; view.vocabPage = 0; const pos = e.target.selectionStart; render(); const i = $('#vocabSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
   });
   $('#app').addEventListener('keydown', e => {
