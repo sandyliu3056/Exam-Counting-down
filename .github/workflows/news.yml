@@ -15,11 +15,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: daily-news
+  group: daily-news-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   update:
+    # only the site's branch: pushes to other branches must not commit news or spend API credit
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,6 +31,7 @@ jobs:
       - name: Fetch headlines
         run: python3 scripts/fetch_news.py news.json
       - name: Write full study articles (only if the ANTHROPIC_API_KEY secret is set)
+        continue-on-error: true   # a problem here must not stop today's headlines from being saved
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           LESSON_MODEL: ${{ vars.LESSON_MODEL }}
@@ -43,4 +46,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add news.json
           git commit -m "Update daily English news"
-          git push
+          for i in 1 2 3; do git pull --rebase --quiet origin "${{ github.ref_name }}" && git push && exit 0; sleep 5; done
+          exit 1

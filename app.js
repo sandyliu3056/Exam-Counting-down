@@ -79,7 +79,7 @@
   let VOCAB = [], VMAP = {};
   function rebuildVocab() {
     const hidden = new Set(state.hiddenVocab || []);
-    const custom = (state.vocab || []).map(v => Object.assign({ type: 'word' }, v));
+    const custom = (state.vocab || []).concat((state.progress && state.progress.myWords) || []).map(v => Object.assign({ type: 'word' }, v));
     const overrides = {}; custom.forEach(v => { if (LIBMAP[v.id]) overrides[v.id] = v; });
     const customOnly = custom.filter(v => !LIBMAP[v.id]);
     const lib = LIBRARY.filter(v => !hidden.has(v.id)).map(v => overrides[v.id] ? Object.assign({}, v, overrides[v.id], { lib: true }) : v);
@@ -411,6 +411,20 @@
   function highlightWords(title) {
     return esc(title).replace(/\b([A-Za-z]{4,})\b/g, (m, w) => { const v = findWord(w, 3); return v ? `<span class="nw" title="${esc(v.zh)}">${m}</span>` : m; });
   }
+  // Split at . ! ? followed by a capital letter or quote, but not after initials such as "U.S." (no regex
+  // lookbehind: older iPhone Safari cannot parse it)
+  function splitSentences(text) {
+    const out = [];
+    String(text || '').split(/\n+/).forEach(line => {
+      const re = /[.!?]+["”’']*\s+(?=[A-Z"“‘'])/g; let start = 0, m;
+      while ((m = re.exec(line))) {
+        if (/(^|[\s.])[A-Z]$/.test(line.slice(start, m.index))) continue;
+        out.push(line.slice(start, m.index + m[0].length).trim()); start = m.index + m[0].length;
+      }
+      if (line.slice(start).trim()) out.push(line.slice(start).trim());
+    });
+    return out;
+  }
   const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // Wrap matches of each term in <span class="..">, escaping everything else. Longer terms win where they overlap.
   function markTerms(text, terms) {
@@ -506,7 +520,7 @@
     phraseRes().forEach(p => { p.re.lastIndex = 0; const m = p.re.exec(text); if (m) phrases.push({ v: p.v, s: m.index, e: m.index + m[0].length, len: p.len }); });
     phrases.sort((a, b) => b.len - a.len);
     const ph = []; phrases.forEach(p => { if (!spans.some(s => p.s < s.e && s.s < p.e)) { spans.push(p); ph.push(p); } });
-    const sentences = text.split(/\n|(?<=[.!?])\s+(?=[A-Z"“‘'])/).map(s => s.trim()).filter(Boolean);
+    const sentences = splitSentences(text);
     const grammar = [];
     GRAMMAR.forEach(([k, re]) => {
       if (grammar.length >= 4) return;
@@ -514,12 +528,12 @@
     });
     return { words: words.slice(0, 8), phrases: ph.slice(0, 5), grammar };
   }
-  function vocabEntry(word) { const lw = word.toLowerCase(); return VOCAB.find(x => x.word.toLowerCase() === lw) || findWord(word); }
+  function vocabEntry(word) { for (const x of lemmas(word)) { const v = VOCAB.find(e => e.word.toLowerCase() === x); if (v) return v; } return null; }
   function saveWordBtn(word, pos, zh, ex) {
     const v = vocabEntry(word), on = v && isBm('vocab', v.id);
-    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}" aria-pressed="${!!on}">${on ? '★' : '☆'}</button>`;
+    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-id="${v ? esc(v.id) : ''}" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}" aria-pressed="${!!on}">${on ? '★' : '☆'}</button>`;
   }
-  const sentenceWith = (text, word) => (text.split(/(?<=[.!?])\s+/).find(s => termRe(word).test(s)) || '').trim();
+  const sentenceWith = (text, word) => splitSentences(text).find(s => termRe(word).test(s)) || '';
   // Lessons saved before translations existed have one "passage" string instead of paragraphs
   const lessonParas = les => les.paragraphs || String(les.passage || '').split(/\n\s*\n/).filter(Boolean).map(en => ({ en, zh: '' }));
   function newsLessons() {
@@ -1067,7 +1081,7 @@
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
     const sp = $('#spellInput'); if (sp && !sp.disabled) sp.focus();
   }
-  function nav(page) { if (page === 'news' && view.page === 'news') view.newsArticle = null; view.page = page; window.scrollTo({ top: 0 }); render(); }
+  function nav(page) { speakStop(); if (page === 'news' && view.page === 'news') view.newsArticle = null; view.page = page; window.scrollTo({ top: 0 }); render(); }
 
   /* ---------------- Export / Import ---------------- */
   function download(name, obj) {
@@ -1121,10 +1135,10 @@
     newsZh(el) { view.newsZh = el.dataset.v === '1'; render(); },
     speakStop() { speakStop(); },
     saveNewsWord(el) {
-      const d = el.dataset; let v = vocabEntry(d.word);
-      if (v && !VMAP[v.id]) v = null;
-      if (!v) { v = { id: uid('v'), word: d.word, pos: d.pos, zh: d.zh, syn: '', example: d.ex, unit: 'news' }; state.vocab.push(v); rebuildVocab(); }
-      toggleBm('vocab', v.id); render();
+      // Words not in the word bank go to the student's own list (progress), not to the teacher's shared content
+      const d = el.dataset; let id = d.id && VMAP[d.id] ? d.id : null;
+      if (!id) { const p = state.progress; p.myWords = p.myWords || []; id = uid('v'); p.myWords.push({ id, word: d.word, pos: d.pos, zh: d.zh, syn: '', example: d.ex, unit: 'news' }); rebuildVocab(); }
+      toggleBm('vocab', id); render();
     },
     readTopic(el) { view.readFilter.topic = el.dataset.v; render(); },
     readStatus(el) { view.readFilter.status = el.dataset.v; render(); },
@@ -1215,6 +1229,7 @@
       if (!confirm(t('confirmDel'))) return;
       const id = el.dataset.id;
       if (state.vocab.some(x => x.id === id)) state.vocab = state.vocab.filter(x => x.id !== id);
+      if (state.progress.myWords) state.progress.myWords = state.progress.myWords.filter(x => x.id !== id);
       if (LIBMAP[id]) { state.hiddenVocab = state.hiddenVocab || []; if (!state.hiddenVocab.includes(id)) state.hiddenVocab.push(id); }
       save(); render();
     },

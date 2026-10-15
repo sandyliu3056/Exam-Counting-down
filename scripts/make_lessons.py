@@ -17,7 +17,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from article_text import fetch_text  # noqa: E402
@@ -26,7 +26,9 @@ LESSONS_PER_DAY = 6
 EXTRA_PICKS = 4           # spare stories in case a page can't be read or an article fails the checks
 MIN_SOURCE_WORDS = 150
 MODEL = os.environ.get("LESSON_MODEL") or "claude-opus-5-5"
-MAX_COPY_RUN = 12         # reject an article that repeats 12 or more words in a row from the source
+MAX_COPY_RUN = 12         # reject an article that repeats 12 or more words in a row from the source (quotes aside)
+MAX_QUOTE_WORDS = 15
+TAIWAN = timezone(timedelta(hours=8))  # lessonsDate is the Taiwan date the students read them on
 
 AUDIENCE = ("Taiwanese senior-high students (age 16-18, CEFR B1-B2) preparing for the TVE joint "
             "college entrance exam (統測)")
@@ -65,7 +67,8 @@ Retell the WHOLE story above for the students, from beginning to end, covering e
   translation using Taiwan wording, 台灣用語).
 - Use ONLY facts from the source article. Do not invent numbers, names, quotes, dates or details.
 - Write in your own words. Never copy more than 8 words in a row from the source, except names and
-  titles. You may include at most one short quote (10 words or fewer), with who said it.
+  titles. You may include at most one short quote (12 words or fewer) in double quotation marks, with
+  who said it.
 - "title_zh": a natural Traditional Chinese translation of the headline.
 - "vocab": 8 useful B1-B2 words exactly as they appear in your English text: word, part of speech
   (n./v./adj./adv.), Traditional Chinese meaning that fits this text.
@@ -102,7 +105,17 @@ def norm(s):
 
 
 def words_of(s):
-    return re.findall(r"[a-z0-9]+(?:['’][a-z]+)?", s.lower())
+    # publishers use curly apostrophes, the model usually straight ones: drop both so "city’s" == "city's"
+    return re.findall(r"[a-z0-9]+", re.sub(r"['’‘ʼ]", "", s.lower()))
+
+
+QUOTE = re.compile(r'[“"]([^”"]{1,600})[”"]')
+
+
+def contains(text, note):
+    """True if `note` appears in `text` as whole words (the app highlights notes the same way)."""
+    pattern = r"\b" + r"[\s,]+".join(re.escape(w) for w in note.lower().split()) + r"\b"
+    return re.search(pattern, text.lower()) is not None
 
 
 def longest_copied_run(text, source):
@@ -136,12 +149,15 @@ def validate(les, story, source_text):
     count = len(english.split())
     if not 200 <= count <= 460:
         return None, f"{count} words"
-    copied = longest_copied_run(english, source_text)
+    quotes = QUOTE.findall(english)
+    if len(quotes) > 2 or any(len(q.split()) > MAX_QUOTE_WORDS for q in quotes):
+        return None, "quotes are too long"
+    copied = longest_copied_run(QUOTE.sub(" | ", english), source_text)  # an attributed short quote may match the source
     if copied >= MAX_COPY_RUN:
         return None, f"copies {copied} words in a row from the source"
     text = norm(english)
-    vocab = [v for v in les.get("vocab", []) if v["word"].strip() and norm(v["word"]) in text and has_cjk(v["zh"])][:10]
-    phrases = [p for p in les.get("phrases", []) if p["phrase"].strip() and norm(p["phrase"]) in text and has_cjk(p["zh"])][:6]
+    vocab = [v for v in les.get("vocab", []) if v["word"].strip() and contains(english, v["word"]) and has_cjk(v["zh"])][:10]
+    phrases = [p for p in les.get("phrases", []) if p["phrase"].strip() and contains(english, p["phrase"]) and has_cjk(p["zh"])][:6]
     grammar = [g for g in les.get("grammar", []) if g["example"].strip() and norm(g["example"]).rstrip(".!?\"”") in text][:4]
     if len(vocab) < 4 or len(phrases) < 2 or not grammar:
         return None, "too few study notes found in the text"
@@ -234,9 +250,11 @@ def main(path="news.json"):
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
     items = data.get("items") or []
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    # hand-written sample lessons have no "lessonsModel", so they never block a real run
-    if data.get("lessonsDate") == today and data.get("lessonsModel") and data.get("lessons"):
+    today = datetime.now(TAIWAN).strftime("%Y-%m-%d")
+    # Skip only if today's set came from this generator and is mostly complete; hand-written samples
+    # (no "lessonsModel") or a run cut short by a rate limit don't block a new run.
+    made = [l for l in data.get("lessons", []) if l.get("paragraphs") and l.get("words", 0) >= 200]
+    if data.get("lessonsDate") == today and data.get("lessonsModel") and len(made) >= max(1, LESSONS_PER_DAY // 2):
         print("Today's lessons already exist; nothing to do.")
         return 0
     if not items:

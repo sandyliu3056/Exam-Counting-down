@@ -15,11 +15,15 @@ UA = "Mozilla/5.0 (compatible; TVE-English-Countdown news bot; +https://github.c
 MAX_WORDS = 1800
 SKIP_TAGS = {"nav", "header", "footer", "aside", "figure", "figcaption", "form", "script", "style", "noscript", "button", "svg", "template"}
 BLOCK_TAGS = {"p", "div", "section", "article", "li", "ul", "ol", "h1", "h2", "h3", "h4", "blockquote", "table"}
+# Promo and caption lines. Only short paragraphs are tested, so real paragraphs that happen to start
+# with "Watch", "Share" or "Photo" are kept.
 BOILERPLATE = re.compile(
-    r"^(sign up|subscribe|follow (us|the)|read more|related|copyright|©|photo|image|advertisement|listen to|watch|share|"
-    r"get our|click|download|this (article|story) (was|is) (amended|updated|corrected)|you can (read|listen|watch)|"
+    r"^(sign up|subscribe (now|today|to)|follow (us|the)|read more|related:|copyright|©|photo:|image:|image source|"
+    r"advertisement|listen to (this|the)|watch:|share (this|on)|get our|click here|download (the|our)|"
+    r"this (article|story) (was|is|has been) (amended|updated|corrected)|you can (read|listen|watch)|"
     r"support (the|our)|we (also )?use cookies|enable javascript)|newsletter|all rights reserved|terms of (use|service)",
     re.I)
+BOILERPLATE_MAX_WORDS = 40
 
 
 class Paragraphs(HTMLParser):
@@ -62,7 +66,8 @@ def extract(page):
     parser._close()
     paras, seen = [], set()
     for p in parser.out:
-        if len(p.split()) < 8 or BOILERPLATE.search(p) or p in seen:
+        n = len(p.split())
+        if n < 8 or (n <= BOILERPLATE_MAX_WORDS and BOILERPLATE.search(p)) or p in seen:
             continue
         seen.add(p)
         paras.append(p)
