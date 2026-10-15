@@ -567,7 +567,7 @@ body.teacher .teacher-only.flex { display: flex; }
 .gram-item + .gram-item { border-top: 1px dashed color-mix(in srgb, var(--line) 25%, transparent); }
 .gram-item p { margin: 3px 0; }
 .gram-ex { font-style: italic; color: var(--ink); background: var(--bg-soft); border-radius: 10px; padding: 6px 10px; }
-.gram-ex mark { background: color-mix(in srgb, var(--accent) 75%, transparent); color: inherit; border-radius: 4px; padding: 0 2px; font-style: normal; font-weight: 700; }
+.gram-ex .gram-focus, .gram-ex mark { background: color-mix(in srgb, var(--accent) 75%, transparent); color: inherit; border-radius: 4px; padding: 0 2px; font-style: normal; font-weight: 700; }
 .btn.save-word { min-width: 34px; padding: 2px 8px; font-size: 16px; line-height: 1.3; background: var(--card); color: var(--ink); }
 .btn.save-word.on { background: var(--accent); color: var(--accent-ink); }
 .study-panel { border-top: 2px dashed color-mix(in srgb, var(--line) 35%, transparent); margin-top: 4px; padding-top: 10px; display: flex; flex-direction: column; gap: 10px; }

@@ -453,6 +453,24 @@
     (IRREG[v] || '').split(' ').filter(Boolean).forEach(x => f.add(x));
     return Array.from(f).sort((a, b) => b.length - a.length);
   }
+  // A study note in dictionary form ("flock to", "leave sb empty-handed", "summon") matched in running text:
+  // inflected first word, "be" forms, sb/sth as a short gap (same rule as scripts/make_lessons.py)
+  function noteRe(note) {
+    const toks = String(note || '').toLowerCase().split(/\s+/).filter(Boolean);
+    const gap = x => /^(sb|sth|sb\/sth|someone|something|somebody)$/.test(x);
+    while (toks.length && gap(toks[toks.length - 1])) toks.pop();
+    if (!toks.length) return /$^/g;
+    let src = '\\b';
+    toks.forEach((x, i) => {
+      if (gap(x)) { src += "(?:[\\w'’-]+[\\s,]+){1,3}"; return; }
+      let w;
+      if (/^(one's|sb's)$/.test(x)) w = POSS;
+      else if ((i === 0 || toks.length === 1) && /^[a-z]+$/.test(x) && !NOT_VERB.has(x)) w = `(?:${verbForms(x).join('|')})`;
+      else w = escRe(x);
+      src += w + (i < toks.length - 1 ? '[\\s,]+' : '');
+    });
+    return new RegExp(src + '\\b', 'gi');
+  }
   let PHRASE_RES = null;
   function phraseRes() {
     if (PHRASE_RES) return PHRASE_RES;
@@ -533,7 +551,7 @@
     const v = vocabEntry(word), on = v && isBm('vocab', v.id);
     return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-id="${v ? esc(v.id) : ''}" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}" aria-pressed="${!!on}">${on ? '★' : '☆'}</button>`;
   }
-  const sentenceWith = (text, word) => splitSentences(text).find(s => termRe(word).test(s)) || '';
+  const sentenceWith = (text, word) => splitSentences(text).find(s => { const re = noteRe(word); return re.test(s); }) || '';
   // Lessons saved before translations existed have one "passage" string instead of paragraphs
   const lessonParas = les => les.paragraphs || String(les.passage || '').split(/\n\s*\n/).filter(Boolean).map(en => ({ en, zh: '' }));
   function newsLessons() {
@@ -543,7 +561,7 @@
   function newsReader(les) {
     const paras = lessonParas(les), full = paras.map(p => p.en).join('\n\n');
     const showZh = view.newsZh !== false, hasZh = paras.some(p => p.zh);
-    const terms = (les.vocab || []).map(v => ({ re: termRe(v.word), cls: 'lw', title: v.zh })).concat((les.phrases || []).map(p => ({ re: termRe(p.phrase), cls: 'lp', title: p.zh })));
+    const terms = (les.vocab || []).map(v => ({ re: noteRe(v.word), cls: 'lw', title: v.zh })).concat((les.phrases || []).map(p => ({ re: noteRe(p.phrase), cls: 'lp', title: p.zh })));
     const item = ((news.data && news.data.items) || []).find(i => i.link === les.link) || {};
     return `<div class="row reader-nav" style="margin:8px auto 12px"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>
       <article class="card news-reader">
@@ -562,7 +580,7 @@
         <div class="lesson-grid">
           <section class="lesson-box lb-words"><h4>🔤 ${t('lessonVocab')}</h4><ul>${(les.vocab || []).map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(full, v.word))}</li>`).join('')}</ul></section>
           <section class="lesson-box lb-phrases"><h4>🧩 ${t('lessonPhrases')}</h4><ul>${(les.phrases || []).map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
-          <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${esc(g.example)}”</p></div>`).join('')}</section>
+          <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${g.focus ? markTerms(g.example, [{ re: new RegExp(escRe(g.focus.trim()).replace(/\s+/g, '\\s+'), 'gi'), cls: 'gram-focus' }]) : esc(g.example)}”</p></div>`).join('')}</section>
         </div>
       </article>
       <div class="row reader-nav" style="margin:12px auto 0"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>`;

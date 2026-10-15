@@ -30,6 +30,7 @@ from article_text import UA, fetch_text  # noqa: E402
 
 MIN_SOURCE_WORDS = 150
 MIN_WORDS = 150          # shortest article accepted (the prompt asks for 250-400)
+PROMPT_VERSION = 2       # articles written with an older prompt are rewritten when there is spare quota
 SOURCE_WORD_LIMIT = 1500  # the facts are in the first part; keeps requests small
 MAX_COPY_RUN = 12         # reject an article that repeats 12 or more words in a row from the source (quotes aside)
 MAX_QUOTE_WORDS = 15
@@ -59,22 +60,40 @@ Publisher: {source}
 </source_article>
 
 Retell the WHOLE story above for the students, from beginning to end, covering every main point.
-- "paragraphs": 4-7 paragraphs, 250-400 words in total (never fewer than 250), clear B1-B2 English with some exam-level
-  vocabulary. Each paragraph has "en" (your English) and "zh" (a faithful, natural Traditional Chinese
-  translation using Taiwan wording, 台灣用語).
-- Use ONLY facts from the source article. Do not invent numbers, names, quotes, dates or details.
-- Write in your own words. Never copy more than 8 words in a row from the source, except names and
-  titles. You may include at most one short quote (12 words or fewer) in double quotation marks, with
-  who said it.
-- "title_zh": a natural Traditional Chinese translation of the headline.
-- "vocab": 8 useful B1-B2 words exactly as they appear in your English text: word, part of speech
-  (n./v./adj./adv.), Traditional Chinese meaning that fits this text.
-- "phrases": 5 useful multi-word phrases or collocations that appear exactly in your English text,
-  each with a Traditional Chinese meaning.
-- "grammar": 3 grammar points used in your text (e.g. passive voice, present perfect, relative clause,
-  comparative, modal verb, infinitive of purpose, gerund, participle clause). For each: the name in
-  Traditional Chinese with the English name in brackets, a one-sentence explanation in Traditional
-  Chinese, and one exact sentence from your English text that shows it.
+
+English ("paragraphs" → "en"):
+- 4-7 paragraphs, 250-400 words in total (never fewer than 250). Clear, natural B1-B2 English with some
+  exam-level vocabulary; no slang or jargon (explain any hard term in simple words). Keep tenses consistent.
+- Use ONLY facts from the source article. Every name, number, date, quote and claim must come from it;
+  do not add numbers, dates or details, and do not overstate (say "could help", not "will"). Give people
+  the role the source gives them (e.g. "former Green Party leader Caroline Lucas"). Introduce every
+  abbreviation at first mention, e.g. "the Savannah College of Art and Design (SCAD)".
+- Write in your own words. Never copy more than 8 words in a row from the source, except names and titles.
+  At most one short quote (12 words or fewer) in double quotation marks, with who said it.
+
+Chinese ("paragraphs" → "zh", and "title_zh"):
+- Translate each English paragraph sentence by sentence, completely and faithfully: add nothing, drop
+  nothing, keep who does or says what, and keep the strength of words (greatest = 最…, deeply angered = 大為震怒).
+- Traditional characters only (後 not 后), with Taiwan wording: 資料 (data, not 數據), 第一季 (not 第一季度),
+  獲利, 就業市場, 影片, 使用者, 訊號, 計畫, 菁英, 道地. Natural Chinese, not word-for-word.
+- Organisations, species, places and people: use the established Taiwanese Chinese name, or keep the English
+  name (you may add it in parentheses). Never invent a Chinese name or mix Chinese with part of an English name.
+- "title_zh": translate the whole headline faithfully; add or change nothing, and keep any speaker it names.
+
+Study notes (all must be correct for how the words are used in THIS text):
+- "vocab": 6-8 of the hardest useful B1-B2 words in your English text (not easy words like adapt, purpose,
+  foreign). "word" is the dictionary form (summon, not summoned; regulation, not regulations); "pos" is n./v./adj./adv.;
+  "zh" is the Traditional Chinese meaning in this text.
+- "phrases": 3-5 real phrasal verbs, idioms or fixed collocations that appear in your text, in dictionary form
+  ("flock to", "be held accountable for", "leave sb empty-handed"). Not single words, not words already in vocab,
+  not trivial phrases (for example, in the future) and not plain noun combinations (medical school).
+- "grammar": 3 different grammar points. "example" is ONE sentence copied exactly from your English text that
+  really contains the structure; "focus" is the exact words in that sentence that show it (e.g. "has been reviewed",
+  "which measure", "to protect the forest"). "point" is 「中文名稱 (English name)」 with standard Taiwanese terms
+  (關係代名詞, 主詞, 受詞; 分詞構句 only for a comma-separated V-ing/V-ed clause with no conjunction). "explain" is one
+  accurate sentence in Traditional Chinese that points to the focus words. Check each note before you output it:
+  passive needs be/get + past participle; a relative clause needs who/which/that/where/whose; an infinitive of
+  purpose answers "why".
 """
 
 NOTE = {"type": "object", "additionalProperties": False}
@@ -89,8 +108,8 @@ WRITE_SCHEMA = {
         "phrases": {"type": "array", "items": dict(NOTE, properties={
             "phrase": {"type": "string"}, "zh": {"type": "string"}}, required=["phrase", "zh"])},
         "grammar": {"type": "array", "items": dict(NOTE, properties={
-            "point": {"type": "string"}, "explain": {"type": "string"}, "example": {"type": "string"}},
-            required=["point", "explain", "example"])},
+            "point": {"type": "string"}, "explain": {"type": "string"}, "example": {"type": "string"},
+            "focus": {"type": "string"}}, required=["point", "explain", "example", "focus"])},
     },
     "required": ["title_zh", "paragraphs", "vocab", "phrases", "grammar"],
     "additionalProperties": False,
@@ -109,10 +128,66 @@ def words_of(s):
 QUOTE = re.compile(r'[“"]([^”"]{1,600})[”"]')
 
 
+IRREGULAR = {
+    "be": "am is are was were been being", "have": "has had having", "do": "does did done doing",
+    "go": "goes went gone going", "get": "got gotten", "make": "made", "take": "took taken", "give": "gave given",
+    "come": "came", "keep": "kept", "bring": "brought", "find": "found", "hold": "held", "stand": "stood",
+    "catch": "caught", "think": "thought", "run": "ran running", "put": "putting", "set": "setting", "cut": "cutting",
+    "let": "letting", "break": "broke broken", "fall": "fell fallen", "grow": "grew grown", "show": "shown",
+    "see": "saw seen", "know": "knew known", "tell": "told", "say": "said", "pay": "paid", "lead": "led",
+    "leave": "left", "sit": "sat sitting", "wear": "wore worn", "throw": "threw thrown", "draw": "drew drawn",
+    "write": "wrote written", "drive": "drove driven", "eat": "ate eaten", "begin": "began begun beginning",
+    "deal": "dealt", "feel": "felt", "lose": "lost", "mean": "meant", "meet": "met", "send": "sent", "sell": "sold",
+    "spend": "spent", "teach": "taught", "buy": "bought", "fight": "fought", "win": "won winning", "speak": "spoke spoken",
+    "rise": "rose risen", "choose": "chose chosen", "forget": "forgot forgotten", "build": "built", "seek": "sought",
+    "strike": "struck", "stick": "stuck", "shut": "shutting", "hit": "hitting", "lie": "lay lain lying",
+}
+NOT_VERB = set("a an the in on at by for of to as from with out up off over under into all so no not and or but".split())
+GAP = {"sb", "sth", "sb/sth", "someone", "something", "somebody"}
+POSS = r"(?:my|your|his|her|its|our|their|one's|[a-z]+['’]s)"
+
+
+def forms(word):
+    """A word and its common inflections (plural, past, -ing), to match the dictionary form in the text."""
+    w = word.lower()
+    out = {w, w + "s", w + "es", w + "ed", w + "d", w + "ing"}
+    if w.endswith("e"):
+        out.add(w[:-1] + "ing")
+    if re.search(r"[^aeiou]y$", w):
+        out |= {w[:-1] + "ies", w[:-1] + "ied"}
+    if re.search(r"[^aeiou][aeiou][bdgklmnprt]$", w):
+        out |= {w + w[-1] + "ed", w + w[-1] + "ing"}
+    out |= set(IRREGULAR.get(w, "").split())
+    return sorted(out, key=len, reverse=True)
+
+
+def note_pattern(note):
+    """Regex for a study note in the text: dictionary form, inflected first word, sb/sth as short gaps."""
+    toks = note.lower().split()
+    while toks and toks[-1] in GAP:
+        toks.pop()
+    parts = []
+    for i, t in enumerate(toks):
+        if t in GAP:
+            parts.append(r"(?:[\w'’-]+[\s,]+){1,3}")
+            continue
+        if t in ("one's", "sb's"):
+            word = POSS
+        elif (i == 0 or len(toks) == 1) and re.fullmatch(r"[a-z]+", t) and t not in NOT_VERB:
+            word = "(?:" + "|".join(map(re.escape, forms(t))) + ")"
+        else:
+            word = re.escape(t)
+        parts.append(word + (r"[\s,]+" if i < len(toks) - 1 else ""))
+    return r"\b" + "".join(parts) + r"\b" if parts else None
+
+
 def contains(text, note):
-    """True if `note` appears in `text` as whole words (the app highlights notes the same way)."""
-    pattern = r"\b" + r"[\s,]+".join(re.escape(w) for w in note.lower().split()) + r"\b"
-    return re.search(pattern, text.lower()) is not None
+    """True if `note` (dictionary form) appears in `text`; the app highlights notes with the same rule."""
+    pattern = note_pattern(note)
+    return bool(pattern) and re.search(pattern, text.lower()) is not None
+
+
+SENSITIVE = re.compile(r"\b(suicid\w*|self-harm\w*|rape[ds]?|sexual (assault|abuse)|overdos\w*)\b", re.I)
 
 
 def longest_copied_run(text, source):
@@ -155,13 +230,14 @@ def validate(les, story, source_text):
     text = norm(english)
     vocab = [v for v in les.get("vocab", []) if v["word"].strip() and contains(english, v["word"]) and has_cjk(v["zh"])][:10]
     phrases = [p for p in les.get("phrases", []) if p["phrase"].strip() and contains(english, p["phrase"]) and has_cjk(p["zh"])][:6]
-    grammar = [g for g in les.get("grammar", []) if g["example"].strip() and norm(g["example"]).rstrip(".!?\"”") in text][:4]
+    grammar = [g for g in les.get("grammar", []) if g["example"].strip() and norm(g["example"]).rstrip(".!?\"”") in text
+               and g.get("focus", "").strip() and norm(g["focus"]) in norm(g["example"])][:4]
     if len(vocab) < 3 or not phrases or not grammar:
         return None, "too few study notes found in the text"
     return {
         "link": story["link"], "source": story["source"], "topic": story.get("topic", ""),
         "title": story["title"], "title_zh": les.get("title_zh", "").strip(),
-        "paragraphs": paras, "words": count,
+        "paragraphs": paras, "words": count, "v": PROMPT_VERSION,
         "vocab": vocab, "phrases": phrases, "grammar": grammar,
     }, ""
 
@@ -288,17 +364,19 @@ def pick_provider():
     return None
 
 
-def write_articles(items, have, provider, limit, on_new=lambda lesson: None):
-    """Write articles for stories without one, newest first, alternating sources."""
+def write_articles(items, have, provider, limit, on_new=lambda lesson: None, older=frozenset()):
+    """Write articles for stories without one (newest first, alternating sources), then rewrite
+    articles made with an older prompt (`older`) if there is quota left."""
     todo = [i for i in items if i["link"] not in have]
-    queues = {}
-    for i in sorted(todo, key=lambda x: x.get("date", ""), reverse=True):
-        queues.setdefault(i["source"], []).append(i)
     ordered = []
-    while any(queues.values()):
-        for q in queues.values():
-            if q:
-                ordered.append(q.pop(0))
+    for group in ([i for i in todo if i["link"] not in older], [i for i in todo if i["link"] in older]):
+        queues = {}
+        for i in sorted(group, key=lambda x: x.get("date", ""), reverse=True):
+            queues.setdefault(i["source"], []).append(i)
+        while any(queues.values()):
+            for q in queues.values():
+                if q:
+                    ordered.append(q.pop(0))
     print(f"{len(todo)} stories need an article; writing up to {limit} with {provider.name}")
     new = []
     for story in ordered:
@@ -313,6 +391,9 @@ def write_articles(items, have, provider, limit, on_new=lambda lesson: None):
         n = len(source_text.split())
         print(f"  source: {n} words")
         if n < MIN_SOURCE_WORDS:
+            continue
+        if len(SENSITIVE.findall(source_text + " " + story["title"] + " " + story.get("summary", ""))) >= 2:
+            print("  skipped: sensitive topic for teenage readers")
             continue
         text = " ".join(source_text.split()[:SOURCE_WORD_LIMIT]) if n > SOURCE_WORD_LIMIT else source_text
         prompt = WRITE_PROMPT.format(title=story["title"], source=story["source"], text=text)
@@ -360,7 +441,8 @@ def main(path="news.json"):
     links = {i["link"] for i in items}
     # keep finished articles for stories still in the list; hand-written samples (no "model") get rewritten
     keep = [l for l in data.get("lessons", []) if l.get("link") in links and l.get("paragraphs") and l.get("model")]
-    have = {l["link"] for l in keep}
+    have = {l["link"] for l in keep if l.get("v") == PROMPT_VERSION}
+    older = {l["link"] for l in keep if l.get("v") != PROMPT_VERSION}
     default_limit = 6 if isinstance(provider, Claude) else 30
     limit = int(os.environ.get("LESSONS_MAX") or default_limit)
     order = {i["link"]: k for k, i in enumerate(items)}
@@ -371,7 +453,7 @@ def main(path="news.json"):
         # saved after every article, so a cut-off run still keeps what it wrote; samples stay
         # until their story gets a real article
         if lesson:
-            done.append(lesson)
+            done[:] = [l for l in done if l["link"] != lesson["link"]] + [lesson]  # replaces an older version
         got = {l["link"] for l in done}
         data["lessons"] = sorted(done + [l for l in samples if l["link"] not in got], key=lambda l: order[l["link"]])
         data["lessonsDate"] = datetime.now(TAIWAN).strftime("%Y-%m-%d")
@@ -379,10 +461,11 @@ def main(path="news.json"):
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=1)
 
-    new = write_articles(items, have, provider, limit, on_new=save)
+    new = write_articles(items, have, provider, limit, on_new=save, older=older)
     if not new and len(keep) + len(samples) != len(data.get("lessons", [])):
         save()  # nothing new, but drop articles whose stories have left the list
-    print(f"Wrote {len(new)} new articles; {len(done)} stories now have one.")
+    print(f"Wrote {len(new)} articles; {len(done)} stories now have one "
+          f"({sum(1 for l in done if l.get('v') == PROMPT_VERSION)} with the current prompt).")
     return 0
 
 

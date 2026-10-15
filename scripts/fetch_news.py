@@ -41,7 +41,8 @@ MAX_AGE_DAYS = 4
 # keep the tab suitable for teenagers: skip headlines that are mainly about violence or crime
 AVOID = re.compile(r"\b(kill(s|ed|ing)?|dead|deaths?|die[sd]?|murder\w*|shoot\w*|gun\w*|stab\w*|rape\w*|sex\w*|suicide|bomb\w*|massacre|terror\w*|wars?|strikes?|attack\w*|abuse\w*|porn\w*|drugs?|corpse|execut\w*"
                    r"|battlefield|military|troops|missiles?|weapons?|arrest\w*|allegation\w*|alleged\w*|police|crime\w*|criminal\w*|prison\w*|jail\w*"
-                   r"|lawsuits?|sued|scandal\w*|fraud\w*|hostages?|invasion|army|soldiers?|violen\w*|riots?|assault\w*|traffick\w*|smuggl\w*|injur\w*|crash\w*|cancer)\b", re.I)
+                   r"|lawsuits?|sued|scandal\w*|fraud\w*|hostages?|invasion|army|soldiers?|violen\w*|riots?|assault\w*|traffick\w*|smuggl\w*|injur\w*|crash\w*|cancer"
+                   r"|suicides?|self-harm\w*|overdos\w*)\b", re.I)
 UA = "Mozilla/5.0 (compatible; TVE-English-Countdown news bot; +https://github.com/sandyliu3056/Exam-Counting-down)"
 
 
