@@ -591,6 +591,8 @@
     const h = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 3600000));
     return h < 24 ? tf('newsAgoH', { n: h || 1 }) : tf('newsAgoD', { n: Math.round(h / 24) });
   }
+  // Google's page translator: the whole original article in Traditional Chinese, on Google's site
+  const gtranslate = url => `https://translate.google.com/translate?sl=en&tl=zh-TW&hl=zh-TW&u=${encodeURIComponent(url)}`;
   const SRC_CLASS = { 'CNN': 'cnn', 'CNN 10': 'cnn', 'BBC': 'bbc', 'NPR': 'npr', 'The Guardian': 'guardian', 'Taipei Times': 'taipei' };
   function pageNews() {
     if (news.status === 'idle') loadNews();
@@ -613,7 +615,7 @@
         <h3 class="news-title en">${les ? `<button class="news-title-btn" data-action="openNewsArticle" data-link="${esc(it.link)}">${highlightWords(it.title)}</button>` : `<a href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${highlightWords(it.title)}</a>`}</h3>
         ${les && les.title_zh ? `<p class="news-title-zh">${esc(les.title_zh)}</p>` : ''}
         ${it.summary ? `<p class="news-sum en">${esc(it.summary)}</p>` : ''}
-        <div class="row">${les ? `<button class="btn sm accent" data-action="openNewsArticle" data-link="${esc(it.link)}">📖 ${t('newsReadFull')}</button>` : `<button class="btn sm study-btn ${open[i] ? 'accent' : ''}" data-action="newsStudy" data-i="${i}" aria-expanded="${!!open[i]}">📘 ${t('studyBtn')}</button>`}<a class="btn sm ghost" href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(it.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(it.title)}" aria-label="${t('lessonListen')}">🔊</button></div>
+        <div class="row">${les ? `<button class="btn sm accent" data-action="openNewsArticle" data-link="${esc(it.link)}">📖 ${t('newsReadFull')}</button>` : `<button class="btn sm study-btn ${open[i] ? 'accent' : ''}" data-action="newsStudy" data-i="${i}" aria-expanded="${!!open[i]}">📘 ${t('studyBtn')}</button>`}${les ? '' : `<a class="btn sm ghost" href="${esc(gtranslate(it.link))}" target="_blank" rel="noopener noreferrer">🌐 ${t('newsGoogleZh')} ↗</a>`}<a class="btn sm ghost" href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(it.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(it.title)}" aria-label="${t('lessonListen')}">🔊</button></div>
         ${open[i] && !les ? studyPanel(it) : ''}
       </article>`; }).join('')}</div>
       <p class="small muted">💡 ${t('newsWordHint')}</p>`;
