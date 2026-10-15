@@ -744,3 +744,32 @@ body.teacher .teacher-only.flex { display: flex; }
 .cz-zh summary { cursor: pointer; font-weight: 700; }
 .mc-review { display: flex; flex-direction: column; gap: 6px; }
 @media (max-width: 520px) { .mc-q { font-size: 17px; } .row-opts { grid-template-columns: 1fr 1fr; } }
+
+/* word bank on phones: one card per word instead of a wide table (no sideways scrolling) */
+.wb-table .wb-lbl { display: none; }
+@media (max-width: 640px) {
+  table.wb-table { border: 0; background: transparent; }
+  .wb-table thead { display: none; }
+  .wb-table, .wb-table tbody { display: block; }
+  .wb-table tr { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "word pos bm" "zh zh zh" "syn syn syn" "ex ex ex" "unit unit box" "acts acts acts";
+    column-gap: 8px; background: var(--card); border: 2px solid var(--bg-soft); border-radius: 16px; padding: 10px 12px; margin-bottom: 10px; }
+  .wb-table tr:hover td:not(.example) { background: transparent; }
+  .wb-table tr:hover td.example { background: var(--bg-soft); }
+  .wb-table td { display: block; padding: 2px 0; border: 0; }
+  .wb-table td.teacher-only { display: none; }
+  body.teacher .wb-table td.teacher-only { display: block; }
+  .wb-table td.bm-cell { grid-area: bm; }
+  .wb-table td.word { grid-area: word; white-space: normal; }
+  .wb-table td.word .small { display: inline; margin-left: 4px; }
+  .wb-table td.pos { grid-area: pos; align-self: center; color: var(--ink-soft); font-size: 14px; }
+  .wb-table td.zh { grid-area: zh; font-size: 17px; font-weight: 700; color: var(--ink); }
+  .wb-table td.syn { grid-area: syn; min-width: 0; }
+  .wb-table .wb-lbl { display: inline; }
+  .wb-table td.example { grid-area: ex; background: var(--bg-soft); border-radius: 10px; padding: 6px 10px; margin-top: 4px; }
+  .wb-table td.example:empty, .wb-table td.syn:empty { display: none; }
+  .wb-table td.unit { grid-area: unit; align-self: center; margin-top: 4px; }
+  .wb-table td.box { grid-area: box; margin-top: 4px; }
+  .wb-table td.acts { grid-area: acts; margin-top: 6px; }
+  .wb-table tr.wb-edit { display: flex !important; flex-direction: column; gap: 6px; }
+  .wb-table tr.wb-edit td { display: block; }
+}

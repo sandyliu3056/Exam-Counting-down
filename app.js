@@ -1236,9 +1236,9 @@
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
       const c = state.progress.cards[v.id] || { box: 0, seen: 0 };
-      return `<tr><td class="bm-cell"><button class="bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${v.id}" title="${t('bookmark')}">🔖</button></td><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td>${esc(v.pos || '')}</td><td>${esc(v.zh)}</td><td class="syn en">${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted">${esc(unitLabel(v.unit))}</td>
-        <td><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
-        <td class="teacher-only"><button class="btn sm ghost" data-action="editVocab" data-id="${v.id}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${v.id}">${t('del')}</button></td></tr>`;
+      return `<tr><td class="bm-cell"><button class="bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${v.id}" title="${t('bookmark')}">🔖</button></td><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td class="pos">${esc(v.pos || '')}</td><td class="zh">${esc(v.zh)}</td><td class="syn en">${v.syn ? `<span class="wb-lbl">≈ </span>` : ''}${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted unit">${esc(unitLabel(v.unit))}</td>
+        <td class="box"><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
+        <td class="teacher-only acts"><button class="btn sm ghost" data-action="editVocab" data-id="${v.id}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${v.id}">${t('del')}</button></td></tr>`;
     };
     return `<h2 class="section-title" style="margin-top:8px">${t('vocabTitle')}</h2><p class="section-sub">${t('vocabSub')}</p>
       <div class="row" style="margin-bottom:12px">
@@ -1254,11 +1254,11 @@
         <textarea id="bulkText" placeholder="adventure, n., 冒險, Life is an adventure.&#10;brave | adj. | 勇敢的"></textarea>
         <div class="row" style="margin-top:8px"><span class="spacer"></span><button class="btn ghost" data-action="toggleBulk">${t('cancel')}</button><button class="btn accent" data-action="bulkImport">${t('importBtn')}</button></div></div>` : ''}
       ${pager}
-      <div style="overflow-x:auto"><table class="vocab-table"><thead><tr><th></th><th>${t('word')}</th><th>${t('pos')}</th><th>${t('meaning')}</th><th>${t('synonyms')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th><th class="teacher-only">${t('actions')}</th></tr></thead>
+      <div style="overflow-x:auto"><table class="vocab-table wb-table"><thead><tr><th></th><th>${t('word')}</th><th>${t('pos')}</th><th>${t('meaning')}</th><th>${t('synonyms')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th><th class="teacher-only">${t('actions')}</th></tr></thead>
       <tbody>${view.vocabEdit && !view.vocabEdit.id ? vocabEditRow(view.vocabEdit) : ''}${pageList.map(row).join('')}</tbody></table></div>${pager}`;
   }
   function vocabEditRow(v) {
-    return `<tr class="teacher-only" style="display:table-row;background:#fff8df"><td></td><td><input type="text" id="veWord" value="${esc(v.word)}" placeholder="word"></td><td><input type="text" id="vePos" value="${esc(v.pos || '')}" placeholder="n."></td><td><input type="text" id="veZh" value="${esc(v.zh)}" placeholder="中文"></td><td><input type="text" id="veSyn" value="${esc(v.syn || '')}" placeholder="synonyms"></td><td><input type="text" id="veEx" value="${esc(v.example || '')}" placeholder="example"></td><td><input type="text" id="veUnit" value="${esc(v.unit || '')}" placeholder="Unit"></td><td></td>
+    return `<tr class="teacher-only wb-edit" style="display:table-row;background:#fff8df"><td></td><td><input type="text" id="veWord" value="${esc(v.word)}" placeholder="word"></td><td><input type="text" id="vePos" value="${esc(v.pos || '')}" placeholder="n."></td><td><input type="text" id="veZh" value="${esc(v.zh)}" placeholder="中文"></td><td><input type="text" id="veSyn" value="${esc(v.syn || '')}" placeholder="synonyms"></td><td><input type="text" id="veEx" value="${esc(v.example || '')}" placeholder="example"></td><td><input type="text" id="veUnit" value="${esc(v.unit || '')}" placeholder="Unit"></td><td></td>
       <td><button class="btn sm ok" data-action="saveVocab">${t('save')}</button> <button class="btn sm ghost" data-action="cancelVocab">${t('cancel')}</button></td></tr>`;
   }
 
