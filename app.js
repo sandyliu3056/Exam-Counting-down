@@ -398,7 +398,7 @@
     const h = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 3600000));
     return h < 24 ? tf('newsAgoH', { n: h || 1 }) : tf('newsAgoD', { n: Math.round(h / 24) });
   }
-  const SRC_CLASS = { 'CNN': 'cnn', 'BBC': 'bbc', 'NPR': 'npr', 'The Guardian': 'guardian', 'Taipei Times': 'taipei' };
+  const SRC_CLASS = { 'CNN': 'cnn', 'CNN 10': 'cnn', 'BBC': 'bbc', 'NPR': 'npr', 'The Guardian': 'guardian', 'Taipei Times': 'taipei' };
   function pageNews() {
     if (news.status === 'idle') loadNews();
     const items = (news.data && news.data.items) || [];

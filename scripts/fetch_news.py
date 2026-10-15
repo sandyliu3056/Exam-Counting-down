@@ -11,26 +11,38 @@ import re
 import sys
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 
 FEEDS = [
-    # (source label, topic, url)
-    ("CNN", "World", "http://rss.cnn.com/rss/edition_world.rss"),
-    ("CNN", "Tech", "http://rss.cnn.com/rss/edition_technology.rss"),
-    ("BBC", "World", "https://feeds.bbci.co.uk/news/world/rss.xml"),
+    # (source label, topic, url). Sections are chosen for meaningful, teen-friendly reading
+    # (science, technology, health, education, culture, environment) rather than politics or crime.
+    # "cnn-lite" is CNN's text-only site: no RSS, so headlines and dates are read from its links.
+    ("CNN", "", "https://lite.cnn.com/"),
+    ("CNN 10", "Student news", "http://rss.cnn.com/services/podcasting/cnn10/rss.xml"),
     ("BBC", "Science", "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml"),
     ("BBC", "Tech", "https://feeds.bbci.co.uk/news/technology/rss.xml"),
-    ("NPR", "World", "https://feeds.npr.org/1004/rss.xml"),
+    ("BBC", "Health", "https://feeds.bbci.co.uk/news/health/rss.xml"),
+    ("BBC", "Culture", "https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml"),
     ("NPR", "Science", "https://feeds.npr.org/1007/rss.xml"),
+    ("NPR", "Health", "https://feeds.npr.org/1128/rss.xml"),
+    ("NPR", "Tech", "https://feeds.npr.org/1019/rss.xml"),
+    ("NPR", "Education", "https://feeds.npr.org/1013/rss.xml"),
     ("The Guardian", "Environment", "https://www.theguardian.com/environment/rss"),
+    ("The Guardian", "Science", "https://www.theguardian.com/science/rss"),
     ("Taipei Times", "Taiwan", "https://www.taipeitimes.com/xml/index.rss"),
 ]
-PER_SOURCE_TOPIC = 4
+CNN_SECTIONS = {"world": "World", "tech": "Tech", "health": "Health", "science": "Science", "climate": "Environment",
+                "travel": "Travel", "style": "Culture", "entertainment": "Culture", "sport": "Sports", "sports": "Sports",
+                "business": "Business", "weather": "Weather", "food": "Food"}
+PER_SOURCE_TOPIC = 3
+PER_SOURCE = 7
 MAX_ITEMS = 30
 MAX_AGE_DAYS = 4
 # keep the tab suitable for teenagers: skip headlines that are mainly about violence or crime
-AVOID = re.compile(r"\b(kill(s|ed|ing)?|dead|deaths?|die[sd]?|murder\w*|shoot\w*|gun\w*|stab\w*|rape\w*|sex\w*|suicide|bomb\w*|massacre|terror\w*|war|strikes?|attack\w*|abuse\w*|porn\w*|drugs?|corpse|execut\w*)\b", re.I)
+AVOID = re.compile(r"\b(kill(s|ed|ing)?|dead|deaths?|die[sd]?|murder\w*|shoot\w*|gun\w*|stab\w*|rape\w*|sex\w*|suicide|bomb\w*|massacre|terror\w*|wars?|strikes?|attack\w*|abuse\w*|porn\w*|drugs?|corpse|execut\w*"
+                   r"|battlefield|military|troops|missiles?|weapons?|arrest\w*|allegation\w*|alleged\w*|police|crime\w*|criminal\w*|prison\w*|jail\w*"
+                   r"|lawsuits?|sued|scandal\w*|fraud\w*|hostages?|invasion|army|soldiers?|violen\w*|riots?|assault\w*|traffick\w*|smuggl\w*|injur\w*|crash\w*|cancer)\b", re.I)
 UA = "Mozilla/5.0 (compatible; TVE-English-Countdown news bot; +https://github.com/sandyliu3056/Exam-Counting-down)"
 
 
@@ -61,8 +73,28 @@ def parse_date(s):
     return d.astimezone(timezone.utc)
 
 
+def parse_cnn_lite(data, source):
+    """CNN Lite lists headlines as links like /2026/10/14/health/some-story; the date and section come from the URL."""
+    page = data.decode("utf-8", "replace")
+    out, seen = [], set()
+    for m in re.finditer(r'<a[^>]+href="(?:https://lite\.cnn\.com)?(/(\d{4})/(\d{2})/(\d{2})/([a-z-]+)/[^"]+)"[^>]*>(.*?)</a>', page, re.S):
+        path, y, mo, d, section, title = m.groups()
+        topic = CNN_SECTIONS.get(section)
+        if not topic or path in seen:
+            continue
+        seen.add(path)
+        try:
+            date = datetime(int(y), int(mo), int(d), 12, tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        out.append({"title": clean(title, 200), "link": "https://lite.cnn.com" + path, "date": date, "summary": "", "source": source, "topic": topic})
+    return out
+
+
 def parse_feed(data, source, topic):
-    """Parse RSS 2.0 or Atom bytes into a list of item dicts."""
+    """Parse RSS 2.0 or Atom bytes (or the CNN Lite page) into a list of item dicts."""
+    if b"<rss" not in data[:2000] and b"<feed" not in data[:2000]:
+        return parse_cnn_lite(data, source)
     root = ET.fromstring(data)
     atom = "{http://www.w3.org/2005/Atom}"
     out = []
@@ -93,7 +125,7 @@ def suitable(item, now):
         return False
     if AVOID.search(item["title"]) or AVOID.search(item["summary"]):
         return False
-    if item["date"] and (now - item["date"]).days > MAX_AGE_DAYS:
+    if not item["date"] or (now - item["date"]).days > MAX_AGE_DAYS or item["date"] > now + timedelta(days=1):
         return False
     if "/video" in item["link"] or "/live/" in item["link"] or "/av/" in item["link"]:
         return False
@@ -101,14 +133,15 @@ def suitable(item, now):
 
 
 def select(items, now):
-    seen, picked, per = set(), [], {}
+    seen, picked, per, per_src = set(), [], {}, {}
     for it in sorted(items, key=lambda x: x["date"] or now, reverse=True):
         key = re.sub(r"[^a-z]", "", it["title"].lower().replace("&", "and"))[:60]
         bucket = (it["source"], it["topic"])
-        if key in seen or not suitable(it, now) or per.get(bucket, 0) >= PER_SOURCE_TOPIC:
+        if key in seen or not suitable(it, now) or per.get(bucket, 0) >= PER_SOURCE_TOPIC or per_src.get(it["source"], 0) >= PER_SOURCE:
             continue
         seen.add(key)
         per[bucket] = per.get(bucket, 0) + 1
+        per_src[it["source"]] = per_src.get(it["source"], 0) + 1
         picked.append(it)
     return picked[:MAX_ITEMS]
 
@@ -124,7 +157,10 @@ def main(out_path="news.json"):
     items, ok, failed = [], [], []
     for source, topic, url in FEEDS:
         try:
-            items += parse_feed(fetch(url), source, topic)
+            got = parse_feed(fetch(url), source, topic)
+            usable = sum(1 for g in got if suitable(g, now))
+            print(f"  {source}/{topic or 'all'}: {len(got)} items, {usable} usable")
+            items += got
             ok.append(f"{source}/{topic}")
         except Exception as e:  # one bad feed must not stop the others
             failed.append(f"{source}/{topic}: {e.__class__.__name__}")
