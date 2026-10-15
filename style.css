@@ -148,6 +148,7 @@ h1, h2, h3 { line-height: 1.25; }
   background: #d6e1e9;
   box-shadow: var(--sticker);
 }
+.banner picture { display: block; }
 .banner-img { display: block; width: 100%; height: auto; }
 
 /* ---------- Stat cards ---------- */
