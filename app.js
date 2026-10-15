@@ -578,11 +578,11 @@
   const PARTICLES = new Set('on up off out down in over away back around about through along apart aside'.split(' '));
   const PHRASE_SKIP = new Set(['come to sth', 'come to']);
   function verbForms(v) {
-    const f = new Set([v, v + 's', v + 'ed', v + 'd', v + 'ing']);
-    if (/e$/.test(v)) { f.add(v.slice(0, -1) + 'ing'); f.add(v + 'd'); }
+    const f = new Set([v, v + 's', v + 'ed', v + 'd', v + 'ing', v + 'er', v + 'est']);
+    if (/e$/.test(v)) { f.add(v.slice(0, -1) + 'ing'); f.add(v + 'd'); f.add(v + 'r'); f.add(v + 'st'); }  // safe → safer
     if (/(s|x|z|ch|sh|o)$/.test(v)) f.add(v + 'es');
-    if (/[^aeiou]y$/.test(v)) { f.add(v.slice(0, -1) + 'ies'); f.add(v.slice(0, -1) + 'ied'); }
-    if (/[^aeiou][aeiou][bdgklmnprt]$/.test(v)) { f.add(v + v.slice(-1) + 'ed'); f.add(v + v.slice(-1) + 'ing'); }  // jog → jogging
+    if (/[^aeiou]y$/.test(v)) { f.add(v.slice(0, -1) + 'ies'); f.add(v.slice(0, -1) + 'ied'); f.add(v.slice(0, -1) + 'ier'); f.add(v.slice(0, -1) + 'iest'); }
+    if (/[^aeiou][aeiou][bdgklmnprt]$/.test(v)) { f.add(v + v.slice(-1) + 'ed'); f.add(v + v.slice(-1) + 'ing'); f.add(v + v.slice(-1) + 'er'); f.add(v + v.slice(-1) + 'est'); }  // jog → jogging
     (IRREG[v] || '').split(' ').filter(Boolean).forEach(x => f.add(x));
     return Array.from(f).sort((a, b) => b.length - a.length);
   }

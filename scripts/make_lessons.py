@@ -153,13 +153,13 @@ POSS = r"(?:my|your|his|her|its|our|their|one's|[a-z]+['’]s)"
 def forms(word):
     """A word and its common inflections (plural, past, -ing), to match the dictionary form in the text."""
     w = word.lower()
-    out = {w, w + "s", w + "es", w + "ed", w + "d", w + "ing"}
+    out = {w, w + "s", w + "es", w + "ed", w + "d", w + "ing", w + "er", w + "est"}
     if w.endswith("e"):
-        out.add(w[:-1] + "ing")
+        out |= {w[:-1] + "ing", w + "r", w + "st"}  # safe → safer, safest
     if re.search(r"[^aeiou]y$", w):
-        out |= {w[:-1] + "ies", w[:-1] + "ied"}
+        out |= {w[:-1] + "ies", w[:-1] + "ied", w[:-1] + "ier", w[:-1] + "iest"}
     if re.search(r"[^aeiou][aeiou][bdgklmnprt]$", w):
-        out |= {w + w[-1] + "ed", w + w[-1] + "ing"}
+        out |= {w + w[-1] + "ed", w + w[-1] + "ing", w + w[-1] + "er", w + w[-1] + "est"}
     out |= set(IRREGULAR.get(w, "").split())
     return sorted(out, key=len, reverse=True)
 
