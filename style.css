@@ -373,9 +373,15 @@ textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
 .flash-zh { font-size: 34px; font-weight: 700; }
 .flash-syn { margin-top: 10px; font-family: var(--font-en); font-size: 18px; color: var(--accent); font-weight: 700; }
 .vocab-table td.syn { font-size: 14px; color: var(--ink-soft); min-width: 120px; }
-.pager { justify-content: center; margin: 12px 0; gap: 8px; }
+.pager { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; margin: 12px 0; gap: 6px; }
+.pg-btn { min-width: 36px; height: 36px; padding: 0 10px; border-radius: 999px; border: 2px solid var(--bg-soft); background: #fff; color: var(--header); font: 800 15px 'Nunito', var(--font-body); cursor: pointer; box-shadow: 0 2px 0 var(--bg-soft); }
+.pg-btn:hover:not(:disabled) { border-color: var(--header); }
+.pg-btn.on { background: var(--header); border-color: var(--header); color: #fff; box-shadow: 0 3px 0 var(--header-dark); }
+.pg-btn:disabled { opacity: .4; cursor: default; }
+.pg-gap { color: var(--ink-soft); padding: 0 2px; font-weight: 800; }
+.pager .pager-sel { margin-left: 8px; }
 .pager-sel { width: auto; max-width: 260px; padding: 5px 8px; font-size: 14px; }
-@media (max-width: 520px) { .pager .btn.sm { padding: 5px 9px; } .pager-sel { max-width: 150px; } }
+@media (max-width: 520px) { .pg-btn { min-width: 32px; height: 32px; padding: 0 7px; font-size: 14px; } .pager .pager-sel { margin: 6px 0 0; max-width: 100%; flex-basis: 100%; } }
 .flash-example { margin-top: 12px; font-family: var(--font-en); font-size: 18px; opacity: .92; line-height: 1.6; }
 .flash-example b { color: var(--accent); }
 .flash-hint { position: absolute; bottom: 10px; right: 16px; font-size: 13px; opacity: .6; }

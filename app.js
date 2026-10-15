@@ -701,11 +701,21 @@
     view.vocabPage = Math.min(Math.max(0, view.vocabPage || 0), pages - 1);
     const pageList = list.slice(view.vocabPage * PAGE, view.vocabPage * PAGE + PAGE);
     const cur = view.vocabPage;
-    const pbtn = (d, label, dis, title) => `<button class="btn sm ghost" data-action="vocabPage" data-d="${d}" ${dis ? 'disabled' : ''} title="${title}">${label}</button>`;
-    const pager = pages > 1 ? `<div class="row pager">
-      ${pbtn(-cur, '⏮', cur === 0, t('pgFirst'))}${pages > 10 ? pbtn(-10, '−10', cur === 0, '-10') : ''}${pbtn(-1, '‹', cur === 0, t('pgPrev'))}
-      <select class="input pager-sel" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${i + 1} / ${pages} · ${esc((list[i * PAGE] || {}).word || '')}</option>`).join('')}</select>
-      ${pbtn(1, '›', cur >= pages - 1, t('pgNext'))}${pages > 10 ? pbtn(10, '+10', cur >= pages - 1, '+10') : ''}${pbtn(pages - 1 - cur, '⏭', cur >= pages - 1, t('pgLast'))}
+    const span = window.innerWidth < 520 ? 1 : 2;
+    const nums = (() => {
+      const set = new Set([0, pages - 1]);
+      for (let i = cur - span; i <= cur + span; i++) if (i >= 0 && i < pages) set.add(i);
+      if (cur <= span + 2) for (let i = 0; i < Math.min(pages, span * 2 + 3); i++) set.add(i);
+      if (cur >= pages - span - 3) for (let i = Math.max(0, pages - span * 2 - 3); i < pages; i++) set.add(i);
+      const arr = [...set].sort((a, b) => a - b), out = [];
+      arr.forEach((n, i) => { if (i && n - arr[i - 1] > 1) out.push('…'); out.push(n); });
+      return out;
+    })();
+    const pager = pages > 1 ? `<div class="pager">
+      <button class="pg-btn" data-action="vocabGo" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
+      ${nums.map(n => n === '…' ? '<span class="pg-gap">…</span>' : `<button class="pg-btn pg-num ${n === cur ? 'on' : ''}" data-action="vocabGo" data-p="${n}" ${n === cur ? 'aria-current="page"' : ''}>${n + 1}</button>`).join('')}
+      <button class="pg-btn" data-action="vocabGo" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button>
+      <select class="input pager-sel" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1} · ${esc((list[i * PAGE] || {}).word || '')}</option>`).join('')}</select>
     </div>` : '';
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
@@ -924,6 +934,7 @@
     toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash) { const b = $('.flash-bm'); if (b) b.classList.toggle('on', isBm('vocab', el.dataset.id)); } else render(); },
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
+    vocabGo(el) { view.vocabPage = +el.dataset.p; render(); },
     openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); nav('reading'); },
     // reading
     openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
@@ -1168,7 +1179,7 @@
     $('#authMode').textContent = cloud.enabled ? t('authCloudNote') : t('authLocalNote');
     $('#auPass').autocomplete = view.authMode === 'login' ? 'current-password' : 'new-password';
     $('.teacher-code-field').classList.toggle('hidden', $('#auRole').value !== 'teacher' || view.authMode === 'login');
-    modal.classList.remove('hidden'); setTimeout(() => $('#auEmail').focus(), 50);
+    const wasOpen = !modal.classList.contains('hidden'); modal.classList.remove('hidden'); if (!wasOpen) setTimeout(() => { if (!modal.contains(document.activeElement)) $('#auEmail').focus(); }, 50);
   }
   function closeAuth() { modal.classList.add('hidden'); $('#authForm').reset(); }
   authBtn.addEventListener('click', async () => {
