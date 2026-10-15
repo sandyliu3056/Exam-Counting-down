@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T03:27:30Z",
+ "updated": "2026-10-15T03:29:14Z",
  "items": [
   {
    "title": "Anthropic flags revenue surge to investors ahead of stock market debut",
@@ -344,6 +344,1118 @@
    "model": "gemini-flash-latest"
   },
   {
+   "link": "https://www.bbc.co.uk/news/articles/cw240qv4ygzmo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Education",
+   "title": "Wales has a school standards crisis. Will plans to fix it actually work?",
+   "title_zh": "威爾斯正面臨學校水準危機：補救計畫真的能奏效嗎？",
+   "paragraphs": [
+    {
+     "en": "In Wales, students recently moved into an impressive new school building in Merthyr Tydfil. However, behind this modern campus lies a serious crisis in the Welsh education system. In the latest Pisa tests, which measure the reading, maths, and science skills of 15-year-olds, Wales once again ranked the lowest among the four United Kingdom nations. According to global experts, Welsh students now lag about two years behind their English peers.",
+     "zh": "在威爾斯，學生們最近搬進了梅瑟蒂德菲爾一座令人印象深刻的全新校舍。然而，在這座現代化校園背後，威爾斯的教育體系卻面臨著嚴重危機。在最新一次衡量十五歲學生閱讀、數學和科學能力的國際學生評量計畫（PISA）中，威爾斯的排名再次於英國四個構成國中墊底。根據全球專家的說法，威爾斯學生的程度現在落後英格蘭同齡學生大約兩年。"
+    },
+    {
+     "en": "This decline has sparked widespread debate across the nation. Over the past two decades, Welsh leaders took a different path from England by removing school ranking tables and standard exams. Although earlier ministers tried to bring back strict accountability after poor test results in 2010, many of those measures were later removed. Critics argue that Welsh schools have spent large amounts of public money without being held accountable for their outcomes.",
+     "zh": "這項退步在全國引發了廣泛討論。在過去二十年間，威爾斯領導人採取了與英格蘭不同的做法，取消了學校排名榜和標準化測驗。儘管早期的部長在2010年糟糕的測驗成績後試圖恢復嚴格的績效責任制度，但其中許多措施隨後又被取消。批評者指出，威爾斯各校花費了大量公帑，卻沒有人因教學成效被要求負責。"
+    },
+    {
+     "en": "Wales has also launched a major new curriculum that gives individual schools great freedom to decide what to teach. While the goal is to develop well-rounded students, educational experts warn this approach could create serious inconsistency. Many teachers feel overwhelmed because they are expected to design everything on their own without clear directions. Lucy Crehan warned that \"it is the most disadvantaged pupils who could come off worst.\"",
+     "zh": "威爾斯還推行了一項重大的新課綱，賦予各學校極大自由來決定教學內容。雖然其目標是培育全方位發展的學生，但教育專家警告這種做法可能會導致各校品質嚴重不一致。許多教師感到不知所措，因為他們必須在缺乏明確指引的情況下獨自規劃一切。露西．克里漢警告說，「最弱勢的學生可能會受害最深。」"
+    },
+    {
+     "en": "In addition, structural issues within local government make real improvement difficult. Former leaders point out that having twenty-two local councils oversee schools is inefficient, as some authorities are too small to offer adequate support. Research shows that disadvantaged pupils in Wales perform worse than similar students in England. As the new curriculum takes full effect, leaders face urgent pressure to raise learning standards before the next global tests in 2029.",
+     "zh": "此外，地方政府內部的結構性問題也讓真正的改革變得困難。前領導人指出，由二十二個地方議會管轄各校效率低落，因為有些地方機關規模太小，無法提供足夠支援。研究顯示，威爾斯弱勢學生的表現比英格蘭的同類學生更差。隨著新課綱全面落實，領導階層面臨著迫切的壓力，必須在2029年下一次全球測驗前提升學習標準。"
+    }
+   ],
+   "words": 279,
+   "vocab": [
+    {
+     "word": "impressive",
+     "pos": "adj.",
+     "zh": "令人印象深刻的"
+    },
+    {
+     "word": "measure",
+     "pos": "v.",
+     "zh": "衡量；測量"
+    },
+    {
+     "word": "debate",
+     "pos": "n.",
+     "zh": "辯論；討論"
+    },
+    {
+     "word": "accountability",
+     "pos": "n.",
+     "zh": "問責性；負責"
+    },
+    {
+     "word": "curriculum",
+     "pos": "n.",
+     "zh": "學校課程；課綱"
+    },
+    {
+     "word": "inconsistency",
+     "pos": "n.",
+     "zh": "不一致；矛盾"
+    },
+    {
+     "word": "structural",
+     "pos": "adj.",
+     "zh": "結構上的；結構性的"
+    },
+    {
+     "word": "adequate",
+     "pos": "adj.",
+     "zh": "足夠的；適當的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "held accountable for",
+     "zh": "對……負責"
+    },
+    {
+     "phrase": "on their own",
+     "zh": "靠自己；獨自"
+    },
+    {
+     "phrase": "point out",
+     "zh": "指出"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "由關係代名詞 which 引導，前後用逗點隔開，用來對前方先行詞進行額外的補充說明。",
+     "example": "In the latest Pisa tests, which measure the reading, maths, and science skills of 15-year-olds, Wales once again ranked the lowest among the four United Kingdom nations."
+    },
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "由「be 動詞 + 過去分詞」構成，用於強調動作的承受者而非執行者。",
+     "example": "Critics argue that Welsh schools have spent large amounts of public money without being held accountable for their outcomes."
+    },
+    {
+     "point": "比較級結構 (Comparative Structure)",
+     "explain": "使用形容詞或副詞的比較級搭配 than，表示兩者之間的程度差異。",
+     "example": "Research shows that disadvantaged pupils in Wales perform worse than similar students in England."
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/cvwy761zyx7eo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Science",
+   "title": "Dog that hunts invasive 'sea vomit' honoured as animal of the year",
+   "title_zh": "嗅探清除外來種「海嘔吐物」：蘇格蘭搜救犬榮獲年度動物獎",
+   "paragraphs": [
+    {
+     "en": "A six-year-old black Labrador named Sgiath from the Scottish Highlands has won the Animal of the Year award from the International Fund for Animal Welfare. Sgiath is believed to be the first dog in the UK trained to track down an invasive marine animal known as the carpet sea squirt, which is nicknamed \"sea vomit.\"",
+     "zh": "一隻來自蘇格蘭高地、名叫 Sgiath 的六歲黑色拉布拉多犬，榮獲國際愛護動物基金會頒發的「年度動物獎」。Sgiath 被認為是英國第一隻受過專業訓練、專門搜尋被暱稱為「海嘔吐物」之外來海洋生物「大裝甲海鞘」的犬隻。"
+    },
+    {
+     "en": "This organism, thought to come from Japan, first appeared in southern England and Wales in 2008. If left unmanaged, it can cover and kill native species by taking away essential nutrients. Marine biologist Dr. Martyn Kurr explained that this creature also clogs up fish farms and boat machinery, costing millions of pounds across Europe for cleanup efforts.",
+     "zh": "這種生物被認為源自日本，於2008年首次出現在英格蘭南部和威爾斯。如果不加以控制，牠們會奪走重要養分，並覆蓋、殺死本土物種。海洋生物學家馬丁．庫爾博士解釋，這種生物還會堵塞水產養殖箱網與船隻機械，使歐洲各地每年耗費數百萬英鎊進行清理。"
+    },
+    {
+     "en": "Dr. Texa Sim, a marine ecologist, has cared for Sgiath since she was a puppy. Sgiath initially trained as a mountain rescue dog, where she barked to locate lost hikers. Dr. Sim was amazed by the dog's intelligence and wondered if her strong sense of smell could help marine conservation. Although sniffer dogs are common on land, using them in marine environments had rarely been explored.",
+     "zh": "海洋生態學家泰克莎．辛姆博士從 Sgiath 還是幼犬時就開始照顧牠。Sgiath 最初受訓為高山搜救犬，會以吠叫來標記迷途登山客的位置。辛姆博士對這隻狗的聰明才智感到驚奇，並好奇牠靈敏的嗅覺是否也能協助海洋保育。儘管偵搜犬在陸地上很常見，但在海洋環境中的應用卻鮮少有人探索。"
+    },
+    {
+     "en": "During low tide, Sgiath walks along beaches and docks, sniffing through seaweed to detect the pest. While carpet sea squirts look like ordinary slime and are hard for humans to spot, Sgiath pinpoints them accurately. Instead of barking, she gives a calm signal. Dr. Sim explained, \"It's a kind of a stillness, or a stare.\"",
+     "zh": "在退潮期間，Sgiath 會沿著海灘和碼頭走動，在海草中嗅聞以偵測這種害物。雖然大裝甲海鞘看起來就像普通黏液且人類難以察覺，但 Sgiath 卻能精準指出牠們的位置。不同於搜救時的吠叫，牠會給出平靜的訊號。辛姆博士說明：「那是一種靜止不動，或是凝視的狀態。」"
+    },
+    {
+     "en": "Sgiath has already detected hundreds of colonies. Both Sgiath and Dr. Sim's younger Labrador, Uisage, work happily for treats and playtime. Marine scientists are excited about this success, noting that dogs can detect environmental threats before they spread out of control.",
+     "zh": "Sgiath 至今已發現了數百個群落。Sgiath 和辛姆博士另一隻較年輕的拉布拉多犬 Uisage 都受到零食與玩耍的激勵而樂於工作。海洋科學家對此成果感到振奮，並指出狗狗能在環境威脅失控擴散之前及早察覺。"
+    }
+   ],
+   "words": 274,
+   "vocab": [
+    {
+     "word": "invasive",
+     "pos": "adj.",
+     "zh": "侵入性的；侵略性的"
+    },
+    {
+     "word": "organism",
+     "pos": "n.",
+     "zh": "生物；有機體"
+    },
+    {
+     "word": "essential",
+     "pos": "adj.",
+     "zh": "必要的；不可或缺的"
+    },
+    {
+     "word": "ecologist",
+     "pos": "n.",
+     "zh": "生態學家"
+    },
+    {
+     "word": "conservation",
+     "pos": "n.",
+     "zh": "（自然資源、環境的）保育"
+    },
+    {
+     "word": "accurately",
+     "pos": "adv.",
+     "zh": "準確地；精確地"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "track down",
+     "zh": "搜尋到；追查出"
+    },
+    {
+     "phrase": "sense of smell",
+     "zh": "嗅覺"
+    },
+    {
+     "phrase": "low tide",
+     "zh": "退潮；低潮期"
+    },
+    {
+     "phrase": "out of control",
+     "zh": "失去控制"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "由「be 動詞 + 過去分詞 (p.p.)」構成，用於強調動作的承受者或客觀敘述事實。",
+     "example": "Sgiath is believed to be the first dog in the UK trained to track down an invasive marine animal known as the carpet sea squirt, which is nicknamed \"sea vomit.\""
+    },
+    {
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "在先行詞後加上逗號，並用關係代名詞（如 which）引導子句，用以提供補充性的額外資訊。",
+     "example": "Sgiath is believed to be the first dog in the UK trained to track down an invasive marine animal known as the carpet sea squirt, which is nicknamed \"sea vomit.\""
+    },
+    {
+     "point": "現在完成式 (Present Perfect Tense)",
+     "explain": "由「have / has + 過去分詞 (p.p.)」構成，表示從過去開始累積至今的經驗、成果或狀態。",
+     "example": "Sgiath has already detected hundreds of colonies."
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/commentisfree/2026/oct/14/green-politics-environmentalists-action",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "title": "For the future of green politics, look beyond the Green party | Zoe Williams",
+   "title_zh": "著眼綠色政治的未來，不能只看綠黨",
+   "paragraphs": [
+    {
+     "en": "Earlier this summer in King's Lynn and West Norfolk, a local council faced a fierce debate over climate change. A Reform UK councillor, Austen Moore, tried to cancel a climate emergency declaration that was originally passed in 2021. Ironically, the council had to call off the first meeting because of extreme heat in the chamber. Although other members chose to vote down Moore's proposal the following week, similar efforts by right-wing politicians have succeeded in other areas. In Kent, one councillor even claimed that reducing carbon emissions was dangerous.",
+     "zh": "今年初夏，在金斯林和西諾福克，當地市議會面臨了一場關於氣候變遷的激烈辯論。英國改革黨議員奧斯汀·摩爾試圖廢除最初於2021年通過的氣候緊急狀態宣言。諷刺的是，由於會議廳內氣溫過高，議會不得不取消第一場會議。儘管其他議員在隔週選擇否決摩爾的提案，但右翼政客在其他地區類似的舉動卻獲得了成功。在肯特郡，甚至有一位議員聲稱減少碳排放是危險的。"
+    },
+    {
+     "en": "Right-wing populists often argue that policies like net zero and low-emission zones are too expensive. They claim these environmental measures are luxury ideas held by wealthy elites who ignore the daily struggles of ordinary citizens. Because these arguments are repeated constantly, they gain support from people who worry about the rising cost of living and economic uncertainty.",
+     "zh": "右翼民粹主義者經常爭辯說，淨零排放和低排放區等政策過於昂貴。他們聲稱這些環保措施是富裕精英階層的奢侈想法，忽視了普通公民的日常生活困境。因為這些論點被不斷重複，進而獲得了那些對日益上漲的生活成本和經濟不確定性感到擔憂的人們支持。"
+    },
+    {
+     "en": "However, about 68 percent of British people still support action on climate change. The Green Party alone cannot represent this majority. Political thinkers Caroline Lucas and Rupert Read suggest promoting \"eco-popularism.\" Instead of using bitter political divisions, leaders should offer practical solutions that directly improve daily lives, such as cheaper green energy, food security, and protection against extreme weather.",
+     "zh": "然而，仍有大約百分之六十八的英國人支持採取氣候行動。光靠綠黨本身無法代表這大多數人。政治思想家卡羅琳·盧卡斯和魯珀特·里德建議提倡「生態平民主義」。領導人應提供能直接改善日常生活的務實解方，例如更便宜的綠色能源、糧食安全以及對極端天氣的防護，而不是製造痛苦的政治對立。"
+    },
+    {
+     "en": "To win public trust, politicians across different parties must connect climate action with real community needs. Simply talking about global disasters often makes citizens feel hopeless and weak. Instead, local and practical projects should be celebrated. Environmentalists must address economic fears directly so that green policies can protect both the planet and ordinary families.",
+     "zh": "為了贏得大眾信任，不同政黨的政治人物必須將氣候行動與社區的真實需求連結起來。僅僅大談全球災害往往只會讓公民感到絕望與無力。相反地，地方且務實的計畫應該受到肯定與推廣。環保人士必須正視經濟恐懼，如此一來綠色政策才能同時保護地球與一般家庭。"
+    }
+   ],
+   "words": 259,
+   "vocab": [
+    {
+     "word": "emergency",
+     "pos": "n.",
+     "zh": "緊急狀況"
+    },
+    {
+     "word": "chamber",
+     "pos": "n.",
+     "zh": "會議廳"
+    },
+    {
+     "word": "proposal",
+     "pos": "n.",
+     "zh": "提案"
+    },
+    {
+     "word": "luxury",
+     "pos": "adj.",
+     "zh": "奢侈的、非必需的"
+    },
+    {
+     "word": "uncertainty",
+     "pos": "n.",
+     "zh": "不確定性"
+    },
+    {
+     "word": "majority",
+     "pos": "n.",
+     "zh": "多數、大部分"
+    },
+    {
+     "word": "practical",
+     "pos": "adj.",
+     "zh": "切合實際的、實用的"
+    },
+    {
+     "word": "economic",
+     "pos": "adj.",
+     "zh": "經濟上的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "call off",
+     "zh": "取消"
+    },
+    {
+     "phrase": "vote down",
+     "zh": "投票否決"
+    },
+    {
+     "phrase": "cost of living",
+     "zh": "生活成本"
+    },
+    {
+     "phrase": "extreme weather",
+     "zh": "極端天氣"
+    },
+    {
+     "phrase": "win public trust",
+     "zh": "贏得大眾信任"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "不定詞作目的 (Infinitive of Purpose)",
+     "explain": "句首使用「to + 原形動詞」結構，用以說明主要子句動作的目的或動機。",
+     "example": "To win public trust, politicians across different parties must connect climate action with real community needs."
+    },
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause)",
+     "explain": "使用關係代名詞 who 引導子句，用來補充說明前面的先行詞 wealthy elites。",
+     "example": "They claim these environmental measures are luxury ideas held by wealthy elites who ignore the daily struggles of ordinary citizens."
+    },
+    {
+     "point": "讓步副詞子句 (Adverb Clause of Concession)",
+     "explain": "由從屬連接詞 although 引導副詞子句，表示「雖然、儘管」，與後方主要子句形成對比。",
+     "example": "Although other members chose to vote down Moore's proposal the following week, similar efforts by right-wing politicians have succeeded in other areas."
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/environment/2026/oct/14/land-farmed-organically-england-share-10-pc-2036-plan-food-climate",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "title": "Plan unveiled to increase share of land farmed organically in England to 10%",
+   "title_zh": "英格蘭公布新計畫：目標2036年前將有機農地比例提高至10%",
+   "paragraphs": [
+    {
+     "en": "The UK government has set a target to increase the share of land farmed organically in England to 10% by 2036. At present, only 3.4% of England's agricultural land is organic, which is one of the lowest proportions in Europe. In contrast, France already farms 10.4% of its land organically and aims to reach 18% by 2027.",
+     "zh": "英國政府已設定目標，計畫在2036年之前將英格蘭有機農地的比例提高至10%。目前，英格蘭僅有3.4%的農業用地採用有機耕作，是歐洲比例最低的地區之一。相比之下，法國已有10.4%的土地實施有機耕種，並計畫在2027年達到18%。"
+    },
+    {
+     "en": "This new strategy took more than three years to prepare. It highlights public procurement, such as supplying food to schools and hospitals, as a major opportunity for expansion. Environment Secretary Angela Eagle explained that organic farming should not be viewed merely as a niche market, because consumers now pay more attention to food sources and production methods.",
+     "zh": "這項新策略歷時三年多籌備。該計畫將學校與醫院等機構的公共採購，視為擴大市場的重要契機。環境大臣安吉拉·伊格爾（Angela Eagle）解釋，有機農業不應僅被視為小眾市場，因為消費者如今越來越關注食物來源與生產方式。"
+    },
+    {
+     "en": "Nevertheless, serious worries remain regarding financial support. In September, a key government farming fund ran out in just six hours, leaving thousands of applicants empty-handed. Rob Haward, an organic business leader, stressed that reliable grants are necessary for growers to make long-term investments. Gareth Morgan from the Soil Association also called for the urgent reopening of funding to support the shift.",
+     "zh": "然而，各界對資金補助仍存在嚴重疑慮。今年九月，一筆關鍵的政府農業基金在短短六小時內就被申請一空，導致數千名申請者空手而歸。有機企業負責人羅布·哈沃德（Rob Haward）強調，農民需要可靠的補助金才能進行長期投資。土壤協會的加雷斯·摩根（Gareth Morgan）也呼籲應緊急重新開放補助，以協助農場轉型。"
+    },
+    {
+     "en": "Experts believe that expanding organic land could bring down consumer prices if it becomes mainstream. However, Martin Lines from the Nature Friendly Farming Network noted that farmers cannot rely solely on government money. He argued that private companies must invest and offer fairer prices for local crops.",
+     "zh": "專家認為，如果有機食品成為主流，擴大有機土地面積將有助於降低消費者負擔的價格。然而，環境友善農業網絡的馬丁·萊恩斯（Martin Lines）指出，農民不能完全依賴政府資金。他主張民間企業也必須投資，並為本地農產品提供更合理的收購價格。"
+    },
+    {
+     "en": "Supporters also point out that organic farming strengthens climate resilience. Organic growers cope better with severe heat and drought. Furthermore, because they do not depend on chemical products, they are protected from skyrocketing fertilizer costs caused by the war in Iran. The National Farmers' Union added that boosting local production will reduce reliance on foreign food imports.",
+     "zh": "支持者還指出，有機耕作能強化應對氣候變遷的韌性。有機農民能更好地因應極端酷熱與乾旱。此外，由於他們不依賴化學物質，因而免受伊朗戰爭所引發的肥料價格暴漲衝擊。全國農民聯盟補充表示，促進本土生產將能減少對外國進口食品的依賴。"
+    }
+   ],
+   "words": 279,
+   "vocab": [
+    {
+     "word": "strategy",
+     "pos": "n.",
+     "zh": "策略；計策"
+    },
+    {
+     "word": "procurement",
+     "pos": "n.",
+     "zh": "（政府或機構的）採購"
+    },
+    {
+     "word": "expansion",
+     "pos": "n.",
+     "zh": "擴張；擴展"
+    },
+    {
+     "word": "reliable",
+     "pos": "adj.",
+     "zh": "可靠的；可信賴的"
+    },
+    {
+     "word": "urgent",
+     "pos": "adj.",
+     "zh": "緊急的；迫切的"
+    },
+    {
+     "word": "resilience",
+     "pos": "n.",
+     "zh": "韌性；適應力"
+    },
+    {
+     "word": "reliance",
+     "pos": "n.",
+     "zh": "依賴；依靠"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "empty-handed",
+     "zh": "空手地；一無所獲地"
+    },
+    {
+     "phrase": "bring down",
+     "zh": "降低；壓低"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "現在完成式 (Present Perfect Tense)",
+     "explain": "由「have / has + 過去分詞」構成，表示過去已經完成且持續對現在產生影響的動作。",
+     "example": "The UK government has set a target to increase the share of land farmed organically in England to 10% by 2036."
+    },
+    {
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "逗號後使用「which」引導子句，用來對前方的主句事實做補充說明。",
+     "example": "At present, only 3.4% of England's agricultural land is organic, which is one of the lowest proportions in Europe."
+    },
+    {
+     "point": "助動詞被動語態 (Passive Voice with Modal Verbs)",
+     "explain": "由「助動詞 + be + 過去分詞」組成，表示某事物「應該被／不該被…」對待或看待。",
+     "example": "Environment Secretary Angela Eagle explained that organic farming should not be viewed merely as a niche market, because consumers now pay more attention to food sources and production methods."
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/c92031m6knljo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Science",
+   "title": "Burnham - Rosebank and Jackdaw oil and gas decisions coming 'shortly'",
+   "title_zh": "首相：羅osebank與Jackdaw油氣田開發決定即將出爐",
+   "paragraphs": [
+    {
+     "en": "Prime Minister Andy Burnham announced that the government will soon decide whether to approve two major oil and gas fields in the North Sea. These controversial projects, known as Rosebank and Jackdaw, have sparked intense debates between industry groups and environmental activists over the past few years.",
+     "zh": "首相安迪·伯恩罕宣布，政府將很快決定是否批准北海的兩個大型油氣田。這些備受爭議的計畫被稱為Rosebank與Jackdaw，在過去幾年中引發了產業界與環保人士之間的激烈辯論。"
+    },
+    {
+     "en": "Conservative leader Kemi Badenoch criticized the prime minister for delaying the process and urged him to take action immediately. She argued that approving these projects earlier could have provided British gas to warm homes during the winter. In response, Burnham explained that his administration had to fix previous legal problems left by the former government.",
+     "zh": "保守黨領袖凱米·巴德諾批評首相拖延流程並敦促他立即採取行動。她主張早日批准這些計畫本可以在冬季提供英國天然氣來為家庭取暖。作為回應，伯恩罕解釋說，他的政府必須修復前政府留下的先前法律問題。"
+    },
+    {
+     "en": "Energy Secretary Miatta Fahnbulleh stated that all necessary information regarding the Jackdaw gas field has been thoroughly reviewed, making an official choice imminent. Meanwhile, the assessment for the Rosebank oil and gas field requires a bit more time before a final verdict is reached.",
+     "zh": "能源大臣米亞塔·法恩布利表示，關於Jackdaw天然氣田的所有必要資訊都已經過徹底審查，這意味著官方抉擇即將到來。同時，針對Rosebank油氣田的評估在做出最終裁決之前還需要多一點時間。"
+    },
+    {
+     "en": "The legal troubles surrounding these sites began when the Court of Session in Edinburgh ruled that previous approvals were unlawful. The court pointed out that the former government failed to consider the climate impacts of burning the extracted fossil fuels. Environmentalists strongly oppose the drilling because it hampers emission reduction goals, whereas industry supporters claim it is vital for national energy security and jobs.",
+     "zh": "圍繞這些場址的法律麻煩始於愛丁堡的最高民事法院裁定先前的批准不合法。法院指出，前政府未能考慮燃燒開採出的化石燃料所帶來的氣候影響。環保人士強烈反對鑽探，因為它妨礙了減排目標，而業界支持者則聲稱這對國家能源安全與就業至關重要。"
+    }
+   ],
+   "words": 210,
+   "vocab": [
+    {
+     "word": "approve",
+     "pos": "v.",
+     "zh": "批准"
+    },
+    {
+     "word": "controversial",
+     "pos": "adj.",
+     "zh": "有爭議的"
+    },
+    {
+     "word": "thoroughly",
+     "pos": "adv.",
+     "zh": "徹底地"
+    },
+    {
+     "word": "assessment",
+     "pos": "n.",
+     "zh": "評估"
+    },
+    {
+     "word": "unlawful",
+     "pos": "adj.",
+     "zh": "不合法的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "oil and gas fields",
+     "zh": "油氣田"
+    },
+    {
+     "phrase": "take action",
+     "zh": "採取行動"
+    },
+    {
+     "phrase": "final verdict",
+     "zh": "最終裁決"
+    },
+    {
+     "phrase": "fossil fuels",
+     "zh": "化石燃料"
+    },
+    {
+     "phrase": "energy security",
+     "zh": "能源安全"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "當句子的主語是動作的接受者時，使用「be動詞 + 過去分詞」來表達被動語態。",
+     "example": "These controversial projects, known as Rosebank and Jackdaw, have sparked intense debates between industry groups and environmental activists over the past few years."
+    },
+    {
+     "point": "現在完成式 (Present Perfect Tense)",
+     "explain": "用來表示過去發生的動作對現在造成的影響，或持續到現在的狀態，結構為「have/has + 過去分詞」。",
+     "example": "These controversial projects, known as Rosebank and Jackdaw, have sparked intense debates between industry groups and environmental activists over the past few years."
+    },
+    {
+     "point": "不定詞作目的用語 (Infinitive of Purpose)",
+     "explain": "使用「to + 原形動詞」置於句中或句尾，用來表達某個動作的目的。",
+     "example": "She argued that approving these projects earlier could have provided British gas to warm homes during the winter."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/14/nx-s1-5961483/preview-zelda-ocarina-of-time-remake-switch-2",
+   "source": "NPR",
+   "topic": "Tech",
+   "title": "Hands-on with the Ocarina of Time remake, the most ornate Zelda game ever made",
+   "title_zh": "實機體驗《時之笛》重製版：史上最華麗細緻的薩爾達傳說遊戲",
+   "paragraphs": [
+    {
+     "en": "After the massive box-office success of recent Mario movies, Nintendo is preparing for a Zelda movie next April. To keep fans excited, the company is releasing a remake of its 1998 masterpiece, The Legend of Zelda: Ocarina of Time, for the Switch 2 on November 5. While other game publishers are avoiding this release window to dodge Grand Theft Auto VI, Nintendo offers a family-friendly alternative to that crime epic.",
+     "zh": "在近期瑪利歐電影取得巨大的票房成功之後，任天堂正為明年四月即將推出的薩爾達電影做準備。為了維持粉絲的熱情，該公司將於十一月五日在 Switch 2 上推出其 1998 年經典名作《薩爾達傳說：時之笛》的重製版。雖然其他遊戲發行商紛紛避開這個發行檔期以躲避《俠盜獵車手 VI》，但任天堂卻為這部犯罪史詩提供了一個適合全家同樂的替代選擇。"
+    },
+    {
+     "en": "Visually, the new game keeps its classic artistic style while adding incredible details. For instance, Link's green outfit now displays realistic fabrics, and fairies have furry bodies with mosaic wings. However, these ornate environments can occasionally overwhelm players. During a 90-minute trial, a reporter even missed an important dungeon key in the Forest Temple because the rich backgrounds distracted the eye.",
+     "zh": "在視覺方面，這款新遊戲保留了其經典的藝術風格，同時增添了令人驚嘆的細節。例如，林克的綠色服裝現在展現出逼真的布料質感，精靈則擁有毛茸茸的身軀與馬賽克般的翅膀。然而，這些華麗繁複的環境有時會讓玩家應接不暇。在一次九十分鐘的試玩中，一名記者甚至在森林神殿中漏掉了一把推進關卡的重要鑰匙，因為豐富的背景細節分散了注意力。"
+    },
+    {
+     "en": "In contrast to the huge visual makeover, the gameplay mechanics remain mostly traditional. Nintendo chose not to change the core elements that originally revolutionized 3D gaming. Nevertheless, players will notice helpful modern touches, such as a menu quest log called Threads of Time and an interface similar to Breath of the Wild.",
+     "zh": "與巨大的視覺改造相比，遊戲的操作機制大多保持傳統。任天堂選擇不改變最初徹底變革 3D 遊戲的核心要素。儘管如此，玩家仍會注意到一些實用的現代化設計，例如名為「Threads of Time」的選單任務日誌，以及類似於《曠野之息》的使用者介面。"
+    },
+    {
+     "en": "The controls also introduce manual jumping and sprinting, making movement smoother and enabling players to take clever shortcuts. Even with these new options, the game remains a focused, linear adventure rather than a vast open world. You can still switch back to the classic automatic jumping if you prefer nostalgia.",
+     "zh": "控制方面也加入了手動跳躍與衝刺功能，使動作更加流暢，並讓玩家能夠利用巧妙的捷徑。即便有了這些新選項，這款遊戲依然是一場聚焦的線性冒險，而非廣闊的開放世界。如果你更偏好懷舊感，依然可以切換回經典的自動跳躍模式。"
+    },
+    {
+     "en": "Overall, launching this polished remake is a brilliant strategic move before the Zelda movie arrives. With extraordinary production values, Nintendo aims to attract both veteran gamers and curious newcomers. While the game is visually stunning, players will soon discover whether its updated journey feels just as rewarding as the original.",
+     "zh": "整體而言，在薩爾達電影上映前推出這款精緻的重製版是一項高明的策略。憑藉極高的製作水準，任天堂旨在同時吸引資深老玩家與好奇的新手。雖然這款遊戲在視覺上令人驚豔，但玩家很快就能發現其翻新後的旅程是否如原作般令人感到充實與值得。"
+    }
+   ],
+   "words": 283,
+   "vocab": [
+    {
+     "word": "masterpiece",
+     "pos": "n.",
+     "zh": "傑作、名作"
+    },
+    {
+     "word": "alternative",
+     "pos": "n.",
+     "zh": "替代選擇、方案"
+    },
+    {
+     "word": "ornate",
+     "pos": "adj.",
+     "zh": "華麗的、裝飾繁複的"
+    },
+    {
+     "word": "overwhelm",
+     "pos": "v.",
+     "zh": "使應接不暇、壓倒"
+    },
+    {
+     "word": "traditional",
+     "pos": "adj.",
+     "zh": "傳統的"
+    },
+    {
+     "word": "interface",
+     "pos": "n.",
+     "zh": "介面"
+    },
+    {
+     "word": "linear",
+     "pos": "adj.",
+     "zh": "線性的、單線發展的"
+    },
+    {
+     "word": "strategic",
+     "pos": "adj.",
+     "zh": "策略性的、戰略的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "box-office success",
+     "zh": "票房成功"
+    },
+    {
+     "phrase": "in contrast to",
+     "zh": "與……形成對比"
+    },
+    {
+     "phrase": "similar to",
+     "zh": "與……相似"
+    },
+    {
+     "phrase": "switch back to",
+     "zh": "切換回……"
+    },
+    {
+     "phrase": "production values",
+     "zh": "製作水準、製作價值"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "不定詞表目的 (Infinitive of Purpose)",
+     "explain": "使用不定詞片語「to + 原形動詞」置於句首作副詞，用以表示主要子句動作的目的或原因。",
+     "example": "To keep fans excited, the company is releasing a remake of its 1998 masterpiece, The Legend of Zelda: Ocarina of Time, for the Switch 2 on November 5."
+    },
+    {
+     "point": "讓步副詞子句 (Adverb Clause of Concession with While)",
+     "explain": "連接詞 while 可引導讓步副詞子句，表示「雖然、儘管」，用以對比兩個同時存在的情況或事實。",
+     "example": "While other game publishers are avoiding this release window to dodge Grand Theft Auto VI, Nintendo offers a family-friendly alternative to that crime epic."
+    },
+    {
+     "point": "分詞構句 (Participle Clause)",
+     "explain": "逗號後使用現在分詞片語簡化對等子句，用以表達主句動作所帶來的伴隨狀況或接續結果。",
+     "example": "The controls also introduce manual jumping and sprinting, making movement smoother and enabling players to take clever shortcuts."
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/14/sport/manchester-city-psg-champions-league",
+   "source": "CNN",
+   "topic": "Sports",
+   "title": "Defiance or denial? Inside Manchester City’s bubble, decked with inflatable bananas",
+   "title_zh": "反抗還是逃避？直擊曼城滿是充氣香蕉的自我世界",
+   "paragraphs": [
+    {
+     "en": "Manchester City recently faced severe criticism after being found guilty of over 100 charges concerning financial breaches. While many critics called the English club cheaters, team leaders denied the accusations, appealed the decision, and claimed they were victims of an unfair hunt. However, inside Etihad Stadium before a Champions League match against Paris Saint-Germain (PSG), the atmosphere felt like an alternative world where nothing was wrong.",
+     "zh": "曼徹斯特城隊（曼城）在被判定違反100多項財務指控後，近期面臨嚴厲的批評。儘管許多批評者稱這支英格蘭俱樂部為騙子，但球隊高層否認了指控、提出上訴，並堅稱自己是不公搜捕下的受害者。然而，在伊蒂哈德球場對陣巴黎聖日耳曼（PSG）的歐冠比賽前，球場內的氣氛宛如一個一切正常的另類世界。"
+    },
+    {
+     "en": "Instead of crying over potential punishments like point deductions or relegation, supporters displayed strong optimism. Hundreds of inflatable yellow bananas appeared among the crowd. This unique tradition started in the 1980s when the club was relegated to a lower division, and fans created funny nicknames to lighten the mood. Decades later, these toy bananas served as symbols of humor and loyalty during this modern crisis.",
+     "zh": "球迷們沒有因為積分扣除或遭到降級等潛在處罰而哭泣，反而展現出強烈的樂觀態度。數百個充氣黃色香蕉出現在人群之中。這個獨特的傳統始於1980年代，當時該俱樂部降級至次級聯賽，球迷便透過取搞笑綽號來緩和氣氛。數十年後，這些玩具香蕉在當前的危機中，成為幽默與忠誠的象徵。"
+    },
+    {
+     "en": "During the match, City suffered a painful 4-2 loss to PSG, but the fans continued to support their players. Interestingly, PSG manager Luis Enrique expressed rare support, hoping City would avoid harsh sanctions. Former manager Pep Guardiola, who recently left after winning many trophies, was also seen in the stands. His sudden return gave fans a reason to cheer and encouraged everyone to trust the club's leadership.",
+     "zh": "比賽期間，曼城以2比4慘敗給PSG，但球迷仍持續為球員打氣。有趣的是，PSG總教練路易斯·恩里克表達了罕見的支持，希望曼城能免於嚴厲的制裁。在帶領球隊拿下諸多獎盃後剛於今夏離隊的前教練佩普·瓜迪奧拉也現身看台。他的驚喜現身讓球迷大聲歡呼，並鼓勵大家要信任俱樂部的領導層。"
+    },
+    {
+     "en": "Nevertheless, stepping outside the stadium brings harsh realities back into view. When reporters asked difficult questions, supporters simply answered that people should wait for the appeal. Yet, ignoring serious accusations cannot make them disappear. As City continues to play domestic matches against rivals who want justice, the club faces its greatest test, and no amount of plastic toys can guarantee safety.",
+     "zh": "儘管如此，走出球場外，殘酷的現實便再度浮現。當記者提出棘手的問題時，球迷們僅簡單回應大家應該等待上訴結果。然而，忽視嚴重的指控並不能使問題消失。隨著曼城繼續在國內賽事中面對渴望伸張正義的對手，該俱樂部正面臨嚴峻考驗，而再多的塑膠玩具也無法保證安全過關。"
+    }
+   ],
+   "words": 259,
+   "vocab": [
+    {
+     "word": "criticism",
+     "pos": "n.",
+     "zh": "批評"
+    },
+    {
+     "word": "financial",
+     "pos": "adj.",
+     "zh": "財務的，金融的"
+    },
+    {
+     "word": "unique",
+     "pos": "adj.",
+     "zh": "獨特的"
+    },
+    {
+     "word": "crisis",
+     "pos": "n.",
+     "zh": "危機"
+    },
+    {
+     "word": "severe",
+     "pos": "adj.",
+     "zh": "嚴厲的，嚴重的"
+    },
+    {
+     "word": "guarantee",
+     "pos": "v.",
+     "zh": "保證，擔保"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "guilty of",
+     "zh": "有…罪的；犯有…的"
+    },
+    {
+     "phrase": "lighten the mood",
+     "zh": "緩和氣氛，放鬆心情"
+    },
+    {
+     "phrase": "wait for",
+     "zh": "等待…"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "用於強調動作的接受者而非執行者，結構為「be動詞 + 過去分詞」。",
+     "example": "Manchester City recently faced severe criticism after being found guilty of over 100 charges concerning financial breaches."
+    },
+    {
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "使用逗號隔開關係代名詞 who 引導的子句，為先行詞提供補充說明，省略後主要子句仍語意完整。",
+     "example": "Former manager Pep Guardiola, who recently left after winning many trophies, was also seen in the stands."
+    },
+    {
+     "point": "動名詞當主詞 (Gerund as Subject)",
+     "explain": "將動詞加上 -ing 轉變為名詞功能，在句中作主詞使用，視為單數。",
+     "example": "Yet, ignoring serious accusations cannot make them disappear."
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/14/sport/philadelphia-bar-london-nfl-eagles",
+   "source": "CNN",
+   "topic": "Sports",
+   "title": "Philadelphia Eagles fans flock to the bar that brings the City of Brotherly Love to London",
+   "title_zh": "費城老鷹隊球迷湧入將「兄弟之愛之城」帶到倫敦的酒吧",
+   "paragraphs": [
+    {
+     "en": "When JP Teti moved from South Philadelphia to London, he noticed that his new home lacked the unique regional cuisine and classic dive bars he loved. He missed iconic foods like cheesesteaks and buffalo wings. Realizing he needed to take action, he decided to quit his corporate job and launch a business to bring authentic American culture to the UK.",
+     "zh": "當JP Teti從費城南部搬到倫敦時，他注意到他的新家缺少他所喜愛的獨特地區美食和經典平價酒吧。他懷念像起司牛肉堡和水牛城辣雞翅這樣的標誌性食物。意識到自己需要採取行動，他決定辭去公司的工作並創業，將正宗的美國文化帶到英國。"
+    },
+    {
+     "en": "In 2018, Teti opened the first Passyunk Avenue in London, which happened to coincide with the Philadelphia Eagles bringing the Super Bowl trophy to the city. This lucky timing helped the business grow into a popular destination. Teti wanted to offer Europeans interested in American culture an immersive experience and a welcoming atmosphere.",
+     "zh": "2018年，Teti在倫敦開了第一家Passyunk Avenue，這正好碰上費城老鷹隊將超級盃獎盃帶到該市。這個幸運的時間點幫助這家店成長為一個熱門目的地。Teti希望為對美國文化感興趣的歐洲人提供沉浸式體驗和溫馨的氛圍。"
+    },
+    {
+     "en": "Sports are a vital part of Philadelphia culture, serving as a powerful vehicle to tell its story. Recently, thousands of fans flocked to Passyunk Avenue as London hosted events celebrating the Philadelphia Eagles. The streets filled with retro jerseys, delicious food, and joyful chants before the big game.",
+     "zh": "體育是費城文化的重要部分，也是講述其故事的強大載體。最近，當倫敦舉辦慶祝費城老鷹隊的活動時，成千上萬的球迷湧入Passyunk Avenue。在大比賽開始前，街道上充滿了復古球衣、美味的食物和歡樂的口號。"
+    },
+    {
+     "en": "Reflecting on his journey, Teti remembered feeling lonely and doubtful during difficult days of street trading. Seeing massive crowds gather together years later made all his hard work and risks completely worthwhile. Through his bars, he successfully created an outpost of hope and community for people far from home.",
+     "zh": "回顧他的心路歷程，Teti想起在街頭販售的艱難日子裡，曾感到孤獨和懷疑。幾年后看到巨大的人群聚集在一起，使得他所有的努力和冒險完全值得。透過他的酒吧，他成功為遠離家鄉的人們打造了一個希望與社群的前哨站。"
+    }
+   ],
+   "words": 210,
+   "vocab": [
+    {
+     "word": "cuisine",
+     "pos": "n.",
+     "zh": "菜餚、烹調風格"
+    },
+    {
+     "word": "authentic",
+     "pos": "adj.",
+     "zh": "正宗的、真實的"
+    },
+    {
+     "word": "coincide",
+     "pos": "v.",
+     "zh": "同時發生、巧合"
+    },
+    {
+     "word": "immersive",
+     "pos": "adj.",
+     "zh": "沉浸式的"
+    },
+    {
+     "word": "vital",
+     "pos": "adj.",
+     "zh": "極其重要的、不可或缺的"
+    },
+    {
+     "word": "doubtful",
+     "pos": "adj.",
+     "zh": "懷疑的、不確定的"
+    },
+    {
+     "word": "worthwhile",
+     "pos": "adj.",
+     "zh": "值得的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "take action",
+     "zh": "採取行動"
+    },
+    {
+     "phrase": "vital part",
+     "zh": "重要部分"
+    },
+    {
+     "phrase": "flocked to",
+     "zh": "蜂擁至……"
+    },
+    {
+     "phrase": "worthwhile",
+     "zh": "值得的"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "不定詞片語表目的 [Infinitive of Purpose]",
+     "explain": "使用「to + 原形動詞」置於句首或句中，用來表達某個動作的目的。",
+     "example": "Realizing he needed to take action, he decided to quit his corporate job and launch a business to bring authentic American culture to the UK."
+    },
+    {
+     "point": "關代受格省略 [Omitted Object Relative Pronoun]",
+     "explain": "當關係代名詞作為子句中受詞時，通常可以省略，直接連接修飾的先行詞。",
+     "example": "When JP Teti moved from South Philadelphia to London, he noticed that his new home lacked the unique regional cuisine and classic dive bars he loved."
+    },
+    {
+     "point": "分詞構句表附帶狀況 [Participle Clause]",
+     "explain": "用現在分詞（-ing）引導的子句來補充說明主句發生的背景或伴隨的狀況。",
+     "example": "The streets filled with retro jerseys, delicious food, and joyful chants before the big game."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/14/business/europe-ai-act-safety-debate-intl",
+   "source": "CNN",
+   "topic": "Business",
+   "title": "Europe leads the world on AI rules. So why is it missing from the AI safety debate?",
+   "title_zh": "歐洲引領人工智慧規則，為何卻缺席AI安全辯論？",
+   "paragraphs": [
+    {
+     "en": "Europe has created the world's first comprehensive set of rules to govern artificial intelligence, yet it is noticeably absent from high-level safety talks. While European lawmakers drafted the AI Act years ago to hold companies accountable, the continent now faces a severe economic and technological disadvantage.",
+     "zh": "歐洲制定了全球第一套全面規範人工智慧的規則，卻明顯缺席了高層安全對話。雖然歐洲立法者多年前就起草了《人工智慧法案》來要求企業負起責任，但該洲目前正面臨嚴重的經濟與技術劣勢。"
+    },
+    {
+     "en": "The region struggles to produce tech giants and frontier models that can rival those in the United States and China. European leaders warn that the continent is at acute risk of marginalization because of this widening gap in the global AI race.",
+     "zh": "該地區難以培育出能與美國和中國相媲美的科技巨頭與前沿模型。歐洲領導人警告稱，由於全球AI競賽中這個日益擴大的差距，歐洲正面臨被邊緣化的急迫風險。"
+    },
+    {
+     "en": "The European Union's strict regulations, including the AI Act, are intended to put guardrails in place and protect user data. However, the law has proven difficult to enforce, and several member states have not yet established authorities to police compliance.",
+     "zh": "歐盟的嚴格法規（包括《人工智慧法案》）旨在建立防護欄並保護用戶數據。然而，事實證明該法律難以執行，幾個成員國尚未建立機構來監督合規性。"
+    },
+    {
+     "en": "Furthermore, these complex regulatory systems have caused significant delays in the rollout of new AI products. Many local firms cite a lack of clarity and fear of heavy fines as major reasons for choosing not to adopt AI.",
+     "zh": "此外，這些複雜的監管系統導致新AI產品的推出嚴重延遲。許多當地企業指出，缺乏明確性以及對重罰的擔憂，是選擇不採用AI的主要原因。"
+    },
+    {
+     "en": "Aside from regulation, a massive lack of private investment and infrastructure remains a major barrier. Despite these obstacles, some experts remain optimistic that Europe's deep industrial expertise will eventually help its tech industry thrive.",
+     "zh": "除了監管之外，私人投資與基礎設施的嚴重缺乏仍然是一大障礙。儘管存在這些阻礙，一些專家仍然保持樂觀，認為歐洲深厚的工業專業知識最終將有助於其科技產業蓬勃發展。"
+    }
+   ],
+   "words": 200,
+   "vocab": [
+    {
+     "word": "comprehensive",
+     "pos": "adj.",
+     "zh": "全面的、綜合的"
+    },
+    {
+     "word": "noticeably",
+     "pos": "adv.",
+     "zh": "顯著地、明顯地"
+    },
+    {
+     "word": "accountable",
+     "pos": "adj.",
+     "zh": "負有責任的"
+    },
+    {
+     "word": "disadvantage",
+     "pos": "n.",
+     "zh": "劣勢、不利條件"
+    },
+    {
+     "word": "regulations",
+     "pos": "n.",
+     "zh": "法規、規章"
+    },
+    {
+     "word": "enforce",
+     "pos": "v.",
+     "zh": "執行、實施"
+    },
+    {
+     "word": "significant",
+     "pos": "adj.",
+     "zh": "重大的、顯著的"
+    },
+    {
+     "word": "barrier",
+     "pos": "n.",
+     "zh": "障礙、屏障"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "absent from",
+     "zh": "缺席、不在"
+    },
+    {
+     "phrase": "at acute risk of",
+     "zh": "處於……的急迫風險中"
+    },
+    {
+     "phrase": "put guardrails in place",
+     "zh": "建立防護機制（或防護欄）"
+    },
+    {
+     "phrase": "proven difficult to",
+     "zh": "證明很難……"
+    },
+    {
+     "phrase": "remain optimistic",
+     "zh": "保持樂觀"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "分詞構句作原因 (Participle Clause)",
+     "explain": "使用現在分詞片語來表達原因，簡化副詞子句。",
+     "example": "European leaders warn that the continent is at acute risk of marginalization because of this widening gap in the global AI race."
+    },
+    {
+     "point": "不定詞作目的 (Infinitive of Purpose)",
+     "explain": "使用「to + 原形動詞」來表達做某事的目的或意圖。",
+     "example": "While European lawmakers drafted the AI Act years ago to hold companies accountable, the continent now faces a severe economic and technological disadvantage."
+    },
+    {
+     "point": "關係代間詞子句 (Relative Clause)",
+     "explain": "使用關係代間詞（如 that 或 which）引導形容詞子句來修飾前面的名詞。",
+     "example": "The region struggles to produce tech giants and frontier models that can rival those in the United States and China."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/14/g-s1-146907/these-workers-help-train-robots-who-could-one-day-steal-their-jobs",
+   "source": "NPR",
+   "topic": "Health",
+   "title": "These workers help train robots who could one day steal their jobs",
+   "title_zh": "這些工人正在訓練可能有一天會搶走他們工作的機器人",
+   "paragraphs": [
+    {
+     "en": "In Karur, India, some textile factory workers have been told to wear GoPros while doing their daily tasks. Their hand gestures and movements are recorded to train AI robots to take over these jobs. Many workers, including a 40-year-old employee named Shoba Kirubakaran who makes ninety dollars a month, were never informed about this purpose by their companies.",
+     "zh": "在印度卡魯爾，一些紡織廠工人被要求在日常工作時佩戴GoPro。他們的肢體動作被錄下來，以訓練AI機器人來接管這些工作。許多工人（包括一個月賺九十美元、名叫紹芭·基魯巴卡倫的四十歲員工）從未被公司告知這個目的。"
+    },
+    {
+     "en": "India is becoming a major hub for recording this egocentric data because of its large population and low wages. Experts explain that today's AI systems lack physical bodies and need millions of hours of real human footage to learn motor skills. While some individuals are paid hourly to collect this data, others find themselves unknowingly exploited.",
+     "zh": "由於人口眾多且工資相對較低，印度正成為記錄這種以自我為中心之數據的主要中心。專家解釋說，當今的AI系統缺乏實體，需要數百萬小時的真實人類影片來學習運動技能。雖然有些人是按小時計酬來收集這些數據，但其他人卻發現自己不知不覺中遭到剝削。"
+    },
+    {
+     "en": "However, deploying robots at scale in India might not happen immediately. Experts point out that running AI robots is expensive and requires massive amounts of reliable power, which remains a challenge. Human labor is still cheaper than operating such advanced machinery in the region.",
+     "zh": "然而，在印度大規模部署機器人可能不會立即發生。專家指出，運行AI機器人成本高昂且需要大量穩定的電力，這仍然是一大挑戰。在該地區，人力勞動仍然比操作此類先進機械便宜。"
+    },
+    {
+     "en": "Despite these obstacles, local tech companies continue gathering data for domestic and foreign clients. Employees wear special headsets and use robot claws to record repetitive tasks, ranging from industrial packaging to household chores. As workers teach these machines how to handle different objects, some realize that their current jobs will eventually disappear.",
+     "zh": "儘管存在這些障礙，當地科技公司仍繼續為國內外客戶收集數據。員工佩戴特殊頭戴式裝置並使用機器人爪子來記錄重複性任務，範圍從工業包裝到家務勞動不等。隨著工人教導這些機器如何處理不同的物品，有些人意識到他們目前的工作最終將會消失。"
+    }
+   ],
+   "words": 210,
+   "vocab": [
+    {
+     "word": "purpose",
+     "pos": "n.",
+     "zh": "目的，意圖"
+    },
+    {
+     "word": "hub",
+     "pos": "n.",
+     "zh": "中心，樞紐"
+    },
+    {
+     "word": "footage",
+     "pos": "n.",
+     "zh": "影片片段，畫面"
+    },
+    {
+     "word": "foreign",
+     "pos": "adj.",
+     "zh": "外國的"
+    },
+    {
+     "word": "repetitive",
+     "pos": "adj.",
+     "zh": "重複的"
+    },
+    {
+     "word": "disappear",
+     "pos": "v.",
+     "zh": "消失"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "take over",
+     "zh": "接管，取代"
+    },
+    {
+     "phrase": "at scale",
+     "zh": "大規模地"
+    },
+    {
+     "phrase": "point out",
+     "zh": "指出"
+    },
+    {
+     "phrase": "continue gathering",
+     "zh": "持續收集"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "當主詞是動作的承受者時，使用「be動詞 + 過去分詞」來表達被動關係。",
+     "example": "Their hand gestures and movements are recorded to train AI robots to take over these jobs."
+    },
+    {
+     "point": "不定詞表示目的 (Infinitive of Purpose)",
+     "explain": "使用「to + 原形動詞」置於句中或句尾，用來表達某個動作的目的。",
+     "example": "Their hand gestures and movements are recorded to train AI robots to take over these jobs."
+    },
+    {
+     "point": "關係代間子句 (Relative Clause)",
+     "explain": "使用關係代間詞（如who或that）引導形容詞子句，用來修飾前面的先行詞。",
+     "example": "Many workers, including a 40-year-old employee named Shoba Kirubakaran who makes ninety dollars a month, were never informed about this purpose by their companies."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/c623dnkn8pkyo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Tech",
+   "title": "'I applied for 200 jobs' - How 'spray and pray' AI job applications can backfire",
+   "title_zh": "「我投了兩百個職缺」—人工智慧海投履歷如何帶來反效果",
+   "paragraphs": [
+    {
+     "en": "Many graduates today rely on artificial intelligence to help write their resumes and cover letters. While employers generally accept this for early stages, it raises questions about ethics and cheating.",
+     "zh": "現今許多畢業生依賴人工智慧來協助撰寫履歷與求職信。雖然雇主普遍在初期階段接受這種做法，但這也引發了關於道德與作弊的問題。"
+    },
+    {
+     "en": "Tom, a recent graduate, applied for more than two hundred positions before securing a role as a restaurant manager. He found the process extremely tiring and noted that using technology was necessary to handle multiple applications daily.",
+     "zh": "最近畢業的湯姆在找到餐廳經理的職位之前，申請了兩百多個職缺。他發現這個過程極為疲憊，並指出使用科技來處理每日多份申請是必要的。"
+    },
+    {
+     "en": "A recent survey by the Institute of Student Employers shows that many large companies are becoming more accepting of AI for CV writing. However, ninety-two percent of employers have also encountered misconduct, such as people using real-time assistants during video interviews.",
+     "zh": "學生雇主協會最近的一項調查顯示，許多大公司正變得更能接受用AI來寫履歷。然而，百分之九十二的雇主也遇到了違規行為，例如有人在視訊面試期間使用即時助理。"
+    },
+    {
+     "en": "This trend of sending massive applications simultaneously is known as spray and pray. Experts warn that this behavior increases competition and pressure for students in a tough job market.",
+     "zh": "這種同時大量發送申請的趨勢被稱為「廣撒網祈禱法」。專家警告說，這種行為在艱難的求職市場中增加了學生的競爭與壓力。"
+    },
+    {
+     "en": "Some major firms have closed their recruitment windows early due to a massive surge in submissions. Companies are now issuing guidance and trying to design their hiring processes to be as resistant to artificial intelligence as possible.",
+     "zh": "由於應徵件數激增，一些大企業已經提前關閉了招募窗口。各公司現在正發布指導方針，並試圖將招募流程設計得盡可能不受人工智慧影響。"
+    },
+    {
+     "en": "Despite the rise of smart tools, experts emphasize that companies ultimately value true personality and authenticity. A representative named Hollie Moody stated, \"We want diversity of thought in the business.\"",
+     "zh": "儘管智慧工具崛起，專家強調公司最終仍看重真實的個人特質與原創性。一位名叫荷莉·穆迪的代表表示：「我們希望企業內有多元化的思維。」"
+    }
+   ],
+   "words": 204,
+   "vocab": [
+    {
+     "word": "ethics",
+     "pos": "n.",
+     "zh": "倫理、道德"
+    },
+    {
+     "word": "tiring",
+     "pos": "adj.",
+     "zh": "令人疲勞的"
+    },
+    {
+     "word": "survey",
+     "pos": "n.",
+     "zh": "調查"
+    },
+    {
+     "word": "misconduct",
+     "pos": "n.",
+     "zh": "違規行為、不端行為"
+    },
+    {
+     "word": "simultaneously",
+     "pos": "adv.",
+     "zh": "同時地"
+    },
+    {
+     "word": "surge",
+     "pos": "n.",
+     "zh": "激增"
+    },
+    {
+     "word": "authenticity",
+     "pos": "n.",
+     "zh": "真實性、地道"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "rely on",
+     "zh": "依賴"
+    },
+    {
+     "phrase": "cover letters",
+     "zh": "求職信"
+    },
+    {
+     "phrase": "job market",
+     "zh": "就業市場"
+    },
+    {
+     "phrase": "due to",
+     "zh": "由於"
+    },
+    {
+     "phrase": "value true personality",
+     "zh": "重視真正的個人特質"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "現在分詞當形容詞 (Present Participle as Adjective)",
+     "explain": "使用現在分詞來修飾名詞，表達該事物具有某種特質或造成某種影響。",
+     "example": "He found the process extremely tiring and noted that using technology was necessary to handle multiple applications daily."
+    },
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "當主詞是動作的承受者時，使用「be動詞 + 過去分詞」來表達被動動作。",
+     "example": "A representative named Hollie Moody stated, \"We want diversity of thought in the business.\""
+    },
+    {
+     "point": "不定詞作目的副詞片語 (Infinitive of Purpose)",
+     "explain": "使用「to + 原形動詞」來表達某個動作的目的或意圖。",
+     "example": "Companies are now issuing guidance and trying to design their hiring processes to be as resistant to artificial intelligence as possible."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
    "link": "https://www.theguardian.com/science/2026/oct/14/focus-on-sounds-to-help-learn-a-language-study-suggests",
    "source": "The Guardian",
    "topic": "Science",
@@ -419,142 +1531,469 @@
    "source": "NPR",
    "topic": "Education",
    "title": "How colleges are creating programs for a changing U.S. job market",
-   "title_zh": "美國大學開設新科系，因應不斷變化的就業市場",
+   "title_zh": "美國大學如何為瞬息萬變的就職市場設立新科系",
+   "paragraphs": [
+    {
+     "en": "Colleges across the United States are launching new degree programs to attract students and prepare them for future careers. Fields such as artificial intelligence, influencing, and health sciences are becoming popular choices. These new majors aim to connect education directly with the changing job market.",
+     "zh": "全美各地的大學正在推出新的學位學程，以吸引學生並為他們未來的職業生涯做準備。人工智慧、網紅經營和健康科學等領域正逐漸成為熱門選擇。這些新科系旨在將教育與瞬息萬變的就職市場直接連結。"
+    },
+    {
+     "en": "At UT San Antonio, Professor Eddie Hernandez helped create a health sciences program. A student named Case Brown joined this major because it covers all prerequisites for medical school and offers tailored courses for future doctors. Currently, around five hundred undergraduates are enrolled in this growing cohort.",
+     "zh": "在德州大學聖安東尼奧分校，艾迪·赫南德茲教授協助創立了一個健康科學學程。一名名叫凱斯·布朗的學生加入了這個主修，因為它涵蓋了醫學院所需的所有先修科目，並為未來醫生提供量身打造的課程。目前，大約有五百名大學生加入了這個不斷成長的群體。"
+    },
+    {
+     "en": "Sustainable careers are the ultimate goal of these educational updates. Because of this focus, traditional programs lacking clear job pathways are facing cancellation. For instance, the number of humanities bachelor's degrees has dropped significantly over the past decade, and the Savannah College of Art and Design even stopped accepting new students in sculpture.",
+     "zh": "永續的職涯是這些教育更新的最終目標。由於這種關注，缺乏明確就業途徑的傳統學程正面臨被取消的命運。例如，人文科學學士學位的數量在過去十年中顯著下降，薩凡納藝術設計學院甚至停止招收雕塑系的新生。"
+    },
+    {
+     "en": "On the other hand, schools are aggressively expanding into fields with high market demand. In September 2025, SCAD launched an applied AI major with NVIDIA as a corporate partner. Administrators emphasize that employment rates of graduates are the primary metric when deciding which programs to maintain.",
+     "zh": "另一方面，學校正積極擴展至具有高市場需求的領域。2025年9月，薩凡納藝術設計學院推出了應用人工智慧主修，並由輝達作為企業夥伴。行政人員強調，畢業生的就業率是決定保留哪些學程的主要指標。"
+    },
+    {
+     "en": "Because higher education has become expensive, modern students view themselves as consumers expecting a solid financial return on investment. While specialized degrees are booming, the liberal arts are also finding new ways to adapt, such as UCLA establishing a digital humanities department to explore human experiences using digital tools.",
+     "zh": "由於高等教育變得昂貴，現代學生將自己視為期待獲得實質財務投資報酬的消費者。雖然專業學位蓬勃發展，但人文學科也在尋找新的適應方式，例如加州大學洛杉磯分校成立了數位人文學系，以利用數位工具探索人類經驗。"
+    }
+   ],
+   "words": 240,
    "vocab": [
     {
-     "word": "launched",
+     "word": "cohort",
+     "pos": "n.",
+     "zh": "（具有共同特徵的）群體、世代"
+    },
+    {
+     "word": "sculpture",
+     "pos": "n.",
+     "zh": "雕塑"
+    },
+    {
+     "word": "metric",
+     "pos": "n.",
+     "zh": "衡量標準"
+    },
+    {
+     "word": "adapt",
      "pos": "v.",
-     "zh": "推出、開辦"
-    },
-    {
-     "word": "degree",
-     "pos": "n.",
-     "zh": "學位"
-    },
-    {
-     "word": "attract",
-     "pos": "v.",
-     "zh": "吸引"
-    },
-    {
-     "word": "career",
-     "pos": "n.",
-     "zh": "職業、生涯"
-    },
-    {
-     "word": "employers",
-     "pos": "n.",
-     "zh": "雇主"
+     "zh": "適應"
     }
    ],
    "phrases": [
     {
-     "phrase": "have in common",
-     "zh": "有共同點"
+     "phrase": "job market",
+     "zh": "就職市場"
     },
     {
-     "phrase": "looking for",
-     "zh": "尋找"
+     "phrase": "health sciences",
+     "zh": "健康科學"
     },
     {
-     "phrase": "as well as",
-     "zh": "以及、和…一樣"
+     "phrase": "medical school",
+     "zh": "醫學院"
+    },
+    {
+     "phrase": "return on investment",
+     "zh": "投資報酬"
+    },
+    {
+     "phrase": "digital humanities",
+     "zh": "數位人文"
     }
    ],
    "grammar": [
     {
-     "point": "現在完成式 (present perfect)",
-     "explain": "have/has + p.p. 表示從過去到現在已經完成或持續的事，常和 in the last few years 連用。",
-     "example": "In the last few years, many schools have launched new degree programs in areas such as influencing, artificial intelligence (AI) and health sciences."
+     "point": "目的不定詞 [Infinitive of Purpose]",
+     "explain": "使用 to 加原形動詞來表達某個動作的目的或意圖。",
+     "example": "Colleges across the United States are launching new degree programs to attract students and prepare them for future careers."
     },
     {
-     "point": "被動語態 (passive voice)",
-     "explain": "be + p.p. 表示主詞「被…」，這裡是課程「被設計來」吸引學生。",
-     "example": "These programs are designed to attract students who are looking for a new career path."
-    }
-   ],
-   "paragraphs": [
-    {
-     "en": "The job market is changing quickly, and colleges in the United States are changing too. In the last few years, many schools have launched new degree programs in areas such as influencing, artificial intelligence (AI) and health sciences. These programs are designed to attract students who are looking for a new career path.",
-     "zh": "就業市場變化很快，美國的大學也跟著改變。過去幾年，許多學校推出了新的學位課程，領域包括網紅經營、人工智慧（AI）和健康科學。這些課程是為了吸引正在尋找新職涯方向的學生而設計的。"
+     "point": "關係代間子句 [Relative Clause]",
+     "explain": "使用關係代間詞引導子句來修飾前面的名詞，提供更多詳細資訊。",
+     "example": "Because of this focus, traditional programs lacking clear job pathways are facing cancellation."
     },
     {
-     "en": "What do these subjects have in common? Colleges see all of them as ways into new kinds of careers. For high school students in Taiwan, this news is a useful reminder. The skills that employers want can change fast, so it is a good idea to keep learning and stay open to new fields. When you choose what to study, think about your interests as well as the future job market.",
-     "zh": "這些科目有什麼共同點？大學把它們都看成進入新型態職業的途徑。對台灣的高中生來說，這則新聞是一個很有用的提醒：雇主需要的技能可能變得很快，所以持續學習、對新領域保持開放的態度是個好主意。在選擇要讀什麼的時候，除了考慮未來的就業市場，也要想想自己的興趣。"
+     "point": "現在分詞當形容詞 [Present Participle as Adjective]",
+     "explain": "使用動詞加 ing 形成的現在分詞來修飾名詞，表示主動或正在進行的狀態。",
+     "example": "Currently, around five hundred undergraduates are enrolled in this growing cohort."
     }
    ],
-   "words": 124
+   "model": "gemini-flash-lite-latest"
   },
   {
    "link": "https://www.npr.org/2026/10/13/nx-s1-5986256-e1/researchers-are-tracking-monarch-butterflies-to-learn-more-about-their-journey",
    "source": "NPR",
    "topic": "Science",
    "title": "Researchers are tracking Monarch butterflies to learn more about their journey",
-   "title_zh": "研究人員追蹤帝王斑蝶，想更了解牠們的遷徙之旅",
+   "title_zh": "研究人員追蹤帝王斑蝶以深入了解其遷徙旅程",
+   "paragraphs": [
+    {
+     "en": "Researchers across North America are attaching tiny solar-powered trackers to Monarch butterflies to monitor their long journey to Mexico. This scientific effort aims to uncover the hidden challenges these insects face along their migration routes. Biologist Desiree Narango carefully weighs a butterfly in her Vermont laboratory before attaching a tiny transmitter to its body.",
+     "zh": "北美各地的研究人員正將微型的太陽能追蹤器繫在帝王斑蝶身上，以監測它們前往墨西哥的漫長旅程。這項科學努力旨在揭開這些昆蟲在遷徙路線上面臨的隱藏挑戰。生物學家黛西麗·納蘭戈在佛蒙特州的實驗室裡小心翼翼地為一隻蝴蝶秤重，然後將一個微型發射器固定在它的身體上。"
+    },
+    {
+     "en": "To attach the device safely, Narango uses non-toxic eyelash glue on the strongest part of the insect. After releasing a butterfly named Brad, she and other members of Project Monarch can track the travelers in real time. The innovative transmitters use Bluetooth technology to ping off cellphones, showing scientists detailed maps of the butterflies' daily adventures.",
+     "zh": "為了安全地安裝該設備，納蘭戈在昆蟲最強壯的部位使用了無毒的假睫毛膠。在釋放了一隻名為布萊德的蝴蝶後，「帝王斑蝶專案」的她和其他成員可以即時追蹤這些旅行者。這些創新的發射器使用藍牙技術發送信號至手機，向科學家展示蝴蝶日常冒險的詳細地圖。"
+    },
+    {
+     "en": "Monarch populations are currently shrinking due to various threats such as pesticides, climate change, and habitat loss. Scientists wonder if humans are missing other key dangers during the insects' flights. Previously, researchers knew that many eastern monarchs wintered in central Mexico, but they lacked detailed information about their specific stopping points.",
+     "zh": "由於殺蟲劑、氣候變遷和棲息地喪失等各種威脅，帝王斑蝶的族群數量目前正在縮減。科學家想知道人類是否錯過了這些昆蟲飛行期間的其他關鍵危險。先前，研究人員知道許多東部帝王斑蝶在墨西哥中部過冬，但他們缺乏關於其具體停留點的詳細資訊。"
+    },
+    {
+     "en": "These new solar trackers do not require heavy batteries because they use tiny scraps of solar panels. This breakthrough allows researchers to uncover surprising habits. For example, some butterflies migrate to northern Florida or hang out in industrial parks. People can even follow this progress using a special smartphone app to see how these creatures navigate hazardous landscapes.",
+     "zh": "這些新的太陽能追蹤器不需要笨重的電池，因為它們使用微小的太陽能板碎片。這項突破使研究人員能夠發現令人驚訝的習性。例如，有些蝴蝶會遷徙到佛羅里達州北部或在工業園區逗留。人們甚至可以使用特別的智慧型手機應用程式來追蹤進展，看看這些生物如何穿越危險的景觀。"
+    }
+   ],
+   "words": 219,
    "vocab": [
     {
-     "word": "migration",
-     "pos": "n.",
-     "zh": "遷徙"
-    },
-    {
-     "word": "attaching",
+     "word": "attach",
      "pos": "v.",
-     "zh": "裝上、附加"
+     "zh": "附加、繫上"
     },
     {
-     "word": "transmitters",
-     "pos": "n.",
-     "zh": "發射器"
-    },
-    {
-     "word": "challenges",
-     "pos": "n.",
-     "zh": "挑戰"
-    },
-    {
-     "word": "protect",
+     "word": "monitor",
      "pos": "v.",
-     "zh": "保護"
+     "zh": "監測、監視"
+    },
+    {
+     "word": "innovative",
+     "pos": "adj.",
+     "zh": "創新的"
+    },
+    {
+     "word": "habitat",
+     "pos": "n.",
+     "zh": "棲息地"
+    },
+    {
+     "word": "breakthrough",
+     "pos": "n.",
+     "zh": "突破"
+    },
+    {
+     "word": "hazardous",
+     "pos": "adj.",
+     "zh": "危險的"
     }
    ],
    "phrases": [
     {
-     "phrase": "learn more about",
-     "zh": "更了解"
+     "phrase": "in real time",
+     "zh": "即時地"
     },
     {
-     "phrase": "find out",
-     "zh": "查出、發現"
+     "phrase": "due to",
+     "zh": "由於"
     },
     {
-     "phrase": "take care of",
-     "zh": "照顧、愛護"
+     "phrase": "hang out",
+     "zh": "逗留、閒蕩"
+    },
+    {
+     "phrase": "for example",
+     "zh": "例如"
+    },
+    {
+     "phrase": "along their migration routes",
+     "zh": "沿著它們的遷徙路線"
     }
    ],
    "grammar": [
     {
-     "point": "現在進行式 (present progressive)",
-     "explain": "be + V-ing 表示「現在正在進行」的動作。",
-     "example": "They are attaching tiny transmitters to the butterflies as the insects begin to fly south."
+     "point": "不定詞表示目的 (Infinitive of Purpose)",
+     "explain": "用來表達動作的目的，常置於句首或句尾，以 to 加原形動詞呈現。",
+     "example": "Researchers across North America are attaching tiny solar-powered trackers to Monarch butterflies to monitor their long journey to Mexico."
     },
     {
-     "point": "間接問句 (indirect question)",
-     "explain": "疑問詞放進句子當受詞時，後面要用「主詞 + 動詞」的直述句語序。",
-     "example": "These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way."
+     "point": "分詞構句表附帶狀況 (Participle Clause)",
+     "explain": "使用現在分詞片語來補充說明主句動作發生時同時進行的狀況。",
+     "example": "Biologist Desiree Narango carefully weighs a butterfly in her Vermont laboratory before attaching a tiny transmitter to its body."
+    },
+    {
+     "point": "關係代間子句 (Relative Clause)",
+     "explain": "使用關代（如 that 或 which）引導形容詞子句，用來修飾前面的名詞。",
+     "example": "These new solar trackers do not require heavy batteries because they use tiny scraps of solar panels."
     }
    ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/13/nx-s1-6000055/east-potomac-golf-course-tree-clearing-judge",
+   "source": "NPR",
+   "topic": "Science",
+   "title": "A judge blocks the government's tree-clearing spree at a municipal D.C. golf course",
+   "title_zh": "法官下令阻止政府在華府市政高爾夫球場砍樹",
    "paragraphs": [
     {
-     "en": "Every autumn, Monarch butterflies begin a long migration to Mexico. Now researchers all over North America are trying to learn more about this amazing journey. They are attaching tiny transmitters to the butterflies as the insects begin to fly south. These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way.",
-     "zh": "每年秋天，帝王斑蝶都會展開前往墨西哥的漫長遷徙。現在，北美各地的研究人員正努力更了解這段驚人的旅程。他們在蝴蝶開始往南飛的時候，把很小的發報器裝在牠們身上。這些小裝置會發出訊號，讓科學家能追蹤蝴蝶，找出牠們沿途在哪裡停留。"
+     "en": "A federal judge has temporarily blocked the Trump administration from cutting down more trees at a historic golf course in Washington, D.C. This decision follows a sudden weekend operation where authorities cleared hundreds of trees with very little notice, sparking a major legal conflict.",
+     "zh": "一名聯邦法官已暫時阻止川普政府在華盛頓特區一座歷史悠久的高爾夫球場砍伐更多樹木。此前，當局在一個週末突然展開行動，在幾乎沒有提前通知的情況下砍光了數百棵樹，引發了重大的法律衝突。"
     },
     {
-     "en": "The researchers also want to understand the challenges the butterflies face during the trip. A long journey like this is not easy for such a small insect. The information they collect could help people protect the places that are important to the butterflies. The study shows how modern technology can help us take care of nature, even something as small and light as a butterfly.",
-     "zh": "研究人員也想了解蝴蝶在旅途中會遇到哪些困難。對這麼小的昆蟲來說，這樣長的旅程並不容易。他們蒐集到的資料，可以幫助人們保護對蝴蝶很重要的地方。這項研究顯示，現代科技能幫助我們照顧大自然，即使是像蝴蝶這樣又小又輕的生物也一樣。"
+     "en": "U.S. District Judge Ana Reyes had previously ordered officials to secure court approval before removing more than ten trees. However, the government informed the court on Friday of a large-scale removal plan and quickly razed hundreds of trees, which deeply angered the judge during a lengthy hearing.",
+     "zh": "美國地區法官安娜·雷耶斯先前曾下令官員在移除超過十棵樹之前必須獲得法院批准。然而，政府於週五告知法院一項大規模移除計畫，並迅速夷平了數百棵樹，這在一次漫長的聽證會上惹惱了法官。"
+    },
+    {
+     "en": "During the virtual hearing, Judge Reyes expressed deep frustration, stating that \"what has happened has cost the government all of its credibility.\" She extended her order to halt the tree-clearing activities and warned of strict legal penalties if any violations occur.",
+     "zh": "在視訊聽證會期間，雷耶斯法官表達了深深的不滿，並表示「發生的一切讓政府失去了所有的公信力」。她延長了停止砍樹活動的命令，並警告若有任何違規行為將面臨嚴厲的法律制裁。"
+    },
+    {
+     "en": "Critics and local residents argue that the administration is bypassing standard procedures to launch an unauthorized redevelopment project. Although officials claimed the work was simply routine maintenance based on a preservation report, opponents remain skeptical about these justifications.",
+     "zh": "批評人士與當地居民主張，政府正在繞過標準程序以啟動未授權的重新開發專案。儘管官員聲稱這項工作只是基於保存報告的例行維護，但反對者對這些理由仍抱持懷疑態度。"
+    },
+    {
+     "en": "Looking ahead, the judge has summoned several high-level officials from the Interior Department and the National Park Service to testify at the next court session. Meanwhile, the extended restraining order remains in place to prevent any further irreparable modifications to the public course.",
+     "zh": "展望未來，法官已傳喚內政部與國家公園管理局的多名高階官員在下次庭審中作詞。同時，延長的限制令依然有效，以防止對這座公共球場進行任何進一步無法挽回的修改。"
     }
    ],
-   "words": 126
+   "words": 213,
+   "vocab": [
+    {
+     "word": "temporarily",
+     "pos": "adv.",
+     "zh": "暫時地"
+    },
+    {
+     "word": "authorities",
+     "pos": "n.",
+     "zh": "當局"
+    },
+    {
+     "word": "approval",
+     "pos": "n.",
+     "zh": "批准"
+    },
+    {
+     "word": "lengthy",
+     "pos": "adj.",
+     "zh": "漫長的"
+    },
+    {
+     "word": "frustration",
+     "pos": "n.",
+     "zh": "挫折；不滿"
+    },
+    {
+     "word": "penalties",
+     "pos": "n.",
+     "zh": "處罰；罰款"
+    },
+    {
+     "word": "unauthorized",
+     "pos": "adj.",
+     "zh": "未授權的"
+    },
+    {
+     "word": "summoned",
+     "pos": "v.",
+     "zh": "傳喚；召集"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "court approval",
+     "zh": "法院批准"
+    },
+    {
+     "phrase": "legal penalties",
+     "zh": "法律制裁"
+    },
+    {
+     "phrase": "routine maintenance",
+     "zh": "例行維護"
+    },
+    {
+     "phrase": "high-level officials",
+     "zh": "高階官員"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "現在完成式 [Present Perfect Tense]",
+     "explain": "用來表示過去發生的動作對現在造成的影響或結果。",
+     "example": "A federal judge has temporarily blocked the Trump administration from cutting down more trees at a historic golf course in Washington, D.C."
+    },
+    {
+     "point": "分詞構句 [Participle Clause]",
+     "explain": "使用現在分詞作副詞氣分句，用來補充說明主句發生的背景或伴隨狀況。",
+     "example": "She extended her order to halt the tree-clearing activities and warned of strict legal penalties if any violations occur."
+    },
+    {
+     "point": "關係代名詞子句 [Relative Clause]",
+     "explain": "使用關係代名詞引導形容詞子句，用來修飾前面的先行詞。",
+     "example": "U.S. District Judge Ana Reyes had previously ordered officials to secure court approval before removing more than ten trees."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/13/nx-s1-6000124/yiyun-li-music-against-the-night",
+   "source": "NPR",
+   "topic": "Health",
+   "title": "Writer Yiyun Li lost both of her sons. When words fell short, she turned to music",
+   "title_zh": "作家李翊雲失去兩個兒子，當言語不足時，她轉向音樂",
+   "paragraphs": [
+    {
+     "en": "Acclaimed writer Yiyun Li views grief differently from most people. Instead of believing that individuals eventually emerge from sorrow, she prefers to use the term abyss to describe her permanent state. Her two teenage sons tragically passed away by suicide six years apart. Vincent died in 2017 at the age of sixteen, and James passed away in 2024 at nineteen. She documented this devastating loss and her journey to continue living in her award-winning 2025 memoir, Things in Nature Merely Grow.",
+     "zh": "備受讚譽的作家李翊雲對悲傷的看法與大多數人不同。她不認為人們最終會走出悲傷，而是更喜歡用「深淵」一詞來形容她永恆的狀態。她的兩個青少年兒子不幸相隔六年先後輕生過世。文森特於2017年十六歲時離世，詹姆斯則於2024年十九歲時過世。她在2025年榮獲大獎的回憶錄《萬物自然生長》中記錄了這場毀滅性的失落與她繼續生活的歷程。"
+    },
+    {
+     "en": "Following the passing of her children, Li found that everyday language often fails to express deep emotions adequately. As a result, she chose music as the central subject for her new novel, Music Against the Night. Set in the late eighteenth and early nineteenth centuries, the book tells the story of two musical prodigies. Li explained that she started writing this historical fiction while dealing with her grief, noting that music occupies a space completely outside of words.",
+     "zh": "在孩子們過世後，李翊雲發現日常語言往往無法充分表達深厚的情感。因此，她選擇音樂作為她新小說《長夜之樂》的核心主題。這本書以十八世紀末和十九世紀初為背景，講述了兩位音樂神童的故事。李翊雲解釋說，她在應對悲傷的同時開始創作這部歷史小說，並指出音樂佔據了一個完全在言語之外的空間。"
+    },
+    {
+     "en": "In addition to writing, Li began taking piano lessons late in 2023 to learn a brand-new skill. When James died shortly after, she realized that playing the instrument helped her measure time and stay connected to the outside world. Although she feels intimidated during her lessons, she finds it liberating to engage in an activity she loves even if she cannot master it. This practice allows her to acknowledge her personal limits.",
+     "zh": "除了寫作，李翊雲在2023年底開始上鋼琴課，以學習一項全新的技能。當詹姆斯不久後過世時，她意識到彈奏樂器有助於她計算時間並與外界保持聯繫。儘管她在上課時感到恐懼，但她發現從事一項自己喜愛卻無法精通的活動是種解放。這種練習讓她能夠承認自己的個人極限。"
+    },
+    {
+     "en": "Reflecting on her family life, Li recalled that James was an exceptionally brilliant and unique boy who perceived the world through dots and squiggly lines. He painted remarkably well, played the oboe, and wrote wonderful poetry. Furthermore, Li addressed the unfair judgments often directed at people struggling with severe mental pain. She also shared that her early childhood in China, where she questioned adult rules, helped shape her into an independent writer.",
+     "zh": "回顧她的家庭生活，李翊雲回憶說，詹姆斯是一個極其聰明且獨特的男孩，他透過點和波浪線來感知世界。他畫畫極好、吹雙簧管，還寫了美妙的詩。此外，李翊雲談到了人們對受嚴重心理痛苦折磨的人常有的不公評價。她還分享了她在中國的早期童年經歷，當時她質疑成人的規則，這有助於塑造她成為一位獨立的作家。"
+    }
+   ],
+   "words": 303,
+   "vocab": [
+    {
+     "word": "abyss",
+     "pos": "n.",
+     "zh": "深淵"
+    },
+    {
+     "word": "memoir",
+     "pos": "n.",
+     "zh": "回憶錄"
+    },
+    {
+     "word": "liberating",
+     "pos": "adj.",
+     "zh": "解放的"
+    },
+    {
+     "word": "intimidated",
+     "pos": "adj.",
+     "zh": "感到畏懼的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "in addition to",
+     "zh": "除了……之外"
+    },
+    {
+     "phrase": "stay connected to",
+     "zh": "與……保持聯繫"
+    },
+    {
+     "phrase": "engage in",
+     "zh": "從事；參與"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "不定詞作副詞用（表達目的） [Infinitive of Purpose]",
+     "explain": "使用『to + 原形動詞』來表達某個動作的目的或意圖。",
+     "example": "In addition to writing, Li began taking piano lessons late in 2023 to learn a brand-new skill."
+    },
+    {
+     "point": "分詞構句（表附帶狀況或結果） [Participle Clause]",
+     "explain": "使用現在分詞（-ing）來補充說明主句發生的背景、結果或同時發生的動作。",
+     "example": "She documented this devastating loss and her journey to continue living in her award-winning 2025 memoir, Things in Nature Merely Grow."
+    },
+    {
+     "point": "關係代名詞子句（修飾先行詞） [Relative Clause]",
+     "explain": "使用關係代名詞（如 who, that）引導形容詞子句來修飾前面的名詞，提供更多細節。",
+     "example": "Reflecting on her family life, Li recalled that James was an exceptionally brilliant and unique boy who perceived the world through dots and squiggly lines."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/environment/2026/oct/13/ornithology-trill-why-birds-sing-birdsong-dialects-tutors-ai-aoe",
+   "source": "The Guardian",
+   "topic": "Science",
+   "title": "Trill seekers: can scientists use AI and tutors to help birds remember lost songs?",
+   "title_zh": "鳥鳴尋根：科學家能否利用人工智慧與導師助鳥兒找回失傳的歌聲？",
+   "paragraphs": [
+    {
+     "en": "Scientists in Buenos Aires recently achieved a remarkable milestone in bird conservation. They used computer-generated technology to recreate an ancient song of rufous-collared sparrows from the 1960s. This specific tune had long vanished from a local park. To the researchers' surprise, a local bird began to imitate parts of this forgotten melody less than three months after the experiment started.",
+     "zh": "布宜諾斯艾利斯科學家最近在鳥類保育上取得了卓越的里程碑。他們利用電腦生成的技術，重現了1960年代冠斑雀古老的歌聲。這個特定的曲調早已從當地公園消失。令研究人員驚訝的是，實驗開始不到三個月，一隻當地的鳥就開始模仿這段被遺忘旋律的一部分。"
+    },
+    {
+     "en": "Birdsong plays a vital role in wildlife survival. When populations decline, young birds struggle to learn correct notes and dialects. Expert singers with complex and consistent melodies can easily find mates and defend territories. If individuals sing abnormal or mistaken songs, their breeding success drops significantly. Therefore, preserving learned behavior is just as important as protecting genetic material.",
+     "zh": "鳥鳴在野生動物生存中扮演著至關重要的角色。當族群數量下降時，幼鳥很難學會正確的音符與方言。擁有複雜且穩定旋律的專家級歌手能輕易找到伴侶並捍衛領域。如果個體唱出異常或錯誤的歌曲，其繁殖成功率會顯著下降。因此，保存習得行為與保護遺傳物質一樣重要。"
+    },
+    {
+     "en": "Researchers explain that songbirds acquire melodies from older members such as fathers or neighbors. Sometimes, translocation projects cause animals to produce abnormal sounds initially, but they can recover over time. For instance, cirl buntings in a specific study successfully regained their rich vocal skills years after being moved. Experts suggest that providing proper tutors can greatly assist birds during such transitions.",
+     "zh": "研究人員解釋說，鳴禽從父親或鄰居等年長成員那裡習得旋律。有時，遷地保育計畫會使動物最初發出異常聲音，但牠們隨著時間能夠恢復。例如，某個研究中的灰林鵐在被遷移多年後，成功恢復了豐富的發聲技巧。專家建議，提供適當的導師能在這類過渡期間大為協助鳥類。"
+    },
+    {
+     "en": "Although bringing wild birds into captivity might cause severe distress, modern technology offers new hope. Scientists believe that artificial intelligence could potentially provide live tutoring in the future without risking endangered populations. As hobbyists continue to upload vast records into databases, these systematic registrations of regional dialects will ultimately protect vulnerable species worldwide.",
+     "zh": "儘管把野生鳥類帶入圈養環境可能會造成嚴重的痛苦，現代科技卻帶來了新的希望。科學家相信人工智慧未來可能提供即時指導，而不會危險到瀕危族群。隨著愛好者持續將大量記錄上傳至資料庫，這些對地區方言的系統性登記最終將保護全球脆弱的物種。"
+    }
+   ],
+   "words": 232,
+   "vocab": [
+    {
+     "word": "milestone",
+     "pos": "n.",
+     "zh": "里程碑"
+    },
+    {
+     "word": "recreate",
+     "pos": "v.",
+     "zh": "重現"
+    },
+    {
+     "word": "melody",
+     "pos": "n.",
+     "zh": "旋律"
+    },
+    {
+     "word": "decline",
+     "pos": "v.",
+     "zh": "下降"
+    },
+    {
+     "word": "acquire",
+     "pos": "v.",
+     "zh": "習得"
+    },
+    {
+     "word": "distress",
+     "pos": "n.",
+     "zh": "痛苦"
+    },
+    {
+     "word": "vulnerable",
+     "pos": "adj.",
+     "zh": "脆弱的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "over time",
+     "zh": "隨著時間"
+    },
+    {
+     "phrase": "in the future",
+     "zh": "在未來"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "當主詞是動作的承受者時，使用「be動詞 + 過去分詞」來表達被動意義。",
+     "example": "This specific tune had long vanished from a local park."
+    },
+    {
+     "point": "不定詞作目的用 (Infinitive of Purpose)",
+     "explain": "使用「to + 原形動詞」來表示某個動作的目的或意圖。",
+     "example": "They used computer-generated technology to recreate an ancient song of rufous-collared sparrows from the 1960s."
+    },
+    {
+     "point": "關係子句 (Relative Clause)",
+     "explain": "使用關係代名詞來修飾前面的先行詞，補充說明更多細節。",
+     "example": "Scientists believe that artificial intelligence could potentially provide live tutoring in the future without risking endangered populations."
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
   }
  ],
  "lessonsDate": "2026-10-15"
