@@ -51,10 +51,12 @@
           <option value="sunset" data-i18n="themeSunset">夕陽橘</option>
         </select>
       </label>
-      <label class="exam-chip" id="examChip" title="Tap to change the exam date"><span class="exam-chip-date" id="examChipDate"></span><span class="exam-chip-days" id="examChipDays"></span><input type="date" id="examDateInput" class="exam-chip-input" aria-label="Exam date"></label>
+      <button type="button" class="exam-chip" id="examChip" aria-haspopup="dialog" aria-controls="calPop"><span class="mini-cal" aria-hidden="true"><b id="miniCalMon"></b><i id="miniCalDay"></i></span><span class="exam-chip-date" id="examChipDate"></span><span class="exam-chip-days" id="examChipDays"></span></button>
       <button class="ctrl auth-btn" id="authBtn" type="button"><span id="authBtnText">👤 登入 / 註冊</span></button>
     </div>
   </header>
+
+  <div class="cal-pop hidden" id="calPop" role="dialog" aria-modal="false"></div>
 
   <!-- ===== Tabs ===== -->
   <nav class="tabs" id="tabs">
@@ -62,6 +64,7 @@
     <button class="tab" data-page="reading"><span class="tab-icon">📖</span><span data-i18n="tabReading">閱讀測驗</span></button>
     <button class="tab" data-page="flashcards"><span class="tab-icon">🃏</span><span data-i18n="tabFlash">單字卡</span></button>
     <button class="tab" data-page="vocab"><span class="tab-icon">📚</span><span data-i18n="tabVocab">單字庫</span></button>
+    <button class="tab" data-page="news"><span class="tab-icon">📰</span><span data-i18n="tabNews">每日新聞</span></button>
     <button class="tab" data-page="progress"><span class="tab-icon">📈</span><span data-i18n="tabProgress">學習紀錄</span></button>
     <button class="tab teacher-only" data-page="students"><span class="tab-icon">🧑‍🏫</span><span data-i18n="tabStudents">學生狀況</span></button>
     <button class="tab" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tabSettings">設定</span></button>

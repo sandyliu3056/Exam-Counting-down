@@ -145,11 +145,10 @@ h1, h2, h3 { line-height: 1.25; }
   border: 3px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
-  background: #dfeefb;
-  min-height: 200px;
+  background: #d3e8fb;
   box-shadow: var(--sticker);
 }
-.banner svg { display: block; width: 100%; height: auto; }
+.banner-img { display: block; width: 100%; height: auto; }
 
 /* ---------- Stat cards ---------- */
 .stat-grid {
@@ -200,8 +199,8 @@ h1, h2, h3 { line-height: 1.25; }
 button.bm-tag:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--line); }
 .bm-tag.word { background: var(--pastel-4); font-weight: 700; color: var(--header); }
 .bm-tag small { font-family: var(--font-body); font-weight: 400; font-size: 12px; color: var(--ink-soft); }
-.bm-btn { background: #fff; color: var(--ink-soft); border: 2px solid var(--bg-soft); box-shadow: 0 3px 0 var(--bg-soft); }
-.bm-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+.btn.bm-btn { background: #fff; color: var(--ink-soft); border: 2px solid var(--bg-soft); box-shadow: 0 3px 0 var(--bg-soft); }
+.btn.bm-btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); box-shadow: 0 3px 0 rgba(0,0,0,.2); }
 .bm-star, .flash-bm { background: none; border: none; cursor: pointer; font-size: 20px; filter: grayscale(1) opacity(.45); transition: transform .15s, filter .15s; padding: 2px 4px; }
 .bm-star.on, .flash-bm.on { filter: none; transform: scale(1.15); }
 .bm-star:hover, .flash-bm:hover { filter: none; }
@@ -260,6 +259,7 @@ button.bm-tag:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var
   transition: filter .15s, transform .1s, box-shadow .1s;
   display: inline-flex; align-items: center; gap: 6px;
 }
+a.btn { text-decoration: none; }
 .btn:hover { filter: brightness(1.08); }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.22); }
 .btn.accent { background: var(--accent); color: var(--accent-ink); }
@@ -373,7 +373,9 @@ textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
 .flash-zh { font-size: 34px; font-weight: 700; }
 .flash-syn { margin-top: 10px; font-family: var(--font-en); font-size: 18px; color: var(--accent); font-weight: 700; }
 .vocab-table td.syn { font-size: 14px; color: var(--ink-soft); min-width: 120px; }
-.pager { justify-content: center; margin-top: 12px; gap: 14px; }
+.pager { justify-content: center; margin: 12px 0; gap: 8px; }
+.pager-sel { width: auto; max-width: 260px; padding: 5px 8px; font-size: 14px; }
+@media (max-width: 520px) { .pager .btn.sm { padding: 5px 9px; } .pager-sel { max-width: 150px; } }
 .flash-example { margin-top: 12px; font-family: var(--font-en); font-size: 18px; opacity: .92; line-height: 1.6; }
 .flash-example b { color: var(--accent); }
 .flash-hint { position: absolute; bottom: 10px; right: 16px; font-size: 13px; opacity: .6; }
@@ -428,11 +430,45 @@ body.teacher .teacher-only.flex { display: flex; }
 
 /* ---------- Exam chip in header ---------- */
 .exam-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.45); border-radius: 999px; padding: 4px 6px 4px 12px; color: #fff; font-size: 14px; cursor: pointer; }
-.exam-chip { position: relative; }
+.exam-chip { position: relative; font-family: inherit; padding-left: 5px; }
 .exam-chip:hover { background: rgba(255,255,255,.2); }
-.exam-chip-input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; margin: 0; font-size: 16px; }
 .exam-chip-days { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 2px 10px; font-weight: 800; font-size: 14px; }
 .exam-chip.soon .exam-chip-days { background: #ff8a80; color: #4a0e0e; }
+
+/* ---------- Mini calendar icon in the chip ---------- */
+.mini-cal { display: inline-flex; flex-direction: column; width: 30px; height: 32px; border-radius: 7px; overflow: hidden; border: 2px solid #0f1e3d; background: #fff; box-shadow: 0 2px 0 rgba(0,0,0,.25); position: relative; flex: 0 0 auto; }
+.mini-cal::before, .mini-cal::after { content: ''; position: absolute; top: -3px; width: 4px; height: 7px; border-radius: 2px; background: #0f1e3d; }
+.mini-cal::before { left: 6px; } .mini-cal::after { right: 6px; }
+.mini-cal b { background: #ff6b81; color: #fff; font: 800 8px/11px 'Nunito', sans-serif; text-align: center; letter-spacing: .5px; }
+.mini-cal i { flex: 1; color: #1f3b73; font: 800 15px/19px 'Nunito', sans-serif; font-style: normal; text-align: center; }
+
+/* ---------- Cute calendar popover ---------- */
+.cal-pop { position: fixed; z-index: 60; background: #fffdf5; border: 3px solid var(--line); border-radius: 24px; box-shadow: var(--sticker), 0 18px 40px rgba(15,30,61,.25); padding: 22px 14px 12px; color: var(--ink); }
+.cal-rings { position: absolute; top: -12px; left: 0; right: 0; display: flex; justify-content: space-around; pointer-events: none; }
+.cal-rings i { width: 12px; height: 24px; border-radius: 6px; background: #0f1e3d; border: 3px solid #fffdf5; }
+.cal-head { display: flex; align-items: center; gap: 4px; background: var(--pastel-1); border-radius: 16px; padding: 6px; }
+.cal-head button { border: none; background: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; font-weight: 800; color: var(--header); cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,.12); }
+.cal-head button:hover { background: var(--accent); }
+.cal-title { flex: 1; text-align: center; font-weight: 800; font-size: 18px; }
+.cal-year { color: var(--ink-soft); }
+.cal-sub { text-align: center; font-size: 13px; color: var(--ink-soft); margin: 8px 0 4px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-wd { text-align: center; font-size: 12px; font-weight: 800; color: var(--ink-soft); padding: 4px 0; }
+.cal-wd.is-weekend, .cal-cell.is-weekend { color: #d6456b; }
+.cal-cell { position: relative; aspect-ratio: 1; border: none; background: transparent; border-radius: 50%; font: 700 15px 'Nunito', var(--font-body); color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+.cal-cell.empty { cursor: default; }
+.cal-cell:hover:not(:disabled) { background: var(--bg-soft); transform: scale(1.08); }
+.cal-cell.is-between { background: var(--pastel-2); }
+.cal-cell.is-today { outline: 2px dashed var(--header); outline-offset: -2px; }
+.cal-cell.is-exam { background: #ff6b81; color: #fff; box-shadow: 0 3px 0 #c2405a; }
+.cal-cell.is-past { color: #c3c9d6; cursor: not-allowed; }
+.cal-star { position: absolute; top: -9px; right: -6px; font-size: 13px; }
+.cal-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 10px; font-size: 12px; color: var(--ink-soft); }
+.cal-foot .btn { margin-left: auto; }
+.lg { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.lg-today { outline: 2px dashed var(--header); outline-offset: -2px; }
+.lg-exam { background: #ff6b81; }
+.lg-between { background: var(--pastel-2); border: 1px solid #e8d48a; }
 
 /* ---------- World map ---------- */
 .map-card { position: relative; background: linear-gradient(160deg, #3a8fd0, #1d5f9e); color: #fff; border: 3px solid var(--line); border-radius: var(--radius); padding: 18px 18px 10px; box-shadow: var(--sticker); overflow: hidden; }
@@ -460,6 +496,37 @@ body.teacher .teacher-only.flex { display: flex; }
 .gate { text-align: center; padding: 40px 20px; }
 .gate .big-icon { font-size: 60px; }
 .cloud-badge { font-size: 12px; background: #dde8ff; color: #1d3b8a; border-radius: 999px; padding: 2px 8px; }
+
+/* ---------- Reading contents ---------- */
+.read-toc { margin-bottom: 8px; }
+.read-group { margin-top: 18px; scroll-margin-top: 12px; }
+.read-group-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 19px; margin: 0 0 10px; }
+.read-progress { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-soft); }
+.read-progress .bar { width: 120px; height: 10px; border-radius: 999px; background: var(--bg-soft); overflow: hidden; display: inline-block; border: 1px solid #d4dbea; }
+.read-progress .bar i { display: block; height: 100%; background: var(--ok); }
+.read-check { flex: 0 0 34px; height: 34px; border-radius: 50%; border: 3px dashed #c9d2e3; display: inline-flex; align-items: center; justify-content: center; font: 900 20px 'Nunito', sans-serif; color: #fff; }
+.read-item.is-done { border-left-color: var(--ok); }
+.read-item.is-done .read-check { background: var(--ok); border: 3px solid #1f7a45; box-shadow: 0 3px 0 #1f7a45; }
+
+/* ---------- News ---------- */
+.news-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 10px; }
+.news-card { background: var(--card); border: 3px solid var(--line); border-radius: 20px; padding: 14px 16px; box-shadow: var(--sticker); display: flex; flex-direction: column; gap: 6px; }
+.news-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.news-src { font: 800 12px 'Nunito', sans-serif; color: #fff; background: var(--header); padding: 3px 10px; border-radius: 999px; letter-spacing: .5px; }
+.news-src.cnn { background: #cc0000; } .news-src.bbc { background: #1a1a1a; } .news-src.npr { background: #2d6cdf; }
+.news-src.guardian { background: #052962; } .news-src.taipei { background: #2e9e5b; }
+.news-title { margin: 2px 0; font-size: 19px; line-height: 1.35; }
+.news-title a { color: var(--ink); text-decoration: none; }
+.news-title a:hover { color: var(--header); text-decoration: underline; }
+.news-title .nw { text-decoration: underline wavy var(--accent); text-decoration-thickness: 2px; text-underline-offset: 4px; cursor: help; }
+.news-sum { margin: 0; color: var(--ink-soft); font-size: 15px; line-height: 1.5; flex: 1; }
+.news-empty { border-style: dashed; }
+.cur-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.cur-card { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 18px; border: 2px solid var(--line); background: var(--pastel-4); color: var(--ink); text-decoration: none; box-shadow: 3px 3px 0 var(--line); }
+.cur-card:nth-child(2) { background: var(--pastel-1); } .cur-card:nth-child(3) { background: var(--pastel-2); } .cur-card:nth-child(4) { background: var(--pastel-3); }
+.cur-card:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--line); }
+.cur-card span { font-size: 14px; color: var(--ink-soft); }
+@media (max-width: 520px) { .news-list { grid-template-columns: 1fr; } }
 
 /* ---------- Sentence of the day ---------- */
 .daily-card { position: relative; margin-top: 14px; background: #fffdf2; background-image: radial-gradient(var(--pastel-2) 3px, transparent 3.5px); background-size: 26px 26px; }
@@ -506,7 +573,8 @@ body.teacher .teacher-only.flex { display: flex; }
   .brand-sub { display: none; }
   .header-controls { gap: 6px; }
   .ctrl select, .auth-btn { padding: 4px 8px; font-size: 14px; }
-  .exam-chip { font-size: 13px; padding: 3px 4px 3px 10px; order: -1; width: 100%; justify-content: space-between; }
+  .exam-chip { font-size: 13px; padding: 3px 4px 3px 6px; order: -1; width: 100%; justify-content: space-between; }
+  .exam-chip-date { flex: 1; text-align: left; }
   .header-controls { width: 100%; }
   .ctrl select { font-size: 13px; padding: 4px 4px; max-width: 108px; }
   .auth-btn { margin-left: auto; font-size: 13px; padding: 4px 10px; max-width: 46%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -514,7 +582,7 @@ body.teacher .teacher-only.flex { display: flex; }
   .tabs { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 10px; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab { flex: 0 0 auto; white-space: nowrap; padding: 8px 12px 6px; font-size: 15px; }
-  .banner svg { height: 190px; }
+  .banner-img { height: 190px; object-fit: cover; object-position: 50% 100%; }
       .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .stat-card { padding: 10px 12px; } .stat-card .v { font-size: 26px; }
   .ribbon { width: 30px; height: 44px; font-size: 16px; padding-top: 6px; right: 10px; } .ribbon-l { left: 10px; }

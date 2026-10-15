@@ -40,6 +40,18 @@
     data.vocab.forEach(v => { if (OLD_UNITS[v.unit]) v.unit = OLD_UNITS[v.unit]; });
     data.articles.forEach(a => { if (OLD_UNITS[a.level]) a.level = OLD_UNITS[a.level]; if (Array.isArray(a.tags)) a.tags = a.tags.map(x => OLD_TAGS[x] || x); });
     if (data.settings.motto === 'Practice makes perfect. 每天 10 個單字、1 篇文章！') data.settings.motto = SEED_DATA.settings.motto;
+    // keep built-in passages up to date: add new ones (unless the teacher deleted them) and upgrade untouched originals
+    const contentHash = a => { const s = a.passage + '|' + a.questions.map(q => q.q + q.options.join('') + q.answer).join('|'); let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0; return (x >>> 0).toString(36); };
+    const ORIGINAL = { a1: '1fbtow3', a2: '8z06fz', a3: 'f6vfhn' };
+    data.seedArticles = data.seedArticles || data.articles.map(a => a.id);
+    let synced = false;
+    SEED_DATA.articles.forEach(sa => {
+      const i = data.articles.findIndex(a => a.id === sa.id);
+      if (i < 0) { if (!data.seedArticles.includes(sa.id)) { data.articles.push(clone(sa)); synced = true; } }
+      else if (!data.articles[i].edited && ORIGINAL[sa.id] && contentHash(data.articles[i]) === ORIGINAL[sa.id] && contentHash(sa) !== ORIGINAL[sa.id]) { data.articles[i] = clone(sa); synced = true; }
+      if (!data.seedArticles.includes(sa.id)) { data.seedArticles.push(sa.id); synced = true; }
+    });
+    if (synced) { try { localStorage.setItem(LS_DATA, JSON.stringify(data)); } catch (e) { } }
     if (!data.settings.teacherCode) data.settings.teacherCode = SEED_DATA.settings.teacherCode;
     return data;
   }
@@ -278,54 +290,6 @@
     speechSynthesis.speak(u);
   }
 
-  /* ---------------- Banner SVG ---------------- */
-  function bannerSVG() {
-    const windows = (x, y, cols, rows, w = 16, h = 20, gx = 28, gy = 30) => {
-      let s = '';
-      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) s += `<rect x="${x + c * gx}" y="${y + r * gy}" width="${w}" height="${h}" rx="2" fill="#fff6d6" stroke="#9c6b3a" stroke-width="1.5"/>`;
-      return s;
-    };
-    return `<svg viewBox="0 0 1400 220" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe6fb"/><stop offset="1" stop-color="#eaf4ff"/></linearGradient></defs>
-<rect width="1400" height="220" fill="url(#sky)"/>
-<circle cx="1230" cy="52" r="26" fill="#ffd34d"/><g stroke="#ffd34d" stroke-width="4" stroke-linecap="round">
-<line x1="1230" y1="12" x2="1230" y2="20"/><line x1="1230" y1="84" x2="1230" y2="92"/><line x1="1190" y1="52" x2="1198" y2="52"/><line x1="1262" y1="52" x2="1270" y2="52"/>
-<line x1="1202" y1="24" x2="1208" y2="30"/><line x1="1252" y1="74" x2="1258" y2="80"/><line x1="1258" y1="24" x2="1252" y2="30"/><line x1="1208" y1="74" x2="1202" y2="80"/></g>
-<g fill="#fff"><ellipse cx="200" cy="48" rx="46" ry="18"/><ellipse cx="226" cy="40" rx="28" ry="16"/><ellipse cx="176" cy="42" rx="24" ry="14"/>
-<ellipse cx="620" cy="36" rx="40" ry="15"/><ellipse cx="642" cy="30" rx="24" ry="13"/><ellipse cx="900" cy="58" rx="44" ry="16"/><ellipse cx="922" cy="50" rx="26" ry="14"/></g>
-<path d="M0 150 Q 150 100 300 150 T 600 150 T 900 150 T 1200 150 T 1400 150 V220 H0Z" fill="#b9dba3"/>
-<rect x="0" y="160" width="1400" height="60" fill="#8fbf74"/>
-<!-- school -->
-<rect x="470" y="60" width="300" height="100" fill="#d9603d" stroke="#8a3a22" stroke-width="2"/>
-<rect x="560" y="30" width="120" height="30" fill="#d9603d" stroke="#8a3a22" stroke-width="2"/>
-<polygon points="550,30 620,2 690,30" fill="#8a3a22"/>
-<circle cx="620" cy="46" r="10" fill="#fff" stroke="#8a3a22" stroke-width="2"/><line x1="620" y1="46" x2="620" y2="39" stroke="#8a3a22" stroke-width="2"/><line x1="620" y1="46" x2="625" y2="46" stroke="#8a3a22" stroke-width="2"/>
-${windows(485, 72, 3, 2)}${windows(685, 72, 3, 2)}
-<rect x="595" y="110" width="50" height="50" fill="#5b3a21" stroke="#3a2412" stroke-width="2"/><rect x="605" y="118" width="30" height="20" fill="#fff6d6"/>
-<rect x="470" y="150" width="300" height="10" fill="#8a3a22"/>
-<line x1="760" y1="20" x2="760" y2="60" stroke="#444" stroke-width="3"/><polygon points="760,20 790,28 760,36" fill="#f6c445"/>
-<path d="M405 92 Q 480 70 560 36" fill="none" stroke="#6b4a2b" stroke-width="2"/><path d="M690 36 Q 760 70 835 92" fill="none" stroke="#6b4a2b" stroke-width="2"/>
-${[[418, 88, '#ff6b81'], [442, 80, '#ffd166'], [466, 72, '#06d6a0'], [490, 64, '#4cc9f0'], [514, 55, '#ff6b81'], [538, 46, '#ffd166']].map(([x, y, c]) => `<polygon points="${x - 8},${y} ${x + 8},${y - 5} ${x + 2},${y + 14}" fill="${c}"/>`).join('')}
-${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '#06d6a0'], [796, 75, '#4cc9f0'], [820, 84, '#ff6b81']].map(([x, y, c]) => `<polygon points="${x - 8},${y - 5} ${x + 8},${y} ${x - 2},${y + 14}" fill="${c}"/>`).join('')}
-<!-- trees -->
-<g><rect x="400" y="120" width="10" height="40" fill="#6b4a2b"/><circle cx="405" cy="110" r="26" fill="#3f8a4a"/><circle cx="390" cy="122" r="18" fill="#4fa05a"/><circle cx="420" cy="122" r="18" fill="#4fa05a"/></g>
-<g><rect x="830" y="120" width="10" height="40" fill="#6b4a2b"/><circle cx="835" cy="108" r="28" fill="#3f8a4a"/><circle cx="818" cy="122" r="18" fill="#4fa05a"/><circle cx="852" cy="122" r="18" fill="#4fa05a"/></g>
-<g><rect x="1100" y="124" width="8" height="36" fill="#6b4a2b"/><polygon points="1104,70 1078,125 1130,125" fill="#2f7a3d"/><polygon points="1104,88 1072,145 1136,145" fill="#3f8a4a"/></g>
-<!-- books & pencil -->
-<g transform="translate(60,96)"><rect x="0" y="40" width="110" height="18" rx="3" fill="#2d6cdf"/><rect x="8" y="22" width="110" height="18" rx="3" fill="#e4a11b"/><rect x="2" y="4" width="110" height="18" rx="3" fill="#d6453d"/>
-<rect x="135" y="-10" width="14" height="70" rx="3" fill="#f6c445" transform="rotate(20 142 25)"/><polygon points="142,60 135,60 142,74 149,60" fill="#f3c7a0" transform="rotate(20 142 25)"/></g>
-<!-- road -->
-<rect x="0" y="178" width="1400" height="42" fill="#5e6673"/>
-<line x1="0" y1="199" x2="1400" y2="199" stroke="#fff" stroke-width="3" stroke-dasharray="30 22"/>
-<!-- bus -->
-<g transform="translate(220,140)"><rect x="0" y="0" width="190" height="52" rx="8" fill="#ffc62b" stroke="#8a6a00" stroke-width="2"/><rect x="12" y="10" width="34" height="22" fill="#cfe9ff" stroke="#8a6a00"/><rect x="56" y="10" width="34" height="22" fill="#cfe9ff" stroke="#8a6a00"/><rect x="100" y="10" width="34" height="22" fill="#cfe9ff" stroke="#8a6a00"/><rect x="148" y="10" width="32" height="22" fill="#cfe9ff" stroke="#8a6a00"/>
-<rect x="0" y="38" width="190" height="6" fill="#222"/><circle cx="40" cy="54" r="12" fill="#222"/><circle cx="40" cy="54" r="5" fill="#999"/><circle cx="150" cy="54" r="12" fill="#222"/><circle cx="150" cy="54" r="5" fill="#999"/>
-</g>
-<!-- student -->
-<g transform="translate(980,118)"><circle cx="20" cy="12" r="12" fill="#f3c7a0"/><path d="M8 12 Q20 -6 32 12" fill="#2b2b2b"/><rect x="8" y="24" width="24" height="30" rx="6" fill="#1f3b73"/><rect x="2" y="28" width="10" height="24" rx="4" fill="#1f3b73"/><rect x="28" y="28" width="10" height="24" rx="4" fill="#1f3b73"/><rect x="26" y="26" width="16" height="24" rx="4" fill="#d6453d"/><rect x="10" y="54" width="8" height="18" fill="#3b3b3b"/><rect x="22" y="54" width="8" height="18" fill="#3b3b3b"/></g>
-</svg>`;
-  }
-
   /* ---------------- Pages ---------------- */
   function pageHome() {
     const dl = daysLeft();
@@ -333,7 +297,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     const recent = state.progress.readingQuizzes.slice(-5).reverse();
     const name = state.settings.studentName ? `${esc(state.settings.studentName)}，` : '';
     return `
-      <div class="banner">${bannerSVG()}</div>
+      <div class="banner"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></div>
       <div class="stat-grid">
         <div class="stat-card"><span class="ribbon">🔤</span><div class="k">${t('statVocab')}</div><div class="v">${VOCAB.length}</div><div class="s">${VOCAB.filter(v => v.type === 'phrase').length ? `${VOCAB.filter(v => v.type === 'word').length} ${t('typeWord')} + ${VOCAB.filter(v => v.type === 'phrase').length} ${t('typePhrase')}` : t('statVocabS')}</div></div>
         <div class="stat-card"><span class="ribbon">📖</span><div class="k">${t('statArticles')}</div><div class="v">${state.articles.length}</div><div class="s">${t('statArticlesS')}</div></div>
@@ -412,27 +376,106 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     </div>`;
   }
 
+  /* ---- Daily English news (news.json is refreshed every morning by a GitHub Action) ---- */
+  const news = { status: 'idle', data: null, source: '' };
+  async function loadNews() {
+    news.status = 'loading';
+    try {
+      const r = await fetch('news.json', { cache: 'no-cache' });
+      if (!r.ok) throw new Error(r.status);
+      news.data = await r.json();
+      news.status = (news.data.items || []).length ? 'ok' : 'empty';
+    } catch (e) { news.status = 'error'; }
+    if (view.page === 'news') render();
+  }
+  let hardWords = null;
+  function highlightWords(title) {
+    if (!hardWords) { hardWords = {}; LIBRARY.forEach(v => { if (v.type === 'word' && v.level >= 3 && /^[a-z]+$/.test(v.word)) hardWords[v.word] = v; }); }
+    return esc(title).replace(/\b([A-Za-z]{4,})\b/g, (m, w) => { const v = hardWords[w.toLowerCase()]; return v ? `<span class="nw" title="${esc(v.zh)}">${m}</span>` : m; });
+  }
+  function ago(iso) {
+    if (!iso) return '';
+    const h = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 3600000));
+    return h < 24 ? tf('newsAgoH', { n: h || 1 }) : tf('newsAgoD', { n: Math.round(h / 24) });
+  }
+  const SRC_CLASS = { 'CNN': 'cnn', 'BBC': 'bbc', 'NPR': 'npr', 'The Guardian': 'guardian', 'Taipei Times': 'taipei' };
+  function pageNews() {
+    if (news.status === 'idle') loadNews();
+    const items = (news.data && news.data.items) || [];
+    const sources = Array.from(new Set(items.map(i => i.source)));
+    const shown = items.filter(i => !news.source || i.source === news.source);
+    const upd = news.data && news.data.updated ? news.data.updated.slice(0, 16).replace('T', ' ').replace(/-/g, '/') : '';
+    let body;
+    if (news.status === 'loading' || news.status === 'idle') body = `<p class="muted">${t('newsLoading')}</p>`;
+    else if (!items.length) body = `<div class="card news-empty">📭 ${t('newsEmpty')}</div>`;
+    else body = `<div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${upd} UTC</span>` : ''}</div>
+      <div class="news-list">${shown.map(i => `<article class="news-card">
+        <div class="news-meta"><span class="news-src ${SRC_CLASS[i.source] || ''}">${esc(i.source)}</span><span class="chip">${esc(i.topic || '')}</span><span class="small muted">${ago(i.date)}</span></div>
+        <h3 class="news-title en"><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${highlightWords(i.title)}</a></h3>
+        ${i.summary ? `<p class="news-sum en">${esc(i.summary)}</p>` : ''}
+        <div class="row"><a class="btn sm" href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(i.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(i.title)}">🔊</button></div>
+      </article>`).join('')}</div>
+      <p class="small muted">💡 ${t('newsWordHint')}</p>`;
+    const CUR = [
+      ['CNN 10', 'https://edition.cnn.com/cnn10', 'curCnn10'],
+      ['BBC Learning English', 'https://www.bbc.co.uk/learningenglish/', 'curBbcLe'],
+      ['News in Levels', 'https://www.newsinlevels.com/', 'curLevels'],
+      ['Breaking News English', 'https://breakingnewsenglish.com/', 'curBne'],
+      ['Taipei Times', 'https://www.taipeitimes.com/', 'curTaipei'],
+    ];
+    return `<h2 class="section-title" style="margin-top:8px">📰 ${t('newsTitle')}</h2><p class="section-sub">${t('newsSub')}</p>
+      ${body}
+      <h2 class="section-title">🎧 ${t('newsSources')}</h2>
+      <div class="cur-grid">${CUR.map(([n, u, k]) => `<a class="cur-card" href="${u}" target="_blank" rel="noopener noreferrer"><b>${n} ↗</b><span>${t(k)}</span></a>`).join('')}</div>`;
+  }
+
   /* ---- Reading ---- */
   function pageReading() {
     if (view.editing) return articleEditor();
     if (view.articleId) return articleView();
-    const items = state.articles.map(a => {
-      const hist = state.progress.readingQuizzes.filter(r => r.articleId === a.id);
-      const best = hist.length ? Math.max(...hist.map(r => Math.round(r.score / r.total * 100))) : null;
-      return `<div class="list-item">
+    const rf = view.readFilter || (view.readFilter = { topic: '', status: '' });
+    const histOf = id => state.progress.readingQuizzes.filter(r => r.articleId === id);
+    const done = a => histOf(a.id).length > 0;
+    const GROUPS = [['Reading · B1', 'grpB1', '📗'], ['Reading · B2', 'grpB2', '📘'], ['Reading · Practical', 'grpPractical', '✉️']];
+    const groupOf = a => GROUPS.some(g => g[0] === a.level) ? a.level : '_other';
+    const topics = Array.from(new Set(state.articles.flatMap(a => a.tags || [])));
+    const visible = state.articles.filter(a => (!rf.topic || (a.tags || []).includes(rf.topic)) && (!rf.status || (rf.status === 'done') === done(a)));
+    const card = a => {
+      const hist = histOf(a.id), isDone = hist.length > 0;
+      const best = isDone ? Math.max(...hist.map(r => Math.round(r.score / r.total * 100))) : null;
+      return `<div class="list-item read-item ${isDone ? 'is-done' : ''}">
+        <span class="read-check" title="${isDone ? t('readDone') : t('readTodo')}">${isDone ? '✓' : ''}</span>
         <div class="grow" data-action="openArticle" data-id="${a.id}" style="cursor:pointer">
           <div class="title">${esc(a.title)}</div>
-          <div class="meta">${esc(unitLabel(a.level || ''))} · ${a.questions.length} ${t('questions')} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
+          <div class="meta">${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
         </div>
         ${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span><span class="chip">${t('attempts')} ${hist.length} ${t('times')}</span>` : ''}
         ${bmBtn('articles', a.id)}
-        <button class="btn sm" data-action="openArticle" data-id="${a.id}">${t('go')}</button>
+        <button class="btn sm" data-action="openArticle" data-id="${a.id}">${isDone ? t('retry') : t('go')}</button>
         <span class="teacher-only"><button class="btn sm ghost" data-action="editArticle" data-id="${a.id}">${t('editArticle')}</button> <button class="btn sm danger" data-action="deleteArticle" data-id="${a.id}">${t('deleteArticle')}</button></span>
       </div>`;
+    };
+    const groups = GROUPS.map(g => g[0]).concat(['_other']).map(key => {
+      const all = state.articles.filter(a => groupOf(a) === key), list = visible.filter(a => groupOf(a) === key);
+      if (!all.length) return '';
+      const g = GROUPS.find(x => x[0] === key) || ['_other', 'grpOther', '📄'];
+      const nd = all.filter(done).length;
+      return `<section class="read-group" id="grp-${g[1]}"><h3 class="read-group-title">${g[2]} ${t(g[1])} <span class="read-progress"><span class="bar"><i style="width:${all.length ? nd / all.length * 100 : 0}%"></i></span>${nd} / ${all.length} ${t('readDoneShort')}</span></h3>
+        ${list.length ? `<div class="list">${list.map(card).join('')}</div>` : `<p class="small muted">${t('readNoneHere')}</p>`}</section>`;
     }).join('');
+    const totalDone = state.articles.filter(done).length;
+    const toc = `<div class="card read-toc">
+        <div class="row"><b>📑 ${t('readToc')}</b><span class="chip ok">✓ ${totalDone} / ${state.articles.length}</span><span class="spacer"></span>
+          ${GROUPS.filter(g => state.articles.some(a => a.level === g[0])).map(g => `<a class="btn sm ghost" href="#grp-${g[1]}" data-action="jumpGroup" data-target="grp-${g[1]}">${g[2]} ${t(g[1])}</a>`).join('')}</div>
+        <div class="row" style="margin-top:8px"><span class="small muted">${t('readTopic')}</span>
+          <button class="btn sm ${!rf.topic ? 'accent' : 'ghost'}" data-action="readTopic" data-v="">${t('newsAll')}</button>
+          ${topics.map(x => `<button class="btn sm ${rf.topic === x ? 'accent' : 'ghost'}" data-action="readTopic" data-v="${esc(x)}">${esc(unitLabel(x))}</button>`).join('')}</div>
+        <div class="row" style="margin-top:8px"><span class="small muted">${t('readStatus')}</span>
+          ${[['', t('newsAll')], ['todo', t('readTodo')], ['done', '✓ ' + t('readDone')]].map(([v, l]) => `<button class="btn sm ${rf.status === v ? 'accent' : 'ghost'}" data-action="readStatus" data-v="${v}">${l}</button>`).join('')}</div>
+      </div>`;
     return `<h2 class="section-title" style="margin-top:8px">${t('readingTitle')}</h2><p class="section-sub">${t('readingSub')}</p>
       <div class="teacher-only block" style="margin-bottom:12px"><button class="btn accent" data-action="newArticle">${t('newArticle')}</button></div>
-      ${items ? `<div class="list">${items}</div>` : `<p class="muted">${t('noArticles')}</p>`}`;
+      ${state.articles.length ? toc + groups : `<p class="muted">${t('noArticles')}</p>`}`;
   }
 
   function articleView() {
@@ -657,7 +700,13 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     const PAGE = 50, pages = Math.max(1, Math.ceil(list.length / PAGE));
     view.vocabPage = Math.min(Math.max(0, view.vocabPage || 0), pages - 1);
     const pageList = list.slice(view.vocabPage * PAGE, view.vocabPage * PAGE + PAGE);
-    const pager = pages > 1 ? `<div class="row pager"><button class="btn sm ghost" data-action="vocabPage" data-d="-1" ${view.vocabPage === 0 ? 'disabled' : ''}>‹</button><span class="small">${view.vocabPage + 1} / ${pages}</span><button class="btn sm ghost" data-action="vocabPage" data-d="1" ${view.vocabPage >= pages - 1 ? 'disabled' : ''}>›</button></div>` : '';
+    const cur = view.vocabPage;
+    const pbtn = (d, label, dis, title) => `<button class="btn sm ghost" data-action="vocabPage" data-d="${d}" ${dis ? 'disabled' : ''} title="${title}">${label}</button>`;
+    const pager = pages > 1 ? `<div class="row pager">
+      ${pbtn(-cur, '⏮', cur === 0, t('pgFirst'))}${pages > 10 ? pbtn(-10, '−10', cur === 0, '-10') : ''}${pbtn(-1, '‹', cur === 0, t('pgPrev'))}
+      <select class="input pager-sel" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${i + 1} / ${pages} · ${esc((list[i * PAGE] || {}).word || '')}</option>`).join('')}</select>
+      ${pbtn(1, '›', cur >= pages - 1, t('pgNext'))}${pages > 10 ? pbtn(10, '+10', cur >= pages - 1, '+10') : ''}${pbtn(pages - 1 - cur, '⏭', cur >= pages - 1, t('pgLast'))}
+    </div>` : '';
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
       const c = state.progress.cards[v.id] || { box: 0, seen: 0 };
@@ -678,6 +727,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
         <div class="grid-2"><div class="field"><label>${t('unit')}</label><input type="text" id="bulkUnit" placeholder="Unit 5 ..." value="${esc(view.vocabUnit)}"></div></div>
         <textarea id="bulkText" placeholder="adventure, n., 冒險, Life is an adventure.&#10;brave | adj. | 勇敢的"></textarea>
         <div class="row" style="margin-top:8px"><span class="spacer"></span><button class="btn ghost" data-action="toggleBulk">${t('cancel')}</button><button class="btn accent" data-action="bulkImport">${t('importBtn')}</button></div></div>` : ''}
+      ${pager}
       <div style="overflow-x:auto"><table class="vocab-table"><thead><tr><th></th><th>${t('word')}</th><th>${t('pos')}</th><th>${t('meaning')}</th><th>${t('synonyms')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th><th class="teacher-only">${t('actions')}</th></tr></thead>
       <tbody>${view.vocabEdit && !view.vocabEdit.id ? vocabEditRow(view.vocabEdit) : ''}${pageList.map(row).join('')}</tbody></table></div>${pager}`;
   }
@@ -814,7 +864,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
   /* ---------------- Render ---------------- */
   function render() {
     updateExamChip();
-    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, progress: pageProgress, students: pageStudents, settings: pageSettings };
+    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
 
     $('#app').innerHTML = (pages[view.page] || pageHome)();
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
@@ -867,9 +917,13 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     goFlash(el) { view.flashSetup.mode = el.dataset.mode; view.flash = null; view.quiz = null; nav('flashcards'); },
     goQuiz() { view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
     speak(el) { speak(el.dataset.word); },
+    newsSource(el) { news.source = el.dataset.src; render(); },
+    readTopic(el) { view.readFilter.topic = el.dataset.v; render(); },
+    readStatus(el) { view.readFilter.status = el.dataset.v; render(); },
+    jumpGroup(el) { const g = document.getElementById(el.dataset.target); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
     toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash) { const b = $('.flash-bm'); if (b) b.classList.toggle('on', isBm('vocab', el.dataset.id)); } else render(); },
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
-    vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); window.scrollTo({ top: 0 }); },
+    vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
     openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); nav('reading'); },
     // reading
     openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
@@ -897,6 +951,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
       collectEditor(); const a = view.editing;
       if (!a.title || !a.passage.trim()) { toast(t('needTitle')); return; }
       if (!a.questions.length || a.questions.some(q => !q.q || q.options.some(o => !o))) { toast(t('needQ')); return; }
+      a.edited = true;
       const i = state.articles.findIndex(x => x.id === a.id); if (i >= 0) state.articles[i] = a; else state.articles.push(a);
       save(); view.editing = null; toast(t('articleSaved')); render();
     },
@@ -1007,6 +1062,7 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     else if (id === 'fsShuffle') view.flashSetup.shuffle = e.target.value === '1';
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
+    else if (e.target.classList.contains('pager-sel')) view.vocabPage = +e.target.value, render();
     else if (id === 'qsType') view.quizSetup.type = e.target.value;
     else if (id === 'qsUnit') view.quizSetup.unit = e.target.value;
     else if (id === 'qsCount') view.quizSetup.count = +e.target.value;
@@ -1028,23 +1084,63 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     else if (e.key === 'ArrowRight' || e.key === 'k') actions.flashMark({ dataset: { known: '1' } });
     else if (e.key === 'ArrowLeft' || e.key === 'd') actions.flashMark({ dataset: { known: '0' } });
   });
-  const examInput = $('#examDateInput');
-  examInput.addEventListener('click', e => { if (typeof examInput.showPicker === 'function') { e.preventDefault(); try { examInput.showPicker(); } catch (err) { examInput.focus(); } } });
-  examInput.addEventListener('change', () => {
-    const v = examInput.value;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return;
-    state.settings.examDate = v; save(); toast(t('saved')); render();
+  // ---- cute calendar for the exam date ----
+  const cal = { open: false, y: 2027, m: 3 };
+  const pad2 = n => String(n).padStart(2, '0');
+  function renderCal() {
+    const pop = $('#calPop'), first = new Date(cal.y, cal.m, 1), lead = first.getDay(), days = new Date(cal.y, cal.m + 1, 0).getDate();
+    const td = todayStr(), ex = state.settings.examDate, wd = t('weekdays');
+    let cells = '';
+    for (let i = 0; i < lead; i++) cells += '<span class="cal-cell empty"></span>';
+    for (let d = 1; d <= days; d++) {
+      const ds = `${cal.y}-${pad2(cal.m + 1)}-${pad2(d)}`, dow = (lead + d - 1) % 7;
+      const cls = ['cal-cell', ds === td ? 'is-today' : '', ds === ex ? 'is-exam' : '', ds > td && ds < ex ? 'is-between' : '', ds < td ? 'is-past' : '', dow === 0 || dow === 6 ? 'is-weekend' : ''].filter(Boolean).join(' ');
+      cells += `<button type="button" class="${cls}" data-date="${ds}" ${ds < td ? 'disabled' : ''} aria-label="${ds}">${ds === ex ? '<span class="cal-star">⭐</span>' : ''}${d}</button>`;
+    }
+    pop.innerHTML = `<div class="cal-rings" aria-hidden="true"><i></i><i></i></div>
+      <div class="cal-head"><button type="button" data-cal="-12" aria-label="-1 year">«</button><button type="button" data-cal="-1" aria-label="-1 month">‹</button>
+        <div class="cal-title"><span class="cal-month">${t('monthsLong')[cal.m]}</span> <span class="cal-year">${cal.y}</span></div>
+        <button type="button" data-cal="1" aria-label="+1 month">›</button><button type="button" data-cal="12" aria-label="+1 year">»</button></div>
+      <div class="cal-sub">🐣 ${t('calTitle')}</div>
+      <div class="cal-grid">${wd.map((w, i) => `<span class="cal-wd ${i === 0 || i === 6 ? 'is-weekend' : ''}">${w}</span>`).join('')}${cells}</div>
+      <div class="cal-foot"><span><i class="lg lg-today"></i>${t('calToday')}</span><span><i class="lg lg-exam"></i>${t('calExam')}</span><span><i class="lg lg-between"></i>${t('calCountdown')}</span>
+        <button type="button" class="btn sm ghost" data-cal="exam">${t('calGoExam')}</button></div>`;
+  }
+  function placeCal() {
+    const pop = $('#calPop'), r = $('#examChip').getBoundingClientRect(), w = Math.min(330, window.innerWidth - 24);
+    pop.style.width = w + 'px';
+    pop.style.top = Math.round(r.bottom + 10) + 'px';
+    pop.style.left = Math.round(Math.max(12, Math.min(r.left, window.innerWidth - w - 12))) + 'px';
+  }
+  function openCal() { const d = state.settings.examDate; cal.y = +d.slice(0, 4); cal.m = +d.slice(5, 7) - 1; cal.open = true; renderCal(); $('#calPop').classList.remove('hidden'); placeCal(); $('#examChip').setAttribute('aria-expanded', 'true'); }
+  function closeCal() { cal.open = false; $('#calPop').classList.add('hidden'); $('#examChip').setAttribute('aria-expanded', 'false'); }
+  $('#examChip').addEventListener('click', e => { e.stopPropagation(); cal.open ? closeCal() : openCal(); });
+  $('#calPop').addEventListener('click', e => {
+    e.stopPropagation();
+    const nav2 = e.target.closest('[data-cal]'), day = e.target.closest('[data-date]');
+    if (nav2) {
+      const v = nav2.dataset.cal;
+      if (v === 'exam') { const d = state.settings.examDate; cal.y = +d.slice(0, 4); cal.m = +d.slice(5, 7) - 1; }
+      else { const n = cal.y * 12 + cal.m + (+v); cal.y = Math.floor(n / 12); cal.m = n % 12; }
+      renderCal(); return;
+    }
+    if (day && !day.disabled) { state.settings.examDate = day.dataset.date; save(); closeCal(); toast(t('saved')); render(); }
   });
+  document.addEventListener('click', () => { if (cal.open) closeCal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && cal.open) closeCal(); });
+  window.addEventListener('resize', () => { if (cal.open) placeCal(); });
+  window.addEventListener('scroll', () => { if (cal.open) placeCal(); }, { passive: true });
   $('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; if (b.dataset.page === 'reading') { view.articleId = null; view.editing = null; } nav(b.dataset.page); });
 
   // header controls
   const langSel = $('#langSelect'), fontSel = $('#fontSelect'), themeSel = $('#themeSelect'), authBtn = $('#authBtn');
   function updateExamChip() {
     const chip = $('#examChip'); if (!chip) return;
-    const inp = $('#examDateInput'); if (inp && inp.value !== state.settings.examDate) inp.value = state.settings.examDate;
     chip.title = t('chipHint');
     const dl = daysLeft(), ex = new Date(state.settings.examDate + 'T00:00:00');
-    $('#examChipDate').textContent = `📅 ${state.settings.examDate.replace(/-/g, '/')} (${t('weekdays')[ex.getDay()]})`;
+    $('#miniCalMon').textContent = t('monthsShort')[ex.getMonth()];
+    $('#miniCalDay').textContent = ex.getDate();
+    $('#examChipDate').textContent = `${state.settings.examDate.replace(/-/g, '/')} (${t('weekdays')[ex.getDay()]})`;
     $('#examChipDays').textContent = dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('headerToday') : t('examChipPassed');
     chip.classList.toggle('soon', dl >= 0 && dl <= 30);
   }
