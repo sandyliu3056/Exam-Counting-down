@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T04:04:05Z",
+ "updated": "2026-10-15T04:22:04Z",
  "items": [
   {
    "title": "Anthropic flags revenue surge to investors ahead of stock market debut",
@@ -7,7 +7,7 @@
    "summary": "It comes as some investors have become concerned about the amount of money being spent on AI infrastructure.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-10-15T03:33:08Z"
+   "date": "2026-10-15T04:19:17Z"
   },
   {
    "title": "Wales has a school standards crisis. Will plans to fix it actually work?",
@@ -248,100 +248,80 @@
    "source": "BBC",
    "topic": "Tech",
    "title": "Anthropic flags revenue surge to investors ahead of stock market debut",
-   "title_zh": "人工智慧巨頭 Anthropic 股票上市前夕向投資人展現亮眼營收成長",
+   "title_zh": "安索普向投資人揭露營收暴增，迎向股票上市",
    "paragraphs": [
     {
-     "en": "Artificial intelligence developer Anthropic reported that its quarterly revenue jumped by 45 percent to 16.8 billion dollars for the three months ending in September. The company, famous for creating Claude, shared these numbers with potential investors at its headquarters in San Francisco. This meeting took place as the firm prepares for an upcoming stock market debut before the end of the year.",
-     "zh": "人工智慧開發商 Anthropic 表示，在截至九月底的三個月內，其季度營收大幅成長 45%，達到 168 億美元。這家以打造 Claude 聞名的公司，在舊金山總部向潛在投資人透露了這些數據。該會議舉行之際，該公司正積極為預計於今年底前進行的掛牌上市預作準備。"
+     "en": "The artificial intelligence giant Anthropic revealed that its revenue grew significantly by forty-five percent to sixteen point eight billion US dollars in the three months leading up to September. These financial details were shared by the Claude-developer during a meeting with prospective investors at its headquarters in San Francisco, as the company prepares for a stock market listing before the year ends.",
+     "zh": "人工智慧巨頭安索普（Anthropic）透露，在截至九月的三個月中，其營收顯著成長了百分之四十五，達到一百六十八億美元。這些財務細節是由這位「克勞德」（Claude）開發商在舊金山總部與潛在投資人會面時分享的，當時該公司正為今年底前的股票上市作準備。"
     },
     {
-     "en": "Anthropic has experienced rapid financial growth throughout the year. Its revenue climbed from 4.7 billion dollars in the first quarter to 11.6 billion dollars in the second quarter. Furthermore, the company stated that it made a profit for the second consecutive quarter. Analysts closely watch Anthropic and its competitor OpenAI to measure how well the AI sector can fund its expensive technology.",
-     "zh": "Anthropic 在今年經歷了快速的財務成長。其營收從第一季度的 47 億美元攀升至第二季度的 116 億美元。此外，該公司表示已連續第二個季度實現獲利。分析師密切關注 Anthropic 及其競爭對手 OpenAI，以評估人工智慧產業為其昂貴技術籌措資金的能力。"
+     "en": "This development happens while some technology stocks, including hardware makers that build data center equipment, have experienced drops recently because of worries about huge spending on artificial intelligence infrastructure. Meanwhile, Anthropic stated that it achieved a profit for the second quarter in a row, with quarterly revenue having climbed steadily throughout this year.",
+     "zh": "這項發展發生在某些科技股（包括製造資料中心設備的硬體製造商）最近因為擔心人工智慧基礎設施的鉅額支出而下跌之際。同時，安索普表示其連續第二季實現獲利，且本年度的季度營收持續穩步攀升。"
     },
     {
-     "en": "Despite these strong results, many global technology stocks recently faced heavy selling pressure. Shares of leading chip manufacturers like Nvidia, AMD, and Intel dropped sharply. In Asia, stock prices for Softbank, Samsung, and SK Hynix also fell substantially. Market worries increased after Broadcom head Hock Tan warned that extreme expectations have made some AI investing \"almost like they are in a casino.\"",
-     "zh": "儘管有這些強勁的業績，全球許多科技股近期卻面臨沉重的賣壓。輝達（Nvidia）、超微（AMD）和英特爾（Intel）等晶片製造大廠的股價急遽下跌。在亞洲，軟銀、三星和 SK 海力士的股價也大幅下滑。博通（Broadcom）執行長陳福陽（Hock Tan）警告過高的預期讓部分 AI 投資「幾乎像是在賭場一樣」，此番言論進一步加深了市場的擔憂。"
+     "en": "The financial results from this firm and its rival OpenAI provide an important way to measure the industry growth and its financial capacity to build necessary technology. However, share prices for major chip makers like AMD, Nvidia, and Intel declined sharply. Asian markets also felt the impact, as Japanese investment firm Softbank and South Korean semiconductor giants Samsung and SK Hynix saw their shares drop significantly.",
+     "zh": "這家公司及其對手開放人工智慧（OpenAI）的財務結果，提供了衡量產業成長及建立所需技術之財務能力的重要方式。然而，像是超微（AMD）、輝達（Nvidia）和英特爾（Intel）等主要晶片製造商的股價急劇下跌。亞洲市場也感受到衝擊，日本投資公司軟體銀行（Softbank）以及南韓半導體巨頭三星（Samsung）和SK海力士（SK Hynix）的股價都大幅下跌。"
     },
     {
-     "en": "Besides financial challenges, safety issues remain a major concern for the industry. OpenAI chief Sam Altman announced that his firm will delay going public to address safety risks, even though it expects a future valuation above one trillion dollars. Similarly, Anthropic chief executive Dario Amodei has urged developers to slow down their progress. Meanwhile, Anthropic continues to grow internationally, opening a new office in Singapore on Wednesday.",
-     "zh": "除了財務方面的挑戰，安全問題仍是該產業的主要隱憂。OpenAI 執行長阿特曼（Sam Altman）宣布，該公司將延後上市以處理安全問題，儘管外界預期其未來的估值將超過一兆美元。同樣地，Anthropic 執行長阿莫代（Dario Amodei）也呼籲開發者放慢研發步伐。在此同時，Anthropic 持續向全球擴張，並於週三在新加坡設立了新辦事處。"
+     "en": "These market drops followed remarks made by Broadcom chief executive Hock Tan, who stated that many investors have no clue and are acting as if they are in a casino. Additional concerns involve the safety of artificial intelligence models. While OpenAI delayed its public offering to address safety issues, Anthropic has also urged that development should slow down, even as it continues expanding globally by opening a new office in Singapore.",
+     "zh": "這些市場跌幅是繼博通（Broadcom）執行長陳福陽（Hock Tan）針對人工智慧支出發表言論之後出現的。陳福陽在新加坡的一場會議上表示，許多投資人毫無頭緒，其設定極端的期望「就像在賭場一樣」。其他擔憂則涉及人工智慧模型的安全性。當開放人工智慧延遲其公開上市以解決安全問題時，安索普也敦促應放慢開發速度，儘管它仍透過在新加坡開設新辦事處來繼續全球擴張。"
     }
    ],
-   "words": 253,
+   "words": 252,
+   "v": 2,
    "vocab": [
     {
      "word": "revenue",
      "pos": "n.",
-     "zh": "營收；收益"
+     "zh": "營收"
     },
     {
-     "word": "potential",
+     "word": "prospective",
      "pos": "adj.",
-     "zh": "潛在的；可能的"
+     "zh": "潛在的"
     },
     {
-     "word": "consecutive",
-     "pos": "adj.",
-     "zh": "連續的"
+     "word": "infrastructure",
+     "pos": "n.",
+     "zh": "基礎設施"
     },
     {
-     "word": "competitor",
+     "word": "rival",
      "pos": "n.",
      "zh": "競爭對手"
     },
     {
-     "word": "sharply",
-     "pos": "adv.",
-     "zh": "急遽地；大幅地"
+     "word": "decline",
+     "pos": "v.",
+     "zh": "下跌"
     },
     {
-     "word": "substantially",
-     "pos": "adv.",
-     "zh": "大大地；顯著地"
-    },
-    {
-     "word": "valuation",
-     "pos": "n.",
-     "zh": "估值；定價"
-    },
-    {
-     "word": "internationally",
-     "pos": "adv.",
-     "zh": "國際性地；在國際間"
+     "word": "expand",
+     "pos": "v.",
+     "zh": "擴展"
     }
    ],
    "phrases": [
     {
-     "phrase": "stock market debut",
-     "zh": "股市初次亮相；掛牌上市"
-    },
-    {
-     "phrase": "for the second consecutive quarter",
-     "zh": "連續第二個季度"
-    },
-    {
      "phrase": "slow down",
-     "zh": "放慢速度；減緩"
+     "zh": "放慢速度"
     }
    ],
    "grammar": [
     {
-     "point": "現在完成式 (Present Perfect Tense)",
-     "explain": "由「has/have + 過去分詞」構成，用來表達從過去某個時間點開始一直持續到現在的經驗或狀態。",
-     "example": "Anthropic has experienced rapid financial growth throughout the year."
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "使用關係代名詞子句補充說明硬體製造商。",
+     "example": "This development happens while some technology stocks, including hardware makers that build data center equipment, have experienced drops recently because of worries about huge spending on artificial intelligence infrastructure.",
+     "focus": "that build data center equipment"
     },
     {
-     "point": "不定詞表目的 (Infinitive of Purpose)",
-     "explain": "使用「to + 原形動詞」結構來表示做某個動作的目的或動機。",
-     "example": "OpenAI chief Sam Altman announced that his firm will delay going public to address safety risks, even though it expects a future valuation above one trillion dollars."
-    },
-    {
-     "point": "連接詞 as 引導的時間副詞子句 (Adverbial Clause of Time with 'As')",
-     "explain": "連接詞 as 在此表示「當……的時候」或「隨著……的同時」，用來連接兩個同時發生或進展的動作。",
-     "example": "This meeting took place as the firm prepares for an upcoming stock market debut before the end of the year."
+     "point": "被動語態 (Passive Voice)",
+     "explain": "使用被動語態表達財務細節是由開發商分享的。",
+     "example": "These financial details were shared by the Claude-developer during a meeting with prospective investors at its headquarters in San Francisco, as the company prepares for a stock market listing before the year ends.",
+     "focus": "were shared"
     }
    ],
-   "model": "gemini-flash-latest"
+   "model": "gemini-flash-lite-latest"
   },
   {
    "link": "https://www.bbc.co.uk/news/articles/cw240qv4ygzmo?at_medium=RSS&at_campaign=rss",
@@ -521,94 +501,86 @@
    "source": "Taipei Times",
    "topic": "Taiwan",
    "title": "Talks on Taiwan-Alaska LNG deal advance",
-   "title_zh": "台美 LNG 採購協議與外交國防動態進展",
+   "title_zh": "台美阿拉斯加液化天然氣協議談判推進",
    "paragraphs": [
     {
-     "en": "Taiwan is making steady progress in talks to buy liquefied natural gas from an Alaskan project, potentially investing up to US$4.4 billion. The Ministry of Economic Affairs stated that CPC Corporation, Taiwan would purchase 6 million tonnes of the gas each year once production begins.",
-     "zh": "台灣在購買阿拉斯加液化天然氣計畫的談話中正取得穩定進展，潛在投資金額高達 44 億美元。經濟部表示，台灣中油一旦生產開始，每年將購買 6 百萬噸的天然氣。"
+     "en": "Taiwan is considering an investment reaching up to US$4.4 billion for an Alaskan liquefied natural gas project, as discussions move forward. Following a statement by US President Donald Trump about Taiwan purchasing a significant portion of the planned facility output, the Ministry of Economic Affairs (MOEA) shared details on the ongoing plans. State-run CPC Corp, Taiwan (CPC) would buy 6 million tonnes annually once operations start.",
+     "zh": "隨著討論向前推進，臺灣正在考慮為一項阿拉斯加液化天然氣計畫投資高達44億美元。在美國總統唐納·川普發表關於臺灣將購買該計畫設施產出相當大比例的言論後，經濟部（MOEA）分享了相關進行中計畫的細節。國營的中油公司（CPC）一旦營運開始，每年將購買6MovieModal萬噸。"
     },
     {
-     "en": "This partnership aims to diversify energy supplies and enhance national security. Because the location allows direct shipping across the Pacific Ocean, it offers an alternative route that helps reduce geopolitical risks.",
-     "zh": "這項合作夥伴關係旨在多元化能源供應並提升國家安全。由於地理位置允許直接透過太平洋運輸，它提供了有助於降低地緣政治風險的替代航線。"
+     "en": "In addition to purchasing fuel, CPC could participate in developing the large project, which includes a long transport pipeline. Although experts question whether the massive energy plan is viable, the ministry noted that deliveries to Taiwan could begin around 2032 if schedules stay on track. Officials explained that exact investment terms and financial stakes will be decided through future commercial contracts.",
+     "zh": "除了購買燃料外，中油公司還可能參與開發這項包含長途輸送管線的大型計畫。儘管專家質疑這項龐大的能源計畫是否可行，但經濟部指出，如果時程保持順利，向臺灣的供貨最早可能在2032年左右開始。官員解釋說，確切的投資條件和財務股權將透過未來的商業合約來決定。"
     },
     {
-     "en": "In other news regarding national defense, Taiwan is set to receive 500 Stinger missiles and 178 launchers by the end of the year. This shipment represents the first batch of a planned two-stage acquisition to strengthen air defense capabilities.",
-     "zh": "在國防的其他消息方面，台灣預計在年底前接收 500 枚刺針飛彈與 178 發發射器。這批運送代表了旨在強化防空能力之規劃中兩階段採購的第一批。"
+     "en": "Furthermore, the partnership aims to diversify energy sources, improve supply security, and strengthen connections with the United States. Transporting the fuel directly across the Pacific Ocean provides an alternative route that might reduce geopolitical risks. Meanwhile, Premier Cho Jung-tai urged the public to support state-owned utility companies as officials work to ensure stable supplies.",
+     "zh": "此外，此夥伴關係旨在分散能源來源、改善供應安全並加強與美國的聯繫。直接橫跨太平洋運輸燃料提供了一條可能有助於降低地緣政治風險的替代路線。同時，行政院長卓榮泰敦促大眾支持國營公用事業公司，同時官員們努力確保穩定供應。"
     },
     {
-     "en": "Meanwhile, the Coast Guard Administration completed a historic diplomatic visit. Two vessels sailed to Palau for a joint patrol of the exclusive economic zone, setting a new record for their southernmost deployment.",
-     "zh": "同時，海巡署完成了一次歷史性的外交訪問。兩艘艦艇航行至帛琉進行專屬經濟區的聯合巡邏，為其最南端部署創下了新紀錄。"
+     "en": "In other international developments, the European Parliament recently adopted a recommendation regarding political relations with China. The document rejects Beijing efforts to restrict Taiwan from joining international organizations. Moreover, the Coast Guard Administration (CGA) completed a historic diplomatic voyage to Palau, sending two vessels to the distant island in a cooperative security mission.",
+     "zh": "在其他國際發展方面，歐洲議會最近通過了一項關於對中政治關係的建議案。該文件拒絕北京限制臺灣加入國際組織的努力。此外，海巡署（CGA）完成了對帛琉具有歷史意義的外交航行，派遣兩艘船艦前往該偏遠島嶼執行合作安全任務。"
     },
     {
-     "en": "Furthermore, the government is carefully monitoring online rumors concerning a potential disease outbreak spreading from Russia into China. Authorities are fully prepared to implement necessary border quarantine measures to protect public health.",
-     "zh": "此外，政府正密切監控有關潛在疾病從俄羅斯蔓延至中國的網路謠言。當局已全面準備好實施必要的邊境檢疫措施來保護公眾健康。"
-    },
-    {
-     "en": "Finally, the European Parliament adopted an important recommendation supporting Taiwan's international participation. The document strongly rejects China's attempts to restrict Taiwan and describes the island as a valuable global partner.",
-     "zh": "最後，歐洲議會通過了一項支持台灣國際參與的重要建議案。該文件強烈拒絕中國限制台灣的企圖，並將這個島嶼描述為一個有價值的全球夥伴。"
+     "en": "The military is also preparing to receive hundreds of defense weapons by the end of the year. According to defense officials, the first delivery includes portable missiles and launchers designed to boost air defense capabilities for Taiwan proper and outlying islands. Finally, government leaders are closely watching reports regarding rumored disease outbreaks abroad to protect public health.",
+     "zh": "軍方也準備在年底前接收數百件防衛武器。根據國防官員說法，第一批交貨包含便攜式飛彈與發射器，旨在提升臺灣本島與離島的防空能力。最後，政府領導人正密切關注關於海外疑似疾病爆發的報導，以保護公眾健康。"
     }
    ],
-   "words": 209,
+   "words": 291,
+   "v": 2,
    "vocab": [
     {
-     "word": "progress",
-     "pos": "n.",
-     "zh": "進展"
+     "word": "liquefied",
+     "pos": "adj.",
+     "zh": "液化的"
+    },
+    {
+     "word": "viable",
+     "pos": "adj.",
+     "zh": "可行的"
     },
     {
      "word": "diversify",
      "pos": "v.",
-     "zh": "使多樣化"
+     "zh": "多角化；使多樣化"
     },
     {
-     "word": "security",
-     "pos": "n.",
-     "zh": "安全"
-    },
-    {
-     "word": "acquisition",
-     "pos": "n.",
-     "zh": "獲得、採購"
-    },
-    {
-     "word": "deployment",
-     "pos": "n.",
-     "zh": "部署"
-    },
-    {
-     "word": "valuable",
+     "word": "geopolitical",
      "pos": "adj.",
-     "zh": "有價值的"
+     "zh": "地緣政治的"
+    },
+    {
+     "word": "recommendation",
+     "pos": "n.",
+     "zh": "建議；推薦"
     }
    ],
    "phrases": [
     {
-     "phrase": "enhance national security",
-     "zh": "提升國家安全"
+     "phrase": "move forward",
+     "zh": "推進；向前發展"
     },
     {
-     "phrase": "air defense capabilities",
-     "zh": "防空能力"
-    },
-    {
-     "phrase": "historic diplomatic visit",
-     "zh": "歷史性的外交訪問"
-    },
-    {
-     "phrase": "global partner",
-     "zh": "全球夥伴"
+     "phrase": "stay on track",
+     "zh": "保持順利；按計畫進行"
     }
    ],
    "grammar": [
     {
-     "point": "現在分詞作修飾語 [Present Participle as Modifier]",
-     "explain": "用現在分詞短語來修飾前面的名詞，表達主動或進行的狀態。",
-     "example": "Furthermore, the government is carefully monitoring online rumors concerning a potential disease outbreak spreading from Russia into China."
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "用來連接子句並修飾前方名詞的關係代名詞子句，在此補充說明管線的特徵。",
+     "example": "CPC could participate in developing the large project, which includes a long transport pipeline.",
+     "focus": "which includes a long transport pipeline"
     },
     {
-     "point": "不定詞作目的用 [Infinitive of Purpose]",
-     "explain": "使用「to + 動詞原形」來表達某個動作的目的。",
-     "example": "Authorities are fully prepared to implement necessary border quarantine measures to protect public health."
+     "point": "被動語態 (Passive Voice)",
+     "explain": "表示主詞承受動作，由助動詞配合過去分詞構成，強調被決定的合約條件。",
+     "example": "Officials explained that exact investment terms and financial stakes will be decided through future commercial contracts.",
+     "focus": "will be decided"
+    },
+    {
+     "point": "分詞構句 (Participial Construction)",
+     "explain": "用 V-ing 分詞片語作狀語，說明官員努力確保穩定供應時的同時發生活動。",
+     "example": "Meanwhile, Premier Cho Jung-tai urged the public to support state-owned utility companies as officials work to ensure stable supplies.",
+     "focus": "as officials work to ensure stable supplies"
     }
    ],
    "model": "gemini-flash-lite-latest"
@@ -618,98 +590,91 @@
    "source": "Taipei Times",
    "topic": "Taiwan",
    "title": "Resource exploration to begin in Greenland: Trump",
-   "title_zh": "川普表示格陵蘭即將展開資源探勘",
+   "title_zh": "川普：格陵蘭島即將展開資源探勘",
    "paragraphs": [
     {
-     "en": "US President Donald Trump stated that oil, gas, and mineral exploration would soon begin in Greenland. He praised the arctic island as a very important location for the security of both the United States and Europe.",
-     "zh": "美國總統川普表示，格陵蘭很快將開始進行石油、天然氣和礦產探勘。他稱讚這個北極島嶼是美國與歐洲安全非常重要的地點。"
+     "en": "US President Donald Trump stated that oil, gas, and mineral exploration is preparing to start in Greenland. He praised the arctic island as a very important location for the security of the US and Europe.",
+     "zh": "美國總統唐納德·川普（Donald Trump）表示，格陵蘭島的石油、天然氣和礦產探勘正準備開始。他讚揚這個北極島嶼是美國與歐洲安全非常重要的地點。"
     },
     {
-     "en": "Washington recently signed a security agreement with Greenland and Denmark leaders. This 10-page pact includes plans for the US to construct two military bases in southern and eastern Greenland.",
-     "zh": "華府最近與格陵蘭及丹麥領導人簽署了一項安全協議。這份10頁的條約包含了美國在格陵蘭南部與東部建造兩座軍事基地的計畫。"
+     "en": "Washington signed a security agreement this year with the leaders of Greenland, which is an autonomous territory of Denmark. The US will build two military bases in southern and eastern Greenland.",
+     "zh": "華盛頓今年與格陵蘭的領導人簽署了一項安全協議，格陵蘭是丹麥的自治領地。美國將在格陵蘭南部和東部建立兩個軍事基地。"
     },
     {
-     "en": "Greenland is situated on the shortest missile route between Russia and the US. Trump emphasized that the island offers a wonderful strategic location and holds massive untapped rare earth deposits.",
-     "zh": "格陵蘭位於俄羅斯與美國之間最短的飛彈航線上。川普強調，該島提供了絕佳的戰略位置，並擁有大量未開發的稀土礦藏。"
+     "en": "Greenland lies on the shortest missile route between Russia and the US, making it vital for the planned defense shield. Trump noted that the amount of easily available oil there is huge.",
+     "zh": "格陵蘭位於俄羅斯和美國之間最短的飛彈航線上，這使它對計畫中的防禦盾牌至關重要。川普指出，那裡容易取得的石油數量極為龐大。"
     },
     {
-     "en": "In separate news, Taiwan Coast Guard vessels recently completed a diplomatic visit and a joint patrol in Palau. Meanwhile, Taiwan is scheduled to receive hundreds of Stinger missiles from the US by the end of the year to strengthen defense capabilities.",
-     "zh": "在其他新聞方面，台灣海巡署船艦近日完成了對帛琉的訪問與聯合巡邏。同時，台灣預計在年底前接收數百枚來自美國的刺針飛彈以強化防衛能力。"
+     "en": "In separate news, the Coast Guard Administration (CGA) of Taiwan sent two vessels on a diplomatic visit to Palau, reaching the southernmost deployment record for a coast guard ship. Meanwhile, the military plans to receive Stinger missiles from the US to help defend Taiwan proper and outlying islands.",
+     "zh": "在其他新聞方面，臺灣的海巡署（CGA）派遣兩艘船隻對帛琉進行外交訪問，創下了海巡艦艇最南方部署的紀錄。同時，軍方計畫接收來自美國的刺針飛彈，以協助防衛臺灣本島及外島。"
     },
     {
-     "en": "The Taiwanese government is also closely watching online rumors about a pneumonic plague outbreak spreading from Russia into China. Authorities are fully prepared to enhance border quarantine measures to protect public health.",
-     "zh": "台灣政府也正密切關注網路有關肺鼠疫從俄羅斯蔓延至中國的謠言。當局已全面準備好加強邊境檢疫措施以保護公眾健康。"
-    },
-    {
-     "en": "Finally, the European Parliament adopted a recommendation on political relations, strongly rejecting China's efforts to restrict Taiwan's participation in international organizations and global exchanges.",
-     "zh": "最後，歐洲議會通過了一項關於政治關係的建議案，強烈拒絕中國限制台灣參與國際組織與全球交流的企圖。"
+     "en": "Furthermore, Taiwan is closely watching online rumors about a pneumonic plague outbreak spreading from Russia into China, while the European Parliament adopted a recommendation that rejects China's efforts to restrict Taiwan's international participation.",
+     "zh": "此外，臺灣正密切關注關於鼠疫疫情從俄羅斯傳播到中國的網路謠言，而歐洲議會則通過了一項建議案，拒絕中國限制臺灣國際參與的企圖。"
     }
    ],
-   "words": 192,
+   "words": 179,
+   "v": 2,
    "vocab": [
     {
      "word": "exploration",
      "pos": "n.",
-     "zh": "探勘、探索"
+     "zh": "探勘，探測"
     },
     {
-     "word": "pact",
-     "pos": "n.",
-     "zh": "條約、協定"
-    },
-    {
-     "word": "strategic",
+     "word": "autonomous",
      "pos": "adj.",
-     "zh": "戰略性的"
+     "zh": "自治的"
     },
     {
-     "word": "untapped",
+     "word": "vital",
      "pos": "adj.",
-     "zh": "未開發的"
+     "zh": "極重要的，關鍵的"
     },
     {
-     "word": "quarantine",
+     "word": "deployment",
      "pos": "n.",
-     "zh": "檢疫、隔離"
+     "zh": "部署"
+    },
+    {
+     "word": "outbreak",
+     "pos": "n.",
+     "zh": "（疫情等）爆發"
+    },
+    {
+     "word": "recommendation",
+     "pos": "n.",
+     "zh": "建議案，推薦"
     }
    ],
    "phrases": [
     {
-     "phrase": "security agreement",
-     "zh": "安全協議"
+     "phrase": "prepare to",
+     "zh": "準備要"
     },
     {
-     "phrase": "rare earth deposits",
-     "zh": "稀土礦藏"
-    },
-    {
-     "phrase": "joint patrol",
-     "zh": "聯合巡邏"
-    },
-    {
-     "phrase": "defense capabilities",
-     "zh": "防衛能力"
-    },
-    {
-     "phrase": "international organizations",
-     "zh": "國際組織"
+     "phrase": "closely watch",
+     "zh": "密切關注"
     }
    ],
    "grammar": [
     {
-     "point": "被動語態 (Passive Voice)",
-     "explain": "用來強調動作的承受者，結構為「be動詞 + 過去分詞 (V-pp)」。",
-     "example": "This 10-page pact includes plans for the US to construct two military bases in southern and eastern Greenland."
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "使用關代「which」引導子句來補充說明格陵蘭島的自治地位。",
+     "example": "Washington signed a security agreement this year with the leaders of Greenland, which is an autonomous territory of Denmark.",
+     "focus": "which is an autonomous territory of Denmark"
     },
     {
-     "point": "不定詞作目的用語 (Infinitive of Purpose)",
-     "explain": "使用「to + 原形動詞」來表達做某事的目的。",
-     "example": "Authorities are fully prepared to enhance border quarantine measures to protect public health."
+     "point": "分詞構句 (Participle Construction)",
+     "explain": "使用現在分詞「making」引導分詞構句，表達地理位置所造成的結果。",
+     "example": "Greenland lies on the shortest missile route between Russia and the US, making it vital for the planned defense shield.",
+     "focus": "making it vital for the planned defense shield"
     },
     {
-     "point": "關係代間詞子句 (Relative Clause)",
-     "explain": "用來修飾前方名詞的形容詞子句，常用which或that引導。",
-     "example": "Finally, the European Parliament adopted a recommendation on political relations, strongly rejecting China's efforts to restrict Taiwan's participation in international organizations and global exchanges."
+     "point": "不定詞作目的用 (Infinitive of Purpose)",
+     "explain": "使用不定詞「to help」來表達接收飛彈的目的。",
+     "example": "Meanwhile, the military plans to receive Stinger missiles from the US to help defend Taiwan proper and outlying islands.",
+     "focus": "to help defend Taiwan proper and outlying islands"
     }
    ],
    "model": "gemini-flash-lite-latest"
@@ -1265,45 +1230,36 @@
    "source": "NPR",
    "topic": "Tech",
    "title": "Hands-on with the Ocarina of Time remake, the most ornate Zelda game ever made",
-   "title_zh": "實機體驗《時之笛》重製版：史上最華麗細緻的薩爾達傳說遊戲",
+   "title_zh": "實測《時之笛》重製版：史上最華麗的薩爾達傳說遊戲",
    "paragraphs": [
     {
-     "en": "After the massive box-office success of recent Mario movies, Nintendo is preparing for a Zelda movie next April. To keep fans excited, the company is releasing a remake of its 1998 masterpiece, The Legend of Zelda: Ocarina of Time, for the Switch 2 on November 5. While other game publishers are avoiding this release window to dodge Grand Theft Auto VI, Nintendo offers a family-friendly alternative to that crime epic.",
-     "zh": "在近期瑪利歐電影取得巨大的票房成功之後，任天堂正為明年四月即將推出的薩爾達電影做準備。為了維持粉絲的熱情，該公司將於十一月五日在 Switch 2 上推出其 1998 年經典名作《薩爾達傳說：時之笛》的重製版。雖然其他遊戲發行商紛紛避開這個發行檔期以躲避《俠盜獵車手 VI》，但任天堂卻為這部犯罪史詩提供了一個適合全家同樂的替代選擇。"
+     "en": "Following the huge success of several movie projects, Nintendo is preparing to bring The Legend of Zelda to the big screen next April. To keep the franchise popular, the company is lavishly remaking its classic 1998 video game, The Legend of Zelda: Ocarina of Time. The title is scheduled to debut on November fifth.",
+     "zh": "繼幾個電影計畫獲得巨大成功之後，任天堂（Nintendo）準備在明年四月將《薩爾達傳說》（The Legend of Zelda）搬上大銀幕。為了維持這個系列的熱度，該公司正砸重金重製其 1998 年的經典電玩遊戲《薩爾達傳說：時之笛》（The Legend of Zelda: Ocarina of Time）。該作品預定於 11 月 5 日正式登場。"
     },
     {
-     "en": "Visually, the new game keeps its classic artistic style while adding incredible details. For instance, Link's green outfit now displays realistic fabrics, and fairies have furry bodies with mosaic wings. However, these ornate environments can occasionally overwhelm players. During a 90-minute trial, a reporter even missed an important dungeon key in the Forest Temple because the rich backgrounds distracted the eye.",
-     "zh": "在視覺方面，這款新遊戲保留了其經典的藝術風格，同時增添了令人驚嘆的細節。例如，林克的綠色服裝現在展現出逼真的布料質感，精靈則擁有毛茸茸的身軀與馬賽克般的翅膀。然而，這些華麗繁複的環境有時會讓玩家應接不暇。在一次九十分鐘的試玩中，一名記者甚至在森林神殿中漏掉了一把推進關卡的重要鑰匙，因為豐富的背景細節分散了注意力。"
+     "en": "The new version stands out by offering a family-friendly fantasy world, arriving just two weeks before the massive release of Grand Theft Auto VI. While the competition features extreme realism and violent themes, the Zelda remake maintains the cartoony aesthetic of the original game while adding incredible detail. Characters wear hand-stitched fabrics and leathers, and creatures feature complex textures.",
+     "zh": "新版本透過提供老少咸宜的奇幻世界脫穎而出，並在《俠盜獵車手 VI》（Grand Theft Auto VI）大型發行前兩週推出。雖然競爭對手主打極致的寫實主義與暴力主題，但這款薩爾達重製版在加入不可思議細節的同時，仍保留了原作卡通化的美學。角色穿著手工縫製的織物與皮革，生物則呈現出複雜的質感。"
     },
     {
-     "en": "In contrast to the huge visual makeover, the gameplay mechanics remain mostly traditional. Nintendo chose not to change the core elements that originally revolutionized 3D gaming. Nevertheless, players will notice helpful modern touches, such as a menu quest log called Threads of Time and an interface similar to Breath of the Wild.",
-     "zh": "與巨大的視覺改造相比，遊戲的操作機制大多保持傳統。任天堂選擇不改變最初徹底變革 3D 遊戲的核心要素。儘管如此，玩家仍會注意到一些實用的現代化設計，例如名為「Threads of Time」的選單任務日誌，以及類似於《曠野之息》的使用者介面。"
+     "en": "During a preview event, a player explored areas like Kokiri Forest and Hyrule Field, noting that clever lighting makes the world feel surprisingly vast. Castle Town also appears much busier, filled with banners and flowers. However, the rich visual details can sometimes overwhelm the eye, making it slightly difficult to navigate through complex dungeons without missing important items.",
+     "zh": "在預覽活動期間，一名玩家探索了科奇利森林（Kokiri Forest）與海拉爾平原（Hyrule Field）等區域，並指出巧妙的燈光讓世界感覺大得驚人。城堡鎮（Castle Town）也顯得更加熱鬧，充滿了旗幟與花朵。然而，豐富的視覺細節有時會讓人應接不暇，在沒有漏掉重要道具的情況下，要穿越複雜的地城會變得稍微困難。"
     },
     {
-     "en": "The controls also introduce manual jumping and sprinting, making movement smoother and enabling players to take clever shortcuts. Even with these new options, the game remains a focused, linear adventure rather than a vast open world. You can still switch back to the classic automatic jumping if you prefer nostalgia.",
-     "zh": "控制方面也加入了手動跳躍與衝刺功能，使動作更加流暢，並讓玩家能夠利用巧妙的捷徑。即便有了這些新選項，這款遊戲依然是一場聚焦的線性冒險，而非廣闊的開放世界。如果你更偏好懷舊感，依然可以切換回經典的自動跳躍模式。"
+     "en": "Regarding mechanical updates, Nintendo kept changes relatively modest. The developer added a user interface similar to recent series entries and introduced a quest log in the menu. Furthermore, players can now use a manual jump and a button to sprint, which helps them move quickly across the linear adventure without constantly rolling around.",
+     "zh": "在機制更新方面，任天堂保持了相對保守的做法。開發商加入了類似近期系列作品的使用者介面，並在選單中引入了任務日誌。此外，玩家現在可以使用手動跳躍以及衝刺按鈕，這有助於他們在這趟線性冒險中快速移動，而不必一直翻滾。"
     },
     {
-     "en": "Overall, launching this polished remake is a brilliant strategic move before the Zelda movie arrives. With extraordinary production values, Nintendo aims to attract both veteran gamers and curious newcomers. While the game is visually stunning, players will soon discover whether its updated journey feels just as rewarding as the original.",
-     "zh": "整體而言，在薩爾達電影上映前推出這款精緻的重製版是一項高明的策略。憑藉極高的製作水準，任天堂旨在同時吸引資深老玩家與好奇的新手。雖然這款遊戲在視覺上令人驚豔，但玩家很快就能發現其翻新後的旅程是否如原作般令人感到充實與值得。"
+     "en": "With the movie debut approaching, this remake is seen as a smart choice to attract both longtime fans and new players. The high production values reflect Nintendo's new priority of giving careful attention to both animation and gameplay, though players will need more than a short session to fully judge the deep quality of the experience.",
+     "zh": "隨著電影上映日期的逼近，這款重製版被視為吸引老粉絲與新玩家的明智選擇。高製作水準反映了任天堂的新優先事項，也就是對動畫與遊戲玩法都給予細心的關注，儘管玩家需要超過一場短暫的體驗才能完全評判其深層品質。"
     }
    ],
-   "words": 283,
+   "words": 280,
+   "v": 2,
    "vocab": [
     {
-     "word": "masterpiece",
+     "word": "aesthetic",
      "pos": "n.",
-     "zh": "傑作、名作"
-    },
-    {
-     "word": "alternative",
-     "pos": "n.",
-     "zh": "替代選擇、方案"
-    },
-    {
-     "word": "ornate",
-     "pos": "adj.",
-     "zh": "華麗的、裝飾繁複的"
+     "zh": "美學、審美觀"
     },
     {
      "word": "overwhelm",
@@ -1311,156 +1267,131 @@
      "zh": "使應接不暇、壓倒"
     },
     {
-     "word": "traditional",
+     "word": "modest",
      "pos": "adj.",
-     "zh": "傳統的"
+     "zh": "適度的、保守的"
     },
     {
-     "word": "interface",
-     "pos": "n.",
-     "zh": "介面"
-    },
-    {
-     "word": "linear",
-     "pos": "adj.",
-     "zh": "線性的、單線發展的"
-    },
-    {
-     "word": "strategic",
-     "pos": "adj.",
-     "zh": "策略性的、戰略的"
+     "word": "sprint",
+     "pos": "v.",
+     "zh": "衝刺、急跑"
     }
    ],
    "phrases": [
     {
-     "phrase": "box-office success",
-     "zh": "票房成功"
-    },
-    {
-     "phrase": "in contrast to",
-     "zh": "與……形成對比"
-    },
-    {
-     "phrase": "similar to",
-     "zh": "與……相似"
-    },
-    {
-     "phrase": "switch back to",
-     "zh": "切換回……"
-    },
-    {
-     "phrase": "production values",
-     "zh": "製作水準、製作價值"
+     "phrase": "stand out",
+     "zh": "脫穎而出、顯眼"
     }
    ],
    "grammar": [
     {
-     "point": "不定詞表目的 (Infinitive of Purpose)",
-     "explain": "使用不定詞片語「to + 原形動詞」置於句首作副詞，用以表示主要子句動作的目的或原因。",
-     "example": "To keep fans excited, the company is releasing a remake of its 1998 masterpiece, The Legend of Zelda: Ocarina of Time, for the Switch 2 on November 5."
+     "point": "關係代名詞子句 (Relative clause)",
+     "explain": "說明用來修飾前方名詞「items」的形容詞子句結構。",
+     "example": "making it slightly difficult to navigate through complex dungeons without missing important items.",
+     "focus": "without missing important items"
     },
     {
-     "point": "讓步副詞子句 (Adverb Clause of Concession with While)",
-     "explain": "連接詞 while 可引導讓步副詞子句，表示「雖然、儘管」，用以對比兩個同時存在的情況或事實。",
-     "example": "While other game publishers are avoiding this release window to dodge Grand Theft Auto VI, Nintendo offers a family-friendly alternative to that crime epic."
-    },
-    {
-     "point": "分詞構句 (Participle Clause)",
-     "explain": "逗號後使用現在分詞片語簡化對等子句，用以表達主句動作所帶來的伴隨狀況或接續結果。",
-     "example": "The controls also introduce manual jumping and sprinting, making movement smoother and enabling players to take clever shortcuts."
+     "point": "分詞構句 (Participial clause)",
+     "explain": "說明由逗號隔開、沒有連接詞且以現在分詞開頭的附帶狀況子句。",
+     "example": "Castle Town also appears much busier, filled with banners and flowers.",
+     "focus": "filled with banners and flowers"
     }
    ],
-   "model": "gemini-flash-latest"
+   "model": "gemini-flash-lite-latest"
   },
   {
    "link": "https://lite.cnn.com/2026/10/14/sport/manchester-city-psg-champions-league",
    "source": "CNN",
    "topic": "Sports",
    "title": "Defiance or denial? Inside Manchester City’s bubble, decked with inflatable bananas",
-   "title_zh": "反抗還是逃避？直擊曼城滿是充氣香蕉的自我世界",
+   "title_zh": "反叛還是否認？曼城泡泡裡充斥著充氣香蕉",
    "paragraphs": [
     {
-     "en": "Manchester City recently faced severe criticism after being found guilty of over 100 charges concerning financial breaches. While many critics called the English club cheaters, team leaders denied the accusations, appealed the decision, and claimed they were victims of an unfair hunt. However, inside Etihad Stadium before a Champions League match against Paris Saint-Germain (PSG), the atmosphere felt like an alternative world where nothing was wrong.",
-     "zh": "曼徹斯特城隊（曼城）在被判定違反100多項財務指控後，近期面臨嚴厲的批評。儘管許多批評者稱這支英格蘭俱樂部為騙子，但球隊高層否認了指控、提出上訴，並堅稱自己是不公搜捕下的受害者。然而，在伊蒂哈德球場對陣巴黎聖日耳曼（PSG）的歐冠比賽前，球場內的氣氛宛如一個一切正常的另類世界。"
+     "en": "Manchester City recently played against Paris Saint-Germain at the Etihad Stadium while facing major controversy. The Premier League club has been found guilty of over one hundred financial breaches and has received harsh criticism. However, the club continues to maintain its innocence and insists it is the victim of unfair treatment.",
+     "zh": "曼徹斯特城足球俱樂部最近在伊蒂哈德球場對陣巴黎聖日耳曼，同時面臨重大爭議。這家英格蘭超級聯賽俱樂部被判定違反了一百多項財務規定，並受到嚴厲批評。然而，該俱樂部繼續堅稱自己清白，並堅持認為自己是不公平對待的受害者。"
     },
     {
-     "en": "Instead of crying over potential punishments like point deductions or relegation, supporters displayed strong optimism. Hundreds of inflatable yellow bananas appeared among the crowd. This unique tradition started in the 1980s when the club was relegated to a lower division, and fans created funny nicknames to lighten the mood. Decades later, these toy bananas served as symbols of humor and loyalty during this modern crisis.",
-     "zh": "球迷們沒有因為積分扣除或遭到降級等潛在處罰而哭泣，反而展現出強烈的樂觀態度。數百個充氣黃色香蕉出現在人群之中。這個獨特的傳統始於1980年代，當時該俱樂部降級至次級聯賽，球迷便透過取搞笑綽號來緩和氣氛。數十年後，這些玩具香蕉在當前的危機中，成為幽默與忠誠的象徵。"
+     "en": "Inside the stadium, the atmosphere felt entirely detached from the external trouble. Manager Enzo Maresca and the players have publicly stayed united behind the club ownership. Supporters also embraced their new reputation as villains, filling the stands with optimism and hundreds of yellow inflatable bananas as a historical callback to the 1980s.",
+     "zh": "在球場內，這種氣氛讓人感覺完全脫離了外部的麻煩。總教練恩佐·馬雷斯卡和球員們公開團結在俱樂部所有權背後。支持者也接受了他們作為反派的新形象，用樂觀情緒和數百個黃色充氣香蕉填滿了看台，作為對1980年代歷史的回顧。"
     },
     {
-     "en": "During the match, City suffered a painful 4-2 loss to PSG, but the fans continued to support their players. Interestingly, PSG manager Luis Enrique expressed rare support, hoping City would avoid harsh sanctions. Former manager Pep Guardiola, who recently left after winning many trophies, was also seen in the stands. His sudden return gave fans a reason to cheer and encouraged everyone to trust the club's leadership.",
-     "zh": "比賽期間，曼城以2比4慘敗給PSG，但球迷仍持續為球員打氣。有趣的是，PSG總教練路易斯·恩里克表達了罕見的支持，希望曼城能免於嚴厲的制裁。在帶領球隊拿下諸多獎盃後剛於今夏離隊的前教練佩普·瓜迪奧拉也現身看台。他的驚喜現身讓球迷大聲歡呼，並鼓勵大家要信任俱樂部的領導層。"
+     "en": "During the match, Paris Saint-Germain was supported by their manager Luis Enrique, who expressed hope that Manchester City would avoid severe penalties. Meanwhile, former manager Pep Guardiola returned to the stadium to show strong support for unity. Despite a four to two defeat, the club and its fans maintained a cheerful appearance.",
+     "zh": "比賽期間，巴黎聖日耳曼得到了他們的總教練路易斯·恩rique的支持，他表達了希望曼徹斯特城能避免嚴厲處罰的願望。同時，前總教練佩普·瓜迪奧拉重返球場，對團結表現出強烈支持。儘管以四比二落敗，該俱樂部及其球迷仍保持著歡快的表象。"
     },
     {
-     "en": "Nevertheless, stepping outside the stadium brings harsh realities back into view. When reporters asked difficult questions, supporters simply answered that people should wait for the appeal. Yet, ignoring serious accusations cannot make them disappear. As City continues to play domestic matches against rivals who want justice, the club faces its greatest test, and no amount of plastic toys can guarantee safety.",
-     "zh": "儘管如此，走出球場外，殘酷的現實便再度浮現。當記者提出棘手的問題時，球迷們僅簡單回應大家應該等待上訴結果。然而，忽視嚴重的指控並不能使問題消失。隨著曼城繼續在國內賽事中面對渴望伸張正義的對手，該俱樂部正面臨嚴峻考驗，而再多的塑膠玩具也無法保證安全過關。"
+     "en": "Once people step outside the stadium, reality quickly returns. Fans mostly refuse to discuss the legal charges and simply tell reporters to wait for the appeal. Experts note that as long as the appeal process continues, the club will continue to face serious tests during every upcoming league match.",
+     "zh": "一旦人們走出球場，現實很快就會回歸。球迷大多拒絕討論法律指控，只是告訴記者等待上訴。專家指出，只要上訴程序繼續進行，該俱樂部將在每一場即將到來的聯賽中繼續面臨嚴峻考驗。"
     }
    ],
-   "words": 259,
+   "words": 204,
+   "v": 2,
    "vocab": [
     {
-     "word": "criticism",
+     "word": "controversy",
      "pos": "n.",
-     "zh": "批評"
+     "zh": "爭議"
     },
     {
-     "word": "financial",
-     "pos": "adj.",
-     "zh": "財務的，金融的"
-    },
-    {
-     "word": "unique",
-     "pos": "adj.",
-     "zh": "獨特的"
-    },
-    {
-     "word": "crisis",
+     "word": "breach",
      "pos": "n.",
-     "zh": "危機"
+     "zh": "違反"
     },
     {
-     "word": "severe",
-     "pos": "adj.",
-     "zh": "嚴厲的，嚴重的"
+     "word": "innocence",
+     "pos": "n.",
+     "zh": "無罪"
     },
     {
-     "word": "guarantee",
-     "pos": "v.",
-     "zh": "保證，擔保"
+     "word": "optimism",
+     "pos": "n.",
+     "zh": "樂觀"
+    },
+    {
+     "word": "penalty",
+     "pos": "n.",
+     "zh": "處罰"
+    },
+    {
+     "word": "reality",
+     "pos": "n.",
+     "zh": "現實"
     }
    ],
    "phrases": [
     {
-     "phrase": "guilty of",
-     "zh": "有…罪的；犯有…的"
+     "phrase": "stay united",
+     "zh": "保持團結"
     },
     {
-     "phrase": "lighten the mood",
-     "zh": "緩和氣氛，放鬆心情"
+     "phrase": "step outside",
+     "zh": "走出去"
     },
     {
      "phrase": "wait for",
-     "zh": "等待…"
+     "zh": "等待"
     }
    ],
    "grammar": [
     {
      "point": "被動語態 (Passive Voice)",
-     "explain": "用於強調動作的接受者而非執行者，結構為「be動詞 + 過去分詞」。",
-     "example": "Manchester City recently faced severe criticism after being found guilty of over 100 charges concerning financial breaches."
+     "explain": "此句使用被動語態「has been found」來表達俱樂部被判定違規的事實，強調受動者。",
+     "example": "The Premier League club has been found guilty of over one hundred financial breaches and has received harsh criticism.",
+     "focus": "has been found"
     },
     {
-     "point": "非限定關係子句 (Non-defining Relative Clause)",
-     "explain": "使用逗號隔開關係代名詞 who 引導的子句，為先行詞提供補充說明，省略後主要子句仍語意完整。",
-     "example": "Former manager Pep Guardiola, who recently left after winning many trophies, was also seen in the stands."
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "此句使用關係代名詞「who」引導形容詞子句，用來修飾巴黎聖日耳曼的總教練路易斯·恩rique。",
+     "example": "During the match, Paris Saint-Germain was supported by their manager Luis Enrique, who expressed hope that Manchester City would avoid severe penalties.",
+     "focus": "who expressed hope that Manchester City would avoid severe penalties"
     },
     {
-     "point": "動名詞當主詞 (Gerund as Subject)",
-     "explain": "將動詞加上 -ing 轉變為名詞功能，在句中作主詞使用，視為單數。",
-     "example": "Yet, ignoring serious accusations cannot make them disappear."
+     "point": "不定詞作目的副詞 (Infinitive of Purpose)",
+     "explain": "此句使用不定詞片語「to show strong support for unity」來表達前總教練重返球場的目的。",
+     "example": "Meanwhile, former manager Pep Guardiola returned to the stadium to show strong support for unity.",
+     "focus": "to show strong support for unity"
     }
    ],
-   "model": "gemini-flash-latest"
+   "model": "gemini-flash-lite-latest"
   },
   {
    "link": "https://lite.cnn.com/2026/10/14/tech/openai-accuses-former-employee-of-leaking-intel-on-ai-device-to-apple",
@@ -1920,109 +1851,85 @@
    "source": "CNN",
    "topic": "Business",
    "title": "Europe leads the world on AI rules. So why is it missing from the AI safety debate?",
-   "title_zh": "歐洲引領人工智慧規則，為何卻缺席AI安全辯論？",
+   "title_zh": "歐洲在人工智慧規則上領導全球。那麼為什麼它缺席了人工智慧安全辯論？",
    "paragraphs": [
     {
-     "en": "Europe has created the world's first comprehensive set of rules to govern artificial intelligence, yet it is noticeably absent from high-level safety talks. While European lawmakers drafted the AI Act years ago to hold companies accountable, the continent now faces a severe economic and technological disadvantage.",
-     "zh": "歐洲制定了全球第一套全面規範人工智慧的規則，卻明顯缺席了高層安全對話。雖然歐洲立法者多年前就起草了《人工智慧法案》來要求企業負起責任，但該洲目前正面臨嚴重的經濟與技術劣勢。"
+     "en": "Europe has created the world's first comprehensive set of rules to govern artificial intelligence, known as the AI Act. However, the continent remains noticeably absent from high-level global talks about ensuring the safe use of this technology.",
+     "zh": "歐洲制定了全球第一套管理人工智慧的全面規則，被稱為「人工智慧法案」（AI Act）。然而，該洲在確保這項技術安全使用的高階全球會談中，依然顯著地缺席。"
     },
     {
-     "en": "The region struggles to produce tech giants and frontier models that can rival those in the United States and China. European leaders warn that the continent is at acute risk of marginalization because of this widening gap in the global AI race.",
-     "zh": "該地區難以培育出能與美國和中國相媲美的科技巨頭與前沿模型。歐洲領導人警告稱，由於全球AI競賽中這個日益擴大的差距，歐洲正面臨被邊緣化的急迫風險。"
+     "en": "French economist Philippe Aghion warned that Europe faces a high risk of marginalization on the world stage due to rapid advancements in this field. He co-wrote a report suggesting that the region urgently needs a course correction to succeed in the modern era.",
+     "zh": "法國經濟學家菲利普·阿吉翁（Philippe Aghion）警告說，由於該領域的快速進展，歐洲正面臨在世界舞台被邊緣化的巨大風險。他共同撰寫了一份報告，指出該地區迫切需要修正方針才能在現代時代取得成功。"
     },
     {
-     "en": "The European Union's strict regulations, including the AI Act, are intended to put guardrails in place and protect user data. However, the law has proven difficult to enforce, and several member states have not yet established authorities to police compliance.",
-     "zh": "歐盟的嚴格法規（包括《人工智慧法案》）旨在建立防護欄並保護用戶數據。然而，事實證明該法律難以執行，幾個成員國尚未建立機構來監督合規性。"
+     "en": "Unlike Silicon Valley in the United States, Europe struggles to foster major technology giants and lacks frontier models that can match popular tools from other nations. European Central Bank president Christine Lagarde described this awkward situation as a difficult choice between holding back economic growth and becoming overly dependent on foreign technology.",
+     "zh": "與美國的矽谷不同，歐洲難以孕育出大型科技巨頭，且缺乏能與其他國家的熱門工具相匹敵的前沿模型。歐洲中央銀行（European Central Bank）總裁克里斯蒂娜·拉加德（Christine Lagarde）將這種尷尬處境形容為在阻礙經濟增長與過度依賴外國技術之間做出艱難抉擇。"
     },
     {
-     "en": "Furthermore, these complex regulatory systems have caused significant delays in the rollout of new AI products. Many local firms cite a lack of clarity and fear of heavy fines as major reasons for choosing not to adopt AI.",
-     "zh": "此外，這些複雜的監管系統導致新AI產品的推出嚴重延遲。許多當地企業指出，缺乏明確性以及對重罰的擔憂，是選擇不採用AI的主要原因。"
+     "en": "The newly established AI Act sets strict requirements for data quality and cybersecurity, allowing officials to issue massive fines for non-compliance. While leaders believe these guardrails are vital, the law has made it harder for companies to release new products quickly.",
+     "zh": "新建立的人工智慧法案對資料品質和網路安全設定了嚴格要求，允許官員對違規行為開出鉅額罰款。雖然領導人認為這些安全護欄至關重要，但該法律卻讓企業更難迅速推出新產品。"
     },
     {
-     "en": "Aside from regulation, a massive lack of private investment and infrastructure remains a major barrier. Despite these obstacles, some experts remain optimistic that Europe's deep industrial expertise will eventually help its tech industry thrive.",
-     "zh": "除了監管之外，私人投資與基礎設施的嚴重缺乏仍然是一大障礙。儘管存在這些阻礙，一些專家仍然保持樂觀，認為歐洲深厚的工業專業知識最終將有助於其科技產業蓬勃發展。"
+     "en": "Surveys show that strict legal rules and unclear consequences make many local firms hesitant to adopt new systems. To ease these heavy burdens, officials have recently extended implementation timelines and watered down certain requirements.",
+     "zh": "調查顯示，嚴格的法律規則與不明確的後果使得許多當地企業對採用新系統感到猶豫。為了減輕這些沉重的負擔，官員們最近延長了實施時間表並放寬了某些要求。"
+    },
+    {
+     "en": "Despite these regulatory hurdles, some experts remain hopeful about Europe's future. They point out that the continent possesses deep industrial expertise and high-quality domain data, which could ultimately create immense economic value.",
+     "zh": "儘管存在這些監管障礙，一些專家對歐洲的未來仍保持希望。他們指出，該洲擁有深厚的工業專業知識與高品質的領域資料，這最終可能會創造巨大的經濟價值。"
     }
    ],
-   "words": 200,
+   "words": 239,
+   "v": 2,
    "vocab": [
     {
      "word": "comprehensive",
      "pos": "adj.",
-     "zh": "全面的、綜合的"
+     "zh": "全面的"
     },
     {
-     "word": "noticeably",
-     "pos": "adv.",
-     "zh": "顯著地、明顯地"
-    },
-    {
-     "word": "accountable",
-     "pos": "adj.",
-     "zh": "負有責任的"
-    },
-    {
-     "word": "disadvantage",
+     "word": "marginalization",
      "pos": "n.",
-     "zh": "劣勢、不利條件"
+     "zh": "邊緣化"
     },
     {
-     "word": "regulations",
+     "word": "compliance",
      "pos": "n.",
-     "zh": "法規、規章"
+     "zh": "遵守"
     },
     {
-     "word": "enforce",
-     "pos": "v.",
-     "zh": "執行、實施"
-    },
-    {
-     "word": "significant",
-     "pos": "adj.",
-     "zh": "重大的、顯著的"
-    },
-    {
-     "word": "barrier",
+     "word": "expert",
      "pos": "n.",
-     "zh": "障礙、屏障"
+     "zh": "專家"
     }
    ],
    "phrases": [
     {
-     "phrase": "absent from",
-     "zh": "缺席、不在"
+     "phrase": "on the world stage",
+     "zh": "在世界舞台上"
     },
     {
-     "phrase": "at acute risk of",
-     "zh": "處於……的急迫風險中"
-    },
-    {
-     "phrase": "put guardrails in place",
-     "zh": "建立防護機制（或防護欄）"
-    },
-    {
-     "phrase": "proven difficult to",
-     "zh": "證明很難……"
-    },
-    {
-     "phrase": "remain optimistic",
-     "zh": "保持樂觀"
+     "phrase": "hold back",
+     "zh": "阻礙"
     }
    ],
    "grammar": [
     {
-     "point": "分詞構句作原因 (Participle Clause)",
-     "explain": "使用現在分詞片語來表達原因，簡化副詞子句。",
-     "example": "European leaders warn that the continent is at acute risk of marginalization because of this widening gap in the global AI race."
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "用關代 which 引導子句來修飾前面的先行詞 tools，補充說明其來源。",
+     "example": "He co-wrote a report suggesting that the region urgently needs a course correction to succeed in the modern era.",
+     "focus": "that the region urgently needs"
     },
     {
-     "point": "不定詞作目的 (Infinitive of Purpose)",
-     "explain": "使用「to + 原形動詞」來表達做某事的目的或意圖。",
-     "example": "While European lawmakers drafted the AI Act years ago to hold companies accountable, the continent now faces a severe economic and technological disadvantage."
+     "point": "被動語態 (Passive Voice)",
+     "explain": "使用「be動詞 + 過去分詞」結構來表示主詞 faces 承受被邊緣化的風險（此處 marginalization 為名詞，其動詞型態應用於被動概念）。",
+     "example": "French economist Philippe Aghion warned that Europe faces a high risk of marginalization on the world stage due to rapid advancements in this field.",
+     "focus": "faces a high risk of"
     },
     {
-     "point": "關係代間詞子句 (Relative Clause)",
-     "explain": "使用關係代間詞（如 that 或 which）引導形容詞子句來修飾前面的名詞。",
-     "example": "The region struggles to produce tech giants and frontier models that can rival those in the United States and China."
+     "point": "不定詞表目的 (Infinitive of Purpose)",
+     "explain": "用 to 加原形動詞來表達為了成功而必須進行修正的目的。",
+     "example": "He co-wrote a report suggesting that the region urgently needs a course correction to succeed in the modern era.",
+     "focus": "to succeed in the modern era"
     }
    ],
    "model": "gemini-flash-lite-latest"
