@@ -8,6 +8,7 @@ on:
     paths:
       - "scripts/fetch_news.py"
       - "scripts/make_lessons.py"
+      - "scripts/article_text.py"
       - ".github/workflows/news.yml"
 
 permissions:
@@ -27,9 +28,10 @@ jobs:
           python-version: "3.12"
       - name: Fetch headlines
         run: python3 scripts/fetch_news.py news.json
-      - name: Write AI lessons (only if the ANTHROPIC_API_KEY secret is set)
+      - name: Write full study articles (only if the ANTHROPIC_API_KEY secret is set)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LESSON_MODEL: ${{ vars.LESSON_MODEL }}
         run: |
           if [ -z "$ANTHROPIC_API_KEY" ]; then echo "No ANTHROPIC_API_KEY secret; skipping AI lessons."; exit 0; fi
           pip install --quiet "anthropic>=1.14,<2"

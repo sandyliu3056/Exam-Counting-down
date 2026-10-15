@@ -517,24 +517,41 @@
   function vocabEntry(word) { const lw = word.toLowerCase(); return VOCAB.find(x => x.word.toLowerCase() === lw) || findWord(word); }
   function saveWordBtn(word, pos, zh, ex) {
     const v = vocabEntry(word), on = v && isBm('vocab', v.id);
-    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}">${on ? '★' : '☆'}</button>`;
+    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}" aria-pressed="${!!on}">${on ? '★' : '☆'}</button>`;
   }
   const sentenceWith = (text, word) => (text.split(/(?<=[.!?])\s+/).find(s => termRe(word).test(s)) || '').trim();
-  function lessonView(les) {
-    const terms = les.vocab.map(v => ({ re: termRe(v.word), cls: 'lw', title: v.zh })).concat(les.phrases.map(p => ({ re: termRe(p.phrase), cls: 'lp', title: p.zh })));
-    const paras = les.passage.split(/\n\s*\n/).map(p => `<p>${markTerms(p, terms)}</p>`).join('');
-    return `<article class="card lesson-card">
-      <div class="news-meta"><span class="news-src ${SRC_CLASS[les.source] || ''}">${esc(les.source)}</span>${les.topic ? `<span class="chip">${esc(les.topic)}</span>` : ''}<span class="chip ai-chip">✍️ ${t('lessonBadge')}</span><span class="small muted">${tf('lessonWords', { n: les.passage.split(/\s+/).filter(Boolean).length })}</span></div>
-      <h3 class="lesson-title en">${esc(les.title)}</h3>
-      ${les.title_zh ? `<p class="lesson-title-zh">${esc(les.title_zh)}</p>` : ''}
-      <div class="lesson-passage en">${paras}</div>
-      <div class="row"><button class="btn sm" data-action="speak" data-word="${esc(les.passage)}">🔊 ${t('lessonListen')}</button><button class="btn sm ghost" data-action="speakStop">⏹</button><span class="spacer"></span><a class="btn sm ghost" href="${esc(les.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(les.source) })} ↗</a></div>
-      <div class="lesson-grid">
-        <section class="lesson-box lb-words"><h4>🔤 ${t('lessonVocab')}</h4><ul>${les.vocab.map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(les.passage, v.word))}</li>`).join('')}</ul></section>
-        <section class="lesson-box lb-phrases"><h4>🧩 ${t('lessonPhrases')}</h4><ul>${les.phrases.map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
-        <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${les.grammar.map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${esc(g.example)}”</p></div>`).join('')}</section>
-      </div>
-    </article>`;
+  // Lessons saved before translations existed have one "passage" string instead of paragraphs
+  const lessonParas = les => les.paragraphs || String(les.passage || '').split(/\n\s*\n/).filter(Boolean).map(en => ({ en, zh: '' }));
+  function newsLessons() {
+    const items = (news.data && news.data.items) || [], links = new Set(items.map(i => i.link));
+    return ((news.data && news.data.lessons) || []).filter(l => links.has(l.link) && lessonParas(l).length);
+  }
+  function newsReader(les) {
+    const paras = lessonParas(les), full = paras.map(p => p.en).join('\n\n');
+    const showZh = view.newsZh !== false, hasZh = paras.some(p => p.zh);
+    const terms = (les.vocab || []).map(v => ({ re: termRe(v.word), cls: 'lw', title: v.zh })).concat((les.phrases || []).map(p => ({ re: termRe(p.phrase), cls: 'lp', title: p.zh })));
+    const item = ((news.data && news.data.items) || []).find(i => i.link === les.link) || {};
+    return `<div class="row reader-nav" style="margin:8px auto 12px"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>
+      <article class="card news-reader">
+        <div class="news-meta"><span class="news-src ${SRC_CLASS[les.source] || ''}">${esc(les.source)}</span>${les.topic ? `<span class="chip">${esc(les.topic)}</span>` : ''}<span class="small muted">${tf('lessonWords', { n: les.words || full.split(/\s+/).filter(Boolean).length })}${item.date ? ' · ' + ago(item.date) : ''}</span></div>
+        <h2 class="reader-title en">${esc(les.title)}</h2>
+        ${les.title_zh ? `<p class="reader-title-zh">${esc(les.title_zh)}</p>` : ''}
+        <div class="reader-tools">
+          <button class="btn sm accent" data-action="speak" data-word="${esc(full)}">🔊 ${t('lessonListen')}</button><button class="btn sm ghost" data-action="speakStop" aria-label="${t('newsStop')}">⏹</button>
+          ${hasZh ? `<div class="seg" role="group" aria-label="${t('newsTransLabel')}"><button class="seg-btn ${showZh ? 'on' : ''}" data-action="newsZh" data-v="1" aria-pressed="${showZh}">${t('newsBoth')}</button><button class="seg-btn ${!showZh ? 'on' : ''}" data-action="newsZh" data-v="0" aria-pressed="${!showZh}">${t('newsEnOnly')}</button></div>` : ''}
+        </div>
+        <div class="reader-body">${paras.map((p, i) => `<div class="rp">
+          <p class="rp-en en"><button class="rp-say" data-action="speak" data-word="${esc(p.en)}" aria-label="${t('lessonListen')} ${i + 1}">🔊</button>${markTerms(p.en, terms)}</p>
+          ${p.zh && showZh ? `<p class="rp-zh">${esc(p.zh)}</p>` : ''}
+        </div>`).join('')}</div>
+        <p class="small muted reader-note">✍️ ${tf('newsRetold', { s: esc(les.source) })} <a href="${esc(les.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(les.source) })} ↗</a></p>
+        <div class="lesson-grid">
+          <section class="lesson-box lb-words"><h4>🔤 ${t('lessonVocab')}</h4><ul>${(les.vocab || []).map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(full, v.word))}</li>`).join('')}</ul></section>
+          <section class="lesson-box lb-phrases"><h4>🧩 ${t('lessonPhrases')}</h4><ul>${(les.phrases || []).map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
+          <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${esc(g.example)}”</p></div>`).join('')}</section>
+        </div>
+      </article>
+      <div class="row reader-nav" style="margin:12px auto 0"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>`;
   }
   // Show about 70 characters on each side of a match, cut at word boundaries
   function clipAround(str, s, e, pad = 70) {
@@ -543,24 +560,17 @@
     if (b < str.length) { const k = str.lastIndexOf(' ', b); b = k > e ? k : b; }
     return { a, b, pre: a > 0 ? '…' : '', post: b < str.length ? '…' : '' };
   }
-  function studyPanel(it, les, i) {
+  function studyPanel(it) {
     const a = analyzeStory(it);
     const text = [it.title, it.summary].filter(Boolean).join(' ');
     const none = !a.words.length && !a.phrases.length && !a.grammar.length;
     return `<div class="study-panel">
-      ${les ? `<button class="btn sm accent" data-action="openLesson" data-link="${esc(it.link)}">✍️ ${t('studyOpenLesson')}</button>` : ''}
       ${a.words.length ? `<div class="study-sec"><b>🔤 ${t('lessonVocab')}</b><ul>${a.words.map(({ v, form }) => `<li><span class="lw-word en">${esc(v.word)}</span>${form.toLowerCase() !== v.word ? ` <span class="small muted en">(${esc(form)})</span>` : ''} <span class="small muted">${esc(v.pos || '')} · ${esc(v.cefr || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, text)}</li>`).join('')}</ul></div>` : ''}
       ${a.phrases.length ? `<div class="study-sec"><b>🧩 ${t('lessonPhrases')}</b><ul>${a.phrases.map(p => `<li><span class="lp-word en">${esc(p.v.word)}</span> <span class="lw-zh">${esc(p.v.zh)}</span></li>`).join('')}</ul></div>` : ''}
       ${a.grammar.length ? `<div class="study-sec"><b>📐 ${t('lessonGrammar')}</b>${a.grammar.map(g => { const w = clipAround(g.sentence, g.s, g.e); return `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${w.pre}${esc(g.sentence.slice(w.a, g.s))}<mark>${esc(g.sentence.slice(g.s, g.e))}</mark>${esc(g.sentence.slice(g.e, w.b))}${w.post}”</p></div>`; }).join('')}</div>` : ''}
       ${none ? `<p class="small muted">${t('studyNone')}</p>` : ''}
       <p class="small muted study-foot">${t('studyAuto')}</p>
     </div>`;
-  }
-  function lessonsSection(lessons) {
-    if (!lessons.length) return `<div class="card lesson-empty"><b>✍️ ${t('lessonsTitle')}</b><p class="small muted" style="margin:6px 0 0">${t(ui.teacher ? 'lessonsNoneTeacher' : 'lessonsNone')}</p></div>`;
-    const idx = Math.min(view.lessonIdx || 0, lessons.length - 1);
-    return `<div class="lesson-tabs" role="tablist">${lessons.map((l, i) => `<button class="lesson-tab ${i === idx ? 'on' : ''}" role="tab" aria-selected="${i === idx}" data-action="lessonPick" data-i="${i}"><span class="lt-n">${i + 1}</span><span class="lt-t en">${esc(l.title)}</span></button>`).join('')}</div>
-      ${lessonView(lessons[idx])}`;
   }
   function ago(iso) {
     if (!iso) return '';
@@ -571,27 +581,27 @@
   function pageNews() {
     if (news.status === 'idle') loadNews();
     const items = (news.data && news.data.items) || [];
-    const links = new Set(items.map(i => i.link));
-    const lessons = ((news.data && news.data.lessons) || []).filter(l => links.has(l.link) && l.passage);
-    const lessonOf = {}; lessons.forEach(l => { lessonOf[l.link] = l; });
+    const lessons = newsLessons(), lessonOf = {}; lessons.forEach(l => { lessonOf[l.link] = l; });
+    if (view.newsArticle && lessonOf[view.newsArticle]) return newsReader(lessonOf[view.newsArticle]);
     const sources = Array.from(new Set(items.map(i => i.source)));
-    const shown = items.map((it, i) => [it, i]).filter(([it]) => !news.source || it.source === news.source);
+    // stories with a full article come first (in the order they were picked), then the other headlines
+    const order = l => { const k = lessons.findIndex(x => x.link === l); return k < 0 ? lessons.length : k; };
+    const shown = items.map((it, i) => [it, i]).filter(([it]) => !news.source || it.source === news.source).sort((a, b) => order(a[0].link) - order(b[0].link) || a[1] - b[1]);
     const open = view.newsOpen || (view.newsOpen = {});
     const upd = news.data && news.data.updated ? news.data.updated.slice(0, 16).replace('T', ' ').replace(/-/g, '/') : '';
     let body;
     if (news.status === 'loading' || news.status === 'idle') body = `<p class="muted">${t('newsLoading')}</p>`;
     else if (!items.length) body = `<div class="card news-empty">📭 ${t('newsEmpty')}</div>`;
-    else body = `<h2 class="section-title" id="lessonTop" style="margin-top:12px">✍️ ${t('lessonsTitle')}</h2><p class="section-sub">${t('lessonsSub')}</p>
-      ${lessonsSection(lessons)}
-      <h2 class="section-title">🗞️ ${t('newsHeadlines')}</h2><p class="section-sub">${t('newsHeadlinesSub')}</p>
-      <div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${upd} UTC</span>` : ''}</div>
-      <div class="news-list">${shown.map(([it, i]) => `<article class="news-card${open[i] ? ' open' : ''}">
-        <div class="news-meta"><span class="news-src ${SRC_CLASS[it.source] || ''}">${esc(it.source)}</span><span class="chip">${esc(it.topic || '')}</span>${lessonOf[it.link] ? `<span class="chip ai-chip">✍️ ${t('lessonBadge')}</span>` : ''}<span class="small muted">${ago(it.date)}</span></div>
-        <h3 class="news-title en"><a href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${highlightWords(it.title)}</a></h3>
+    else body = `<div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${upd} UTC</span>` : ''}</div>
+      ${!lessons.length ? `<p class="small muted news-nolesson">📖 ${t(ui.teacher ? 'lessonsNoneTeacher' : 'lessonsNone')}</p>` : ''}
+      <div class="news-list">${shown.map(([it, i]) => { const les = lessonOf[it.link]; return `<article class="news-card${les ? ' has-article' : ''}${open[i] ? ' open' : ''}">
+        <div class="news-meta"><span class="news-src ${SRC_CLASS[it.source] || ''}">${esc(it.source)}</span><span class="chip">${esc(it.topic || '')}</span>${les ? `<span class="chip ai-chip">📖 ${t('newsFullBadge')}</span>` : ''}<span class="small muted">${ago(it.date)}</span></div>
+        <h3 class="news-title en">${les ? `<button class="news-title-btn" data-action="openNewsArticle" data-link="${esc(it.link)}">${highlightWords(it.title)}</button>` : `<a href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${highlightWords(it.title)}</a>`}</h3>
+        ${les && les.title_zh ? `<p class="news-title-zh">${esc(les.title_zh)}</p>` : ''}
         ${it.summary ? `<p class="news-sum en">${esc(it.summary)}</p>` : ''}
-        <div class="row"><button class="btn sm study-btn ${open[i] ? 'accent' : ''}" data-action="newsStudy" data-i="${i}" aria-expanded="${!!open[i]}">📘 ${t('studyBtn')}</button><a class="btn sm ghost" href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(it.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(it.title)}" aria-label="${t('lessonListen')}">🔊</button></div>
-        ${open[i] ? studyPanel(it, lessonOf[it.link], i) : ''}
-      </article>`).join('')}</div>
+        <div class="row">${les ? `<button class="btn sm accent" data-action="openNewsArticle" data-link="${esc(it.link)}">📖 ${t('newsReadFull')}</button>` : `<button class="btn sm study-btn ${open[i] ? 'accent' : ''}" data-action="newsStudy" data-i="${i}" aria-expanded="${!!open[i]}">📘 ${t('studyBtn')}</button>`}<a class="btn sm ghost" href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(it.source) })} ↗</a><button class="btn sm ghost" data-action="speak" data-word="${esc(it.title)}" aria-label="${t('lessonListen')}">🔊</button></div>
+        ${open[i] && !les ? studyPanel(it) : ''}
+      </article>`; }).join('')}</div>
       <p class="small muted">💡 ${t('newsWordHint')}</p>`;
     const CUR = [
       ['CNN 10', 'https://edition.cnn.com/cnn10', 'curCnn10'],
@@ -1057,7 +1067,7 @@
     $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
     const sp = $('#spellInput'); if (sp && !sp.disabled) sp.focus();
   }
-  function nav(page) { view.page = page; window.scrollTo({ top: 0 }); render(); }
+  function nav(page) { if (page === 'news' && view.page === 'news') view.newsArticle = null; view.page = page; window.scrollTo({ top: 0 }); render(); }
 
   /* ---------------- Export / Import ---------------- */
   function download(name, obj) {
@@ -1106,12 +1116,9 @@
     speak(el) { speak(el.dataset.word); },
     newsSource(el) { news.source = el.dataset.src; render(); },
     newsStudy(el) { const o = view.newsOpen || (view.newsOpen = {}); o[el.dataset.i] = !o[el.dataset.i]; render(); },
-    lessonPick(el) { view.lessonIdx = +el.dataset.i; speakStop(); render(); },
-    openLesson(el) {
-      const ls = ((news.data && news.data.lessons) || []).filter(l => (news.data.items || []).some(i => i.link === l.link) && l.passage);
-      const i = ls.findIndex(l => l.link === el.dataset.link); if (i < 0) return;
-      view.lessonIdx = i; render(); const h = document.getElementById('lessonTop'); if (h) h.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    },
+    openNewsArticle(el) { view.newsArticle = el.dataset.link; view.newsScroll = window.scrollY; speakStop(); window.scrollTo({ top: 0 }); render(); },
+    closeNewsArticle() { view.newsArticle = null; speakStop(); render(); window.scrollTo({ top: view.newsScroll || 0 }); },
+    newsZh(el) { view.newsZh = el.dataset.v === '1'; render(); },
     speakStop() { speakStop(); },
     saveNewsWord(el) {
       const d = el.dataset; let v = vocabEntry(d.word);

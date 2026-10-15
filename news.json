@@ -249,7 +249,6 @@
    "topic": "Science",
    "title": "Stop making sense: focus on sounds to help learn a language, study suggests",
    "title_zh": "別急著弄懂意思：研究指出，專注聽聲音有助於學語言",
-   "passage": "Many students learn a new language by memorizing long lists of words. However, a new study suggests that this may not be the best place to start. According to the research, the best language learners hear unfamiliar foreign speech sounds in a special way. They process these sounds more like non-speech sounds instead of trying to make sense of every word right away.\n\nThis idea could be useful for anyone learning English, French or Arabic. Before you worry about the meaning of every sentence, try listening carefully to how the language sounds. Pay attention to its rhythm and the way words are connected. Training your ears in this way may help you understand and speak more naturally. For students preparing for an exam, listening practice is just as important as learning vocabulary.",
    "vocab": [
     {
      "word": "memorizing",
@@ -302,7 +301,18 @@
      "explain": "V-ing 開頭的片語可以當句子的主詞，動詞用單數。",
      "example": "Training your ears in this way may help you understand and speak more naturally."
     }
-   ]
+   ],
+   "paragraphs": [
+    {
+     "en": "Many students learn a new language by memorizing long lists of words. However, a new study suggests that this may not be the best place to start. According to the research, the best language learners hear unfamiliar foreign speech sounds in a special way. They process these sounds more like non-speech sounds instead of trying to make sense of every word right away.",
+     "zh": "許多學生學新語言的方法是背誦一長串單字。然而，一項新研究指出，這可能不是最好的起點。根據這項研究，最厲害的語言學習者聽到不熟悉的外語語音時，會用一種特別的方式去聽。他們處理這些聲音的方式，比較像在聽非語言的聲音，而不是急著想弄懂每一個字的意思。"
+    },
+    {
+     "en": "This idea could be useful for anyone learning English, French or Arabic. Before you worry about the meaning of every sentence, try listening carefully to how the language sounds. Pay attention to its rhythm and the way words are connected. Training your ears in this way may help you understand and speak more naturally. For students preparing for an exam, listening practice is just as important as learning vocabulary.",
+     "zh": "這個觀念對任何學英文、法文或阿拉伯文的人都可能有幫助。在擔心每個句子的意思之前，先試著仔細聽這個語言聽起來是什麼樣子。注意它的節奏，以及字與字之間是怎麼連在一起的。用這種方式訓練耳朵，也許能幫助你更自然地聽懂和說出來。對準備考試的學生來說，練習聽力和背單字一樣重要。"
+    }
+   ],
+   "words": 132
   },
   {
    "link": "https://www.npr.org/2026/10/13/nx-s1-5986256-e1/researchers-are-tracking-monarch-butterflies-to-learn-more-about-their-journey",
@@ -310,7 +320,6 @@
    "topic": "Science",
    "title": "Researchers are tracking Monarch butterflies to learn more about their journey",
    "title_zh": "研究人員追蹤帝王斑蝶，想更了解牠們的遷徙之旅",
-   "passage": "Every autumn, Monarch butterflies begin a long migration to Mexico. Now researchers all over North America are trying to learn more about this amazing journey. They are attaching tiny transmitters to the butterflies as the insects begin to fly south. These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way.\n\nThe researchers also want to understand the challenges the butterflies face during the trip. A long journey like this is not easy for such a small insect. The information they collect could help people protect the places that are important to the butterflies. The study shows how modern technology can help us take care of nature, even something as small and light as a butterfly.",
    "vocab": [
     {
      "word": "migration",
@@ -363,7 +372,18 @@
      "explain": "疑問詞放進句子當受詞時，後面要用「主詞 + 動詞」的直述句語序。",
      "example": "These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way."
     }
-   ]
+   ],
+   "paragraphs": [
+    {
+     "en": "Every autumn, Monarch butterflies begin a long migration to Mexico. Now researchers all over North America are trying to learn more about this amazing journey. They are attaching tiny transmitters to the butterflies as the insects begin to fly south. These small devices send out signals, so scientists can follow the butterflies and find out where they stop along the way.",
+     "zh": "每年秋天，帝王斑蝶都會展開前往墨西哥的漫長遷徙。現在，北美各地的研究人員正努力更了解這段驚人的旅程。他們在蝴蝶開始往南飛的時候，把很小的發報器裝在牠們身上。這些小裝置會發出訊號，讓科學家能追蹤蝴蝶，找出牠們沿途在哪裡停留。"
+    },
+    {
+     "en": "The researchers also want to understand the challenges the butterflies face during the trip. A long journey like this is not easy for such a small insect. The information they collect could help people protect the places that are important to the butterflies. The study shows how modern technology can help us take care of nature, even something as small and light as a butterfly.",
+     "zh": "研究人員也想了解蝴蝶在旅途中會遇到哪些困難。對這麼小的昆蟲來說，這樣長的旅程並不容易。他們蒐集到的資料，可以幫助人們保護對蝴蝶很重要的地方。這項研究顯示，現代科技能幫助我們照顧大自然，即使是像蝴蝶這樣又小又輕的生物也一樣。"
+    }
+   ],
+   "words": 126
   },
   {
    "link": "https://www.npr.org/2026/10/13/nx-s1-6000614/how-colleges-are-creating-programs-for-a-changing-u-s-job-market",
@@ -371,7 +391,6 @@
    "topic": "Education",
    "title": "How colleges are creating programs for a changing U.S. job market",
    "title_zh": "美國大學開設新科系，因應不斷變化的就業市場",
-   "passage": "The job market is changing quickly, and colleges in the United States are changing too. In the last few years, many schools have launched new degree programs in areas such as influencing, artificial intelligence (AI) and health sciences. These programs are designed to attract students who are looking for a new career path.\n\nWhat do these subjects have in common? Colleges see all of them as ways into new kinds of careers. For high school students in Taiwan, this news is a useful reminder. The skills that employers want can change fast, so it is a good idea to keep learning and stay open to new fields. When you choose what to study, think about your interests as well as the future job market.",
    "vocab": [
     {
      "word": "launched",
@@ -424,7 +443,18 @@
      "explain": "be + p.p. 表示主詞「被…」，這裡是課程「被設計來」吸引學生。",
      "example": "These programs are designed to attract students who are looking for a new career path."
     }
-   ]
+   ],
+   "paragraphs": [
+    {
+     "en": "The job market is changing quickly, and colleges in the United States are changing too. In the last few years, many schools have launched new degree programs in areas such as influencing, artificial intelligence (AI) and health sciences. These programs are designed to attract students who are looking for a new career path.",
+     "zh": "就業市場變化很快，美國的大學也跟著改變。過去幾年，許多學校推出了新的學位課程，領域包括網紅經營、人工智慧（AI）和健康科學。這些課程是為了吸引正在尋找新職涯方向的學生而設計的。"
+    },
+    {
+     "en": "What do these subjects have in common? Colleges see all of them as ways into new kinds of careers. For high school students in Taiwan, this news is a useful reminder. The skills that employers want can change fast, so it is a good idea to keep learning and stay open to new fields. When you choose what to study, think about your interests as well as the future job market.",
+     "zh": "這些科目有什麼共同點？大學把它們都看成進入新型態職業的途徑。對台灣的高中生來說，這則新聞是一個很有用的提醒：雇主需要的技能可能變得很快，所以持續學習、對新領域保持開放的態度是個好主意。在選擇要讀什麼的時候，除了考慮未來的就業市場，也要想想自己的興趣。"
+    }
+   ],
+   "words": 124
   }
  ],
  "lessonsDate": "2026-10-15"
