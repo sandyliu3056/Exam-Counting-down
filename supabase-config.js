@@ -10,7 +10,10 @@
    這裡只能放 Project URL 和 anon / publishable key（本來就是公開的）。
    絕對不要放 service_role / secret key。
    ===================================================== */
-window.SUPABASE_CONFIG = null;
+window.SUPABASE_CONFIG = {
+  url: "https://crpcjilxlqcekwmnuoxp.supabase.co",
+  anonKey: "sb_publishable_QkPMsR-MdjAAXTZhdsgIFw_rsOFa7M2"
+};
 
 /* 範例：
 window.SUPABASE_CONFIG = {
