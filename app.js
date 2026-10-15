@@ -34,7 +34,7 @@
     const sv = x => x == null ? x : str(x); // text fields stay text
     const out = Object.assign(emptyProgress(), obj(p));
     out.days = {}; Object.entries(obj(p && p.days)).forEach(([d, n]) => { if (isDay(d)) out.days[d] = Math.max(0, num(n)); });
-    const cards = {}; Object.entries(obj(out.cards)).filter(([id]) => okKey(id)).forEach(([id, c]) => { c = obj(c); cards[id] = Object.assign({}, c, { box: Math.min(3, Math.max(0, Math.round(num(c.box)))), seen: num(c.seen), correct: num(c.correct), wrong: num(c.wrong), last: when(c.last) || null, due: isDay(c.due) ? c.due : todayStr() }); }); out.cards = cards;
+    const cards = {}; Object.entries(obj(out.cards)).filter(([id]) => okKey(id)).forEach(([id, c]) => { c = obj(c); cards[id] = Object.assign({}, c, { first: isDay(c.first) ? c.first : undefined, box: Math.min(3, Math.max(0, Math.round(num(c.box)))), seen: num(c.seen), correct: num(c.correct), wrong: num(c.wrong), last: when(c.last) || null, due: isDay(c.due) ? c.due : todayStr() }); }); out.cards = cards;
     out.readingQuizzes = arr(out.readingQuizzes).map(r => Object.assign({}, r, { id: sv(r.id), articleId: sv(r.articleId), title: sv(r.title), date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs),
       answers: arr(r.answers).map(a => Object.assign({}, a, { qi: num(a.qi), chosen: idx(a.chosen), correct: num(a.correct), q: sv(a.q), chosenText: sv(a.chosenText), correctText: sv(a.correctText) })) }));
     out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { id: sv(r.id), type: ['choice', 'choiceRev', 'spell'].includes(r.type) ? r.type : 'choice', date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong).map(w => Object.assign({}, w, { vocabId: str(w.vocabId), word: sv(w.word), zh: sv(w.zh), given: sv(w.given) })).filter(w => okKey(w.vocabId)) }));
@@ -65,10 +65,11 @@
       return x;
     });
   }
-  const SETTING_KEYS = ['examName', 'examNameEn', 'examDate', 'studentName', 'motto', 'teacherCode', 'teacherEmail'];
+  const SETTING_KEYS = ['examName', 'examNameEn', 'examDate', 'studentName', 'motto', 'teacherCode', 'teacherEmail', 'ownExamDate'];
   function cleanSettings(st) {
     const out = {}; if (isObj(st)) SETTING_KEYS.forEach(k => { if (typeof st[k] === 'string') out[k] = st[k]; });
     if (out.examDate && !/^\d{4}-\d{2}-\d{2}$/.test(out.examDate)) delete out.examDate;
+    if (out.ownExamDate && !/^\d{4}-\d{2}-\d{2}$/.test(out.ownExamDate)) delete out.ownExamDate;
     return out;
   }
   const cleanReports = list => (Array.isArray(list) ? list : []).filter(isObj).map(r => ({ id: typeof r.id === 'string' && SAFE_ID.test(r.id) ? r.id : uid('rep'), name: String(r.name ?? ''), exportedAt: typeof r.exportedAt === 'string' ? r.exportedAt : null, progress: cleanProgress(r.progress) }));
@@ -154,20 +155,27 @@
   rebuildVocab();
   rebuildArticles();
   const pickRandom = (arr, n, excludeId) => { const out = [], used = new Set(); let guard = 0; while (out.length < n && guard++ < n * 20 && used.size < arr.length) { const i = Math.floor(Math.random() * arr.length); if (used.has(i)) continue; used.add(i); const x = arr[i]; if (x.id === excludeId) continue; out.push(x); } return out; };
-  let ui = Object.assign({ lang: 'en', font: 'hand', theme: 'navy', user: null },
+  let ui = Object.assign({ lang: 'zh', font: 'hand', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
-  const saveUi = () => localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user }));
+  const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user })); } catch (e) { } };
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
 
   // volatile view state
-  const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true, limit: 30 }, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login', vocabBm: false };
+  const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true, limit: 30 }, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login', vocabBm: false, lastIn: {}, readPos: {} };
 
   /* ---------------- i18n ---------------- */
-  const t = (k) => (I18N[ui.lang] && I18N[ui.lang][k] !== undefined) ? I18N[ui.lang][k] : (I18N.zh[k] !== undefined ? I18N.zh[k] : k);
+  const missingKeys = new Set();
+  const t = (k) => {
+    if (I18N[ui.lang] && I18N[ui.lang][k] !== undefined) return I18N[ui.lang][k];
+    if (I18N.zh[k] !== undefined) return I18N.zh[k];
+    if (!missingKeys.has(k)) { missingKeys.add(k); console.warn('i18n missing', k); }
+    return k;
+  };
   const tf = (k, o) => t(k).replace(/\{(\w+)\}/g, (_, n) => o[n]);
   function applyI18n() {
     $$('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
-    document.documentElement.lang = ui.lang === 'zh' ? 'zh-Hant' : 'en';
+    $$('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+    document.documentElement.lang = ui.lang === 'zh' ? 'zh-Hant-TW' : 'en';
   }
 
   /* ---------------- Toast ---------------- */
@@ -177,12 +185,61 @@
     clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
   }
 
+  /* ---------------- Motion + navigation map (UX v2) ---------------- */
+  const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const smooth = () => reduceMotion() ? 'auto' : 'smooth';
+  const flashEl = el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200); };
+  const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'],
+    mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
+  // phone bottom bar: five groups; every page is at most two taps away
+  const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'read', pages: ['reading', 'news'] }, { id: 'words', pages: ['flashcards', 'vocab', 'phrases'] },
+    { id: 'practice', pages: ['mcq', 'translate'] }, { id: 'more', pages: ['progress', 'students', 'settings'] }];
+  // desktop folder tabs: the same groups, with 紀錄 and 設定 as their own tabs
+  const DESK_GROUPS = GROUPS.slice(0, 4).concat([{ id: 'record', pages: ['progress', 'students'] }, { id: 'settings', pages: ['settings'] }]);
+  const groupOf = (page, list = GROUPS) => (list.find(g => g.pages.includes(page)) || list[0]).id;
+  const pagesOf = (gid, list) => ((list.find(g => g.id === gid) || list[0]).pages).filter(p => p !== 'students' || ui.teacher);
+  const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['mcq', 'translate'], ['progress', 'students']];
+  // pill row for the pages that share a group (閱讀測驗 | 每日新聞 …)
+  function subtabs(page) {
+    const g = SUB_GROUPS.find(x => x.includes(page)); if (!g) return '';
+    const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length < 2) return '';
+    return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}</nav>`;
+  }
+  // one page title per page: the tab's emoji and name, with the longer description underneath
+  function pageHead(page, sub) {
+    const [ic, key] = PAGE_META[page];
+    return `<header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">${ic}</span> ${t(key)}</h1>${sub ? `<p>${sub}</p>` : ''}</header>`;
+  }
+  // a practice session's top bar: ✕ end · what and how far · timer or score
+  // (kind = 選擇題, count = 第 1 / 10 題; on narrow phones only the count is shown, so the progress never gets cut off)
+  function sessionTop(exit, kind, count, done, total, extra = '') {
+    const pct = total ? Math.min(100, Math.round(done / total * 100)) : 0;
+    return `<div class="session-top"><button class="st-end" data-action="${exit}" aria-label="${esc(t('endSession'))}">✕<span class="st-end-txt"> ${t('endSession')}</span></button>
+      <div class="st-mid"><div class="st-label" tabindex="-1"><span class="st-kind">${esc(kind)} · </span>${esc(count)}</div><div class="st-bar" role="progressbar" aria-label="${esc(kind + ' · ' + count)}" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><i style="width:${pct}%"></i></div></div>${extra}</div>`;
+  }
+  // scroll up to the question (never down), e.g. after 下一題
+  function scrollToApp() { const top = Math.max(0, $('#app').getBoundingClientRect().top + window.scrollY); if (window.scrollY > top + 2) window.scrollTo({ top, behavior: smooth() }); }
+  // a new page or screen starts at once: no smooth scroll through the old page (html has scroll-behavior: smooth)
+  function jumpTo(y) { try { window.scrollTo({ top: y || 0, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y || 0); } }
+  // headwords like salesperson/salesman/saleswoman may wrap after each "/"
+  const wordBreaks = w => esc(w).replace(/\//g, '/<wbr>');
+  // a long headword (telecommunications …) gets a smaller size until it fits its card; the typeface stays the same
+  function fitWords() {
+    $$('#app .flash-word, #app .quiz-word').forEach(el => {
+      el.style.fontSize = '';
+      if (!el.clientWidth || el.scrollWidth <= el.clientWidth + 1) return;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      el.style.fontSize = Math.max(18, Math.floor(fs * el.clientWidth / el.scrollWidth)) + 'px';
+    });
+  }
+
   /* ---------------- Progress helpers ---------------- */
   const INTERVALS = [0, 1, 3, 7]; // days until next review for box 0..3
   function card(id) { return state.progress.cards[id] || (state.progress.cards[id] = { box: 0, seen: 0, correct: 0, wrong: 0, last: null, due: todayStr() }); }
   function bumpDay() { const d = todayStr(); state.progress.days[d] = (state.progress.days[d] || 0) + 1; }
   function markCard(id, known) {
     const c = card(id);
+    if (!c.seen) c.first = todayStr(); // the day this word was first studied (for 今天的新字)
     c.seen++; c.last = new Date().toISOString();
     if (known) { c.correct++; c.box = Math.min(3, c.box + 1); }
     else { c.wrong++; c.box = 0; }
@@ -274,7 +331,7 @@
 
   function initCloud() {
     const cfg = window.SUPABASE_CONFIG;
-    if (!cfg || !/^https:\/\/[^\s/]+/.test(cfg.url || '') || !cfg.anonKey) return;
+    if (!cfg || !/^https:\/\/[^\s/]+/.test(cfg.url || '') || !cfg.anonKey) { releaseHash(); return; }
     cloud.configured = true;
     const ep = cloud.epoch;
     cloud.ready = (async () => {
@@ -292,6 +349,7 @@
       const { data, error } = await cloud.sb.auth.getSession();
       // offline: keep the saved account and try again when the connection is back
       if (error && window.supabase.isAuthRetryableFetchError && window.supabase.isAuthRetryableFetchError(error)) throw error;
+      releaseHash(); // supabase-js has read any sign-in link in the address by now
       const u = data && data.session && data.session.user;
       if (u && ep !== cloud.epoch && !ui.user) dropSession(); // logged out while this was loading
       else if (u) await cloudAfterLogin(u, ep);
@@ -300,7 +358,13 @@
       try { await pullContent(); } catch (e) { console.warn(e); }
       if (ui.user && ui.user.cloud && localStorage.getItem(LS_UNSYNCED) === ui.user.id) syncNow().catch(e => console.warn(e));
       applyUi(); render();
-    })().catch(e => { console.warn('Supabase init failed', e); cloud.enabled = false; toast('☁️ ' + t('cloudDown')); });
+    })().catch(e => {
+      console.warn('Supabase init failed', e); cloud.enabled = false; toast('☁️ ' + t('cloudDown'));
+      // a sign-in token in the address cannot be used by this page any more: drop it (and turn page addresses back on),
+      // unless the device is offline and will try again when the connection is back
+      const retry = window.supabase ? !!(window.supabase.isAuthRetryableFetchError && window.supabase.isAuthRetryableFetchError(e)) : !navigator.onLine;
+      if (!retry) releaseHash();
+    });
   }
   // back online after starting offline: connect again and upload what was practised meanwhile
   window.addEventListener('online', () => {
@@ -391,8 +455,10 @@
   const contentFrom = c => ({ articles: cleanItems(c.articles, 'article'), vocab: cleanItems(c.vocab, 'vocab'), hiddenVocab: cleanIds(c.hiddenVocab), hiddenArticles: cleanIds(c.hiddenArticles), settings: cleanSettings(c.settings) });
   function applyContent(c) {
     state.articles = c.articles; state.vocab = c.vocab; state.hiddenVocab = c.hiddenVocab; state.hiddenArticles = c.hiddenArticles;
-    // an empty teacher setting never wipes what the student typed (e.g. the teacher email)
-    CONTENT_SETTINGS.forEach(k => { if (c.settings[k]) state.settings[k] = c.settings[k]; });
+    // an empty teacher setting never wipes what the student typed (e.g. the teacher email); a student who picked
+    // their own exam date keeps it (until it matches the teacher's date again)
+    if (!ui.teacher && state.settings.ownExamDate && c.settings.examDate === state.settings.ownExamDate) delete state.settings.ownExamDate;
+    CONTENT_SETTINGS.forEach(k => { if (c.settings[k] && !(k === 'examDate' && !ui.teacher && state.settings.ownExamDate)) state.settings[k] = c.settings[k]; });
     rebuildVocab(); rebuildArticles(); persist();
   }
   // what this device last saw in the cloud: a fingerprint of every item, the settings and the hidden lists
@@ -633,31 +699,97 @@
   function speakStop() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 
   /* ---------------- Pages ---------------- */
+  /* ---- Today (home): one next-step button, a checklist with minutes, personal tiles ---- */
+  const GOAL = { new: 10, read: 1, mcq: 10, tr: 5 };   // daily targets (about 20–25 minutes)
+  const dayOf = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? '' : todayStr(d); };
+  function newToday() { const td = todayStr(); return Object.values(state.progress.cards).filter(c => c.first === td).length; }
+  // the 高頻 set (of 100) that holds the first word not studied yet
+  function hfNextSet() { const hf = window.HIGH_FREQ || []; const i = hf.findIndex(id => { const c = state.progress.cards[id]; return !c || !c.seen; }); return i < 0 ? Math.max(1, HF_SETS) : Math.floor(i / 100) + 1; }
+  // first passage not done yet, at the level of the last passage done (B1 to start)
+  function nextArticle() {
+    const rq = state.progress.readingQuizzes, done = new Set(rq.map(r => r.articleId));
+    const last = rq.length ? articleById(rq[rq.length - 1].articleId) : null, lv = (last && last.level) || 'Reading · B1';
+    return ARTICLES.find(a => a.level === lv && !done.has(a.id)) || ARTICLES.find(a => !done.has(a.id)) || ARTICLES[0] || null;
+  }
+  const lvShort = lv => lv === 'Reading · B1' ? 'B1' : lv === 'Reading · B2' ? 'B2' : lv === 'Reading · Practical' ? t('grpPracticalShort') : unitLabel(lv || '');
+  function todayPlan() {
+    const td = todayStr(), p = state.progress, tasks = [];
+    const due = dueCards().length;
+    if (Object.values(p.cards).some(c => c.seen > 0)) tasks.push({ id: 'review', icon: '🃏', label: due ? tf('taskReviewN', { n: due }) : t('taskNoDue'), min: Math.max(1, Math.ceil(due * 6 / 60)), done: due === 0, act: 'planReview' });
+    const left = Math.max(0, GOAL.new - newToday());
+    tasks.push({ id: 'new', icon: '🌱', label: left ? tf('taskNewHF', { n: left, s: hfNextSet() }) : t('taskNewDone'), min: Math.max(1, Math.ceil((left || GOAL.new) * 25 / 60)), done: !left, act: 'planNew' });
+    const na = nextArticle();
+    if (na) tasks.push({ id: 'read', icon: '📖', label: tf('taskReadOne', { lv: lvShort(na.level) }), sub: na.title, min: 10, done: p.readingQuizzes.some(r => dayOf(r.date) === td), act: 'planRead' });
+    // a fourth task that rotates through the week
+    const rot = ['news', 'mcq', 'tr', 'cloze', 'mcq', 'tr', 'cloze'][new Date().getDay()];
+    const doneToday = (m, f) => Object.entries(m || {}).filter(([id, r]) => dayOf(r.last) === td && f(id)).length;
+    if (rot === 'mcq') tasks.push({ id: 'mcq', icon: '📝', label: tf('taskMcq', { n: GOAL.mcq }), min: Math.ceil(GOAL.mcq * 40 / 60), done: doneToday(p.mcq, id => !/-\d+$/.test(id)) >= GOAL.mcq, act: 'planMcq' });
+    else if (rot === 'tr') tasks.push({ id: 'tr', icon: '✍️', label: tf('taskTr', { n: GOAL.tr }), min: Math.ceil(GOAL.tr * 90 / 60), done: doneToday(p.translate, () => true) >= GOAL.tr, act: 'planTr' });
+    else if (rot === 'cloze') tasks.push({ id: 'cloze', icon: '🧩', label: t('taskCloze'), min: 6, done: doneToday(p.mcq, id => /-\d+$/.test(id)) > 0, act: 'planCloze' });
+    else tasks.push({ id: 'news', icon: '📰', label: t('taskNews'), min: 8, done: !!(p.newsDays && p.newsDays[td]), act: 'planNews' });
+    return tasks;
+  }
+  // a practice session that is open but not on screen (it can be resumed)
+  function liveSession() {
+    if (view.mc && !view.mc.done) return { page: 'mcq', label: tf(view.mc.kind === 'cloze' ? 'resumeCloze' : 'resumeMc', { i: view.mc.i + 1, n: view.mc.ids.length }) };
+    if (view.tr && view.tr.i < view.tr.ids.length) return { page: 'translate', label: tf('resumeTr', { i: view.tr.i + 1, n: view.tr.ids.length }) };
+    if (view.flash && view.flash.idx < view.flash.queue.length) return { page: 'flashcards', label: tf('resumeFlash', { i: view.flash.idx + 1, n: view.flash.queue.length }) };
+    if (view.quiz && view.quiz.idx < view.quiz.qs.length) return { page: 'flashcards', label: tf('resumeQuiz', { i: view.quiz.idx + 1, n: view.quiz.qs.length }) };
+    const rid = readOpen(); if (rid) return { page: 'reading', id: rid, label: tf('resumeRead', { x: articleById(rid).title }) };
+    return null;
+  }
+  // a passage with answers chosen but not handed in, also after a back swipe to the list (view.answers belong to lastArticle)
+  function readOpen() {
+    const id = view.articleId || view.lastArticle;
+    return id && !view.submitted && Object.keys(view.answers).length && articleById(id) ? id : null;
+  }
+  function todayCard() {
+    const tasks = todayPlan(), done = tasks.filter(x => x.done).length, live = liveSession();
+    const left = tasks.filter(x => !x.done), mins = left.reduce((a, x) => a + x.min, 0), next = left[0];
+    // the one big button: resume what is open, else the first task not done
+    const cta = (act, main, sub, extra = '') => `<button class="btn accent today-cta" data-action="${act}"${extra}><span class="cta-main">${main}</span><span class="cta-sub">${sub}</span></button>`;
+    const hero = live ? cta(live.id ? 'openArticle' : 'nav', `▶ ${esc(live.label)}`, `⏸ ${t('resumeHint')}`, live.id ? ` data-id="${esc(live.id)}"` : ` data-page="${live.page}"`)
+      : next ? cta(next.act, `▶ ${esc(next.label)}`, esc(tf('todayMin', { m: next.min })))
+      : cta('planMore', `🎉 ${t('todayAllDone')}`, esc(tf('taskMcq', { n: GOAL.mcq })));
+    return `<section class="card today-card" aria-labelledby="todayH">
+      <div class="today-head"><h2 id="todayH">🗓️ ${t('todayTitle')}</h2><span class="today-min">${left.length ? tf('todayMin', { m: mins }) : t('todayDoneLine')}</span><span class="today-count">${tf('todayCount', { d: done, n: tasks.length })}</span></div>
+      <div class="today-bar" role="progressbar" aria-label="${t('todayTitle')}" aria-valuemin="0" aria-valuemax="${tasks.length}" aria-valuenow="${done}"><i style="width:${tasks.length ? done / tasks.length * 100 : 0}%"></i></div>
+      ${hero}
+      <ul class="task-list">${tasks.map(x => `<li class="task-row${x.done ? ' done' : ''}"><span class="li-tile${x.done ? ' done' : ''}" aria-hidden="true">${x.done ? '✓' : x.icon}</span>
+        <div class="task-main"><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ''}</div>
+        <div class="task-side">${x.done ? `<span class="task-done">✓ ${t('taskDone')}</span>` : `<span class="task-min">${tf('minApprox', { n: x.min })}</span><button class="btn sm ghost" data-action="${x.act}" aria-label="${esc(t('go') + '：' + x.label)}">${t('go')}</button>`}</div></li>`).join('')}</ul>
+    </section>`;
+  }
+  // personal tiles (the library totals move to the sub lines)
+  function homeStats() {
+    const due = dueCards().length, sk = streak(), hf = window.HIGH_FREQ || [];
+    const hfM = hf.filter(id => (state.progress.cards[id] || {}).box === 3).length;
+    const doneSet = new Set(state.progress.readingQuizzes.map(r => r.articleId)), rd = ARTICLES.filter(a => doneSet.has(a.id)).length;
+    const bar = (x, n) => `<div class="stat-bar" aria-hidden="true"><i style="width:${n ? Math.min(100, x / n * 100) : 0}%"></i></div>`;
+    return `<div class="stat-grid home-stats">
+      <button class="stat-card" data-action="nav" data-page="progress"><span class="ribbon" aria-hidden="true">🔥</span><div class="k">${t('statStreak')}</div><div class="v">${sk}</div><div class="s">${sk ? t('statStreakS') : t('statStreakZero')}</div></button>
+      <button class="stat-card" ${due ? 'data-action="planReview"' : 'data-action="nav" data-page="flashcards"'}><span class="ribbon" aria-hidden="true">⏰</span><div class="k">${t('statDueTile')}</div><div class="v">${due || '✓'}</div><div class="s">${due ? t('statDueTileS') : t('statDueNone')}</div></button>
+      <button class="stat-card" data-action="nav" data-page="progress"><span class="ribbon" aria-hidden="true">🌟</span><div class="k">${t('statHF')}</div><div class="v">${hfM} <small>/ ${hf.length}</small></div>${bar(hfM, hf.length)}<div class="s">${tf('statHFS', { n: VOCAB.length })}</div></button>
+      <button class="stat-card" data-action="nav" data-page="reading"><span class="ribbon" aria-hidden="true">📖</span><div class="k">${t('statReadDone')}</div><div class="v">${rd} <small>/ ${ARTICLES.length}</small></div>${bar(rd, ARTICLES.length)}<div class="s">${tf('statReadDoneS', { n: ARTICLES.length })}</div></button>
+    </div>`;
+  }
   function pageHome() {
     const dl = daysLeft();
-    const due = dueCards().length, nw = newCards().length;
     const recent = state.progress.readingQuizzes.slice(-5).reverse();
     const name = state.settings.studentName ? `${esc(state.settings.studentName)}，` : '';
     return `
+      <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
-      <div class="stat-grid">
-        <div class="stat-card"><span class="ribbon">🔤</span><div class="k">${t('statVocab')}</div><div class="v">${VOCAB.length}</div><div class="s">${VOCAB.filter(v => v.type === 'phrase').length ? `${VOCAB.filter(v => v.type === 'word').length} ${t('typeWord')} + ${VOCAB.filter(v => v.type === 'phrase').length} ${t('typePhrase')}` : t('statVocabS')}</div></div>
-        <div class="stat-card"><span class="ribbon">📖</span><div class="k">${t('statArticles')}</div><div class="v">${ARTICLES.length}</div><div class="s">${t('statArticlesS')}</div></div>
-        <div class="stat-card"><span class="ribbon">🌟</span><div class="k">${t('statMastered')}</div><div class="v">${masteredCount()} <span class="small muted">/ ${VOCAB.length}</span></div><div class="s">${t('statMasteredS')}</div></div>
-        <div class="stat-card"><span class="ribbon">⏰</span><div class="k">${t('statDue')}</div><div class="v">${due}</div><div class="s">${t('statDueS')}</div></div>
+      <div class="home-grid">
+        <div class="hg-col">
+          <div class="hg-today">${todayCard()}</div>
+          <div class="hg-daily">${dailyCard()}${state.settings.motto ? `<div class="card motto-card" style="border-style:dashed"><b>💬 ${t('motto')}：</b> ${name}${esc(state.settings.motto)}</div>` : ''}</div>
+        </div>
+        <div class="hg-col">
+          <div class="hg-stats">${homeStats()}</div>
+          <div class="hg-plan"><h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}</div>
+        </div>
       </div>
-      ${dailyCard()}
-      ${state.settings.motto ? `<div class="card" style="margin-top:14px;border-style:dashed"><b>💬 ${t('motto')}：</b> ${name}${esc(state.settings.motto)}</div>` : ''}
-      <h2 class="section-title">🗓️ ${t('todayPlan')}</h2>
-      <p class="section-sub">${t('todayPlanSub')} · 🔥 ${t('streak')} ${streak()} ${t('streakDays')}</p>
-      <div class="list">
-        <div class="list-item"><span>🃏</span><div class="grow"><div class="title">${t('taskReview')}</div><div class="meta">${due} ${t('statDueS')}</div></div><button class="btn sm accent" data-action="goFlash" data-mode="due">${t('go')}</button></div>
-        <div class="list-item"><span>✨</span><div class="grow"><div class="title">${t('taskNew')}</div><div class="meta">${nw} ${t('statVocabS')}</div></div><button class="btn sm accent" data-action="goFlash" data-mode="new">${t('go')}</button></div>
-        <div class="list-item"><span>📖</span><div class="grow"><div class="title">${t('taskRead')}</div><div class="meta">${ARTICLES.length} ${t('statArticlesS')}</div></div><button class="btn sm accent" data-action="nav" data-page="reading">${t('go')}</button></div>
-      </div>
-      <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2>
-      <p class="section-sub">${t('timePlanSub')}</p>
-      ${timePlanCard()}
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
       <h2 class="section-title">🔖 ${t('bookmarks')}</h2>
       ${homeBookmarks()}
@@ -702,14 +834,18 @@
     const home = cityById('taipei');
     const arc = tx < lx ? `M${tx},${ty} Q${(tx + lx) / 2},${Math.min(ty, ly) - 140} ${lx},${ly}` : `M${tx},${ty} Q${tx + 300},${ty - 160} ${cols * step},${ly - 60}`;
     const done = state.progress.cities || {};
-    return `<div class="map-card"><span class="map-count">📅 ${state.settings.examDate.replace(/-/g, '/')} · ${dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('today') : t('examChipPassed')}</span>
+    // reduced motion: CSS cannot stop SMIL, so the plane is drawn still at the middle of its route and the star does not pulse
+    const RM = reduceMotion();
+    const mid = (() => { const m = /^M([\d.-]+),([\d.-]+) Q([\d.-]+),([\d.-]+) ([\d.-]+),([\d.-]+)$/.exec(arc); if (!m) return { x: tx, y: ty, a: 0 }; const [x0, y0, cx, cy, x2, y2] = m.slice(1).map(Number);
+      return { x: .25 * x0 + .5 * cx + .25 * x2, y: .25 * y0 + .5 * cy + .25 * y2, a: Math.atan2(y2 - y0, x2 - x0) * 180 / Math.PI }; })();
+    return `<div class="map-card"><span class="map-count"><span aria-hidden="true">📅</span> ${state.settings.examDate.replace(/-/g, '/')} · ${dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('today') : t('examChipPassed')}</span>
       <h3>🌍 ${t('mapTitle')}</h3><p>${t('mapSub')}</p>
       <svg viewBox="0 0 ${cols * step} ${rows * step}" data-full="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg">${dots}
         <path d="${arc}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
-        <g><g transform="scale(1.5)"><path d="M14 0 4 -2.4 -2 -12 -6 -12 -2.6 -2.4 -10 -2.4 -13 -6.5 -15.5 -6.5 -13.5 0 -15.5 6.5 -13 6.5 -10 2.4 -2.6 2.4 -6 12 -2 12 4 2.4Z" fill="#ffffff" stroke="#1f3b73" stroke-width="1.2" stroke-linejoin="round"/></g><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/></g>
+        <g${RM ? ` transform="translate(${mid.x.toFixed(1)},${mid.y.toFixed(1)}) rotate(${mid.a.toFixed(1)})"` : ''}><g transform="scale(1.5)"><path d="M14 0 4 -2.4 -2 -12 -6 -12 -2.6 -2.4 -10 -2.4 -13 -6.5 -15.5 -6.5 -13.5 0 -15.5 6.5 -13 6.5 -10 2.4 -2.6 2.4 -6 12 -2 12 4 2.4Z" fill="#ffffff" stroke="#1f3b73" stroke-width="1.2" stroke-linejoin="round"/></g>${RM ? '' : `<animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/>`}</g>
         ${(CITIES.length ? CITIES : MAP_LABELS).filter(c => c.id !== 'taipei').map(c => CITIES.length ? pin(c) : `<circle cx="${xy(c.lon, c.lat)[0]}" cy="${xy(c.lon, c.lat)[1]}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${xy(c.lon, c.lat)[0] + (ANCHOR[c.id] ? -12 : 12)}" y="${xy(c.lon, c.lat)[1] + 6}" class="map-pin-label desk-only" text-anchor="${ANCHOR[c.id] || 'start'}">${esc(c.name)}</text>`).join('')}
-        <g transform="translate(${tx},${ty})"${home ? ` class="map-city" data-action="openCity" data-id="taipei" role="button" tabindex="0" aria-label="${esc(cityName(home))}"` : ''}><circle r="30" fill="transparent"/><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/><animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/></g>
+        <g transform="translate(${tx},${ty})"${home ? ` class="map-city" data-action="openCity" data-id="taipei" role="button" tabindex="0" aria-label="${esc(cityName(home))}"` : ''}><circle r="30" fill="transparent"/><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/>${RM ? '' : '<animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/>'}</g>
         <text x="20" y="6" class="map-pin-label desk-only">Taiwan · ${esc(t('youAreHere'))}</text><text x="-26" y="-26" class="map-pin-label mobile-only" text-anchor="end">Taiwan · ${esc(t('youAreHere'))}</text></g>
       </svg>
       ${CITIES.length ? `<div class="city-chips"><span class="city-hint">👆 ${t('cityHint')}</span>${CITIES.map(c => `<button class="city-chip${done[c.id] ? ' done' : ''}" data-action="openCity" data-id="${esc(c.id)}">${done[c.id] ? '✓' : '📍'} ${esc(cityName(c))}</button>`).join('')}</div>` : ''}</div>`;
@@ -800,6 +936,7 @@
         ${c.quiz.map((x, i) => `<div class="city-q"><div class="en"><b>${i + 1}.</b> ${esc(x.q)}</div><div class="city-opts">${x.options.map((o, oi) => { const picked = q[i] === oi, done = q[i] != null;
           return `<button class="city-opt en ${done && oi === x.answer ? 'right' : ''} ${picked && oi !== x.answer ? 'wrong' : ''}" data-action="cityAnswer" data-q="${i}" data-o="${oi}" ${done ? 'disabled' : ''}>(${'ABCD'[oi]}) ${esc(o)}</button>`; }).join('')}</div>${q[i] != null ? `<div class="small city-explain">${esc(x.explain)}</div>` : ''}</div>`).join('')}
         ${reads.length || todays.length ? `<h3>📖 ${t('cityMore')}</h3><div class="list">${reads.map(a => `<button class="list-item city-link" data-action="cityRead" data-id="${esc(a.id)}"><span>📖</span><div class="grow"><div class="title en">${esc(a.title)}</div>${a.title_zh ? `<div class="meta">${esc(a.title_zh)}</div>` : ''}</div></button>`).join('')}${todays.map(it => `<button class="list-item city-link" data-action="cityNews" data-link="${esc(it.link)}"><span>📰</span><div class="grow"><div class="title en">${esc(it.title)}</div><div class="meta">${esc(it.source || '')} · ${t('todayNews')}</div></div></button>`).join('')}</div>` : ''}
+        <button type="button" class="btn ghost city-back" data-action="closeCity">🗺️ ${t('backToMap')}</button>
       </div>`;
   }
   function renderCity() {
@@ -867,16 +1004,31 @@
     return { byType, wrong, done, right, total: units.length };
   }
   const mcQ = q => esc(q).replace(/_{3,}/g, '<span class="mc-blank"></span>').replace(/\n/g, '<br>');
+  // One answer option as a real button. Once the answer is shown, ✓ marks the right option and ✗ the wrong pick,
+  // so right and wrong never depend on colour alone.
+  // o.en === false: the option text is not marked as English (reading questions keep their current typeface)
+  function optionHTML(o) {
+    const { i, chosen, answer, reveal } = o;
+    let cls = 'option', mark = '';
+    if (reveal) {
+      if (i === answer) { cls += ' correct'; mark = `<span class="opt-mark" aria-hidden="true">✓</span><span class="sr-only">${t('srCorrect')}</span>`; }
+      else if (i === chosen) { cls += ' wrong'; mark = `<span class="opt-mark" aria-hidden="true">✗</span><span class="sr-only">${t('srYours')}</span>`; }
+    } else if (i === chosen) cls += ' selected';
+    const data = Object.entries(o.data).map(([k, v]) => ` data-${k}="${esc(v)}"`).join('');
+    return `<button type="button" class="${cls}" data-action="${o.action}"${data} aria-pressed="${i === chosen}"${reveal ? ' aria-disabled="true"' : ''}><span class="letter">${L4[i]}</span><span${o.en === false ? '' : ' class="en"'}>${esc(o.text)}</span>${mark}</button>`;
+  }
+  // the explanation starts with the verdict and, when wrong, the right letter
+  const explainHTML = (chosen, answer, options, explain) => `<div class="explain"><span class="explain-head">${chosen === answer ? t('explainRight') : esc(tf('explainWrong', { L: L4[answer], w: options[answer] }))}</span>${explain ? esc(explain) : ''}</div>`;
   function pageMcq() {
-    if (!mcItems().length && !clozeSets().length) return `<h2 class="section-title" style="margin-top:8px">📝 ${t('mcTitle')}</h2><div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
+    if (!mcItems().length && !clozeSets().length) return `${subtabs('mcq')}${pageHead('mcq', t('mcTitle'))}<div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
     if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
     const f = view.mcf || (view.mcf = { type: '', level: '', status: '', mode: 'practice', count: 10 });
     const S = mcStats(state.progress);
     const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
-    return `<h2 class="section-title" style="margin-top:8px">📝 ${t('mcTitle')}</h2><p class="section-sub">${tf('mcSub', { n: mcItems().length, c: clozeSets().length })}</p>
-      <div class="stat-grid">
+    return `${subtabs('mcq')}${pageHead('mcq', tf('mcSub', { n: mcItems().length, c: clozeSets().length }))}
+      <div class="stat-grid three">
         <div class="stat-card"><div class="k">${t('mcAnswered')}</div><div class="v">${S.done} <span class="small muted">/ ${S.total}</span></div></div>
-        <div class="stat-card"><div class="k">${t('trRight')}</div><div class="v">${S.done ? Math.round(S.right / S.done * 100) + '%' : '—'}</div><div class="s">${S.right} / ${S.done}</div></div>
+        <div class="stat-card"><div class="k">${t('accShort')}</div><div class="v">${S.done ? Math.round(S.right / S.done * 100) + '%' : '—'}</div><div class="s">${S.right} / ${S.done}</div></div>
         <div class="stat-card"><div class="k">${t('trToReview')}</div><div class="v">${S.wrong.length}</div></div>
       </div>
       <div class="card">
@@ -892,7 +1044,7 @@
           <div class="seg" role="group">${[['practice', '✏️ ' + t('mcPractice')], ['test', '⏱️ ' + t('mcTest')]].map(([v, l]) => `<button class="seg-btn ${f.mode === v ? 'on' : ''}" data-action="mcMode" data-v="${v}">${l}</button>`).join('')}</div>
           <div class="seg" role="group">${(f.type === 'cloze' ? [1, 2, 4] : [10, 20, 30]).map(n => `<button class="seg-btn ${f.count === n ? 'on' : ''}" data-action="mcCount" data-v="${n}">${f.type === 'cloze' ? tf('mcNPassages', { n }) : tf('mcNQ', { n })}</button>`).join('')}</div>
           <span class="spacer"></span>
-          <button class="btn accent" data-action="mcStart" ${count ? '' : 'disabled'}>${t('mcStart')}</button>
+          <button class="btn accent block-cta" data-action="mcStart" ${count ? '' : 'disabled'}>▶ ${t('mcStart')}</button>
         </div>
         <p class="small muted" style="margin:8px 0 0">${t(f.mode === 'test' ? 'mcTestHint' : 'mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
       </div>
@@ -908,52 +1060,54 @@
     return clozeSets().filter(c => (!f.level || c.level === f.level) && (!f.status || (f.status === 'todo'
       ? c.blanks.every((b, k) => !mcRec(`${c.id}-${k + 1}`)) : c.blanks.some((b, k) => mcRec(`${c.id}-${k + 1}`) && !mcRec(`${c.id}-${k + 1}`).lastOk))));
   }
-  function mcTimer(s) { return s.mode === 'test' ? `<span class="chip" id="mcTimer">⏱️ ${fmtDur(Math.round((Date.now() - s.start) / 1000))}</span>` : ''; }
+  function mcTimer(s) { return s.mode === 'test' ? `<span class="st-chip" id="mcTimer">⏱️ ${fmtDur(Math.round((Date.now() - s.start) / 1000))}</span>` : ''; }
   function mcStage() {
     const s = view.mc, it = mcItems().find(x => x.id === s.ids[s.i]);
     const chosen = s.answers[it.id], revealed = s.mode === 'practice' && chosen != null;
-    return `<div class="row" style="margin:8px 0 12px"><button class="btn sm ghost" data-action="mcExit">${t('back')}</button><span class="spacer"></span>${mcTimer(s)}<span class="small muted">${tf('trProgress', { i: s.i + 1, n: s.ids.length })}</span></div>
+    const right = s.ids.filter(id => { const x = mcItems().find(y => y.id === id); return x && s.answers[id] === x.answer; }).length;
+    return `${subtabs('mcq')}${sessionTop('mcExit', t('sessionMc'), tf('trProgress', { i: s.i + 1, n: s.ids.length }), s.i + (chosen != null ? 1 : 0), s.ids.length, s.mode === 'test' ? mcTimer(s) : `<span class="st-chip" aria-label="${t('correct')} ${right}">✓ ${right}</span>`)}
       <div class="card mc-card">
         <div class="news-meta"><span class="chip">${(MC_TYPES.find(x => x[0] === it.type) || [])[2] || ''} ${esc(t((MC_TYPES.find(x => x[0] === it.type) || [0, 'mcMixed'])[1]))}</span><span class="chip">${esc(it.level || '')}</span><span class="small muted">${esc(it.id)}</span></div>
         <div class="mc-q en">${mcQ(it.q)}</div>
-        <div class="mc-opts">${it.options.map((o, oi) => {
-          let cls = 'option';
-          if (revealed) { if (oi === it.answer) cls += ' correct'; else if (oi === chosen) cls += ' wrong'; } else if (oi === chosen) cls += ' selected';
-          return `<div class="${cls}" data-action="mcChoose" data-o="${oi}" role="button" tabindex="0"><span class="letter">${L4[oi]}</span><span class="en">${esc(o)}</span></div>`;
-        }).join('')}</div>
-        ${revealed ? `<div class="explain">${chosen === it.answer ? '✅ ' + t('correct') : '❌ ' + t('wrong')} · ${esc(it.explain || '')}</div>` : ''}
-        <div class="row"><span class="spacer"></span>${s.i > 0 && s.mode === 'test' ? `<button class="btn ghost" data-action="mcPrev">‹ ${t('pgPrev')}</button>` : ''}
-          <button class="btn accent" data-action="mcNext" ${chosen == null ? 'disabled' : ''}>${s.i < s.ids.length - 1 ? t('quizNext') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button></div>
-      </div>`;
+        <div class="mc-opts">${it.options.map((o, oi) => optionHTML({ action: 'mcChoose', data: { o: oi }, i: oi, text: o, chosen, answer: it.answer, reveal: revealed })).join('')}</div>
+        ${revealed ? explainHTML(chosen, it.answer, it.options, it.explain) : ''}
+      </div>
+      <div class="action-bar">${s.i > 0 && s.mode === 'test' ? `<button class="btn ghost" data-action="mcPrev">‹ ${t('pgPrev')}</button>` : ''}
+        <button class="btn accent" data-action="mcNext" ${chosen == null ? 'disabled' : ''}>${s.i < s.ids.length - 1 ? t('next') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button></div>`;
   }
   function mcClozeStage() {
     const s = view.mc, c = clozeSets().find(x => x.id === s.ids[s.i]);
     const checked = s.checked && s.checked[c.id];
+    const filled = c.blanks.filter((b, k) => s.answers[`${c.id}-${k + 1}`] != null).length;
+    // each blank is a button that jumps to its question; after checking it carries ✓ or ✗
     const passage = esc(c.passage).replace(/__(\d)__/g, (m, n) => { const a = s.answers[`${c.id}-${n}`]; const b = c.blanks[n - 1];
       const txt = a != null ? esc(b.options[a]) : ''; const cls = checked ? (a === b.answer ? 'ok' : 'bad') : (a != null ? 'filled' : '');
-      return `<span class="cz-blank ${cls}"><b>${n}</b>${txt ? ' ' + txt : ''}</span>`; }).replace(/\n\s*\n/g, '<br><br>');
-    return `<div class="row" style="margin:8px 0 12px"><button class="btn sm ghost" data-action="mcExit">${t('back')}</button><span class="spacer"></span>${mcTimer(s)}<span class="small muted">${tf('mcPassageN', { i: s.i + 1, n: s.ids.length })}</span></div>
+      return `<button type="button" class="cz-blank ${cls}" data-action="czJump" data-n="${n}"><b>${n}</b>${txt ? ' ' + txt : ''}</button>`; }).replace(/\n\s*\n/g, '<br><br>');
+    return `${subtabs('mcq')}${sessionTop('mcExit', t('sessionCloze'), tf('mcPassageN', { i: s.i + 1, n: s.ids.length }), s.i + (checked ? 1 : 0), s.ids.length, s.mode === 'test' ? mcTimer(s) : `<span class="st-chip">${filled}/${c.blanks.length}</span>`)}
       <div class="card mc-card">
         <div class="news-meta"><span class="chip">🧩 ${t('mcCloze')}</span><span class="chip">${esc(c.level || '')}</span><span class="small muted">${esc(c.id)}</span></div>
         <h3 class="en" style="margin:2px 0">${esc(c.title)}</h3>
-        <div class="passage cz-passage ${ui.font === 'clean' ? 'clean' : ''}">${passage}</div>
-        ${c.blanks.map((b, k) => { const id = `${c.id}-${k + 1}`, a = s.answers[id]; return `<div class="question"><div class="q">${k + 1}.</div>
-          <div class="mc-opts row-opts">${b.options.map((o, oi) => { let cls = 'option'; if (checked) { if (oi === b.answer) cls += ' correct'; else if (oi === a) cls += ' wrong'; } else if (oi === a) cls += ' selected';
-            return `<div class="${cls}" data-action="czChoose" data-id="${esc(id)}" data-o="${oi}" role="button" tabindex="0"><span class="letter">${L4[oi]}</span><span class="en">${esc(o)}</span></div>`; }).join('')}</div>
-          ${checked ? `<div class="explain">${a === b.answer ? '✅' : '❌'} ${esc(b.explain || '')}</div>` : ''}</div>`; }).join('')}
+        <div class="passage cz-passage${ui.font === 'clean' ? ' clean' : ''}">${passage}</div>
+        ${c.blanks.map((b, k) => { const id = `${c.id}-${k + 1}`, a = s.answers[id]; return `<div class="question" id="czq-${k + 1}"><div class="q">${k + 1}. <button type="button" class="cz-back" data-action="czBack" data-n="${k + 1}">${tf('backToBlank', { n: k + 1 })}</button></div>
+          <div class="mc-opts row-opts">${b.options.map((o, oi) => optionHTML({ action: 'czChoose', data: { id, o: oi }, i: oi, text: o, chosen: a, answer: b.answer, reveal: !!checked })).join('')}</div>
+          ${checked ? explainHTML(a, b.answer, b.options, b.explain) : ''}</div>`; }).join('')}
         ${checked && c.passage_zh ? `<details class="cz-zh"><summary>${t('mcShowZh')}</summary><p>${esc(c.passage_zh).replace(/\n\s*\n/g, '<br><br>')}</p></details>` : ''}
-        <div class="row" style="margin-top:12px"><span class="spacer"></span>
-          ${!checked && s.mode === 'practice' ? `<button class="btn accent" data-action="czCheck">${t('mcCheck')}</button>` : `<button class="btn accent" data-action="czNext">${s.i < s.ids.length - 1 ? t('mcNextPassage') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button>`}</div>
-      </div>`;
+      </div>
+      <div class="action-bar">${!checked && s.mode === 'practice' ? `<button class="btn accent" data-action="czCheck">${t('mcCheck')} (${filled}/${c.blanks.length})</button>` : `<button class="btn accent" data-action="czNext">${s.i < s.ids.length - 1 ? t('mcNextPassage') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button>`}</div>`;
+  }
+  // what a session is scored on: each item, or each blank of its cloze passages; a session ended early (✕) counts only what was answered
+  function mcSessionUnits(s) {
+    const all = s.kind === 'cloze'
+      ? s.ids.flatMap(cid => { const c = clozeSets().find(x => x.id === cid); return c.blanks.map((b, k) => ({ id: `${cid}-${k + 1}`, q: `${c.title} (${k + 1})`, options: b.options, answer: b.answer, explain: b.explain })); })
+      : s.ids.map(id => mcItems().find(x => x.id === id));
+    return s.early ? all.filter(u => s.answers[u.id] != null) : all;
   }
   function mcResults() {
     const s = view.mc;
-    const units = s.kind === 'cloze'
-      ? s.ids.flatMap(cid => { const c = clozeSets().find(x => x.id === cid); return c.blanks.map((b, k) => ({ id: `${cid}-${k + 1}`, q: `${c.title} (${k + 1})`, options: b.options, answer: b.answer, explain: b.explain })); })
-      : s.ids.map(id => mcItems().find(x => x.id === id));
+    const units = mcSessionUnits(s);
     const right = units.filter(u => s.answers[u.id] === u.answer).length;
     const wrongs = units.filter(u => s.answers[u.id] !== u.answer);
-    return `<div class="card center mc-card"><div class="big-icon">${right / units.length >= .8 ? '🎉' : '💪'}</div><h2>${t('mcResult')}</h2><p class="big">${right} / ${units.length}</p>
+    return `${subtabs('mcq')}<div class="card center mc-card"><div class="big-icon">${right / units.length >= .8 ? '🎉' : '💪'}</div><h2>${t('mcResult')}</h2><p class="big">${right} / ${units.length}</p>
         ${s.secs != null ? `<p class="muted">⏱️ ${fmtDur(s.secs)}</p>` : ''}
         <div class="row" style="justify-content:center"><button class="btn accent" data-action="mcStart">${t('trAgain')}</button>${wrongs.length ? `<button class="btn" data-action="mcRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="mcExit">${t('back')}</button></div></div>
       ${wrongs.length ? `<h3 class="section-title">❌ ${t('mcWrongReview')}</h3>${wrongs.map(u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
@@ -961,15 +1115,14 @@
         <div class="explain">${esc(u.explain || '')}</div></div>`).join('')}` : ''}`;
   }
   function mcFinish() {
-    const s = view.mc;
+    const s = view.mc, units = mcSessionUnits(s);
     s.secs = Math.round((Date.now() - s.start) / 1000);
-    if (s.mode === 'test') {  // in a mock test, answers are recorded at the end
-      if (s.kind === 'cloze') s.ids.forEach(cid => { const c = clozeSets().find(x => x.id === cid); c.blanks.forEach((b, k) => { const id = `${cid}-${k + 1}`; mcRecord(id, s.answers[id], b.answer); }); });
-      else s.ids.forEach(id => { const it = mcItems().find(x => x.id === id); mcRecord(id, s.answers[id], it.answer); });
-    }
-    const units = s.kind === 'cloze' ? s.ids.flatMap(cid => clozeSets().find(x => x.id === cid).blanks.map((b, k) => [`${cid}-${k + 1}`, b.answer])) : s.ids.map(id => [id, mcItems().find(x => x.id === id).answer]);
-    const p = state.progress; p.mcqTests = (p.mcqTests || []).concat([{ date: new Date().toISOString(), type: s.type, mode: s.mode, score: units.filter(([id, a]) => s.answers[id] === a).length, total: units.length, secs: s.secs }]).slice(-50);
-    s.done = true; bumpDay(); save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    // in a mock test, answers are recorded at the end; a practice cloze passage ended before 對答案 is recorded now
+    // (either way only blanks that were answered: an early end never stores empty blanks as wrong)
+    if (s.mode === 'test') units.forEach(u => mcRecord(u.id, s.answers[u.id], u.answer));
+    else if (s.kind === 'cloze') units.forEach(u => { if (!s.checked[u.id.replace(/-\d+$/, '')] && s.answers[u.id] != null) mcRecord(u.id, s.answers[u.id], u.answer); });
+    const p = state.progress; p.mcqTests = (p.mcqTests || []).concat([{ date: new Date().toISOString(), type: s.type, mode: s.mode, score: units.filter(u => s.answers[u.id] === u.answer).length, total: units.length, secs: s.secs }]).slice(-50);
+    s.done = true; bumpDay(); save(); render(); jumpTo(0);
   }
 
   /* ---- Translation practice (中譯英): window.TRANSLATION_ITEMS from translate.js ---- */
@@ -985,10 +1138,10 @@
   function trKeyHits(it, answer) { return (it.keys || []).map(k => ({ k, hit: noteRe(k.en).test(answer || '') })); }
   const TR_PAGE = 20;
   // after changing page, bring the start of the list (not the top of the page) into view
-  const trScrollTop = () => { const el = $('#trListTop'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+  const trScrollTop = () => { const el = $('#trListTop'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: smooth() }); };
   function pageTranslate() {
     const items = trItems();
-    if (!items.length) return `<h2 class="section-title" style="margin-top:8px">✍️ ${t('trTitle')}</h2><div class="card"><p class="muted" style="margin:0">${t('trNoItems')}</p></div>`;
+    if (!items.length) return `${subtabs('translate')}${pageHead('translate', t('trTitle'))}<div class="card"><p class="muted" style="margin:0">${t('trNoItems')}</p></div>`;
     if (view.tr) return view.tr.i >= view.tr.ids.length ? trSummary() : trStage();
     const f = view.trf || (view.trf = { group: 0, level: '', status: '' });
     const S = trStats(state.progress), list = trFiltered();
@@ -997,8 +1150,8 @@
     const shown = list.slice(cur * TR_PAGE, cur * TR_PAGE + TR_PAGE);
     const pager = pagerHTML(cur, pages, 'trGo', i => { const z = (list[i * TR_PAGE] || {}).zh || ''; return z.length > 14 ? z.slice(0, 14) + '…' : z; });
     const mark = it => { const r = trRec(it.id); return r ? (r.lastOk ? '<span class="tr-mark ok">✓</span>' : '<span class="tr-mark bad">✗</span>') : '<span class="tr-mark">·</span>'; };
-    return `<h2 class="section-title" style="margin-top:8px">✍️ ${t('trTitle')}</h2><p class="section-sub">${tf('trSub', { n: items.length })}</p>
-      <div class="stat-grid">
+    return `${subtabs('translate')}${pageHead('translate', tf('trSub', { n: items.length }))}
+      <div class="stat-grid three">
         <div class="stat-card"><div class="k">${t('trPractised')}</div><div class="v">${S.done} <span class="small muted">/ ${items.length}</span></div></div>
         <div class="stat-card"><div class="k">${t('trRight')}</div><div class="v">${S.right}</div><div class="s">${S.done ? Math.round(S.right / S.done * 100) + '%' : ''}</div></div>
         <div class="stat-card"><div class="k">${t('trToReview')}</div><div class="v">${S.wrong.length}</div></div>
@@ -1009,7 +1162,7 @@
           <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="trStatus" data-v="${v}">${l}</button>`).join('')}</div>
           <span class="spacer"></span>
-          <button class="btn accent" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
+          <button class="btn accent block-cta" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
         </div>
       </div>
       ${list.length ? `<p class="small muted tr-range" id="trListTop">${tf('trRange', { a: cur * TR_PAGE + 1, b: cur * TR_PAGE + shown.length, n: list.length })}</p>` : ''}${pager}
@@ -1019,26 +1172,26 @@
     const s = view.tr, it = trItems().find(x => x.id === s.ids[s.i]);
     if (!it) { view.tr = null; return pageTranslate(); }
     if (s.i >= s.ids.length) return '';
-    const top = `<div class="row" style="margin:8px 0 12px"><button class="btn sm ghost" data-action="trExit">${t('back')}</button><span class="spacer"></span><span class="small muted">${tf('trProgress', { i: s.i + 1, n: s.ids.length })} · ✓ ${s.right}</span></div>`;
     const hits = s.checked ? trKeyHits(it, s.answer) : [];
-    return `${top}<div class="card tr-card">
+    return `${subtabs('translate')}${sessionTop('trExit', t('sessionTr'), tf('trProgress', { i: s.i + 1, n: s.ids.length }), s.i + (s.checked ? 1 : 0), s.ids.length, `<span class="st-chip">✓ ${s.right}</span>`)}<div class="card tr-card">
       <div class="news-meta"><span class="chip">${esc(t(TR_GROUPS[trGroupOf(it) - 1]))}</span><span class="chip">${esc(it.level || '')}</span><span class="small muted">${esc(it.id)}</span></div>
-      <div class="tr-q">${esc(it.zh)}</div>
+      <div class="tr-q" id="trQ">${esc(it.zh)}</div>
       ${s.checked ? '' : `<div class="tr-hint">${s.hint ? `💡 ${(it.keys || []).map(k => `<span class="chip"><span class="en">${esc(k.en)}</span> ${esc(k.zh)}</span>`).join(' ')}` : `<button class="btn sm ghost" data-action="trHint">💡 ${t('trShowHint')}</button>`}</div>`}
-      <textarea id="trInput" class="tr-input en" rows="3" placeholder="${t('trPlaceholder')}" ${s.checked ? 'readonly' : ''} autocapitalize="sentences" spellcheck="false">${esc(s.answer || '')}</textarea>
+      <textarea id="trInput" class="tr-input en" rows="2" aria-labelledby="trQ" placeholder="${t('trPlaceholder')}" ${s.checked ? 'readonly' : ''} autocapitalize="sentences" autocorrect="off" spellcheck="false" enterkeyhint="done">${esc(s.answer || '')}</textarea>
       ${s.checked ? `<div class="tr-result">
           <div class="tr-keys">${hits.map(h => `<span class="chip ${h.hit ? 'ok' : 'bad'}">${h.hit ? '✓' : '✗'} <span class="en">${esc(h.k.en)}</span> ${esc(h.k.zh)}</span>`).join(' ')}<span class="small muted">${tf('trKeysHit', { n: hits.filter(h => h.hit).length, t: hits.length })}</span></div>
-          <div class="tr-model"><b>${t('trModel')}</b><p class="en">${esc(it.en)} <button class="btn sm ghost" data-action="speak" data-word="${esc(it.en)}" aria-label="${t('speak')}">🔊</button></p>
+          <div class="tr-model"><b>${t('trModel')}</b><p class="en">${esc(it.en)} <button class="icon-btn" data-action="speak" data-word="${esc(it.en)}" aria-label="${t('speak')}">🔊</button></p>
             ${(it.alt || []).length ? `<b>${t('trAlso')}</b>${it.alt.map(a => `<p class="en">${esc(a)}</p>`).join('')}` : ''}</div>
           ${it.point ? `<div class="tr-point">📐 ${esc(it.point)}</div>` : ''}
           <p class="small muted" style="margin:4px 0 0">${t('trSelfCheck')}</p>
-          <div class="row"><button class="btn accent" data-action="trMark" data-ok="1">✅ ${t('trSelfRight')}</button><button class="btn" data-action="trMark" data-ok="0">❌ ${t('trSelfWrong')}</button></div>
-        </div>` : `<div class="row"><button class="btn accent" data-action="trCheck">${t('trCheck')}</button><span class="small muted">${t('trCtrlEnter')}</span></div>`}
-    </div>`;
+        </div>` : `<p class="small muted kbd-hint" style="margin:0">${t('trCtrlEnter')}</p>`}
+    </div>
+    <div class="action-bar">${s.checked ? `<button class="btn accent" data-action="trMark" data-ok="1">✅ ${t('trSelfRight')}</button><button class="btn" data-action="trMark" data-ok="0">❌ ${t('trSelfWrong')}</button>`
+      : `<button class="btn accent" data-action="trCheck">${t('trCheck')}</button>`}</div>`;
   }
   function trSummary() {
     const s = view.tr;
-    return `<div class="card center tr-card"><div class="big-icon">🎉</div><h2>${t('trDone')}</h2><p class="big">${s.right} / ${s.ids.length}</p>
+    return `${subtabs('translate')}<div class="card center tr-card"><div class="big-icon">🎉</div><h2>${t('trDone')}</h2><p class="big">${s.right} / ${s.ids.length}</p>
       <div class="row" style="justify-content:center"><button class="btn accent" data-action="trStart">${t('trAgain')}</button>${s.right < s.ids.length ? `<button class="btn" data-action="trRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="trExit">${t('back')}</button></div></div>`;
   }
 
@@ -1074,14 +1227,14 @@
     const mastered = inCat.filter(v => box(v.id) === 3).length;
     const exampleHTML = v => { if (!v.example) return ''; const re = noteRe(v.word.replace(/\([^)]*\)/g, ' ').replace(/…|\.\.\./g, ' ')); return markTerms(v.example, [{ re, cls: 'lp' }]); };
     const pager = pagerHTML(cur, pages, 'phrGo', i => (list[i * PHR_PAGE] || {}).word || '');
-    return `<h2 class="section-title" style="margin-top:8px">🧩 ${t('phrTitle')}</h2><p class="section-sub">${tf('phrSub', { n: all.length })}</p>
+    return `${subtabs('phrases')}${pageHead('phrases', tf('phrSub', { n: all.length }))}
       <div class="phr-cats">
         <button class="phr-cat ${!f.cat ? 'on' : ''}" data-action="phrCat" data-v=""><b>${t('newsAll')}</b><span>${all.length}</span></button>
         ${cats.map(c => { const n = all.filter(v => v.unit === c).length; return n ? `<button class="phr-cat ${f.cat === c ? 'on' : ''}" data-action="phrCat" data-v="${c}"><b>${esc(t('phCat' + c.slice(2)))}</b><span>${n}</span></button>` : ''; }).join('')}
       </div>
       <div class="card phr-tools">
         <div class="row">
-          <input type="text" id="phrSearch" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" style="max-width:300px">
+          <label class="sr-only" for="phrSearch">${t('phrSearch')}</label><input type="search" id="phrSearch" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" style="max-width:300px" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
           <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="phrLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <button class="btn sm ${f.bm ? 'accent' : 'ghost'}" data-action="phrBm">🔖 ${t('modeBookmark')}</button>
           <span class="spacer"></span>
@@ -1348,7 +1501,7 @@
   function pageNews() {
     if (news.status === 'idle') loadNews();
     const items = (news.data && news.data.items) || [];
-    const lessons = newsLessons(), lessonOf = {}; lessons.forEach(l => { lessonOf[l.link] = l; });
+    const lessons = newsLessons(), lessonOf = Object.create(null); lessons.forEach(l => { lessonOf[l.link] = l; }); // no inherited keys: #/news/constructor is not a story
     if (view.newsArticle && lessonOf[view.newsArticle]) return newsReader(lessonOf[view.newsArticle]);
     const sources = Array.from(new Set(items.map(i => i.source)));
     // stories with a full article come first, then the others; newest first within each group
@@ -1356,9 +1509,10 @@
     const open = view.newsOpen || (view.newsOpen = {});
     const upd = news.data && news.data.updated ? news.data.updated.slice(0, 16).replace('T', ' ').replace(/-/g, '/') : '';
     let body;
-    if (news.status === 'loading' || news.status === 'idle') body = `<p class="muted">${t('newsLoading')}</p>`;
+    if (news.status === 'loading' || news.status === 'idle') body = `<p class="muted" role="status">${t('newsLoading')}</p>`;
+    else if (news.status === 'error') body = `<div class="card news-empty" role="alert">📡 ${t('newsError')} <button class="btn sm accent" data-action="newsRetry">🔄 ${t('retryLoad')}</button></div>`;
     else if (!items.length) body = `<div class="card news-empty">📭 ${t('newsEmpty')}</div>`;
-    else body = `<div class="row" style="margin-bottom:10px"><button class="btn sm ${!news.source ? 'accent' : 'ghost'}" data-action="newsSource" data-src="">${t('newsAll')} (${items.length})</button>${sources.map(s => `<button class="btn sm ${news.source === s ? 'accent' : 'ghost'}" data-action="newsSource" data-src="${esc(s)}">${esc(s)}</button>`).join('')}<span class="spacer"></span>${upd ? `<span class="small muted">${t('newsUpdated')} ${esc(upd)} UTC</span>` : ''}</div>
+    else body = `<div class="chip-scroll" role="group" style="margin:0 0 6px"><button class="fchip" data-action="newsSource" data-src="" aria-pressed="${!news.source}">${t('newsAll')} <span class="n">${items.length}</span></button>${sources.map(s => `<button class="fchip" data-action="newsSource" data-src="${esc(s)}" aria-pressed="${news.source === s}">${esc(s)}</button>`).join('')}</div>${upd ? `<p class="small muted" style="margin:0 0 10px">${t('newsUpdated')} ${esc(upd)} UTC</p>` : ''}
       ${!lessons.length ? `<p class="small muted news-nolesson">📖 ${t(ui.teacher ? 'lessonsNoneTeacher' : 'lessonsNone')}</p>` : ''}
       <div class="news-list">${shown.map(([it, i]) => { const les = lessonOf[it.link]; return `<article class="news-card${les ? ' has-article' : ''}${open[i] ? ' open' : ''}">
         <div class="news-meta"><span class="news-src ${SRC_CLASS[it.source] || ''}">${esc(it.source)}</span><span class="chip">${esc(it.topic || '')}</span>${les ? `<span class="chip ai-chip">📖 ${t('newsFullBadge')}</span>` : ''}<span class="small muted">${ago(it.date)}</span></div>
@@ -1376,7 +1530,7 @@
       ['Breaking News English', 'https://breakingnewsenglish.com/', 'curBne'],
       ['Taipei Times', 'https://www.taipeitimes.com/', 'curTaipei'],
     ];
-    return `<h2 class="section-title" style="margin-top:8px">📰 ${t('newsTitle')}</h2><p class="section-sub">${t('newsSub')}</p>
+    return `${subtabs('news')}${pageHead('news', t('newsSub'))}
       ${body}
       <h2 class="section-title">🎧 ${t('newsSources')}</h2>
       <div class="cur-grid">${CUR.map(([n, u, k]) => `<a class="cur-card" href="${u}" target="_blank" rel="noopener noreferrer"><b>${n} ↗</b><span>${t(k)}</span></a>`).join('')}</div>`;
@@ -1391,50 +1545,46 @@
     rf.more = rf.more || {}; rf.q = rf.q || '';
     const histOf = id => state.progress.readingQuizzes.filter(r => r.articleId === id);
     const done = a => histOf(a.id).length > 0;
-    const GROUPS = [['Reading · B1', 'grpB1', '📗'], ['Reading · B2', 'grpB2', '📘'], ['Reading · Practical', 'grpPractical', '✉️']];
-    const groupOf = a => GROUPS.some(g => g[0] === a.level) ? a.level : '_other';
+    const RG = [['Reading · B1', 'grpB1', '📗', 'B1'], ['Reading · B2', 'grpB2', '📘', 'B2'], ['Reading · Practical', 'grpPractical', '✉️', t('grpPracticalShort')]];
+    const groupOfA = a => RG.some(g => g[0] === a.level) ? a.level : '_other';
     const topics = Array.from(new Set(ARTICLES.flatMap(a => a.tags || [])));
     const q = rf.q.trim().toLowerCase();
     const visible = ARTICLES.filter(a => (!rf.topic || (a.tags || []).includes(rf.topic)) && (!rf.status || (rf.status === 'done') === done(a))
       && (!q || a.title.toLowerCase().includes(q) || (a.title_zh || '').includes(rf.q.trim())));
-    const card = a => {
-      const hist = histOf(a.id), isDone = hist.length > 0;
+    // one mini-sticker row per passage: status tile · title · ☆ · 開始
+    const row = a => {
+      const hist = histOf(a.id), isDone = hist.length > 0, g = RG.find(x => x[0] === a.level);
       const best = isDone ? Math.max(...hist.map(r => Math.round(r.score / r.total * 100))) : null;
-      return `<div class="list-item read-item ${isDone ? 'is-done' : ''}">
-        <span class="read-check" title="${isDone ? t('readDone') : t('readTodo')}">${isDone ? '✓' : ''}</span>
-        <div class="grow" data-action="openArticle" data-id="${esc(a.id)}" style="cursor:pointer">
-          <div class="title">${esc(a.title)}</div>
-          ${a.title_zh ? `<div class="small muted">${esc(a.title_zh)}</div>` : ''}
-          <div class="meta">${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
-        </div>
-        ${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span><span class="chip">${t('attempts')} ${hist.length} ${t('times')}</span>` : ''}
-        ${bmBtn('articles', a.id)}
-        <button class="btn sm" data-action="openArticle" data-id="${esc(a.id)}">${isDone ? t('retry') : t('go')}</button>
-        <span class="teacher-only"><button class="btn sm ghost" data-action="editArticle" data-id="${esc(a.id)}">${t('editArticle')}</button> <button class="btn sm danger" data-action="deleteArticle" data-id="${esc(a.id)}">${t('deleteArticle')}</button></span>
+      const on = isBm('articles', a.id), here = view.lastArticle === a.id;
+      return `<div class="list-item read-item ${isDone ? 'is-done' : ''}" data-id="${esc(a.id)}" data-action="openArticle">
+        <span class="li-tile" title="${isDone ? t('readDone') : t('readTodo')}" aria-hidden="true">${isDone ? '✓' : (g ? g[2] : '📄')}</span>
+        <button type="button" class="ri-main" data-action="openArticle" data-id="${esc(a.id)}"><span class="sr-only">${isDone ? t('readDoneTag') + '：' : ''}</span><div class="title">${esc(a.title)}</div>${a.title_zh ? `<div class="zh">${esc(a.title_zh)}</div>` : ''}</button>
+        <button type="button" class="icon-btn ri-bm" data-action="toggleBm" data-kind="articles" data-id="${esc(a.id)}" aria-pressed="${on}" aria-label="${esc(t('bookmark') + '：' + a.title)}">${on ? '★' : '☆'}</button>
+        <div class="ri-meta">${here ? `<span class="chip here">📍 ${t('lastRead')}</span>` : ''}${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span>` : ''}<span>${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })}</span>${(a.tags || []).map(x => `<span class="chip ri-tag">${esc(unitLabel(x))}</span>`).join('')}</div>
+        <button type="button" class="btn sm ghost ri-go" data-action="openArticle" data-id="${esc(a.id)}" aria-label="${esc((isDone ? t('retry') : t('go')) + '：' + a.title)}"><span class="ri-go-txt">${isDone ? t('retry') : t('go')}</span><span class="ri-go-chev" aria-hidden="true">›</span></button>
+        <div class="ri-teacher"><button class="btn sm ghost" data-action="editArticle" data-id="${esc(a.id)}">${t('editArticle')}</button><button class="btn sm danger" data-action="deleteArticle" data-id="${esc(a.id)}">${t('deleteArticle')}</button></div>
       </div>`;
     };
     const filtering = rf.topic || rf.status || q;
-    const groups = GROUPS.map(g => g[0]).concat(['_other']).map(key => {
-      const all = ARTICLES.filter(a => groupOf(a) === key), list = visible.filter(a => groupOf(a) === key);
+    const groups = RG.map(g => g[0]).concat(['_other']).map(key => {
+      const all = ARTICLES.filter(a => groupOfA(a) === key), list = visible.filter(a => groupOfA(a) === key);
       if (!all.length) return '';
-      const g = GROUPS.find(x => x[0] === key) || ['_other', 'grpOther', '📄'];
+      const g = RG.find(x => x[0] === key) || ['_other', 'grpOther', '📄'];
       const nd = all.filter(done).length;
+      // keep the passage just read on screen when coming back to the list
+      if (view.lastArticle && list.slice(READ_SHOW).some(a => a.id === view.lastArticle)) rf.more[key] = true;
       const shown = rf.more[key] || filtering ? list : list.slice(0, READ_SHOW);
-      return `<section class="read-group" id="grp-${g[1]}"><h3 class="read-group-title">${g[2]} ${t(g[1])} <span class="read-progress"><span class="bar"><i style="width:${all.length ? nd / all.length * 100 : 0}%"></i></span>${nd} / ${all.length} ${t('readDoneShort')}</span></h3>
-        ${list.length ? `<div class="list">${shown.map(card).join('')}</div>${shown.length < list.length ? `<div class="center" style="margin-top:8px"><button class="btn ghost" data-action="readMore" data-v="${esc(key)}">${tf('readShowMore', { n: list.length - shown.length })}</button></div>` : ''}` : `<p class="small muted">${t('readNoneHere')}</p>`}</section>`;
+      return `<section class="read-group" id="grp-${g[1]}"><h2 class="read-group-title">${g[2]} ${t(g[1])} <span class="read-progress"><span class="bar"><i style="width:${all.length ? nd / all.length * 100 : 0}%"></i></span>${nd} / ${all.length} ${t('readDoneShort')}</span></h2>
+        ${list.length ? `<div class="list">${shown.map(row).join('')}</div>${shown.length < list.length ? `<div class="center" style="margin-top:10px"><button class="btn ghost" data-action="readMore" data-v="${esc(key)}">${tf('readShowMore', { n: list.length - shown.length })}</button></div>` : ''}` : `<p class="small muted">${t('readNoneHere')}</p>`}</section>`;
     }).join('');
     const totalDone = ARTICLES.filter(done).length;
     const toc = `<div class="card read-toc">
-        <div class="row"><b>📑 ${t('readToc')}</b><span class="chip ok">✓ ${totalDone} / ${ARTICLES.length}</span><span class="spacer"></span>
-          ${GROUPS.filter(g => ARTICLES.some(a => a.level === g[0])).map(g => `<a class="btn sm ghost" href="#grp-${g[1]}" data-action="jumpGroup" data-target="grp-${g[1]}">${g[2]} ${t(g[1])}</a>`).join('')}</div>
-        <div class="row" style="margin-top:8px"><input type="text" id="readSearch" placeholder="🔍 ${t('readSearch')}" value="${esc(rf.q)}" style="max-width:320px"></div>
-        <div class="row" style="margin-top:8px"><span class="small muted">${t('readTopic')}</span>
-          <button class="btn sm ${!rf.topic ? 'accent' : 'ghost'}" data-action="readTopic" data-v="">${t('newsAll')}</button>
-          ${topics.map(x => `<button class="btn sm ${rf.topic === x ? 'accent' : 'ghost'}" data-action="readTopic" data-v="${esc(x)}">${esc(unitLabel(x))}</button>`).join('')}</div>
-        <div class="row" style="margin-top:8px"><span class="small muted">${t('readStatus')}</span>
-          ${[['', t('newsAll')], ['todo', t('readTodo')], ['done', '✓ ' + t('readDone')]].map(([v, l]) => `<button class="btn sm ${rf.status === v ? 'accent' : 'ghost'}" data-action="readStatus" data-v="${v}">${l}</button>`).join('')}</div>
+        <div class="read-tools"><label class="sr-only" for="readSearch">${t('readSearch')}</label><input type="search" id="readSearch" placeholder="🔍 ${t('readSearchShort')}" value="${esc(rf.q)}" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <div class="seg" role="group" aria-label="${t('readStatus')}">${[['', t('newsAll')], ['todo', t('readTodoShort')], ['done', '✓ ' + t('readDoneShort')]].map(([v, l]) => `<button class="seg-btn ${rf.status === v ? 'on' : ''}" data-action="readStatus" data-v="${v}" aria-pressed="${rf.status === v}">${l}</button>`).join('')}</div></div>
+        <div class="chip-scroll" role="group" aria-label="${t('readTopic')}"><button class="fchip" data-action="readTopic" data-v="" aria-pressed="${!rf.topic}">${t('newsAll')}</button>${topics.map(x => `<button class="fchip" data-action="readTopic" data-v="${esc(x)}" aria-pressed="${rf.topic === x}">${esc(unitLabel(x))}</button>`).join('')}</div>
+        <div class="read-jump"><span class="chip ok">✓ ${totalDone} / ${ARTICLES.length}</span><span>${t('jumpTo')}</span>${RG.filter(g => ARTICLES.some(a => a.level === g[0])).map(g => `<button type="button" data-action="jumpGroup" data-target="grp-${g[1]}">${g[2]} ${esc(g[3])}</button>`).join('')}</div>
       </div>`;
-    return `<h2 class="section-title" style="margin-top:8px">${t('readingTitle')}</h2><p class="section-sub">${t('readingSub')}</p>
+    return `${subtabs('reading')}${pageHead('reading', t('readingSub'))}
       <div class="teacher-only block" style="margin-bottom:12px"><button class="btn accent" data-action="newArticle">${t('newArticle')}</button></div>
       ${ARTICLES.length ? toc + groups : `<p class="muted">${t('noArticles')}</p>`}`;
   }
@@ -1449,36 +1599,35 @@
   function articleView() {
     const a = articleById(view.articleId);
     if (!a) { view.articleId = null; return pageReading(); }
-    const L = 'ABCD';
     const Z = readingZh(a), showZh = !!Z && (view.readZh != null ? view.readZh : view.submitted);  // translation shows after answering, or on request
-    const qs = a.questions.map((q, qi) => {
-      const chosen = view.answers[qi];
-      return `<div class="question"><div class="q">${qi + 1}. ${esc(q.q)}</div>
-        ${q.options.map((o, oi) => {
-          let cls = 'option';
-          if (view.submitted) { if (oi === q.answer) cls += ' correct'; else if (chosen === oi) cls += ' wrong'; }
-          else if (chosen === oi) cls += ' selected';
-          return `<div class="${cls}" data-action="choose" data-q="${qi}" data-o="${oi}"><span class="letter">${L[oi]}</span><span>${esc(o)}</span></div>`;
-        }).join('')}
-        ${view.submitted ? `<div class="explain">${chosen === q.answer ? '✅ ' + t('correct') : '❌ ' + t('wrong')}${q.explain ? ' · ' + t('explain') + '：' + esc(q.explain) : ''}</div>` : ''}
-      </div>`;
-    }).join('');
+    const n = a.questions.length, k = Object.keys(view.answers).length;
+    const qs = a.questions.map((q, qi) => `<div class="question" id="rq-${qi}"><div class="q">${qi + 1}. ${esc(q.q)}</div>
+        ${q.options.map((o, oi) => optionHTML({ action: 'choose', data: { q: qi, o: oi }, i: oi, text: o, en: false, chosen: view.answers[qi], answer: q.answer, reveal: view.submitted })).join('')}
+        ${view.submitted ? explainHTML(view.answers[qi], q.answer, q.options, q.explain) : ''}
+      </div>`).join('');
     let scoreHtml = '';
     if (view.submitted) {
       const sc = a.questions.filter((q, i) => view.answers[i] === q.answer).length;
-      scoreHtml = `<div class="score-banner"><div>${t('yourScore')}</div><div class="big">${sc} / ${a.questions.length}</div><div>${Math.round(sc / a.questions.length * 100)}%</div>${view.readSecs != null ? `<div class="pace ${view.readSecs <= 600 ? 'ok' : 'slow'}">${tf('paceLine', { t: fmtDur(view.readSecs), p: '10:00' })}</div>` : ''}<div style="margin-top:8px"><button class="btn accent" data-action="retry">${t('retry')}</button></div></div>`;
+      scoreHtml = `<div class="score-banner"><div>${t('yourScore')}</div><div class="big">${sc} / ${n}</div><div>${Math.round(sc / n * 100)}%</div>${view.readSecs != null ? `<div class="pace ${view.readSecs <= 600 ? 'ok' : 'slow'}">${tf('paceLine', { t: fmtDur(view.readSecs), p: '10:00' })}</div>` : ''}<div class="row" style="margin-top:10px;justify-content:center"><button class="btn accent" data-action="retry">${t('retry')}</button><button class="btn ghost" data-action="backList">${t('back')}</button></div></div>`;
     }
-    return `<button class="btn ghost sm" data-action="backList">${t('back')}</button>
-      <div class="card" style="margin-top:12px">
-        <div class="row" style="align-items:flex-start"><h2 style="margin:0 0 4px;flex:1">${esc(a.title)}</h2>${bmBtn('articles', a.id)}</div>
+    // real paragraphs; single line breaks (letters, notices) are kept
+    const paras = String(a.passage || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`).join('');
+    const top = view.submitted ? `<div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" data-action="backList">${t('back')}</button></div>`
+      : sessionTop('endRead', t('sessionRead'), tf('readAnswered', { k, n }), k, n,
+        `<div class="st-jump" role="group"><button type="button" data-action="jump" data-to="passage">${t('jumpPassage')}</button><button type="button" data-action="jump" data-to="q">${t('jumpQs')}</button></div>`);
+    return `${subtabs('reading')}${top}
+      <article class="card art-card">
+        <div class="art-head"><h1 tabindex="-1">${esc(a.title)}</h1>${bmBtn('articles', a.id)}</div>
         ${showZh && Z.title ? `<div class="reader-title-zh" style="margin:-2px 0 6px">${esc(Z.title)}</div>` : ''}
         <div class="muted small" style="margin-bottom:12px">${esc(unitLabel(a.level || ''))} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
         ${Z ? `<div class="reader-tools" style="margin-bottom:10px"><div class="seg" role="group" aria-label="${t('newsTransLabel')}" style="margin-left:0"><button class="seg-btn ${showZh ? 'on' : ''}" data-action="readZh" data-v="1" aria-pressed="${showZh}">${t('newsBoth')}</button><button class="seg-btn ${!showZh ? 'on' : ''}" data-action="readZh" data-v="0" aria-pressed="${!showZh}">${t('newsEnOnly')}</button></div>${!view.submitted && !showZh ? `<span class="small muted">${t('readZhHint')}</span>` : ''}</div>` : ''}
-        ${showZh ? `<div class="passage passage-zh ${ui.font === 'clean' ? 'clean' : ''}">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
-          : `<div class="passage ${ui.font === 'clean' ? 'clean' : ''}">${esc(a.passage)}</div>`}
-        ${qs}
-        ${view.submitted ? scoreHtml : `<div class="center" style="margin-top:18px"><button class="btn accent" data-action="submitQuiz" style="font-size:18px;padding:12px 30px">${t('submit')}</button></div>`}
-      </div>`;
+        <div class="article-layout">
+          <div class="art-left">${showZh ? `<div class="passage passage-zh${a.level === 'Reading · Practical' ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
+            : `<div class="passage${a.level === 'Reading · Practical' ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${paras}</div>`}</div>
+          <div class="art-right" id="artQs">${qs}
+            ${view.submitted ? scoreHtml : `<div class="action-bar"><button class="btn accent" data-action="submitQuiz">${t('submit')}（${k}/${n}）</button></div>`}</div>
+        </div>
+      </article>`;
   }
 
   function articleEditor() {
@@ -1548,6 +1697,9 @@
   function poolFor(mode, unit) {
     let pool = VOCAB.filter(v => inUnit(v, unit));
     if (mode === 'due') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return !c || c.seen === 0 || c.due <= todayStr(); });
+    else if (mode === 'dueOnly') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= todayStr(); });
+    // new words in 統測高頻 order (most frequent first); words without a rank go last
+    else if (mode === 'newHF') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return !c || !c.seen; }).sort((a, b) => (HF_RANK[a.id] ?? 1e9) - (HF_RANK[b.id] ?? 1e9));
     else if (mode === 'unknown') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.wrong > 0 && c.box < 2; });
     else if (mode === 'new') pool = pool.filter(v => !state.progress.cards[v.id] || state.progress.cards[v.id].seen === 0);
     else if (mode === 'bookmark') pool = pool.filter(v => isBm('vocab', v.id));
@@ -1559,58 +1711,62 @@
     if (view.quiz) return quizStage();
     const fs = view.flashSetup, qsu = view.quizSetup;
     const count = poolFor(fs.mode, fs.unit).length;
-    return `<h2 class="section-title" style="margin-top:8px">${t('flashTitle')}</h2><p class="section-sub">${t('flashSub')}</p>
-      <div class="card">
+    return `${subtabs('flashcards')}${pageHead('flashcards', t('flashSub'))}
+      <div class="card setup">
         <div class="grid-3">
-          <div class="field"><label>${t('range')}</label><select class="input" id="fsMode">
-            <option value="due" ${fs.mode === 'due' ? 'selected' : ''}>${t('modeDue')} + ${t('modeNew')}</option>
+          <div class="field"><label for="fsMode">${t('range')}</label><select class="input" id="fsMode">
+            <option value="due" ${fs.mode === 'due' ? 'selected' : ''}>${t('modeDueMix')}</option>
+            <option value="dueOnly" ${fs.mode === 'dueOnly' ? 'selected' : ''}>${t('modeDueOnly')}</option>
+            <option value="newHF" ${fs.mode === 'newHF' ? 'selected' : ''}>${t('modeNewHF')}</option>
             <option value="all" ${fs.mode === 'all' ? 'selected' : ''}>${t('modeAll')}</option>
             <option value="unknown" ${fs.mode === 'unknown' ? 'selected' : ''}>${t('modeUnknown')}</option>
             <option value="new" ${fs.mode === 'new' ? 'selected' : ''}>${t('modeNew')}</option>
             <option value="bookmark" ${fs.mode === 'bookmark' ? 'selected' : ''}>🔖 ${t('modeBookmark')}</option></select></div>
-          <div class="field"><label>${t('unit')}</label>${unitSelect('fsUnit', fs.unit)}</div>
-          <div class="field"><label>${t('shuffle')}</label><select class="input" id="fsShuffle"><option value="1" ${fs.shuffle ? 'selected' : ''}>✓ ${t('shuffle')}</option><option value="0" ${!fs.shuffle ? 'selected' : ''}>—</option></select></div>
-          <div class="field"><label>${t('perRound')}</label><select class="input" id="fsLimit">${[10, 20, 30, 50, 100, 0].map(n => `<option value="${n}" ${(fs.limit ?? 30) === n ? 'selected' : ''}>${n ? n : t('allCards')}</option>`).join('')}</select></div>
+          <div class="field"><label for="fsUnit">${t('unit')}</label>${unitSelect('fsUnit', fs.unit)}</div>
+          <div class="field"><label for="fsShuffle">${t('shuffle')}</label><select class="input" id="fsShuffle"><option value="1" ${fs.shuffle ? 'selected' : ''}>✓ ${t('shuffle')}</option><option value="0" ${!fs.shuffle ? 'selected' : ''}>—</option></select></div>
+          <div class="field"><label for="fsLimit">${t('perRound')}</label><select class="input" id="fsLimit">${[10, 20, 30, 50, 100, 0].map(n => `<option value="${n}" ${(fs.limit ?? 30) === n ? 'selected' : ''}>${n ? n : t('allCards')}</option>`).join('')}</select></div>
         </div>
-        <div class="row"><span class="muted">${count} ${t('statDueS')}${fs.limit ? ` · ${t('perRound')} ${Math.min(count, fs.limit)}` : ''}</span><span class="spacer"></span><button class="btn accent" data-action="startFlash" ${count ? '' : 'disabled'} style="font-size:18px;padding:12px 30px">${t('startPractice')}</button></div>
+        <div class="row"><span class="muted">${count} ${t('statDueS')}${fs.limit ? ` · ${t('perRound')} ${Math.min(count, fs.limit)}` : ''}</span><span class="spacer"></span><button class="btn accent block-cta" data-action="startFlash" ${count ? '' : 'disabled'} style="font-size:18px;padding:12px 30px">▶ ${t('startPractice')}</button></div>
       </div>
-      <h2 class="section-title">${t('vocabQuiz')}</h2><p class="section-sub">${t('svcQuizP')}</p>
-      <div class="card">
+      <h2 class="section-title" id="quizSetup" style="scroll-margin-top:12px">${t('vocabQuiz')}</h2><p class="section-sub">${t('svcQuizP')}</p>
+      <div class="card setup">
         <div class="grid-3">
-          <div class="field"><label>${t('quizType')}</label><select class="input" id="qsType">
+          <div class="field"><label for="qsType">${t('quizType')}</label><select class="input" id="qsType">
             <option value="choice" ${qsu.type === 'choice' ? 'selected' : ''}>${t('quizChoice')}</option>
             <option value="choiceRev" ${qsu.type === 'choiceRev' ? 'selected' : ''}>${t('quizChoiceRev')}</option>
             <option value="spell" ${qsu.type === 'spell' ? 'selected' : ''}>${t('quizSpell')}</option></select></div>
-          <div class="field"><label>${t('unit')}</label>${unitSelect('qsUnit', qsu.unit)}</div>
-          <div class="field"><label>${t('quizCount')}</label><input type="number" id="qsCount" min="3" max="50" value="${qsu.count}"></div>
+          <div class="field"><label for="qsUnit">${t('unit')}</label>${unitSelect('qsUnit', qsu.unit)}</div>
+          <div class="field"><label for="qsCount">${t('quizCount')}</label><input type="number" id="qsCount" min="3" max="50" value="${qsu.count}"></div>
         </div>
-        <div class="row"><span class="spacer"></span><button class="btn" data-action="startQuiz" ${VOCAB.length >= 4 ? '' : 'disabled'} style="font-size:18px;padding:12px 30px">${t('startQuiz')}</button></div>
+        <div class="row"><span class="spacer"></span><button class="btn block-cta" data-action="startQuiz" ${VOCAB.length >= 4 ? '' : 'disabled'} style="font-size:18px;padding:12px 30px">${t('startQuiz')}</button></div>
       </div>`;
   }
 
   function flashStage() {
     const f = view.flash;
     if (f.idx >= f.queue.length) {
-      return `<div class="card center"><h2>🎉 ${t('roundDone')}</h2><p style="font-size:20px">${tf('roundStats', { k: f.known.length, d: f.missed.length })}</p>
+      return `${subtabs('flashcards')}<div class="card center"><h2 tabindex="-1">🎉 ${t('roundDone')}</h2><p style="font-size:20px">${tf('roundStats', { k: f.known.length, d: f.missed.length })}</p>
         <div class="row" style="justify-content:center"><button class="btn accent" data-action="flashAgain">${t('again')}</button>${f.missed.length ? `<button class="btn" data-action="flashMissed">${t('practiceUnknown')}</button>` : ''}<button class="btn ghost" data-action="flashExit">${t('back')}</button></div></div>`;
     }
     const v = VOCAB.find(x => x.id === f.queue[f.idx]);
     if (!v) { f.idx++; return flashStage(); }
     const c = state.progress.cards[v.id] || { box: 0 };
     const ex = v.example ? esc(v.example).replace(new RegExp('(' + v.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\w*)', 'i'), '<b>$1</b>') : '';
-    return `<div class="flash-stage">
-      <div class="row" style="width:min(640px,100%)"><button class="btn ghost sm" data-action="flashExit">${t('back')}</button><span class="spacer"></span><span class="muted">${f.idx + 1} / ${f.queue.length}</span></div>
-      <div class="progress-bar"><div style="width:${f.idx / f.queue.length * 100}%"></div></div>
+    const nb = Math.min(3, (c.box || 0) + 1), when = INTERVALS[nb] === 1 ? t('flashTomorrow') : tf('flashInDays', { n: INTERVALS[nb] });
+    const onBm = isBm('vocab', v.id);
+    return `${subtabs('flashcards')}${sessionTop('flashExit', t('sessionFlash'), `${f.idx + 1} / ${f.queue.length}`, f.idx, f.queue.length, `<span class="st-chip">✓ ${f.known.length}</span>`)}
+      <div class="flash-stage">
       <div class="flash-card ${f.flipped ? 'flipped' : ''}" data-action="flip">
         <div class="flash-inner">
-          <div class="flash-face flash-front"><span class="ribbon ribbon-l ribbon-${['new', 'info', 'warn', 'ok'][c.box]}" title="${t('box')}">${['🌱', '📘', '⭐', '🏆'][c.box]}</span><button class="flash-bm ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" title="${t('bookmark')}">🔖</button>
-            <div class="flash-word">${esc(v.word)}</div><div class="flash-pos">${esc(v.pos || '')}</div>
+          <div class="flash-face flash-front" aria-hidden="${!!f.flipped}"><span class="ribbon ribbon-l ribbon-${['new', 'info', 'warn', 'ok'][c.box]}" title="${t('box')}" aria-hidden="true">${['🌱', '📘', '⭐', '🏆'][c.box]}</span><button class="icon-btn flash-bm ${onBm ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${onBm}" aria-label="${esc(t('bookmark') + ' ' + v.word)}">${onBm ? '★' : '☆'}</button>
+            <div class="flash-word en">${wordBreaks(v.word)}</div><div class="flash-pos">${esc(v.pos || '')}</div>
             <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="margin-top:14px">${t('speak')}</button>
-            <span class="flash-hint">${t('tapToFlip')}</span></div>
-          <div class="flash-face flash-back"><div class="flash-zh">${esc(v.zh)}</div><div class="flash-pos" style="color:#fff;opacity:.8">${esc(v.word)} ${esc(v.pos || '')}${v.cefr ? ` · ${esc(v.cefr)}` : ''}</div>${v.syn ? `<div class="flash-syn">≈ ${esc(v.syn)}</div>` : ''}${ex ? `<div class="flash-example">${ex}</div>` : ''}</div>
+            <button type="button" class="flash-hint" data-action="flip" aria-expanded="${!!f.flipped}">${t('tapToFlip')}</button></div>
+          <div class="flash-face flash-back" aria-hidden="${!f.flipped}"><div class="flash-zh">${esc(v.zh)}</div><div class="flash-pos" style="color:#fff;opacity:.85">${wordBreaks(v.word)} ${esc(v.pos || '')}${v.cefr ? ` · ${esc(v.cefr)}` : ''}</div>${v.syn ? `<div class="flash-syn">≈ ${esc(v.syn)}</div>` : ''}${ex ? `<div class="flash-example">${ex}</div>` : ''}</div>
         </div>
       </div>
-      <div class="flash-actions"><button class="btn danger" data-action="flashMark" data-known="0">${t('dontKnow')}</button><button class="btn ok" data-action="flashMark" data-known="1">${t('know')}</button></div>
+      <p class="small muted kbd-hint" style="margin:0">${t('flashKbd')}</p>
+      <div class="action-bar"><button class="btn danger two-line" data-action="flashMark" data-known="0">${t('dontKnow')}<small>${t('flashAgainSoon')}</small></button><button class="btn ok two-line" data-action="flashMark" data-known="1">${t('know')}<small>${when}</small></button></div>
     </div>`;
   }
 
@@ -1637,28 +1793,27 @@
     const q = view.quiz;
     const byId = id => VOCAB.find(x => x.id === id);
     if (q.idx >= q.qs.length) {
-      return `<div class="card center"><h2>📝 ${t('quizDone')}</h2><div class="score-banner"><div class="big">${tf('quizResult', { c: q.correct, t: q.qs.length })}</div></div>
+      return `${subtabs('flashcards')}<div class="card center"><h2 tabindex="-1">📝 ${t('quizDone')}</h2><div class="score-banner"><div class="big">${tf('quizResult', { c: q.correct, t: q.qs.length })}</div></div>
         ${q.wrong.length ? `<div class="list" style="margin-top:14px;text-align:left">${q.wrong.map(w => `<div class="list-item"><div class="grow"><div class="title en">${esc(w.word)}</div><div class="meta">${esc(w.zh)}${w.given ? ` · ${t('typed')}「${esc(w.given)}」` : ''}</div></div></div>`).join('')}</div>` : ''}
         <div class="row" style="justify-content:center;margin-top:14px"><button class="btn accent" data-action="quizAgain">${t('again')}</button><button class="btn ghost" data-action="quizExit">${t('back')}</button></div></div>`;
     }
     const cur = q.qs[q.idx], v = byId(cur.id);
     if (!v) { q.idx++; return quizStage(); }
-    const head = `<div class="row"><button class="btn ghost sm" data-action="quizExit">${t('back')}</button><span class="spacer"></span><span class="muted">${q.idx + 1} / ${q.qs.length} · ✅ ${q.correct}</span></div>
-      <div class="progress-bar" style="margin:10px auto"><div style="width:${q.idx / q.qs.length * 100}%"></div></div>`;
-    let body = '';
+    const head = subtabs('flashcards') + sessionTop('quizExit', t('sessionQuiz'), `${q.idx + 1} / ${q.qs.length}`, q.idx + (q.answered ? 1 : 0), q.qs.length, `<span class="st-chip">✓ ${q.correct}</span>`);
+    let body = '', bar = '';
     if (q.type === 'spell') {
       body = `<div class="quiz-word" style="font-family:var(--font-body)">${esc(v.zh)} <span class="muted" style="font-size:18px">${esc(v.pos || '')}</span></div>
         <input type="text" class="spell-input" id="spellInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" ${q.answered ? 'disabled' : ''} value="${esc(q.chosen || '')}">
-        ${q.answered ? `<div class="center" style="margin-top:12px;font-size:20px">${q.lastOk ? '✅' : '❌'} ${t('answerIs')}<b class="en" style="font-size:26px">${esc(v.word)}</b>${v.syn ? `<div class="muted en">≈ ${esc(v.syn)}</div>` : ''}<div class="muted en">${esc(v.example || '')}</div></div>
-          <div class="center" style="margin-top:12px"><button class="btn accent" data-action="quizNext">${t('next')}</button></div>`
-          : `<div class="center" style="margin-top:12px"><button class="btn accent" data-action="spellCheck">${t('check')}</button> <button class="btn ghost" data-action="spellSkip">${t('skip')}</button></div>`}`;
+        ${q.answered ? `<div class="center" style="margin-top:12px;font-size:20px">${q.lastOk ? '✅' : '❌'} ${t('answerIs')}<b class="en" style="font-size:26px">${esc(v.word)}</b>${v.syn ? `<div class="muted en">≈ ${esc(v.syn)}</div>` : ''}<div class="muted en">${esc(v.example || '')}</div></div>` : ''}`;
+      bar = q.answered ? `<button class="btn accent" data-action="quizNext">${t('next')} ›</button>` : `<button class="btn ghost" data-action="spellSkip">${t('skip')}</button><button class="btn accent" data-action="spellCheck">${t('check')}</button>`;
     } else {
       const rev = q.type === 'choiceRev';
-      body = `<div class="quiz-word" ${rev ? 'style="font-family:var(--font-body)"' : ''}>${esc(rev ? v.zh : v.word)} ${!rev ? `<button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}">🔊</button>` : `<span class="muted" style="font-size:18px">${esc(v.pos || '')}</span>`}</div>
+      body = `<div class="quiz-word" ${rev ? 'style="font-family:var(--font-body)"' : ''}>${rev ? esc(v.zh) : wordBreaks(v.word)} ${!rev ? `<button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}">🔊</button>` : `<span class="muted" style="font-size:18px">${esc(v.pos || '')}</span>`}</div>
         <div class="quiz-options">${cur.opts.map(oid => { const o = byId(oid); if (!o) return ''; let cls = 'quiz-opt'; if (q.answered) { if (oid === v.id) cls += ' correct'; else if (q.chosen === oid) cls += ' wrong'; } return `<button class="${cls}" data-action="quizChoose" data-id="${esc(oid)}" ${q.answered ? 'disabled' : ''}><span class="${rev ? 'en' : ''}">${esc(rev ? o.word : o.zh)}</span></button>`; }).join('')}</div>
-        ${q.answered ? `<div class="center" style="margin-top:14px"><div class="muted en">${esc(v.word)} ${esc(v.pos || '')}${v.syn ? ` ≈ ${esc(v.syn)}` : ''} — ${esc(v.example || '')}</div><button class="btn accent" data-action="quizNext" style="margin-top:8px">${t('next')}</button></div>` : ''}`;
+        ${q.answered ? `<div class="center" style="margin-top:14px"><div class="muted en">${esc(v.word)} ${esc(v.pos || '')}${v.syn ? ` ≈ ${esc(v.syn)}` : ''} — ${esc(v.example || '')}</div></div>` : ''}`;
+      bar = q.answered ? `<button class="btn accent" data-action="quizNext">${t('next')} ›</button>` : '';
     }
-    return `<div class="card" style="max-width:800px;margin:0 auto">${head}${body}</div>`;
+    return `${head}<div class="card" style="max-width:800px;margin:0 auto">${body}</div>${bar ? `<div class="action-bar">${bar}</div>` : ''}`;
   }
   function quizAnswer(ok, given) {
     const q = view.quiz, v = VOCAB.find(x => x.id === q.qs[q.idx].id);
@@ -1678,7 +1833,7 @@
     const ty = view.vocabType || '';
     const list = VOCAB.filter(v => inUnit(v, view.vocabUnit) && (!ty || (ty === 'custom' ? (!LIBMAP[v.id] || v.override) : v.type === ty)) && (!view.vocabBm || isBm('vocab', v.id)) && (!s || v.word.toLowerCase().includes(s) || (v.zh || '').includes(s) || (v.syn || '').toLowerCase().includes(s) || (v.example || '').toLowerCase().includes(s)));
     if (String(view.vocabUnit).startsWith('@hf')) list.sort((a, b) => HF_RANK[a.id] - HF_RANK[b.id]);  // most frequent first
-    const PAGE = 50, pages = Math.max(1, Math.ceil(list.length / PAGE));
+    const PAGE = window.innerWidth <= 640 ? 20 : 50, pages = Math.max(1, Math.ceil(list.length / PAGE));
     view.vocabPage = Math.min(Math.max(0, view.vocabPage || 0), pages - 1);
     const pageList = list.slice(view.vocabPage * PAGE, view.vocabPage * PAGE + PAGE);
     const cur = view.vocabPage;
@@ -1701,13 +1856,13 @@
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
       const c = state.progress.cards[v.id] || { box: 0, seen: 0 };
-      return `<tr><td class="bm-cell"><button class="bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" title="${t('bookmark')}">🔖</button></td><td class="word">${esc(v.word)} <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="padding:2px 6px">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td class="pos">${esc(v.pos || '')}</td><td class="zh">${esc(v.zh)}</td><td class="syn en">${v.syn ? `<span class="wb-lbl">≈ </span>` : ''}${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted unit">${esc(unitLabel(v.unit))}</td>
+      return `<tr><td class="bm-cell"><button class="icon-btn bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${isBm('vocab', v.id)}" aria-label="${esc(t('bookmark') + '：' + v.word)}">${isBm('vocab', v.id) ? '★' : '☆'}</button></td><td class="word">${esc(v.word)} <button class="icon-btn" data-action="speak" data-word="${esc(v.word)}" aria-label="${esc(t('listen') + ' ' + v.word)}">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td class="pos">${esc(v.pos || '')}</td><td class="zh">${esc(v.zh)}</td><td class="syn en">${v.syn ? `<span class="wb-lbl">≈ </span>` : ''}${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted unit">${esc(unitLabel(v.unit))}</td>
         <td class="box"><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
         <td class="teacher-only acts"><button class="btn sm ghost" data-action="editVocab" data-id="${esc(v.id)}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${esc(v.id)}">${t('del')}</button></td></tr>`;
     };
-    return `<h2 class="section-title" style="margin-top:8px">${t('vocabTitle')}</h2><p class="section-sub">${t('vocabSub')}</p>
+    return `${subtabs('vocab')}${pageHead('vocab', t('vocabSub'))}
       <div class="row" style="margin-bottom:12px">
-        <input type="text" id="vocabSearch" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" style="max-width:320px">
+        <label class="sr-only" for="vocabSearch">${t('search')}</label><input type="search" id="vocabSearch" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" style="max-width:320px" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
         <button class="btn sm ${view.vocabBm ? 'accent' : 'ghost'}" data-action="toggleVocabBm">🔖 ${t('onlyBookmarks')}</button>
         <div style="min-width:220px">${unitSelect('vocabUnit', view.vocabUnit)}</div>
         <select class="input" id="vocabType" style="width:auto"><option value="" ${!ty ? 'selected' : ''}>${t('typeAll')}</option><option value="word" ${ty === 'word' ? 'selected' : ''}>${t('typeWord')}</option><option value="phrase" ${ty === 'phrase' ? 'selected' : ''}>${t('typePhrase')}</option><option value="custom" ${ty === 'custom' ? 'selected' : ''}>${t('presetCustom')}</option></select>
@@ -1746,13 +1901,13 @@
     const rq = progress.readingQuizzes.slice().reverse().slice(0, 30);
     const vq = progress.vocabQuizzes.slice().reverse().slice(0, 30);
     const typeName = { choice: t('quizChoice'), choiceRev: t('quizChoiceRev'), spell: t('quizSpell') };
-    return `<h3>${t('quizHistory')}</h3>${rq.length ? `<table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('article')}</th><th>${t('score')}</th></tr></thead><tbody>${rq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(r.title)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noData')}</p>`}
-      <h3>${t('vocabQuizHistory')}</h3>${vq.length ? `<table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('vocabQuiz')}</th><th>${t('score')}</th></tr></thead><tbody>${vq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(typeName[r.type] || r.type)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noData')}</p>`}`;
+    return `<h3>${t('quizHistory')}</h3>${rq.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('article')}</th><th>${t('score')}</th></tr></thead><tbody>${rq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(r.title)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noData')}</p>`}
+      <h3>${t('vocabQuizHistory')}</h3>${vq.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('vocabQuiz')}</th><th>${t('score')}</th></tr></thead><tbody>${vq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(typeName[r.type] || r.type)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noData')}</p>`}`;
   }
   function pageProgress() {
     const p = state.progress;
     const total = Object.values(p.days).reduce((a, b) => a + b, 0);
-    return `<h2 class="section-title" style="margin-top:8px">${t('progressTitle')}</h2><p class="section-sub">${t('progressSub')}</p>
+    return `${subtabs('progress')}${pageHead('progress', t('progressSub'))}
       <div class="card"><div class="row"><div><b>🔥 ${t('streak')}</b> ${streak()} ${t('streakDays')}</div><div><b>${t('totalActivity')}</b> ${total}</div><span class="spacer"></span>
         <button class="btn accent" data-action="sendTeacher" ${view.reportBusy ? 'disabled' : ''}>${t('sendToTeacher')}</button></div><p class="small muted" style="margin:6px 0 0">${t('sendHint')}</p></div>
       ${reportCard()}
@@ -1893,7 +2048,7 @@
     return { wrongs, weakList, avg, last, total, notStudied, timeline, rq };
   }
   function pageGate() {
-    return `<div class="card gate"><div class="big-icon">🔒</div><h2>${t('teacherOnly')}</h2><p class="muted">${t('teacherOnlySub')}</p><button class="btn accent" data-action="openAuth" style="font-size:18px;padding:12px 30px">${t('loginNow')}</button></div>`;
+    return `${pageHead('students')}<div class="card gate"><div class="big-icon">🔒</div><h2>${t('teacherOnly')}</h2><p class="muted">${t('teacherOnlySub')}</p><button class="btn accent" data-action="openAuth" style="font-size:18px;padding:12px 30px">${t('loginNow')}</button></div>`;
   }
   function pageStudents() {
     if (!ui.teacher) return pageGate();
@@ -1904,7 +2059,7 @@
     if (!rep.progress) { const cs = rep; if (!cs.tried) setTimeout(() => loadStudentProgress(cs)); rep = Object.assign({}, cs, { progress: emptyProgress() }); }
     const A = analyzeReport(rep.progress, rep.name);
     const mastered = VOCAB.filter(v => (rep.progress.cards[v.id] || {}).box === 3).length;
-    return `<h2 class="section-title" style="margin-top:8px">${t('studentsTitle')}</h2><p class="section-sub">${t('studentsSub')}</p>
+    return `${subtabs('students')}${pageHead('students', t('studentsSub'))}
       <div class="card"><div class="row">
         <div class="field" style="margin:0;min-width:260px"><label>${t('source')}</label><select class="input" id="studentSource"><option value="local" ${src === 'local' ? 'selected' : ''}>${t('localDevice')}</option>${view.cloudStudents.map(r => `<option value="${esc(r.id)}" ${src === r.id ? 'selected' : ''}>☁️ ${esc(r.name)}${r.exportedAt ? ' · ' + fmtDate(r.exportedAt) : ''}</option>`).join('')}${reports.map(r => `<option value="${esc(r.id)}" ${src === r.id ? 'selected' : ''}>📄 ${esc(r.name)} · ${fmtDate(r.exportedAt)}</option>`).join('')}</select></div>
         <span class="spacer"></span>
@@ -1923,7 +2078,7 @@
           <div class="small">${t('studentChose')}：<span class="chip bad">${w.chosen.map(esc).join('</span> <span class="chip bad">')}</span> → ${t('correctIs')}：<span class="chip ok">${esc(w.correct)}</span></div>${w.explain ? `<div class="small muted">${esc(w.explain)}</div>` : ''}</div><span class="chip bad">${tf('wrongTimes', { n: w.n })}</span></div>`).join('')}</div>` : `<p class="muted">${t('noWrong')}</p>`}
       </div>
       <div class="card"><h3 style="margin-top:0">🧠 ${t('weakWords')}</h3>
-        ${A.weakList.length ? `<table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noWeak')}</p>`}
+        ${A.weakList.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
       ${(() => { const M = mcStats(rep.progress); return M.done ? `<div class="card"><h3 style="margin-top:0">📝 ${t('tabMcq')} <span class="small muted">${M.right} / ${M.done}</span></h3>
         <div class="row">${MC_TYPES.map(([k, l, ic]) => { const b = M.byType[k]; return b.done ? `<span class="chip ${b.right / b.done >= .8 ? 'ok' : b.right / b.done >= .6 ? 'warn' : 'bad'}">${ic} ${t(l)} ${b.right}/${b.done}</span>` : ''; }).join('')}</div>
@@ -1946,17 +2101,18 @@
 
   /* ---- Settings ---- */
   function pageSettings() {
-    const s = state.settings;
-    return `<h2 class="section-title" style="margin-top:8px">${t('settingsTitle')}</h2><p class="section-sub">${t('settingsSub')}</p>
+    const s = state.settings, T = ui.teacher;
+    // the exam name and 老師的話 are the teacher's to set; students still choose their exam date
+    return `${pageHead('settings', t('settingsSub'))}
       <div class="card">
         <div class="grid-2">
-          <div class="field"><label>${t('examName')}</label><input type="text" id="stExamName" value="${esc(s.examName)}"></div>
-          <div class="field"><label>${t('examNameEn')}</label><input type="text" id="stExamNameEn" value="${esc(s.examNameEn || '')}"></div>
-          <div class="field"><label>${t('examDate')}</label><input type="date" id="stExamDate" value="${esc(s.examDate)}"></div>
-          <div class="field"><label>${t('studentName')}</label><input type="text" id="stStudent" value="${esc(s.studentName || '')}"></div>
-          <div class="field"><label>${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>
+          ${T ? `<div class="field"><label for="stExamName">${t('examName')}</label><input type="text" id="stExamName" value="${esc(s.examName)}"></div>
+          <div class="field"><label for="stExamNameEn">${t('examNameEn')}</label><input type="text" id="stExamNameEn" value="${esc(s.examNameEn || '')}"></div>` : ''}
+          <div class="field"><label for="stExamDate">${t('examDate')}</label><input type="date" id="stExamDate" value="${esc(s.examDate)}"></div>
+          <div class="field"><label for="stStudent">${t('studentName')}</label><input type="text" id="stStudent" value="${esc(s.studentName || '')}"></div>
+          <div class="field"><label for="stTeacherEmail">${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>
         </div>
-        <div class="field"><label>${t('mottoLbl')}</label><input type="text" id="stMotto" value="${esc(s.motto || '')}"></div>
+        ${T ? `<div class="field"><label for="stMotto">${t('mottoLbl')}</label><input type="text" id="stMotto" value="${esc(s.motto || '')}"></div>` : `<p class="small muted" style="margin:0 0 12px">🔒 ${t('teacherSetsNote')}</p>`}
         <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(cloud.configured ? cloud.teacherCode : (s.teacherCode || ''))}" autocomplete="off"${cloud.configured ? ` placeholder="${t('inviteCodeCloudPh')}"` : ''}></div>
         <div class="row"><span class="muted small">${t('teacherHint')}</span><span class="spacer"></span><button class="btn accent" data-action="saveSettings">${t('save')}</button></div>
       </div>
@@ -1971,19 +2127,182 @@
       </div>
       ${ui.teacher && cloud.configured ? cloudAccountsCard() : ''}
       ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">👥 ${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
-        ${state.accounts.length ? `<table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${esc(a.id)}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
+        ${state.accounts.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${esc(a.id)}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
   }
 
   /* ---------------- Render ---------------- */
-  function render() {
-    updateExamChip();
-    const pages = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
-
-    $('#app').innerHTML = (pages[view.page] || pageHome)();
-    $$('#tabs .tab').forEach(b => b.classList.toggle('active', b.dataset.page === view.page));
-    const sp = $('#spellInput'); if (sp && !sp.disabled) sp.focus();
+  const PAGES = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
+  // a practice session is on screen: on phones the header, tabs and bottom bar step aside (focus mode)
+  function inSessionNow() {
+    const p = view.page;
+    return (p === 'flashcards' && !!((view.flash && view.flash.idx < view.flash.queue.length) || (!view.flash && view.quiz && view.quiz.idx < view.quiz.qs.length)))
+      || (p === 'mcq' && !!view.mc && !view.mc.done)
+      || (p === 'translate' && !!view.tr && view.tr.i < view.tr.ids.length)
+      || (p === 'reading' && !!view.articleId && !view.submitted && !view.editing);
   }
-  function nav(page) { speakStop(); if (page === 'news' && view.page === 'news') view.newsArticle = null; view.page = page; window.scrollTo({ top: 0 }); render(); }
+  // pages that hold an unfinished session the student has stepped away from (they get a dot on their tab)
+  function sessionPages() {
+    const out = [];
+    if (view.mc && !view.mc.done) out.push('mcq');
+    if (view.tr && view.tr.i < view.tr.ids.length) out.push('translate');
+    if ((view.flash && view.flash.idx < view.flash.queue.length) || (view.quiz && view.quiz.idx < view.quiz.qs.length)) out.push('flashcards');
+    if (readOpen()) out.push('reading');
+    return out.filter(p => p !== view.page);
+  }
+  // the open session of a page (a new round is a new object)
+  const sessionOf = p => p === 'flashcards' ? (view.flash || view.quiz) : p === 'mcq' ? view.mc : p === 'translate' ? view.tr : p === 'reading' ? view.articleId : null;
+  function syncNav() {
+    const live = sessionPages();
+    const mark = (sel, list) => $$(sel).forEach(b => {
+      const g = b.dataset.group, on = g === groupOf(view.page, list);
+      b.classList.toggle('active', on);
+      if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+      b.classList.toggle('has-session', !on && pagesOf(g, list).some(p => live.includes(p)));
+    });
+    mark('#tabs .tab', DESK_GROUPS); mark('#bnav .bnav-btn', GROUPS);
+    const due = dueCards().length, badge = $('#bnavBadge');
+    if (badge) { badge.hidden = !due; badge.textContent = due > 99 ? '99+' : String(due); }
+  }
+  // Each page has an address (#/reading/a14 …) so the iPhone back swipe, reloads and shared links work.
+  // Only addresses that start with "#/" belong to this router. Supabase sign-in links (email confirmation,
+  // password recovery) arrive as #access_token=…&type=signup or #error=…: supabase-js reads them when it starts
+  // (detectSessionInUrl), so any other hash is left exactly as it is until Supabase has finished with it.
+  const isRouteHash = h => /^#\/[a-z]/.test(h || '');
+  let hashReleased = false; // true once nothing else needs a non-route hash (Supabase has read it, or is not used)
+  const hashIsOurs = () => !location.hash || location.hash === '#' || isRouteHash(location.hash) || hashReleased;
+  function releaseHash() {
+    if (hashReleased) return;
+    hashReleased = true;
+    // a sign-in link that failed (expired or already used) says why in the hash; show it before the address changes
+    // (only our own wording: the free text in the link is never shown, so a crafted link cannot put words on the page)
+    const h = location.hash;
+    if (cloud.configured && h && !isRouteHash(h) && /(?:^#|&)error=/.test(h) && /(?:^#|&)error_code=/.test(h)) toast('☁️ ' + t(/(?:^#|&)error_code=otp_expired(?:&|$)/.test(h) ? 'linkExpired' : 'linkFailed'));
+    syncRoute();
+  }
+  function routeOf() {
+    if (view.page === 'reading' && view.articleId && !view.editing) return '#/reading/' + encodeURIComponent(view.articleId);
+    if (view.page === 'news' && view.newsArticle) return '#/news/' + encodeURIComponent(view.newsArticle);
+    return '#/' + view.page;
+  }
+  let routeReady = false;
+  // the app puts the scroll position back itself (a list where it was left, a new page at the top); the browser's own
+  // restoring would arrive afterwards and smooth-scroll the page somewhere else
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) { }
+  function syncRoute() {
+    if (!hashIsOurs()) return;
+    const r = routeOf(); if (location.hash === r) { routeReady = true; return; }
+    // a hash Supabase has finished with is replaced, not kept as a step in the history
+    const foreign = !!location.hash && location.hash !== '#' && !isRouteHash(location.hash);
+    // each step remembers the address it came from, so closing a passage opened from its list can step back instead
+    try { if (routeReady && !foreign) history.pushState({ from: location.hash }, '', r); else history.replaceState(null, '', r); } catch (e) { }
+    routeReady = true;
+  }
+  function applyRoute(h) {
+    const m = /^#\/([a-z]+)(?:\/(.+))?$/.exec(h || ''); if (!m || !Object.prototype.hasOwnProperty.call(PAGES, m[1])) return false;
+    let rest = null; try { rest = m[2] ? decodeURIComponent(m[2]) : null; } catch (e) { rest = null; }
+    const page = m[1];
+    if (page === 'reading') {
+      if (rest && articleById(rest)) enterArticle(rest);
+      else view.articleId = null;
+      view.editing = null;
+    }
+    if (page === 'news') view.newsArticle = rest || null;
+    view.page = page;
+    return true;
+  }
+  const focusKeyOf = el => ['action', 'page', 'group', 'o', 'q', 'id', 'p', 'v', 'kind', 'known', 'ok', 'mode', 'to', 'n', 'src', 'target'].map(k => el.dataset[k] || '').join('|');
+  function render(opts = {}) {
+    updateExamChip(); readClock();
+    const app = $('#app'), a = document.activeElement;
+    // remember which control had keyboard focus, so a re-render does not drop it back to the top of the page
+    const fkey = !opts.focusHeading && a && a !== app && app.contains(a) && a.dataset && a.dataset.action && !/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) ? focusKeyOf(a) : null;
+    app.innerHTML = (PAGES[view.page] || pageHome)();
+    const inSession = inSessionNow();
+    document.body.classList.toggle('in-session', inSession);
+    // a paused session reopened from the menu or the back swipe keeps its group's pills on phones (focus mode hides them otherwise)
+    document.body.classList.toggle('pills-on', inSession && !!view.pillsFor && view.pillsFor === sessionOf(view.page));
+    document.body.dataset.page = view.page;
+    view.lastIn[groupOf(view.page)] = view.page; view.lastIn['d:' + groupOf(view.page, DESK_GROUPS)] = view.page;
+    syncNav();
+    // English text is read with an English voice; Chinese with a Chinese one when the interface is English
+    $$('#app .en:not([lang])').forEach(e => { e.lang = 'en'; });
+    if (ui.lang === 'en') $$('#app .rp-zh, #app .daily-zh, #app .flash-zh, #app td.zh, #app .tr-zh, #app .tr-q').forEach(e => { e.lang = 'zh-Hant'; });
+    document.title = `${t(PAGE_META[view.page] ? PAGE_META[view.page][1] : 'tabHome')} · ${t('siteName')}`;
+    syncRoute();
+    if (opts.focusHeading) { const h = $('#app .st-label, #app h1'); if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
+    else if (fkey) { const same = $$('#app [data-action]').find(el => el.tabIndex >= 0 && focusKeyOf(el) === fkey); if (same && !same.disabled) same.focus({ preventScroll: true }); }
+    const sp = $('#spellInput'); if (sp && !sp.disabled) sp.focus();
+    fitWords();
+    updateToTop();
+  }
+  function nav(page) { speakStop(); if (page === 'news' && view.page === 'news') view.newsArticle = null; view.page = page; jumpTo(0); render({ focusHeading: true }); }
+  // a tab or bottom-bar button: back to the page last used in that group
+  function goGroup(gid, list, pfx) {
+    const pages = pagesOf(gid, list); let target = view.lastIn[pfx + gid];
+    if (!pages.includes(target)) target = pages[0];
+    // an article with answers in progress is kept (or reopened after a back swipe to the list); otherwise the group opens on the list
+    if (target === 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) { view.articleId = null; view.editing = null; }
+    else if (target === 'reading' && !view.articleId && view.page !== 'reading' && readOpen()) view.articleId = view.lastArticle;
+    if (target === 'news' && view.page === 'news') view.newsArticle = null;
+    view.pillsFor = sessionOf(target) || null;
+    nav(target);
+  }
+  // back to the reading list where the student left it, with the passage just read outlined
+  function showReadingList() {
+    view.articleId = null; view.editing = null; render({ focusHeading: true });
+    jumpTo(view.readScroll || 0);
+    const row = view.lastArticle && $$('.read-item').find(r => r.dataset.id === view.lastArticle);
+    if (row) { row.classList.add('just-read'); setTimeout(() => row.classList.remove('just-read'), 2500); const b = $('.ri-main', row); if (b) b.focus({ preventScroll: true }); }
+  }
+  // ← 返回 / ✕ on a passage or story opened from its list: step back in the history instead of adding a step,
+  // so a back swipe afterwards does not reopen what was just closed (popstate then shows the list)
+  function backToList(list) {
+    if (!(history.state && history.state.from === list) || location.hash === list) return false;
+    history.back(); return true;
+  }
+  // open a passage: reopening the same one keeps answers that were not handed in yet (and the reading time so far)
+  function enterArticle(id) {
+    if (view.articleId === id) return;
+    if (!(view.lastArticle === id && !view.submitted && Object.keys(view.answers).length)) { view.answers = {}; view.submitted = false; view.readZh = null; view.readAcc = 0; view.readOn = false; }
+    view.articleId = id; view.lastArticle = id;
+  }
+  // reading time counts only while the passage is on screen: leaving it (another page, a back swipe) pauses the clock
+  function readClock() {
+    const on = view.page === 'reading' && !!view.articleId && !view.submitted && !view.editing;
+    if (on && !view.readOn) view.readStart = Date.now();
+    else if (!on && view.readOn) view.readAcc = (view.readAcc || 0) + (Date.now() - view.readStart);
+    view.readOn = on;
+  }
+  function openArticleId(id) {
+    if (view.page === 'reading' && !view.articleId) view.readScroll = window.scrollY;
+    enterArticle(id); view.readPos = {};
+    nav('reading');
+  }
+
+  /* ---------------- Confirm dialog (bottom sheet on phones) ---------------- */
+  const askEl = $('#askModal');
+  let askResolve = null, askOpener = null;
+  function askConfirm({ title, body = '', ok, cancel, danger = false }) {
+    if (askResolve) askResolve(false);
+    return new Promise(res => {
+      askOpener = document.activeElement;
+      $('#askTitle').textContent = title; $('#askBody').textContent = body; $('#askBody').hidden = !body;
+      $('#askYes').textContent = ok || t('save'); $('#askNo').textContent = cancel || t('cancel');
+      $('#askYes').className = 'btn ' + (danger ? 'danger' : 'accent');
+      askEl.classList.remove('hidden'); askResolve = res;
+      setTimeout(() => $('#askNo').focus(), 30);
+    });
+  }
+  function closeAsk(v) {
+    if (!askResolve) return;
+    askEl.classList.add('hidden'); const r = askResolve; askResolve = null;
+    if (askOpener && askOpener.focus && document.contains(askOpener)) askOpener.focus({ preventScroll: true });
+    r(v);
+  }
+  $('#askYes').addEventListener('click', () => closeAsk(true));
+  $('#askNo').addEventListener('click', () => closeAsk(false));
+  askEl.addEventListener('click', e => { if (e.target === askEl) closeAsk(false); });
+  async function endSessionAsk(n, body) { return n ? askConfirm({ title: t('endAskTitle'), body, ok: t('endAndSee'), cancel: t('keepGoing') }) : true; }
 
   /* ---------------- Export / Import ---------------- */
   function download(name, obj) {
@@ -2025,16 +2344,57 @@
     const r = new FileReader(); r.onload = () => { try { cb(JSON.parse(r.result)); } catch (e) { toast(t('importFail')); } }; r.readAsText(file);
   }
 
+  // the 單字卡 page holds an unfinished round or word quiz with progress (a card marked, a question answered)
+  const wordsBusy = () => !!((view.flash && view.flash.idx > 0 && view.flash.idx < view.flash.queue.length) || (view.quiz && view.quiz.idx < view.quiz.qs.length && (view.quiz.idx > 0 || view.quiz.answered)));
+  // another task was asked for while one with progress is open: go back to the open one and say why, never wipe it
+  function resumeBusy(page) { toast(t('sessionOpenFirst')); nav(page); }
+  function startPlanFlash(mode) {
+    if (view.flash && view.flash.idx < view.flash.queue.length && view.flash.mode === mode) { nav('flashcards'); return; }
+    if (wordsBusy()) return resumeBusy('flashcards');
+    view.flashSetup = Object.assign({}, view.flashSetup, { mode, unit: '' });
+    jumpTo(0);
+    actions.startFlash({ plan: true });
+  }
+  // 選擇題 / 克漏字 task: an open session of the same kind is resumed; one of the other kind too, when it has answers
+  function planResumeMc(kind) {
+    const s = view.mc; if (!s || s.done || (s.kind !== kind && !Object.keys(s.answers).length)) return false;
+    if (s.kind !== kind) resumeBusy('mcq'); else nav('mcq');
+    return true;
+  }
+
   /* ---------------- Actions ---------------- */
   const actions = {
-    nav(el) { nav(el.dataset.page); },
-    goFlash(el) { view.flashSetup.mode = el.dataset.mode; view.flash = null; view.quiz = null; nav('flashcards'); },
-    goQuiz() { view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
+    nav(el) { if (el.dataset.page === 'reading' && view.page !== 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) view.articleId = null; nav(el.dataset.page); },
+    // home: 開始 starts the practice itself (a running session is resumed, never wiped)
+    goFlash(el) { startPlanFlash(el.dataset.mode); },
+    goQuiz() { if (view.quiz && view.quiz.idx < view.quiz.qs.length) return nav('flashcards'); if (wordsBusy()) return resumeBusy('flashcards'); view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $('#quizSetup'); if (h) h.scrollIntoView({ behavior: smooth() }); }, 50); },
+    planReview() { startPlanFlash('dueOnly'); },
+    planNew() { startPlanFlash('newHF'); },
+    planRead() { const a = nextArticle(); if (a) openArticleId(a.id); else nav('reading'); },
+    planMcq() { if (planResumeMc('items')) return; view.mcf = { type: '', level: '', status: 'todo', mode: 'practice', count: GOAL.mcq }; if (mcFiltered().length < GOAL.mcq) view.mcf.status = ''; view.page = 'mcq'; actions.mcStart(); },
+    planCloze() { if (planResumeMc('cloze')) return; view.mcf = { type: 'cloze', level: '', status: 'todo', mode: 'practice', count: 1 }; if (!mcClozeFiltered().length) view.mcf.status = ''; view.page = 'mcq'; actions.mcStart(); },
+    planTr() { if (view.tr && view.tr.i < view.tr.ids.length) return nav('translate'); view.trf = { group: 0, level: '', status: 'todo', page: 0 }; if (trFiltered().length < GOAL.tr) view.trf.status = ''; view.trScroll = 0; actions.trStart({ n: GOAL.tr }); },
+    planNews() { nav('news'); },
+    planMore() { actions.planMcq(); },
+    newsRetry() { news.status = 'idle'; render(); },
+    czJump(el) { const q = document.getElementById('czq-' + el.dataset.n); if (!q) return; q.scrollIntoView({ block: 'center', behavior: smooth() }); flashEl(q); const f = $('.option', q); if (f) f.focus({ preventScroll: true }); },
+    czBack(el) { const b = $$('.cz-blank').find(x => x.dataset.n === el.dataset.n); if (!b) return; b.scrollIntoView({ block: 'center', behavior: smooth() }); flashEl(b); b.focus({ preventScroll: true }); },
+    // phone article: jump between the passage and the first unanswered question
+    jump(el) {
+      const a = articleById(view.articleId), pas = $('#passage'), qs = $('#artQs'); if (!a || !pas || !qs) return;
+      const off = 76, inQs = qs.getBoundingClientRect().top < window.innerHeight * .5;
+      view.readPos = view.readPos || {};
+      if (!inQs) view.readPos.passage = window.scrollY;
+      let y;
+      if (el.dataset.to === 'passage') y = inQs && view.readPos.passage != null ? view.readPos.passage : pas.getBoundingClientRect().top + window.scrollY - off;
+      else { const k = a.questions.findIndex((q, i) => view.answers[i] == null), tq = document.getElementById('rq-' + (k < 0 ? 0 : k)); y = tq.getBoundingClientRect().top + window.scrollY - off; }
+      window.scrollTo({ top: Math.max(0, y), behavior: smooth() });
+    },
     speak(el) { speak(el.dataset.word); },
     newsSource(el) { news.source = el.dataset.src; render(); },
     newsStudy(el) { const o = view.newsOpen || (view.newsOpen = {}); o[el.dataset.i] = !o[el.dataset.i]; render(); },
-    openNewsArticle(el) { view.newsArticle = el.dataset.link; view.newsScroll = window.scrollY; speakStop(); window.scrollTo({ top: 0 }); render(); },
-    closeNewsArticle() { view.newsArticle = null; speakStop(); render(); window.scrollTo({ top: view.newsScroll || 0 }); },
+    openNewsArticle(el) { view.newsArticle = el.dataset.link; view.newsScroll = window.scrollY; const p = state.progress; p.newsDays = Object.assign({}, p.newsDays, { [todayStr()]: 1 }); save(); speakStop(); jumpTo(0); render({ focusHeading: true }); },
+    closeNewsArticle() { speakStop(); if (backToList('#/news')) return; view.newsArticle = null; render(); jumpTo(view.newsScroll || 0); },
     newsZh(el) { view.newsZh = el.dataset.v === '1'; render(); },
     speakStop() { speakStop(); },
     saveNewsWord(el) {
@@ -2046,11 +2406,11 @@
     readTopic(el) { view.readFilter.topic = el.dataset.v; render(); },
     readStatus(el) { view.readFilter.status = el.dataset.v; render(); },
     readMore(el) { view.readFilter.more[el.dataset.v] = true; render(); },
-    jumpGroup(el) { const g = document.getElementById(el.dataset.target); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
-    toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash) { const b = $('.flash-bm'); if (b) b.classList.toggle('on', isBm('vocab', el.dataset.id)); } else render(); },
+    jumpGroup(el) { const g = document.getElementById(el.dataset.target); if (g) g.scrollIntoView({ behavior: smooth(), block: 'start' }); },
+    toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash && view.page === 'flashcards' && view.flash.idx < view.flash.queue.length) { const b = $('.flash-bm'), on = isBm('vocab', el.dataset.id); if (b) { b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); b.textContent = on ? '★' : '☆'; } } else render(); },
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
-    vocabGo(el) { view.vocabPage = +el.dataset.p; render(); },
+    vocabGo(el) { view.vocabPage = +el.dataset.p; render(); const tb = $('.wb-table'); if (tb) tb.scrollIntoView({ block: 'start' }); },
     mcType(el) { view.mcf.type = el.dataset.v; view.mcf.count = el.dataset.v === 'cloze' ? 1 : (view.mcf.count > 4 ? view.mcf.count : 10); render(); },
     mcLevel(el) { view.mcf.level = el.dataset.v; render(); },
     mcStatus(el) { view.mcf.status = el.dataset.v; render(); },
@@ -2061,44 +2421,64 @@
       const ids = shuffleArr((cloze ? mcClozeFiltered() : mcFiltered()).map(x => x.id)).slice(0, f.count || (cloze ? 1 : 10));
       if (!ids.length) { toast(t('trNoMatch')); view.mc = null; render(); return; }
       view.mc = { kind: cloze ? 'cloze' : 'items', type: f.type, ids, i: 0, answers: {}, checked: {}, mode: f.mode, start: Date.now() };
-      window.scrollTo({ top: 0 }); render();
+      view.page = 'mcq'; jumpTo(0); render({ focusHeading: true });
     },
     mcRedo() {
       const s = view.mc, wrong = s.kind === 'cloze' ? s.ids.filter(cid => clozeSets().find(x => x.id === cid).blanks.some((b, k) => s.answers[`${cid}-${k + 1}`] !== b.answer)) : s.ids.filter(id => s.answers[id] !== mcItems().find(x => x.id === id).answer);
-      view.mc = Object.assign({}, s, { ids: wrong, i: 0, answers: {}, checked: {}, done: false, start: Date.now(), secs: null }); render();
+      view.mc = Object.assign({}, s, { ids: wrong, i: 0, answers: {}, checked: {}, done: false, early: false, start: Date.now(), secs: null }); render();
     },
-    mcExit() { view.mc = null; render(); },
+    // ✕ 結束: ask first when answers exist; ending shows the results of what was answered
+    async mcExit() {
+      const s = view.mc;
+      if (s && !s.done) {
+        const n = Object.keys(s.answers).length;
+        if (n) {
+          if (!await endSessionAsk(n, tf('endAskBody', { n }))) return;
+          if (view.mc !== s) return;
+          s.ids = s.kind === 'cloze' ? s.ids.filter(cid => Object.keys(s.answers).some(k => k.startsWith(cid + '-'))) : s.ids.filter(id => s.answers[id] != null);
+          s.i = Math.min(s.i, s.ids.length - 1); s.early = true; mcFinish(); return;
+        }
+      }
+      view.mc = null; render({ focusHeading: true });
+    },
     mcChoose(el) {
       const s = view.mc, it = mcItems().find(x => x.id === s.ids[s.i]);
       if (s.mode === 'practice' && s.answers[it.id] != null) return;
       s.answers[it.id] = +el.dataset.o;
       if (s.mode === 'practice') { mcRecord(it.id, s.answers[it.id], it.answer); bumpDay(); save(); }
       render();
+      // keep the explanation on screen, just above the 下一題 bar
+      if (s.mode === 'practice') requestAnimationFrame(() => { const ex = $('.explain'); if (ex) ex.scrollIntoView({ block: 'nearest', behavior: smooth() }); });
     },
-    mcPrev() { view.mc.i = Math.max(0, view.mc.i - 1); render(); },
-    mcNext() { const s = view.mc; if (s.i < s.ids.length - 1) { s.i++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } else mcFinish(); },
+    mcPrev() { view.mc.i = Math.max(0, view.mc.i - 1); render(); scrollToApp(); },
+    mcNext() { const s = view.mc; if (s.i < s.ids.length - 1) { s.i++; render({ focusHeading: true }); scrollToApp(); } else mcFinish(); },
     czChoose(el) { const s = view.mc, cid = s.ids[s.i]; if (s.checked[cid]) return; s.answers[el.dataset.id] = +el.dataset.o; render(); },
     czCheck() {
       const s = view.mc, c = clozeSets().find(x => x.id === s.ids[s.i]);
-      if (c.blanks.some((b, k) => s.answers[`${c.id}-${k + 1}`] == null)) { toast(t('pleaseAnswerAll')); return; }
+      const miss = c.blanks.findIndex((b, k) => s.answers[`${c.id}-${k + 1}`] == null);
+      if (miss >= 0) { toast(t('pleaseAnswerAll')); actions.czJump({ dataset: { n: String(miss + 1) } }); return; }
       c.blanks.forEach((b, k) => mcRecord(`${c.id}-${k + 1}`, s.answers[`${c.id}-${k + 1}`], b.answer));
       s.checked[c.id] = true; bumpDay(); save(); render();
     },
     czNext() {
       const s = view.mc, c = clozeSets().find(x => x.id === s.ids[s.i]);
       if (s.mode === 'test' && c.blanks.some((b, k) => s.answers[`${c.id}-${k + 1}`] == null)) { toast(t('pleaseAnswerAll')); return; }
-      if (s.i < s.ids.length - 1) { s.i++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } else mcFinish();
+      if (s.i < s.ids.length - 1) { s.i++; render({ focusHeading: true }); scrollToApp(); } else mcFinish();
     },
     trGroup(el) { view.trf.group = +el.dataset.v; view.trf.page = 0; render(); },
     trLevel(el) { view.trf.level = el.dataset.v; view.trf.page = 0; render(); },
     trStatus(el) { view.trf.status = el.dataset.v; view.trf.page = 0; render(); },
     trGo(el) { view.trf.page = +el.dataset.p; render(); trScrollTop(); },
-    trStart() { const ids = shuffleArr(trFiltered().map(x => x.id)).slice(0, 10); if (!ids.length) { view.tr = null; render(); return; } view.tr = { ids, i: 0, right: 0, wrong: [] }; window.scrollTo({ top: 0 }); render(); },
-    trOne(el) { view.tr = { ids: [el.dataset.id], i: 0, right: 0, wrong: [] }; window.scrollTo({ top: 0 }); render(); },
-    trRedo() { const ids = view.tr.wrong.slice(); view.tr = { ids, i: 0, right: 0, wrong: [] }; render(); },
-    trExit() { view.tr = null; render(); },
+    trStart(el) { const n = el && el.n ? el.n : 10; const ids = shuffleArr(trFiltered().map(x => x.id)).slice(0, n); if (!ids.length) { view.tr = null; render(); return; } if (view.page === 'translate' && !view.tr) view.trScroll = window.scrollY; view.tr = { ids, i: 0, right: 0, wrong: [] }; view.page = 'translate'; jumpTo(0); render({ focusHeading: true }); },
+    trOne(el) { view.trScroll = window.scrollY; view.tr = { ids: [el.dataset.id], i: 0, right: 0, wrong: [] }; jumpTo(0); render({ focusHeading: true }); },
+    trRedo() { const ids = view.tr.wrong.slice(); view.tr = { ids, i: 0, right: 0, wrong: [] }; render({ focusHeading: true }); },
+    async trExit() {
+      const s = view.tr;
+      if (s && s.i > 0 && s.i < s.ids.length) { if (!await endSessionAsk(s.i, tf('endAskBody', { n: s.i }))) return; if (view.tr !== s) return; s.ids = s.ids.slice(0, s.i); render({ focusHeading: true }); return; }
+      view.tr = null; render({ focusHeading: true }); jumpTo(view.trScroll || 0);
+    },
     trHint() { view.tr.hint = true; view.tr.answer = ($('#trInput') || {}).value || ''; render(); const i = $('#trInput'); if (i) i.focus(); },
-    trCheck() { const v = (($('#trInput') || {}).value || '').trim(); if (!v) { toast(t('trTypeFirst')); return; } Object.assign(view.tr, { answer: v, checked: true }); render(); },
+    trCheck() { const v = (($('#trInput') || {}).value || '').trim(); if (!v) { toast(t('trTypeFirst')); return; } Object.assign(view.tr, { answer: v, checked: true }); render(); requestAnimationFrame(() => { const i = $('#trInput'); if (i) i.scrollIntoView({ block: 'start', behavior: smooth() }); }); },
     trMark(el) {
       const s = view.tr, id = s.ids[s.i], ok = el.dataset.ok === '1', p = state.progress;
       p.translate = p.translate || {};
@@ -2106,32 +2486,38 @@
       p.translate[id] = { tries: r.tries + 1, ok: r.ok + (ok ? 1 : 0), lastOk: ok, answer: s.answer, last: new Date().toISOString() };
       if (ok) s.right++; else s.wrong.push(id);
       Object.assign(s, { i: s.i + 1, answer: '', checked: false, hint: false });
-      bumpDay(); save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      bumpDay(); save(); render({ focusHeading: true }); scrollToApp();
     },
-    phrGo(el) { view.phr.page = +el.dataset.p; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+    phrGo(el) { view.phr.page = +el.dataset.p; render(); window.scrollTo({ top: 0, behavior: smooth() }); },
     phrCat(el) { Object.assign(view.phr, { cat: el.dataset.v, page: 0 }); render(); },
     phrLevel(el) { Object.assign(view.phr, { level: el.dataset.v, page: 0 }); render(); },
     phrBm() { Object.assign(view.phr, { bm: !view.phr.bm, page: 0 }); render(); },
-    phrFlash() { Object.assign(view.flashSetup, { mode: 'due', unit: view.phr.cat || '@phrase' }); view.flash = null; view.quiz = null; nav('flashcards'); },
-    phrQuiz() { view.quizSetup.unit = view.phr.cat || '@phrase'; view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $$('.section-title')[1]; if (h) h.scrollIntoView({ behavior: 'smooth' }); }, 50); },
-    openArticleHome(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); nav('reading'); },
+    phrFlash() { if (wordsBusy()) return resumeBusy('flashcards'); Object.assign(view.flashSetup, { mode: 'due', unit: view.phr.cat || '@phrase' }); view.flash = null; view.quiz = null; nav('flashcards'); },
+    phrQuiz() { if (wordsBusy()) return resumeBusy('flashcards'); view.quizSetup.unit = view.phr.cat || '@phrase'; view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $('#quizSetup'); if (h) h.scrollIntoView({ behavior: smooth() }); }, 50); },
+    openArticleHome(el) { openArticleId(el.dataset.id); },
     // reading
-    openArticle(el) { view.articleId = el.dataset.id; view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
-    backList() { view.articleId = null; render(); },
+    openArticle(el) { openArticleId(el.dataset.id); },
+    backList() { if (!backToList('#/reading')) showReadingList(); },
+    // ✕ 結束 on a passage: ask before dropping chosen answers
+    async endRead() {
+      const n = Object.keys(view.answers).length;
+      if (n && !view.submitted) { if (!await askConfirm({ title: t('endAskTitle'), body: tf('readEndBody', { n }), ok: t('endNow'), cancel: t('keepGoing'), danger: true })) return; }
+      view.answers = {}; view.submitted = false; if (!backToList('#/reading')) showReadingList();
+    },
     readZh(el) { view.readZh = el.dataset.v === '1'; render(); },
     choose(el) { if (view.submitted) return; view.answers[+el.dataset.q] = +el.dataset.o; render(); },
     submitQuiz() {
       const a = articleById(view.articleId);
       if (Object.keys(view.answers).length < a.questions.length) { toast(t('pleaseAnswerAll')); return; }
       view.submitted = true;
-      view.readSecs = view.readStart ? Math.round((Date.now() - view.readStart) / 1000) : null;
+      view.readSecs = Math.round(((view.readAcc || 0) + (view.readOn ? Date.now() - view.readStart : 0)) / 1000);
       const answers = a.questions.map((q, i) => ({ qi: i, q: q.q, chosen: view.answers[i], chosenText: q.options[view.answers[i]], correct: q.answer, correctText: q.options[q.answer] }));
       const score = answers.filter(x => x.chosen === x.correct).length;
       state.progress.readingQuizzes.push({ id: uid('rq'), articleId: a.id, title: a.title, score, total: a.questions.length, date: new Date().toISOString(), secs: view.readSecs, answers });
       bumpDay(); save(); render();
-      setTimeout(() => { const s = $('.score-banner'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50);
+      setTimeout(() => { const s = $('.score-banner'); if (s) s.scrollIntoView({ behavior: smooth(), block: 'center' }); }, 50);
     },
-    retry() { view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
+    retry() { view.answers = {}; view.submitted = false; view.readZh = null; view.readAcc = 0; view.readOn = false; jumpTo(0); render({ focusHeading: true }); },
     newArticle() { view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
     editArticle(el) { const a = clone(articleById(el.dataset.id)); delete a.lib; view.editing = a; render(); },
     deleteArticle(el) {
@@ -2153,37 +2539,63 @@
       save(); view.editing = null; toast(t('articleSaved')); render();
     },
     // flashcards
-    startFlash() {
-      const fs = view.flashSetup;
+    startFlash(el) {
+      const fs = view.flashSetup, fromPlan = !!(el && el.plan);
       let pool = poolFor(fs.mode, fs.unit);
-      if (fs.mode === 'due') { // due (reviewed before) first, then new words
+      if (fs.mode === 'newHF') { // most frequent first; from the home plan only today's goal; shuffled inside that slice
+        const cap = fromPlan ? Math.max(0, GOAL.new - newToday()) : (fs.limit || pool.length);
+        if (fromPlan && !cap) { toast(t('newDoneToday')); return; }
+        pool = pool.slice(0, cap); if (fs.shuffle) pool = shuffleArr(pool);
+      } else if (fs.mode === 'due') { // due (reviewed before) first, then new words
         const td = todayStr();
         let due = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= td; }), fresh = pool.filter(v => !due.includes(v));
         if (fs.shuffle) { due = shuffleArr(due); fresh = shuffleArr(fresh); }
         pool = due.concat(fresh);
       } else if (fs.shuffle) pool = shuffleArr(pool);
       pool = pool.map(v => v.id);
-      if (fs.limit) pool = pool.slice(0, fs.limit);
+      if (fs.limit && fs.mode !== 'newHF') pool = pool.slice(0, fs.limit);
       if (!pool.length) { toast(t('noCards')); return; }
-      view.flash = { queue: pool, idx: 0, flipped: false, known: [], missed: [] }; render();
+      view.flash = { queue: pool, idx: 0, flipped: false, known: [], missed: [], requeued: [], mode: fs.mode }; view.quiz = null; view.page = 'flashcards'; render({ focusHeading: true });
     },
-    flip() { view.flash.flipped = !view.flash.flipped; $('.flash-card').classList.toggle('flipped', view.flash.flipped); },
+    flip() {
+      const f = view.flash; f.flipped = !f.flipped;
+      $('.flash-card').classList.toggle('flipped', f.flipped);
+      const fr = $('.flash-front'), bk = $('.flash-back'), h = $('.flash-hint');
+      if (fr) fr.setAttribute('aria-hidden', f.flipped); if (bk) bk.setAttribute('aria-hidden', !f.flipped); if (h) h.setAttribute('aria-expanded', f.flipped);
+    },
     flashMark(el) {
       const f = view.flash, known = el.dataset.known === '1', id = f.queue[f.idx];
-      markCard(id, known); (known ? f.known : f.missed).push(id);
-      f.idx++; f.flipped = false; save(); render();
+      markCard(id, known);
+      if (!f.known.includes(id) && !f.missed.includes(id)) (known ? f.known : f.missed).push(id);
+      // a missed card comes back once more before the round ends
+      f.requeued = f.requeued || [];
+      if (!known && !f.requeued.includes(id)) { f.queue.push(id); f.requeued.push(id); }
+      // focus goes to the session label, not onto the next card's buttons, so Space flips the new card as the hint says
+      f.idx++; f.flipped = false; save(); render({ focusHeading: true });
     },
     flashAgain() { actions.startFlash(); },
-    flashMissed() { view.flash = { queue: shuffleArr(view.flash.missed), idx: 0, flipped: false, known: [], missed: [] }; render(); },
-    flashExit() { view.flash = null; render(); },
+    flashMissed() { view.flash = { queue: shuffleArr(view.flash.missed), idx: 0, flipped: false, known: [], missed: [], requeued: [], mode: 'missed' }; render({ focusHeading: true }); },
+    async flashExit() {
+      const f = view.flash;
+      if (f && f.idx > 0 && f.idx < f.queue.length) { if (!await endSessionAsk(f.idx, tf('flashSavedBody', { n: f.idx }))) return; if (view.flash !== f) return; f.queue = f.queue.slice(0, f.idx); render({ focusHeading: true }); return; }
+      view.flash = null; render({ focusHeading: true });
+    },
     // quiz
-    startQuiz() { buildQuiz(); render(); },
+    startQuiz() { buildQuiz(); jumpTo(0); render({ focusHeading: true }); },
     quizChoose(el) { const q = view.quiz; if (q.answered) return; q.chosen = el.dataset.id; quizAnswer(q.chosen === q.qs[q.idx].id); save(); render(); },
     spellCheck() { const q = view.quiz; const given = ($('#spellInput').value || '').trim(); if (!given) return; q.chosen = given; const v = VOCAB.find(x => x.id === q.qs[q.idx].id); quizAnswer(given.toLowerCase() === v.word.toLowerCase(), given); save(); render(); },
     spellSkip() { const q = view.quiz; q.chosen = ''; quizAnswer(false, '(skip)'); save(); render(); },
-    quizNext() { const q = view.quiz; q.idx++; q.answered = false; q.chosen = null; if (q.idx >= q.qs.length) finishQuiz(); render(); },
-    quizAgain() { buildQuiz(); render(); },
-    quizExit() { view.quiz = null; render(); },
+    quizNext() { const q = view.quiz; q.idx++; q.answered = false; q.chosen = null; if (q.idx >= q.qs.length) finishQuiz(); render({ focusHeading: true }); scrollToApp(); },
+    quizAgain() { buildQuiz(); render({ focusHeading: true }); },
+    async quizExit() {
+      const q = view.quiz;
+      if (q && q.idx < q.qs.length && (q.idx > 0 || q.answered)) {
+        const n = q.idx + (q.answered ? 1 : 0);
+        if (!await endSessionAsk(n, tf('endAskBody', { n }))) return; if (view.quiz !== q) return;
+        q.qs = q.qs.slice(0, n); q.idx = q.qs.length; q.answered = false; finishQuiz(); render({ focusHeading: true }); return;
+      }
+      view.quiz = null; render({ focusHeading: true });
+    },
     // vocab
     addVocab() { view.vocabEdit = { id: '', word: '', pos: '', zh: '', example: '', unit: String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit }; render(); setTimeout(() => $('#veWord') && $('#veWord').focus(), 30); },
     editVocab(el) { view.vocabEdit = clone(VOCAB.find(x => x.id === el.dataset.id)); render(); },
@@ -2233,7 +2645,7 @@
         view.report = { blob, name: `${t('reportFile')}-${name}-${todayStr()}.pdf`.replace(/[\\/:*?"<>|]/g, '_'), url: URL.createObjectURL(blob) };
       } catch (e) { toast(t('pdfFail')); }
       view.reportBusy = false; render();
-      const c = $('#reportCard'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const c = $('#reportCard'); if (c) c.scrollIntoView({ behavior: smooth(), block: 'center' });
     },
     sharePdf() {
       const email = saveTeacherEmail(); if (email === null || !view.report) return;
@@ -2254,14 +2666,15 @@
       const obj = { type: 'student-report', studentName: state.settings.studentName || t('roleStudent'), exportedAt: new Date().toISOString(), progress: state.progress };
       shareOrDownload(`progress-${state.settings.studentName || 'student'}-${todayStr()}.json`, obj, t('sendToTeacher'));
     },
-    resetProgress() { if (!confirm(t('confirmReset'))) return; state.progress = Object.assign(emptyProgress(), { resetAt: new Date().toISOString() }); save(); render(); },
+    async resetProgress() { if (!await askConfirm({ title: t('resetProgress'), body: t('confirmReset'), ok: t('resetProgress'), danger: true })) return; state.progress = Object.assign(emptyProgress(), { resetAt: new Date().toISOString() }); save(); render(); },
     deleteReport(el) { if (!confirm(t('confirmDel'))) return; state.studentReports = state.studentReports.filter(r => r.id !== el.dataset.id); view.studentSource = 'local'; save(); render(); },
     // settings
     saveSettings() {
       const s = state.settings;
-      s.examName = $('#stExamName').value.trim() || s.examName; s.examNameEn = $('#stExamNameEn').value.trim();
-      if ($('#stExamDate').value) s.examDate = $('#stExamDate').value;
-      s.studentName = $('#stStudent').value.trim(); s.motto = $('#stMotto').value.trim();
+      if (ui.teacher && $('#stExamName')) { s.examName = $('#stExamName').value.trim() || s.examName; s.examNameEn = $('#stExamNameEn').value.trim(); }
+      const d = $('#stExamDate').value; if (d && d !== s.examDate) setExamDate(d);
+      s.studentName = $('#stStudent').value.trim();
+      if (ui.teacher && $('#stMotto')) s.motto = $('#stMotto').value.trim();
       if ($('#stTeacherEmail')) s.teacherEmail = $('#stTeacherEmail').value.trim();
       const code = ui.teacher && $('#stCode') ? $('#stCode').value.trim() : '';
       // in cloud mode the invite code lives only in the database, never in the shared material
@@ -2299,9 +2712,10 @@
   $('#app').addEventListener('click', e => {
     const el = e.target.closest('[data-action]'); if (!el || !$('#app').contains(el)) return;
     if (el.tagName === 'INPUT' || el.tagName === 'SELECT') return;
-    const fn = actions[el.dataset.action]; if (fn) { e.preventDefault(); fn(el); }
+    const fn = actions[el.dataset.action]; if (fn) { e.preventDefault(); flushSearch(); fn(el); }
   });
   $('#app').addEventListener('change', e => {
+    if (!SEARCH_IDS.test(e.target.id)) flushSearch();
     const id = e.target.id;
     if (id === 'fsMode') view.flashSetup.mode = e.target.value, render();
     else if (id === 'fsUnit') view.flashSetup.unit = e.target.value, render();
@@ -2321,20 +2735,46 @@
       if (cloud.configured && ui.teacher && obj && obj.type !== 'student-report' && !confirm(tf('importClassConfirm', { a: Array.isArray(obj.articles) ? obj.articles.length : 0, v: Array.isArray(obj.vocab) ? obj.vocab.length : 0 }))) return; const r = importJSON(obj, $('#importMode').value); toast(r === 'report' ? t('reportImported') : t('imported')); if (r === 'report' && ui.teacher) view.page = 'students'; render(); } catch (x) { toast(t('importFail')); } }); }
     else if (id === 'reportFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { if (obj && obj.type === 'student-report') { addReport(obj); toast(t('reportImported')); render(); } else toast(t('notReport')); }); }
   });
+  // Search boxes re-render the page, which would throw away a Zhuyin/IME word still being composed:
+  // wait for the composition to end, and for a short pause in typing.
+  const SEARCH_IDS = /^(readSearch|phrSearch|vocabSearch)$/;
+  let composing = false, searchT = null, searchId = null;
+  function applySearch(el) {
+    if (el.id === 'readSearch') view.readFilter.q = el.value;
+    else if (el.id === 'phrSearch') { view.phr.q = el.value; view.phr.page = 0; }
+    else if (el.id === 'vocabSearch') { view.vocabSearch = el.value; view.vocabPage = 0; }
+    else return false;
+    return true;
+  }
+  function onSearch(el) {
+    if (!applySearch(el)) return;
+    const id = el.id, pos = el.selectionStart; render();
+    const i = document.getElementById(id); if (i) { i.focus({ preventScroll: true }); try { i.setSelectionRange(pos, pos); } catch (x) { } }
+  }
+  // a tap or a menu change right after typing applies the waiting search first, so it acts on what the box shows
+  function flushSearch() { if (!searchT) return; clearTimeout(searchT); searchT = null; const el = document.getElementById(searchId); if (el) applySearch(el); }
+  $('#app').addEventListener('compositionstart', () => { composing = true; });
+  $('#app').addEventListener('compositionend', e => { composing = false; if (SEARCH_IDS.test(e.target.id)) { clearTimeout(searchT); searchT = null; onSearch(e.target); } });
   $('#app').addEventListener('input', e => {
-    if (e.target.id === 'readSearch') { view.readFilter.q = e.target.value; const pos = e.target.selectionStart; render(); const i = $('#readSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
-    if (e.target.id === 'phrSearch') { view.phr.q = e.target.value; view.phr.page = 0; const pos = e.target.selectionStart; render(); const i = $('#phrSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
-    if (e.target.id === 'vocabSearch') { view.vocabSearch = e.target.value; view.vocabPage = 0; const pos = e.target.selectionStart; render(); const i = $('#vocabSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
+    if (!SEARCH_IDS.test(e.target.id) || composing || e.isComposing) return;
+    const id = e.target.id; clearTimeout(searchT); searchId = id;
+    searchT = setTimeout(() => { searchT = null; const el = document.getElementById(id); if (el) onSearch(el); }, 180);
   });
   $('#app').addEventListener('keydown', e => {
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-action]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); return; } // SVG elements have no .click()
     if (e.target.id === 'trInput' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); actions.trCheck(); }
+    // on a phone keyboard the return key (labelled 完成) checks the answer
+    else if (e.target.id === 'trInput' && e.key === 'Enter' && !e.shiftKey && !e.isComposing && matchMedia('(pointer: coarse)').matches) { e.preventDefault(); actions.trCheck(); }
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
   document.addEventListener('keydown', e => {
-    if (view.page === 'flashcards' && view.quiz && view.quiz.answered && e.key === 'Enter' && view.quiz.idx < view.quiz.qs.length) { e.preventDefault(); actions.quizNext(); return; }
-    if (!view.flash || view.page !== 'flashcards' || e.target.matches('input,textarea,select')) return;
-    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); actions.flip(); }
+    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden')) return;
+    const onControl = e.target.closest && e.target.closest('button, a, input, textarea, select, [role=button]');
+    const typing = e.target.closest && e.target.closest('input, textarea, select, [contenteditable]');
+    if (view.page === 'flashcards' && !view.flash && view.quiz && view.quiz.answered && e.key === 'Enter' && view.quiz.idx < view.quiz.qs.length && !onControl) { e.preventDefault(); actions.quizNext(); return; }
+    // ← / → (k / d) work even when a button has focus; Space and Enter on a focused button keep pressing that button
+    if (!view.flash || view.page !== 'flashcards' || view.flash.idx >= view.flash.queue.length || typing || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === ' ' || e.key === 'Enter') { if (onControl) return; e.preventDefault(); actions.flip(); }
     else if (e.key === 'ArrowRight' || e.key === 'k') actions.flashMark({ dataset: { known: '1' } });
     else if (e.key === 'ArrowLeft' || e.key === 'd') actions.flashMark({ dataset: { known: '0' } });
   });
@@ -2352,9 +2792,9 @@
       cells += `<button type="button" class="${cls}" data-date="${ds}" ${ds < td ? 'disabled' : ''} aria-label="${ds}">${ds === ex ? '<span class="cal-star">⭐</span>' : ''}${d}</button>`;
     }
     pop.innerHTML = `<div class="cal-rings" aria-hidden="true"><i></i><i></i></div>
-      <div class="cal-head"><button type="button" data-cal="-12" aria-label="-1 year">«</button><button type="button" data-cal="-1" aria-label="-1 month">‹</button>
+      <div class="cal-head"><button type="button" data-cal="-12" aria-label="${t('calPrevYear')}">«</button><button type="button" data-cal="-1" aria-label="${t('calPrevMonth')}">‹</button>
         <div class="cal-title"><span class="cal-month">${t('monthsLong')[cal.m]}</span> <span class="cal-year">${cal.y}</span></div>
-        <button type="button" data-cal="1" aria-label="+1 month">›</button><button type="button" data-cal="12" aria-label="+1 year">»</button></div>
+        <button type="button" data-cal="1" aria-label="${t('calNextMonth')}">›</button><button type="button" data-cal="12" aria-label="${t('calNextYear')}">»</button></div>
       <div class="cal-sub">🐣 ${t('calTitle')}</div>
       <div class="cal-grid">${wd.map((w, i) => `<span class="cal-wd ${i === 0 || i === 6 ? 'is-weekend' : ''}">${w}</span>`).join('')}${cells}</div>
       <div class="cal-foot"><span><i class="lg lg-today"></i>${t('calToday')}</span><span><i class="lg lg-exam"></i>${t('calExam')}</span><span><i class="lg lg-between"></i>${t('calCountdown')}</span>
@@ -2366,6 +2806,8 @@
     pop.style.top = Math.round(r.bottom + 10) + 'px';
     pop.style.left = Math.round(Math.max(12, Math.min(r.left, window.innerWidth - w - 12))) + 'px';
   }
+  // a student's own exam date stays theirs: the class material from the cloud no longer overwrites it
+  function setExamDate(d) { state.settings.examDate = d; if (ui.teacher) delete state.settings.ownExamDate; else state.settings.ownExamDate = d; }
   function openCal() { const d = state.settings.examDate; cal.y = +d.slice(0, 4); cal.m = +d.slice(5, 7) - 1; cal.open = true; renderCal(); $('#calPop').classList.remove('hidden'); placeCal(); $('#examChip').setAttribute('aria-expanded', 'true'); }
   function closeCal() { cal.open = false; $('#calPop').classList.add('hidden'); $('#examChip').setAttribute('aria-expanded', 'false'); }
   $('#examChip').addEventListener('click', e => { e.stopPropagation(); cal.open ? closeCal() : openCal(); });
@@ -2378,14 +2820,77 @@
       else { const n = cal.y * 12 + cal.m + (+v); cal.y = Math.floor(n / 12); cal.m = n % 12; }
       renderCal(); return;
     }
-    if (day && !day.disabled) { state.settings.examDate = day.dataset.date; save(); closeCal(); toast(t('saved')); render(); }
+    if (day && !day.disabled) { setExamDate(day.dataset.date); save(); closeCal(); toast(t('saved')); render(); }
   });
   setInterval(() => { const el = document.getElementById('mcTimer'); if (el && view.mc && view.mc.mode === 'test' && !view.mc.done) el.textContent = '⏱️ ' + fmtDur(Math.round((Date.now() - view.mc.start) / 1000)); }, 1000);
   document.addEventListener('click', () => { if (cal.open) closeCal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && cal.open) closeCal(); });
-  window.addEventListener('resize', () => { if (cal.open) placeCal(); });
+  window.addEventListener('resize', () => { if (cal.open) placeCal(); fitWords(); });
+  if (document.fonts) { document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', fitWords); if (document.fonts.ready) document.fonts.ready.then(fitWords); }
   window.addEventListener('scroll', () => { if (cal.open) placeCal(); }, { passive: true });
-  $('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (!b) return; if (b.dataset.page === 'reading') { view.articleId = null; view.editing = null; } nav(b.dataset.page); });
+  $('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) goGroup(b.dataset.group, DESK_GROUPS, 'd:'); });
+  $('#bnav').addEventListener('click', e => { const b = e.target.closest('.bnav-btn'); if (!b) return; if (b.dataset.group === 'more') openMore(); else goGroup(b.dataset.group, GROUPS, ''); });
+  // the iPhone back swipe (and the browser back button) moves between pages; sessions stay open and can be resumed
+  window.addEventListener('popstate', () => {
+    // only "#/…" addresses; Supabase sign-in hashes (and the empty hash it leaves behind) are not page changes
+    if (!isRouteHash(location.hash)) return;
+    const fromArticle = view.page === 'reading' && !!view.articleId, fromNews = view.page === 'news' && !!view.newsArticle;
+    // a dialog or sheet left open would act on the new page: close them all (an open 要結束嗎？ counts as 繼續作答)
+    closeAsk(false); closeAuth(); closeMore(); if (cal.open) closeCal(); if (view.city) closeCity(true);
+    if (!applyRoute(location.hash)) return;
+    speakStop();
+    view.pillsFor = sessionOf(view.page) || null;
+    if (fromArticle && view.page === 'reading' && !view.articleId) showReadingList();
+    else if (fromNews && view.page === 'news' && !view.newsArticle) { render({ focusHeading: true }); jumpTo(view.newsScroll || 0); }
+    else { render({ focusHeading: true }); jumpTo(0); }
+  });
+
+  /* ---- 更多 sheet (phone): 學習紀錄, 設定, 學生狀況, account, appearance ---- */
+  const THEMES = [['navy', '#1f3b73', '#f6c445'], ['forest', '#1f4d3a', '#f2d388'], ['plum', '#4b2353', '#ffd27a'], ['sakura', '#b83f73', '#fff0a6'], ['mint', '#227a6e', '#ffe08a'], ['sunset', '#b84a2c', '#ffe27a']];
+  const moreEl = $('#moreSheet');
+  let moreOpener = null;
+  function renderMore() {
+    const cur = groupOf(view.page) === 'more' ? view.page : '';
+    const tile = (key, ico, label, sub) => `<button type="button" class="more-tile" data-more="${key}"${cur === key ? ' aria-current="page"' : ''}><span class="mt-ico" aria-hidden="true">${ico}</span><span class="mt-txt">${label}${sub ? `<small>${sub}</small>` : ''}</span></button>`;
+    const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
+    $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
+      <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
+      <div class="more-tiles">${tile('progress', '📈', t('tabProgress'))}${tile('settings', '⚙️', t('tabSettings'))}${ui.teacher ? tile('students', '🧑‍🏫', t('tabStudents')) : ''}
+        ${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : t('account'))}</div>
+      <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
+      <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
+      <div class="ap-row"><span class="ap-lbl">${t('fontLabel')}</span>${seg('font', ui.font, [['hand', t('fontHand')], ['clean', t('fontClean')]], t('fontLabel'))}</div>
+      <div class="swatches" role="group" aria-label="${t('swatchLabel')}">${THEMES.map(([id, c, ac]) => `<button type="button" class="swatch" data-more-theme="${id}" aria-pressed="${ui.theme === id}" style="--sw:${c};--sw-a:${ac}"><i aria-hidden="true"></i><span>${t('theme' + id[0].toUpperCase() + id.slice(1))}</span></button>`).join('')}</div>`;
+  }
+  function openMore() { moreOpener = document.activeElement; renderMore(); moreEl.classList.remove('hidden'); setTimeout(() => { const b = $('.more-tile', moreEl); if (b) b.focus({ preventScroll: true }); }, 30); }
+  function closeMore() { if (moreEl.classList.contains('hidden')) return; moreEl.classList.add('hidden'); if (moreOpener && document.contains(moreOpener)) moreOpener.focus({ preventScroll: true }); }
+  moreEl.addEventListener('click', async e => {
+    if (e.target === moreEl) { closeMore(); return; }
+    const b = e.target.closest('button'); if (!b) return; const d = b.dataset;
+    if (d.more === 'close') closeMore();
+    else if (d.more === 'account') { closeMore(); if (ui.user) logoutFlow(); else openAuth('login'); }
+    else if (d.more) { moreEl.classList.add('hidden'); nav(d.more); }
+    else if (d.moreLang || d.moreFont || d.moreTheme) {
+      if (d.moreLang) ui.lang = d.moreLang; if (d.moreFont) ui.font = d.moreFont; if (d.moreTheme) ui.theme = d.moreTheme;
+      saveUi(); applyUi(); render(); renderMore();
+      const key = d.moreLang ? `[data-more-lang="${d.moreLang}"]` : d.moreFont ? `[data-more-font="${d.moreFont}"]` : `[data-more-theme="${d.moreTheme}"]`;
+      const same = $(key, moreEl); if (same) same.focus({ preventScroll: true });
+    }
+  });
+
+  /* ---- back to top ---- */
+  const toTopBtn = $('#toTop');
+  function updateToTop() { if (toTopBtn) toTopBtn.hidden = window.scrollY < window.innerHeight * 1.5; }
+  window.addEventListener('scroll', updateToTop, { passive: true });
+  toTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: smooth() }); const h = $('#app h1'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } });
+  // the on-screen keyboard: keep the bottom action bar above it
+  if (window.visualViewport) {
+    const kb = () => { const v = window.visualViewport; document.documentElement.style.setProperty('--kb', Math.max(0, Math.round(window.innerHeight - v.height - v.offsetTop)) + 'px'); };
+    visualViewport.addEventListener('resize', kb); visualViewport.addEventListener('scroll', kb);
+  }
+  $('.skip-link').addEventListener('click', e => { e.preventDefault(); $('#app').focus(); });
+  // a chip or pill reached with Tab in a sideways-scrolling row is brought fully into view (not left half under the fade)
+  $('#app').addEventListener('focusin', e => { const el = e.target, row = el.parentElement; if (row && row.matches('.chip-scroll, .phr-cats, .subtabs') && row.scrollWidth > row.clientWidth) el.scrollIntoView({ block: 'nearest', inline: 'nearest' }); });
 
   // header controls
   const langSel = $('#langSelect'), fontSel = $('#fontSelect'), themeSel = $('#themeSelect'), authBtn = $('#authBtn');
@@ -2404,15 +2909,17 @@
     document.body.classList.toggle('teacher', ui.teacher);
     authBtn.classList.toggle('logged', !!ui.user);
     updateExamChip();
-    $('#authBtnText').textContent = ui.user ? `${ui.user.role === 'teacher' ? '🧑‍🏫' : '🎓'} ${ui.user.name} · ${t('logout')}` : `👤 ${t('login')} / ${t('register')}`;
+    $('#authBtnIco').textContent = ui.user ? (ui.user.role === 'teacher' ? '🧑‍🏫' : '🎓') : '👤';
+    $('#authBtnText').textContent = ui.user ? `${ui.user.name} · ${t('logout')}` : `${t('login')} / ${t('register')}`;
     langSel.value = ui.lang; fontSel.value = ui.font; themeSel.value = ui.theme;
-    const tc = { navy: '#1f3b73', forest: '#1f4d3a', plum: '#4b2353', sakura: '#e26a9a', mint: '#2f9e8f', sunset: '#b84a2c' }[ui.theme] || '#1f3b73';
+    const tc = { navy: '#1f3b73', forest: '#1f4d3a', plum: '#4b2353', sakura: '#b83f73', mint: '#227a6e', sunset: '#b84a2c' }[ui.theme] || '#1f3b73';
     const m = $('meta[name=theme-color]'); if (m) m.content = tc;
     applyI18n();
+    if (!moreEl.classList.contains('hidden')) renderMore();
   }
   langSel.addEventListener('change', () => { ui.lang = langSel.value; saveUi(); applyUi(); render(); });
   fontSel.addEventListener('change', () => { ui.font = fontSel.value; saveUi(); applyUi(); render(); });
-  themeSel.addEventListener('change', () => { ui.theme = themeSel.value; saveUi(); applyUi(); });
+  themeSel.addEventListener('change', () => { ui.theme = themeSel.value; saveUi(); applyUi(); render(); });
   // ---- auth modal ----
   const modal = $('#authModal');
   function openAuth(mode) {
@@ -2425,12 +2932,21 @@
     // Supabase needs 6+ characters for new passwords; older local accounts may still use 4
     $('#auPass').minLength = view.authMode === 'login' ? 1 : cloud.configured ? 6 : 4;
     $('.teacher-code-field').classList.toggle('hidden', $('#auRole').value !== 'teacher' || view.authMode === 'login');
+    setAuthErr('');
     const wasOpen = !modal.classList.contains('hidden'); modal.classList.remove('hidden'); if (!wasOpen) setTimeout(() => { if (!modal.contains(document.activeElement)) $('#auEmail').focus(); }, 50);
   }
-  function closeAuth() { modal.classList.add('hidden'); $('#authForm').reset(); }
-  authBtn.addEventListener('click', async () => {
-    if (ui.user) { authBtn.disabled = true; try { await logoutUser(); } finally { authBtn.disabled = false; } toast(t('loggedOut')); applyUi(); render(); } else openAuth('login');
-  });
+  function closeAuth() { if (modal.classList.contains('hidden')) return; modal.classList.add('hidden'); $('#authForm').reset(); setAuthErr(''); authBtn.focus({ preventScroll: true }); }
+  function setAuthErr(msg) {
+    const el = $('#authErr'); el.textContent = msg || ''; el.hidden = !msg;
+    ['#auEmail', '#auPass'].forEach(id => { const i = $(id); if (msg) { i.setAttribute('aria-invalid', 'true'); i.setAttribute('aria-describedby', 'authErr'); } else { i.removeAttribute('aria-invalid'); i.removeAttribute('aria-describedby'); } });
+  }
+  async function logoutFlow() {
+    if (!ui.user) return;
+    if (!await askConfirm({ title: t('logoutAsk'), body: ui.user.name, ok: t('logout'), danger: true })) return;
+    authBtn.disabled = true; try { await logoutUser(); } finally { authBtn.disabled = false; }
+    toast(t('loggedOut')); applyUi(); render();
+  }
+  authBtn.addEventListener('click', () => { if (ui.user) logoutFlow(); else openAuth('login'); });
   $('#authClose').addEventListener('click', closeAuth);
   modal.addEventListener('click', e => { if (e.target === modal) closeAuth(); });
   $$('.auth-tab').forEach(b => b.addEventListener('click', () => openAuth(b.dataset.auth)));
@@ -2450,15 +2966,31 @@
       // sign-up worked but the email must be confirmed first: keep the form open on the login tab with the note
       if (err.notice) { openAuth('login'); $('#authMode').textContent = err.message; toast(err.message); return; }
       const map = { user_already_exists: 'userExists', email_exists: 'userExists', invalid_credentials: 'loginFail', weak_password: 'weakPass', email_not_confirmed: 'emailNotConfirmed', over_email_send_rate_limit: 'tooManyTries', over_request_rate_limit: 'tooManyTries', email_address_invalid: 'badEmail' };
-      toast(map[err.code] ? t(map[err.code]) : err.message);
+      setAuthErr(map[err.code] ? t(map[err.code]) : err.message);
+      const bad = $('#auPass'); if (bad) bad.focus();
     } finally { btn.disabled = false; }
   });
+
+  // dialogs: Escape closes, Tab stays inside
+  function trapTab(e, box) {
+    if (e.key !== 'Tab') return;
+    const f = $$('button:not([disabled]), [href], input:not([disabled]):not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])', box).filter(x => x.offsetParent !== null);
+    if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  }
+  document.addEventListener('keydown', e => {
+    if (!askEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeAsk(false); } else trapTab(e, askEl); return; }
+    if (!moreEl.classList.contains('hidden')) { if (e.key === 'Escape') closeMore(); else trapTab(e, moreEl); return; }
+    if (!modal.classList.contains('hidden')) { if (e.key === 'Escape') closeAuth(); else trapTab(e, modal); }
+  }, true);
 
   // midnight refresh of countdown
   let lastDay = todayStr();
   setInterval(() => { updateExamChip(); if (todayStr() !== lastDay) { lastDay = todayStr(); if (view.page === 'home') render(); } }, 60000);
 
   applyUi();
+  if (isRouteHash(location.hash)) applyRoute(location.hash);
   render();
   initCloud();
 })();

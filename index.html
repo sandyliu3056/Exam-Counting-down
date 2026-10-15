@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -13,7 +13,7 @@
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-  <title>TVE English Countdown · 統測英文衝刺站</title>
+  <title>統測英文衝刺站</title>
   <meta name="description" content="高三統測英文家教系統：倒數計時、閱讀測驗、單字卡練習">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,27 +21,28 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="navy" data-font="hand">
+  <a class="skip-link" href="#app" data-i18n="skipToMain">跳到主要內容</a>
 
   <!-- ===== Header ===== -->
   <header class="site-header">
     <div class="brand">
-      <h1 class="brand-title" data-i18n="brandTitle">統測英文 · 衝刺倒數站</h1>
+      <p class="brand-title"><span class="bt-long" data-i18n="brandTitle">統測英文 · 衝刺倒數站</span><span class="bt-short" data-i18n="brandShort">統測英文</span></p>
       <p class="brand-sub" data-i18n="brandSub">閱讀測驗 · 單字卡 · 考前倒數 · English for the TVE Joint College Entrance Exam</p>
     </div>
     <div class="header-controls">
-      <label class="ctrl">
+      <label class="ctrl ctrl-sel">
         <select id="langSelect" aria-label="Language">
           <option value="zh">中文</option>
           <option value="en">English</option>
         </select>
       </label>
-      <label class="ctrl">
+      <label class="ctrl ctrl-sel">
         <select id="fontSelect" aria-label="Font">
           <option value="hand" data-i18n="fontHand">手寫風</option>
           <option value="clean" data-i18n="fontClean">標準字體</option>
         </select>
       </label>
-      <label class="ctrl">
+      <label class="ctrl ctrl-sel">
         <select id="themeSelect" aria-label="Theme">
           <option value="navy" data-i18n="themeNavy">深藍</option>
           <option value="forest" data-i18n="themeForest">墨綠</option>
@@ -52,28 +53,33 @@
         </select>
       </label>
       <button type="button" class="exam-chip" id="examChip" aria-haspopup="dialog" aria-controls="calPop"><span class="mini-cal" aria-hidden="true"><b id="miniCalMon"></b><i id="miniCalDay"></i></span><span class="exam-chip-date" id="examChipDate"></span><span class="exam-chip-days" id="examChipDays"></span></button>
-      <button class="ctrl auth-btn" id="authBtn" type="button"><span id="authBtnText">👤 登入 / 註冊</span></button>
+      <button class="ctrl auth-btn" id="authBtn" type="button"><span class="ab-ico" id="authBtnIco" aria-hidden="true">👤</span><span class="ab-text" id="authBtnText">登入 / 註冊</span></button>
     </div>
   </header>
 
   <div class="cal-pop hidden" id="calPop" role="dialog" aria-modal="false"></div>
 
   <!-- ===== Tabs ===== -->
-  <nav class="tabs" id="tabs">
-    <button class="tab active" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tabHome">首頁</span></button>
-    <button class="tab" data-page="reading"><span class="tab-icon">📖</span><span data-i18n="tabReading">閱讀測驗</span></button>
-    <button class="tab" data-page="flashcards"><span class="tab-icon">🃏</span><span data-i18n="tabFlash">單字卡</span></button>
-    <button class="tab" data-page="vocab"><span class="tab-icon">📚</span><span data-i18n="tabVocab">單字庫</span></button>
-    <button class="tab" data-page="phrases"><span class="tab-icon">🧩</span><span data-i18n="tabPhrases">片語</span></button>
-    <button class="tab" data-page="mcq"><span class="tab-icon">📝</span><span data-i18n="tabMcq">選擇題</span></button>
-    <button class="tab" data-page="translate"><span class="tab-icon">✍️</span><span data-i18n="tabTranslate">翻譯練習</span></button>
-    <button class="tab" data-page="news"><span class="tab-icon">📰</span><span data-i18n="tabNews">每日新聞</span></button>
-    <button class="tab" data-page="progress"><span class="tab-icon">📈</span><span data-i18n="tabProgress">學習紀錄</span></button>
-    <button class="tab teacher-only" data-page="students"><span class="tab-icon">🧑‍🏫</span><span data-i18n="tabStudents">學生狀況</span></button>
-    <button class="tab" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tabSettings">設定</span></button>
+  <nav class="tabs" id="tabs" aria-label="主選單" data-i18n-aria="mainMenu">
+    <button class="tab" data-group="home"><span class="tab-icon" aria-hidden="true">🏠</span><span data-i18n="grpHome">首頁</span></button>
+    <button class="tab" data-group="read"><span class="tab-icon" aria-hidden="true">📖</span><span data-i18n="grpRead">閱讀</span></button>
+    <button class="tab" data-group="words"><span class="tab-icon" aria-hidden="true">🃏</span><span data-i18n="grpWords">單字</span></button>
+    <button class="tab" data-group="practice"><span class="tab-icon" aria-hidden="true">📝</span><span data-i18n="grpPractice">題目</span></button>
+    <button class="tab" data-group="record"><span class="tab-icon" aria-hidden="true">📈</span><span data-i18n="grpRecord">紀錄</span></button>
+    <button class="tab tab-settings" data-group="settings"><span class="tab-icon" aria-hidden="true">⚙️</span><span data-i18n="tabSettings">設定</span></button>
   </nav>
 
-  <main id="app" class="page-wrap"></main>
+  <main id="app" class="page-wrap" tabindex="-1"></main>
+
+  <!-- ===== Phone bottom bar (≤760px) ===== -->
+  <nav class="bnav" id="bnav" aria-label="主選單" data-i18n-aria="mainMenu">
+    <button class="bnav-btn" data-group="home"><span class="bnav-ico" aria-hidden="true">🏠</span><span data-i18n="grpHome">首頁</span></button>
+    <button class="bnav-btn" data-group="read"><span class="bnav-ico" aria-hidden="true">📖</span><span data-i18n="grpRead">閱讀</span></button>
+    <button class="bnav-btn" data-group="words"><span class="bnav-ico" aria-hidden="true">🃏</span><span data-i18n="grpWords">單字</span><b class="bnav-badge" id="bnavBadge" hidden></b></button>
+    <button class="bnav-btn" data-group="practice"><span class="bnav-ico" aria-hidden="true">📝</span><span data-i18n="grpPractice">題目</span></button>
+    <button class="bnav-btn" data-group="more" aria-haspopup="dialog" aria-controls="moreSheet"><span class="bnav-ico" aria-hidden="true">☰</span><span data-i18n="grpMore">更多</span></button>
+  </nav>
+  <button type="button" class="to-top" id="toTop" aria-label="回到頂端" data-i18n-aria="toTop" hidden>↑</button>
 
   <footer class="site-footer">
     <span data-i18n="footer">加油！每天進步一點點，考場上就多一分把握。</span>
@@ -81,26 +87,40 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <!-- ===== 更多 sheet (phone) ===== -->
+  <div id="moreSheet" class="modal sheet hidden" role="dialog" aria-modal="true" aria-labelledby="moreTitle"><div class="modal-card"></div></div>
+
+  <!-- ===== Confirm (askConfirm) ===== -->
+  <div id="askModal" class="modal ask hidden" role="alertdialog" aria-modal="true" aria-labelledby="askTitle" aria-describedby="askBody">
+    <div class="modal-card">
+      <h3 id="askTitle"></h3>
+      <p id="askBody"></p>
+      <div class="ask-row"><button type="button" class="btn ghost" id="askNo"></button><button type="button" class="btn accent" id="askYes"></button></div>
+    </div>
+  </div>
+
   <!-- ===== Login / Register modal ===== -->
   <div id="cityModal" class="modal city-modal hidden" role="dialog" aria-modal="true" aria-labelledby="cityTitle"><div class="city-sheet" id="citySheet" tabindex="-1"></div></div>
-  <div id="authModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div id="authModal" class="modal auth-modal hidden" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="modal-card">
-      <button class="modal-close" id="authClose" type="button" aria-label="close">✕</button>
+      <h2 id="authTitle" class="sr-only" data-i18n="account">帳號</h2>
+      <button class="modal-close" id="authClose" type="button" aria-label="關閉" data-i18n-aria="close">✕</button>
       <div class="auth-tabs">
         <button type="button" class="auth-tab active" data-auth="login" data-i18n="login">登入</button>
         <button type="button" class="auth-tab" data-auth="register" data-i18n="register">註冊</button>
       </div>
       <form id="authForm" autocomplete="on">
-        <div class="field"><label data-i18n="email">Email / 帳號</label><input type="text" id="auEmail" autocomplete="username" required></div>
-        <div class="field"><label data-i18n="password">密碼</label><input type="password" id="auPass" autocomplete="current-password" required minlength="4"></div>
+        <div class="field"><label for="auEmail" data-i18n="email">Email / 帳號</label><input type="text" id="auEmail" autocomplete="username" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" required></div>
+        <div class="field"><label for="auPass" data-i18n="password">密碼</label><input type="password" id="auPass" autocomplete="current-password" required minlength="4"></div>
         <div class="register-only">
-          <div class="field"><label data-i18n="displayName">姓名 / 暱稱</label><input type="text" id="auName"></div>
-          <div class="field"><label data-i18n="role">身分</label>
+          <div class="field"><label for="auName" data-i18n="displayName">姓名 / 暱稱</label><input type="text" id="auName" autocomplete="nickname"></div>
+          <div class="field"><label for="auRole" data-i18n="role">身分</label>
             <select class="input" id="auRole"><option value="student" data-i18n="roleStudent">學生</option><option value="teacher" data-i18n="roleTeacher">老師</option></select></div>
-          <div class="field teacher-code-field hidden"><label data-i18n="inviteCode">老師邀請碼</label><input type="text" id="auCode" autocomplete="off"></div>
+          <div class="field teacher-code-field hidden"><label for="auCode" data-i18n="inviteCode">老師邀請碼</label><input type="text" id="auCode" autocomplete="off"></div>
         </div>
         <p class="small muted" id="authMode"></p>
-        <button class="btn accent" type="submit" id="authSubmit" style="width:100%;justify-content:center;font-size:18px;padding:12px"></button>
+        <p id="authErr" class="form-err" role="alert" hidden></p>
+        <button class="btn accent block-cta" type="submit" id="authSubmit"></button>
       </form>
     </div>
   </div>
