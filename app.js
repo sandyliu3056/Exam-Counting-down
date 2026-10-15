@@ -55,7 +55,7 @@
     if (!data.settings.teacherCode) data.settings.teacherCode = SEED_DATA.settings.teacherCode;
     return data;
   }
-  function save() { rebuildVocab(); localStorage.setItem(LS_DATA, JSON.stringify(state)); scheduleSync(); }
+  function save() { rebuildVocab(); rebuildArticles(); localStorage.setItem(LS_DATA, JSON.stringify(state)); scheduleSync(); }
 
   let state = load();
 
@@ -76,6 +76,14 @@
     m = /^ph(\d+)$/.exec(u); if (m) return `${t('unitPh')} · ${t('phCat' + m[1]) === 'phCat' + m[1] ? '' : t('phCat' + m[1])}`.replace(/ · $/, '');
     const map = t('seedUnits'); return (map && typeof map === 'object' && map[u]) || u;
   }
+  // Built-in reading library (reading-library.js) + the teacher's own and edited passages (state.articles)
+  const READ_LIB = (window.READING_LIBRARY || []).map(a => Object.assign({ lib: true }, a));
+  let ARTICLES = [];
+  function rebuildArticles() {
+    const hidden = new Set(state.hiddenArticles || []), own = new Set(state.articles.map(a => a.id));
+    ARTICLES = state.articles.concat(READ_LIB.filter(a => !own.has(a.id) && !hidden.has(a.id)));
+  }
+  const articleById = id => ARTICLES.find(a => a.id === id);
   let VOCAB = [], VMAP = {};
   function rebuildVocab() {
     const hidden = new Set(state.hiddenVocab || []);
@@ -87,6 +95,7 @@
     VMAP = {}; VOCAB.forEach(v => { VMAP[v.id] = v; });
   }
   rebuildVocab();
+  rebuildArticles();
   const pickRandom = (arr, n, excludeId) => { const out = [], used = new Set(); let guard = 0; while (out.length < n && guard++ < n * 20 && used.size < arr.length) { const i = Math.floor(Math.random() * arr.length); if (used.has(i)) continue; used.add(i); const x = arr[i]; if (x.id === excludeId) continue; out.push(x); } return out; };
   let ui = Object.assign({ lang: 'en', font: 'hand', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
@@ -178,7 +187,7 @@
     const snap = await cloud.db.collection('content').doc('main').get();
     if (snap.exists) {
       const c = snap.data();
-      if (c.articles) state.articles = c.articles; if (c.vocab) state.vocab = c.vocab; if (c.hiddenVocab) state.hiddenVocab = c.hiddenVocab; rebuildVocab();
+      if (c.articles) state.articles = c.articles; if (c.vocab) state.vocab = c.vocab; if (c.hiddenVocab) state.hiddenVocab = c.hiddenVocab; if (c.hiddenArticles) state.hiddenArticles = c.hiddenArticles; rebuildVocab(); rebuildArticles();
       if (c.settings) state.settings = Object.assign(state.settings, c.settings);
       localStorage.setItem(LS_DATA, JSON.stringify(state));
     } else if (ui.teacher) { await pushContent(); }
@@ -186,7 +195,7 @@
   async function pushContent() {
     if (!cloud.enabled || !ui.teacher) return;
     const { examName, examNameEn, examDate, motto, teacherCode } = state.settings, teacherEmail = state.settings.teacherEmail || '';
-    await cloud.db.collection('content').doc('main').set({ articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], settings: { examName, examNameEn, examDate, motto, teacherCode, teacherEmail }, updatedAt: new Date().toISOString() });
+    await cloud.db.collection('content').doc('main').set({ articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [], settings: { examName, examNameEn, examDate, motto, teacherCode, teacherEmail }, updatedAt: new Date().toISOString() });
   }
   async function pushProgress() {
     if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
@@ -301,7 +310,7 @@
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
       <div class="stat-grid">
         <div class="stat-card"><span class="ribbon">🔤</span><div class="k">${t('statVocab')}</div><div class="v">${VOCAB.length}</div><div class="s">${VOCAB.filter(v => v.type === 'phrase').length ? `${VOCAB.filter(v => v.type === 'word').length} ${t('typeWord')} + ${VOCAB.filter(v => v.type === 'phrase').length} ${t('typePhrase')}` : t('statVocabS')}</div></div>
-        <div class="stat-card"><span class="ribbon">📖</span><div class="k">${t('statArticles')}</div><div class="v">${state.articles.length}</div><div class="s">${t('statArticlesS')}</div></div>
+        <div class="stat-card"><span class="ribbon">📖</span><div class="k">${t('statArticles')}</div><div class="v">${ARTICLES.length}</div><div class="s">${t('statArticlesS')}</div></div>
         <div class="stat-card"><span class="ribbon">🌟</span><div class="k">${t('statMastered')}</div><div class="v">${masteredCount()} <span class="small muted">/ ${VOCAB.length}</span></div><div class="s">${t('statMasteredS')}</div></div>
         <div class="stat-card"><span class="ribbon">⏰</span><div class="k">${t('statDue')}</div><div class="v">${due}</div><div class="s">${t('statDueS')}</div></div>
       </div>
@@ -312,7 +321,7 @@
       <div class="list">
         <div class="list-item"><span>🃏</span><div class="grow"><div class="title">${t('taskReview')}</div><div class="meta">${due} ${t('statDueS')}</div></div><button class="btn sm accent" data-action="goFlash" data-mode="due">${t('go')}</button></div>
         <div class="list-item"><span>✨</span><div class="grow"><div class="title">${t('taskNew')}</div><div class="meta">${nw} ${t('statVocabS')}</div></div><button class="btn sm accent" data-action="goFlash" data-mode="new">${t('go')}</button></div>
-        <div class="list-item"><span>📖</span><div class="grow"><div class="title">${t('taskRead')}</div><div class="meta">${state.articles.length} ${t('statArticlesS')}</div></div><button class="btn sm accent" data-action="nav" data-page="reading">${t('go')}</button></div>
+        <div class="list-item"><span>📖</span><div class="grow"><div class="title">${t('taskRead')}</div><div class="meta">${ARTICLES.length} ${t('statArticlesS')}</div></div><button class="btn sm accent" data-action="nav" data-page="reading">${t('go')}</button></div>
       </div>
       <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2>
       <p class="section-sub">${t('timePlanSub')}</p>
@@ -359,7 +368,7 @@
       <svg viewBox="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${dots}
         <path d="${arc}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
-        <g><text x="0" y="0" font-size="34" dominant-baseline="middle" text-anchor="middle">✈️<animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/></text></g>
+        <g><g transform="scale(1.5)"><path d="M14 0 4 -2.4 -2 -12 -6 -12 -2.6 -2.4 -10 -2.4 -13 -6.5 -15.5 -6.5 -13.5 0 -15.5 6.5 -13 6.5 -10 2.4 -2.6 2.4 -6 12 -2 12 4 2.4Z" fill="#ffffff" stroke="#1f3b73" stroke-width="1.2" stroke-linejoin="round"/></g><animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/></g>
         ${pin(lx, ly, 'Los Angeles')}${pin(nx, ny, 'New York')}${pin(ux, uy, 'London', 'end')}${pin(sx, sy, 'Sydney')}${pin(cx, cy, 'Toronto', 'end')}
         <g transform="translate(${tx},${ty})"><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/><animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/></g>
         <text x="20" y="6" class="map-pin-label desk-only">Taiwan · ${esc(t('youAreHere'))}</text><text x="-26" y="-26" class="map-pin-label mobile-only" text-anchor="end">Taiwan · ${esc(t('youAreHere'))}</text></g>
@@ -368,7 +377,7 @@
   function homeBookmarks() {
     const b = bm();
     const words = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean);
-    const arts = b.articles.map(id => state.articles.find(a => a.id === id)).filter(Boolean);
+    const arts = b.articles.map(articleById).filter(Boolean);
     if (!words.length && !arts.length) return `<div class="card bookmark-card"><span class="ribbon">🔖</span><p class="muted" style="margin:0">${t('noBookmarks')}</p></div>`;
     return `<div class="card bookmark-card"><span class="ribbon">🔖</span>
       ${arts.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${arts.map(a => `<button class="bm-tag" data-action="openArticleHome" data-id="${a.id}">${esc(a.title)}</button>`).join('')}</div></div>` : ''}
@@ -777,16 +786,20 @@
   }
 
   /* ---- Reading ---- */
+  const READ_SHOW = 12;  // passages shown per level before "show more"
   function pageReading() {
     if (view.editing) return articleEditor();
     if (view.articleId) return articleView();
-    const rf = view.readFilter || (view.readFilter = { topic: '', status: '' });
+    const rf = view.readFilter || (view.readFilter = { topic: '', status: '', q: '', more: {} });
+    rf.more = rf.more || {}; rf.q = rf.q || '';
     const histOf = id => state.progress.readingQuizzes.filter(r => r.articleId === id);
     const done = a => histOf(a.id).length > 0;
     const GROUPS = [['Reading · B1', 'grpB1', '📗'], ['Reading · B2', 'grpB2', '📘'], ['Reading · Practical', 'grpPractical', '✉️']];
     const groupOf = a => GROUPS.some(g => g[0] === a.level) ? a.level : '_other';
-    const topics = Array.from(new Set(state.articles.flatMap(a => a.tags || [])));
-    const visible = state.articles.filter(a => (!rf.topic || (a.tags || []).includes(rf.topic)) && (!rf.status || (rf.status === 'done') === done(a)));
+    const topics = Array.from(new Set(ARTICLES.flatMap(a => a.tags || [])));
+    const q = rf.q.trim().toLowerCase();
+    const visible = ARTICLES.filter(a => (!rf.topic || (a.tags || []).includes(rf.topic)) && (!rf.status || (rf.status === 'done') === done(a))
+      && (!q || a.title.toLowerCase().includes(q) || (a.title_zh || '').includes(rf.q.trim())));
     const card = a => {
       const hist = histOf(a.id), isDone = hist.length > 0;
       const best = isDone ? Math.max(...hist.map(r => Math.round(r.score / r.total * 100))) : null;
@@ -794,6 +807,7 @@
         <span class="read-check" title="${isDone ? t('readDone') : t('readTodo')}">${isDone ? '✓' : ''}</span>
         <div class="grow" data-action="openArticle" data-id="${a.id}" style="cursor:pointer">
           <div class="title">${esc(a.title)}</div>
+          ${a.title_zh ? `<div class="small muted">${esc(a.title_zh)}</div>` : ''}
           <div class="meta">${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
         </div>
         ${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span><span class="chip">${t('attempts')} ${hist.length} ${t('times')}</span>` : ''}
@@ -802,18 +816,21 @@
         <span class="teacher-only"><button class="btn sm ghost" data-action="editArticle" data-id="${a.id}">${t('editArticle')}</button> <button class="btn sm danger" data-action="deleteArticle" data-id="${a.id}">${t('deleteArticle')}</button></span>
       </div>`;
     };
+    const filtering = rf.topic || rf.status || q;
     const groups = GROUPS.map(g => g[0]).concat(['_other']).map(key => {
-      const all = state.articles.filter(a => groupOf(a) === key), list = visible.filter(a => groupOf(a) === key);
+      const all = ARTICLES.filter(a => groupOf(a) === key), list = visible.filter(a => groupOf(a) === key);
       if (!all.length) return '';
       const g = GROUPS.find(x => x[0] === key) || ['_other', 'grpOther', '📄'];
       const nd = all.filter(done).length;
+      const shown = rf.more[key] || filtering ? list : list.slice(0, READ_SHOW);
       return `<section class="read-group" id="grp-${g[1]}"><h3 class="read-group-title">${g[2]} ${t(g[1])} <span class="read-progress"><span class="bar"><i style="width:${all.length ? nd / all.length * 100 : 0}%"></i></span>${nd} / ${all.length} ${t('readDoneShort')}</span></h3>
-        ${list.length ? `<div class="list">${list.map(card).join('')}</div>` : `<p class="small muted">${t('readNoneHere')}</p>`}</section>`;
+        ${list.length ? `<div class="list">${shown.map(card).join('')}</div>${shown.length < list.length ? `<div class="center" style="margin-top:8px"><button class="btn ghost" data-action="readMore" data-v="${esc(key)}">${tf('readShowMore', { n: list.length - shown.length })}</button></div>` : ''}` : `<p class="small muted">${t('readNoneHere')}</p>`}</section>`;
     }).join('');
-    const totalDone = state.articles.filter(done).length;
+    const totalDone = ARTICLES.filter(done).length;
     const toc = `<div class="card read-toc">
-        <div class="row"><b>📑 ${t('readToc')}</b><span class="chip ok">✓ ${totalDone} / ${state.articles.length}</span><span class="spacer"></span>
-          ${GROUPS.filter(g => state.articles.some(a => a.level === g[0])).map(g => `<a class="btn sm ghost" href="#grp-${g[1]}" data-action="jumpGroup" data-target="grp-${g[1]}">${g[2]} ${t(g[1])}</a>`).join('')}</div>
+        <div class="row"><b>📑 ${t('readToc')}</b><span class="chip ok">✓ ${totalDone} / ${ARTICLES.length}</span><span class="spacer"></span>
+          ${GROUPS.filter(g => ARTICLES.some(a => a.level === g[0])).map(g => `<a class="btn sm ghost" href="#grp-${g[1]}" data-action="jumpGroup" data-target="grp-${g[1]}">${g[2]} ${t(g[1])}</a>`).join('')}</div>
+        <div class="row" style="margin-top:8px"><input type="text" id="readSearch" placeholder="🔍 ${t('readSearch')}" value="${esc(rf.q)}" style="max-width:320px"></div>
         <div class="row" style="margin-top:8px"><span class="small muted">${t('readTopic')}</span>
           <button class="btn sm ${!rf.topic ? 'accent' : 'ghost'}" data-action="readTopic" data-v="">${t('newsAll')}</button>
           ${topics.map(x => `<button class="btn sm ${rf.topic === x ? 'accent' : 'ghost'}" data-action="readTopic" data-v="${esc(x)}">${esc(unitLabel(x))}</button>`).join('')}</div>
@@ -822,7 +839,7 @@
       </div>`;
     return `<h2 class="section-title" style="margin-top:8px">${t('readingTitle')}</h2><p class="section-sub">${t('readingSub')}</p>
       <div class="teacher-only block" style="margin-bottom:12px"><button class="btn accent" data-action="newArticle">${t('newArticle')}</button></div>
-      ${state.articles.length ? toc + groups : `<p class="muted">${t('noArticles')}</p>`}`;
+      ${ARTICLES.length ? toc + groups : `<p class="muted">${t('noArticles')}</p>`}`;
   }
 
   // Chinese translation of a reading passage: the teacher's own (passage_zh) or the built-in one (reading-zh.js)
@@ -833,7 +850,7 @@
     return b && b.paragraphs.length === en.length ? { title: b.title_zh || '', en, zh: b.paragraphs } : null;
   }
   function articleView() {
-    const a = state.articles.find(x => x.id === view.articleId);
+    const a = articleById(view.articleId);
     if (!a) { view.articleId = null; return pageReading(); }
     const L = 'ABCD';
     const Z = readingZh(a), showZh = !!Z && (view.readZh != null ? view.readZh : view.submitted);  // translation shows after answering, or on request
@@ -1136,7 +1153,7 @@
         <button class="btn accent" data-action="sendTeacher" ${view.reportBusy ? 'disabled' : ''}>${t('sendToTeacher')}</button></div><p class="small muted" style="margin:6px 0 0">${t('sendHint')}</p></div>
       ${reportCard()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(p, VOCAB)}<h3>${t('activity')}</h3>${heatmap(p)}</div>
-      <div class="card">${quizTables(p, state.articles)}<div class="row" style="margin-top:12px"><span class="spacer"></span><button class="btn danger sm" data-action="resetProgress">${t('resetProgress')}</button></div></div>`;
+      <div class="card">${quizTables(p, ARTICLES)}<div class="row" style="margin-top:12px"><span class="spacer"></span><button class="btn danger sm" data-action="resetProgress">${t('resetProgress')}</button></div></div>`;
   }
 
   /* ---- Progress report for the teacher: a PDF (html2pdf.js, loaded only when needed) + email ---- */
@@ -1246,7 +1263,7 @@
     progress.readingQuizzes.forEach(r => (r.answers || []).forEach(a => {
       if (a.chosen === a.correct) return;
       const key = r.articleId + '|' + a.qi;
-      const art = state.articles.find(x => x.id === r.articleId);
+      const art = articleById(r.articleId);
       const q = art && art.questions[a.qi];
       if (!wrongMap[key]) wrongMap[key] = { title: r.title, q: a.q || (q && q.q) || ('Q' + (a.qi + 1)), n: 0, chosen: [], correct: a.correctText || (q && q.options[q.answer]) || '', explain: q && q.explain };
       wrongMap[key].n++; wrongMap[key].chosen.push(a.chosenText || (q && q.options[a.chosen]) || '—');
@@ -1301,7 +1318,7 @@
         ${A.weakList.length ? `<table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
       ${(() => { const T = trStats(rep.progress); return T.done ? `<div class="card"><h3 style="margin-top:0">✍️ ${t('reportTranslate')} <span class="small muted">${T.right} / ${T.done} · ${tf('trDoneOf', { n: T.done, t: T.total })}</span></h3>${T.wrong.length ? `<div class="list">${T.wrong.slice(0, 20).map(x => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title" style="font-size:16px">${esc(x.zh)}</div><div class="small en">${t('trYours')}：<span class="chip bad">${esc(x.answer || '—')}</span></div><div class="small en">${t('trModel')}：<span class="chip ok">${esc(x.en)}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: x.tries - x.ok })}</span></div>`).join('')}</div>` : `<p class="muted">${t('trAllRight')}</p>`}</div>` : ''; })()}
-      ${(() => { const b = rep.progress.bookmarks || { vocab: [], articles: [] }; const ws = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean); const as = b.articles.map(id => state.articles.find(a => a.id === id)).filter(Boolean); return (ws.length || as.length) ? `<div class="card bookmark-card"><span class="ribbon">🔖</span><h3 style="margin-top:0">${t('bookmarks')}</h3>${as.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${as.map(a => `<span class="bm-tag">${esc(a.title)}</span>`).join('')}</div></div>` : ''}${ws.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b><div class="bm-list">${ws.map(v => `<span class="bm-tag word en">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div></div>` : ''}</div>` : ''; })()}
+      ${(() => { const b = rep.progress.bookmarks || { vocab: [], articles: [] }; const ws = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean); const as = b.articles.map(articleById).filter(Boolean); return (ws.length || as.length) ? `<div class="card bookmark-card"><span class="ribbon">🔖</span><h3 style="margin-top:0">${t('bookmarks')}</h3>${as.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${as.map(a => `<span class="bm-tag">${esc(a.title)}</span>`).join('')}</div></div>` : ''}${ws.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b><div class="bm-list">${ws.map(v => `<span class="bm-tag word en">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div></div>` : ''}</div>` : ''; })()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(rep.progress, VOCAB)}<h3>${t('activity')}</h3>${heatmap(rep.progress)}
         <h3>${t('timeline')}</h3>${A.timeline.length ? `<div class="list">${A.timeline.map(x => `<div class="list-item"><span class="small muted">${fmtDate(x.date)}</span><span>${esc(x.text)}</span></div>`).join('')}</div>` : `<p class="muted">${t('noData')}</p>`}</div>`;
   }
@@ -1367,12 +1384,13 @@
     if (obj.type === 'student-report') { addReport(obj); return 'report'; }
     if (!Array.isArray(obj.articles) && !Array.isArray(obj.vocab) && !obj.settings) throw new Error('bad');
     if (mode === 'replace') {
-      state = { settings: Object.assign(clone(SEED_DATA.settings), obj.settings || {}), articles: obj.articles || [], vocab: obj.vocab || [], hiddenVocab: obj.hiddenVocab || [], progress: Object.assign(emptyProgress(), obj.progress || {}), studentReports: obj.studentReports || [], accounts: obj.accounts || state.accounts };
+      state = { settings: Object.assign(clone(SEED_DATA.settings), obj.settings || {}), articles: obj.articles || [], vocab: obj.vocab || [], hiddenVocab: obj.hiddenVocab || [], hiddenArticles: obj.hiddenArticles || [], progress: Object.assign(emptyProgress(), obj.progress || {}), studentReports: obj.studentReports || [], accounts: obj.accounts || state.accounts };
     } else {
       if (obj.settings) { const keep = state.settings.teacherCode; state.settings = Object.assign(state.settings, obj.settings); if (!obj.settings.teacherCode) state.settings.teacherCode = keep; }
       (obj.articles || []).forEach(a => { const i = state.articles.findIndex(x => x.id === a.id); if (i >= 0) state.articles[i] = a; else state.articles.push(a); });
       (obj.vocab || []).forEach(v => { const i = state.vocab.findIndex(x => x.id === v.id || (!v.override && x.word.toLowerCase() === v.word.toLowerCase())); if (i >= 0) state.vocab[i] = Object.assign({}, state.vocab[i], v); else state.vocab.push(v); });
       if (Array.isArray(obj.hiddenVocab)) state.hiddenVocab = Array.from(new Set((state.hiddenVocab || []).concat(obj.hiddenVocab)));
+      if (Array.isArray(obj.hiddenArticles)) state.hiddenArticles = Array.from(new Set((state.hiddenArticles || []).concat(obj.hiddenArticles)));
     }
     save(); return 'data';
   }
@@ -1405,6 +1423,7 @@
     },
     readTopic(el) { view.readFilter.topic = el.dataset.v; render(); },
     readStatus(el) { view.readFilter.status = el.dataset.v; render(); },
+    readMore(el) { view.readFilter.more[el.dataset.v] = true; render(); },
     jumpGroup(el) { const g = document.getElementById(el.dataset.target); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
     toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash) { const b = $('.flash-bm'); if (b) b.classList.toggle('on', isBm('vocab', el.dataset.id)); } else render(); },
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
@@ -1441,7 +1460,7 @@
     readZh(el) { view.readZh = el.dataset.v === '1'; render(); },
     choose(el) { if (view.submitted) return; view.answers[+el.dataset.q] = +el.dataset.o; render(); },
     submitQuiz() {
-      const a = state.articles.find(x => x.id === view.articleId);
+      const a = articleById(view.articleId);
       if (Object.keys(view.answers).length < a.questions.length) { toast(t('pleaseAnswerAll')); return; }
       view.submitted = true;
       view.readSecs = view.readStart ? Math.round((Date.now() - view.readStart) / 1000) : null;
@@ -1453,8 +1472,14 @@
     },
     retry() { view.answers = {}; view.submitted = false; view.readZh = null; view.readStart = Date.now(); window.scrollTo({ top: 0 }); render(); },
     newArticle() { view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
-    editArticle(el) { view.editing = clone(state.articles.find(x => x.id === el.dataset.id)); render(); },
-    deleteArticle(el) { if (!confirm(t('confirmDel'))) return; state.articles = state.articles.filter(x => x.id !== el.dataset.id); save(); render(); },
+    editArticle(el) { const a = clone(articleById(el.dataset.id)); delete a.lib; view.editing = a; render(); },
+    deleteArticle(el) {
+      if (!confirm(t('confirmDel'))) return;
+      const id = el.dataset.id;
+      state.articles = state.articles.filter(x => x.id !== id);
+      if (READ_LIB.some(a => a.id === id)) { state.hiddenArticles = state.hiddenArticles || []; if (!state.hiddenArticles.includes(id)) state.hiddenArticles.push(id); }
+      save(); render();
+    },
     cancelEdit() { view.editing = null; render(); },
     addQ() { collectEditor(); view.editing.questions.push({ q: '', options: ['', '', '', ''], answer: 0, explain: '' }); render(); },
     removeQ(el) { collectEditor(); view.editing.questions.splice(+el.dataset.qi, 1); render(); },
@@ -1581,7 +1606,7 @@
       save(); toast(t('saved')); render();
     },
     exportAll() { download(`tve-exam-all-${todayStr()}.json`, state); },
-    exportContent() { shareOrDownload(`tve-exam-material-${todayStr()}.json`, { settings: { examName: state.settings.examName, examNameEn: state.settings.examNameEn, examDate: state.settings.examDate, motto: state.settings.motto }, articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [] }, t('exportContent')); },
+    exportContent() { shareOrDownload(`tve-exam-material-${todayStr()}.json`, { settings: { examName: state.settings.examName, examNameEn: state.settings.examNameEn, examDate: state.settings.examDate, motto: state.settings.motto }, articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [] }, t('exportContent')); },
     resetAll() { if (!confirm(t('confirmResetAll'))) return; const p = state.progress, code = state.settings.teacherCode; state = { settings: Object.assign(clone(SEED_DATA.settings), { teacherCode: code }), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), hiddenVocab: [], progress: p, studentReports: state.studentReports, accounts: state.accounts }; save(); render(); },
     deleteAccount(el) { if (!confirm(t('confirmDel'))) return; state.accounts = state.accounts.filter(a => a.id !== el.dataset.id); save(); render(); },
     openAuth() { openAuth('login'); },
@@ -1612,6 +1637,7 @@
     else if (id === 'reportFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { if (obj && obj.type === 'student-report') { addReport(obj); toast(t('reportImported')); render(); } else { try { importJSON(obj, 'merge'); toast(t('imported')); render(); } catch (x) { toast(t('importFail')); } } }); }
   });
   $('#app').addEventListener('input', e => {
+    if (e.target.id === 'readSearch') { view.readFilter.q = e.target.value; const pos = e.target.selectionStart; render(); const i = $('#readSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
     if (e.target.id === 'phrSearch') { view.phr.q = e.target.value; view.phr.page = 0; const pos = e.target.selectionStart; render(); const i = $('#phrSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
     if (e.target.id === 'vocabSearch') { view.vocabSearch = e.target.value; view.vocabPage = 0; const pos = e.target.selectionStart; render(); const i = $('#vocabSearch'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }
   });
