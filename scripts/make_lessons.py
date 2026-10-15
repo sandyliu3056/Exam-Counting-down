@@ -26,7 +26,7 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from article_text import fetch_text  # noqa: E402
+from article_text import UA, fetch_text  # noqa: E402
 
 MIN_SOURCE_WORDS = 150
 SOURCE_WORD_LIMIT = 1500  # keeps each request within GitHub Models' free per-request size
@@ -35,7 +35,13 @@ MAX_QUOTE_WORDS = 15
 TAIWAN = timezone(timedelta(hours=8))
 CLAUDE_MODEL = os.environ.get("LESSON_MODEL") or "claude-opus-5-5"
 FREE_MODELS = [m for m in [os.environ.get("FREE_MODEL"), "openai/gpt-4.1-mini", "openai/gpt-4o-mini"] if m]
-GITHUB_MODELS_URL = "https://models.github.ai/inference/chat/completions"
+GITHUB_MODELS = "https://models.github.ai"
+# request styles to try, newest first; the first one that answers properly is used for the whole run
+GITHUB_HEADER_STYLES = [
+    {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2026-03-10"},
+    {"Accept": "application/json"},
+    {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
+]
 
 AUDIENCE = ("Taiwanese senior-high students (age 16-18, CEFR B1-B2) preparing for the TVE joint "
             "college entrance exam (統測)")
@@ -205,12 +211,16 @@ class GitHubModels:
         self.name = self.models[0]
         self.json_schema = True
         self.errors = 0  # consecutive failed requests
+        self.style = GITHUB_HEADER_STYLES[0]
+        self.probe()
 
-    def _post(self, body):
-        req = urllib.request.Request(GITHUB_MODELS_URL, data=json.dumps(body).encode("utf-8"), headers={
-            "Authorization": f"Bearer {self.token}", "Content-Type": "application/json",
-            "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
-            "Accept-Encoding": "identity"})
+    def _request(self, path, body=None, style=None):
+        headers = dict(style or self.style, **{"Authorization": f"Bearer {self.token}", "User-Agent": UA,
+                                                "Accept-Encoding": "identity"})
+        data = None
+        if body is not None:
+            data, headers["Content-Type"] = json.dumps(body).encode("utf-8"), "application/json"
+        req = urllib.request.Request(GITHUB_MODELS + path, data=data, headers=headers, method="POST" if data else "GET")
         with urllib.request.urlopen(req, timeout=180) as r:
             raw = r.read()
             if "gzip" in (r.headers.get("Content-Encoding") or ""):
@@ -220,7 +230,37 @@ class GitHubModels:
             try:
                 return json.loads(raw)
             except ValueError:
-                raise ValueError(f"not JSON (HTTP {r.status}, {r.headers.get('Content-Type')}): {raw[:200]!r}")
+                raise ValueError(f"not JSON (HTTP {r.status}, {r.headers.get('Content-Type')}, {r.geturl()}): {raw[:120]!r}")
+
+    def _post(self, body):
+        return self._request("/inference/chat/completions", body)
+
+    def probe(self):
+        """Check access, list the free models and find a request style that works (costs one small request)."""
+        try:
+            catalog = self._request("/catalog/models")
+            ids = [m.get("id") for m in catalog] if isinstance(catalog, list) else []
+            print(f"GitHub Models catalog: {len(ids)} models; ours available: {[m for m in self.models if m in ids]}")
+            usable = [m for m in self.models if m in ids]
+            if usable:
+                self.models = usable
+                self.name = usable[0]
+        except Exception as e:  # the catalog is only a check; keep going
+            print(f"catalog check failed: {e}")
+        tiny = {"model": self.name, "max_tokens": 20, "messages": [{"role": "user", "content": 'Reply with {"ok": true}'}]}
+        for style in GITHUB_HEADER_STYLES:
+            try:
+                out = self._request("/inference/chat/completions", tiny, style)
+                if isinstance(out, dict) and out.get("choices"):
+                    self.style = style
+                    print(f"GitHub Models works with headers {style}")
+                    return
+                print(f"probe {style}: unexpected reply {str(out)[:120]}")
+            except urllib.error.HTTPError as e:
+                print(f"probe {style}: HTTP {e.code} {e.read()[:200]!r}")
+            except Exception as e:
+                print(f"probe {style}: {e}")
+        raise StopRun("GitHub Models did not answer in any known request style")
 
     def write(self, system, prompt):
         while True:
@@ -327,7 +367,11 @@ def write_articles(items, have, provider, limit, on_new=lambda lesson: None):
 
 
 def main(path="news.json"):
-    provider = pick_provider()
+    try:
+        provider = pick_provider()
+    except StopRun as e:
+        print(f"No model available: {e}")
+        return 0
     if not provider:
         print("No ANTHROPIC_API_KEY or GITHUB_TOKEN; skipping articles.")
         return 0
