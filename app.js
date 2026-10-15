@@ -362,9 +362,29 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
 
   function worldMapCard(dl) {
     const W = window.WORLD_DOTS; if (!W) return '';
-    const step = 10, R = 3.6, cols = W.rows[0].length, rows = W.rows.length;
-    let dots = '';
-    W.rows.forEach((row, r) => { for (let c = 0; c < cols; c++) { const ch = row[c]; if (ch === '.') continue; dots += `<circle cx="${c * step + step / 2}" cy="${r * step + step / 2}" r="${R}" fill="${ch === 'E' ? '#f6c445' : 'rgba(255,255,255,.55)'}"/>`; } });
+    const step = 10, cols = W.rows[0].length, rows = W.rows.length;
+    // natural colours: green land, earth-toned deserts / steppe / tundra, on a blue ocean; dots drawn as toy-brick studs
+    const COL = { rain: '#2f8f4e', temp: '#5dbb63', boreal: '#3d8a63', steppe: '#c9b071', desert: '#dba65a', tundra: '#a99d7c' };
+    const hash = (a, b) => { const h = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453; return h - Math.floor(h); };
+    const biome = (lat, lon, r, c) => {
+      lat += hash(r, c) * 6 - 3; lon += hash(c + 7, r + 3) * 6 - 3; // soften region edges
+      const inb = (a, b, x, y) => lat >= a && lat <= b && lon >= x && lon <= y;
+      if (lat >= 62 || (lon > -60 && lon < -15 && lat > 58)) return 'tundra';
+      if (inb(14, 34, -18, 60) || inb(24, 40, 44, 72) || inb(22, 38, -118, -102) || inb(-31, -18, 116, 145) || inb(-30, -17, 11, 26) || inb(-50, -18, -76, -67) || inb(2, 13, 39, 52)) return 'desert';
+      if (inb(38, 50, 50, 118) || inb(34, 50, -112, -98) || inb(-38, -28, -68, -60)) return 'steppe';
+      if (Math.abs(lat) <= 11) return 'rain';
+      return lat >= 50 ? 'boreal' : 'temp';
+    };
+    const paths = {}; let sea = '', shine = '';
+    W.rows.forEach((row, r) => { for (let c = 0; c < cols; c++) {
+      const x = c * step + step / 2, y = r * step + step / 2;
+      if (row[c] === '.') { sea += `M${x} ${y}h0`; continue; }
+      const k = biome(W.lat0 - r * W.step, -180 + c * W.step + W.step / 2, r, c);
+      paths[k] = (paths[k] || '') + `M${x} ${y}h0`; shine += `M${x - 1.3} ${y - 1.3}h0`;
+    } });
+    const dots = `<path d="${sea}" stroke="#ffffff" stroke-opacity=".16" stroke-width="2.8" stroke-linecap="round"/>`
+      + Object.entries(paths).map(([k, d]) => `<path d="${d}" stroke="${COL[k]}" stroke-width="7.6" stroke-linecap="round"/>`).join('')
+      + `<path d="${shine}" stroke="#ffffff" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round"/>`;
     const xy = (lon, lat) => [((lon + 180) / W.step) * step, ((W.lat0 - lat) / W.step) * step + step / 2];
     const [tx, ty] = xy(121, 23.5), [lx, ly] = xy(-118, 34), [nx, ny] = xy(-74, 40.7), [ux, uy] = xy(-0.1, 51.5), [sx, sy] = xy(151, -33.9), [cx, cy] = xy(-79.4, 43.7);
     const pin = (x, y, label, anchor = 'start') => `<circle cx="${x}" cy="${y}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${x + (anchor === 'end' ? -12 : 12)}" y="${y + 6}" class="map-pin-label desk-only" text-anchor="${anchor}">${esc(label)}</text>`;
@@ -372,8 +392,8 @@ ${[[700, 40, '#4cc9f0'], [724, 48, '#ff6b81'], [748, 57, '#ffd166'], [772, 66, '
     return `<div class="map-card"><span class="map-count">📅 ${state.settings.examDate.replace(/-/g, '/')} · ${dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('today') : t('examChipPassed')}</span>
       <h3>🌍 ${t('mapTitle')}</h3><p>${t('mapSub')}</p>
       <svg viewBox="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${dots}
-        <path d="${arc}" fill="none" stroke="#ffd166" stroke-width="3" stroke-dasharray="10 10" opacity=".9"/>
-        <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffd166" stroke-width="3" stroke-dasharray="10 10" opacity=".9"/>
+        <path d="${arc}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
+        <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <g><text x="0" y="0" font-size="34" dominant-baseline="middle" text-anchor="middle">✈️<animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/></text></g>
         ${pin(lx, ly, 'Los Angeles')}${pin(nx, ny, 'New York')}${pin(ux, uy, 'London', 'end')}${pin(sx, sy, 'Sydney')}${pin(cx, cy, 'Toronto', 'end')}
         <g transform="translate(${tx},${ty})"><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/><animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/></g>

@@ -435,7 +435,7 @@ body.teacher .teacher-only.flex { display: flex; }
 .exam-chip.soon .exam-chip-days { background: #ff8a80; color: #4a0e0e; }
 
 /* ---------- World map ---------- */
-.map-card { position: relative; background: linear-gradient(160deg, var(--dark-card-2), var(--dark-card)); color: #fff; border: 3px solid var(--line); border-radius: var(--radius); padding: 18px 18px 10px; box-shadow: var(--sticker); overflow: hidden; }
+.map-card { position: relative; background: linear-gradient(160deg, #3a8fd0, #1d5f9e); color: #fff; border: 3px solid var(--line); border-radius: var(--radius); padding: 18px 18px 10px; box-shadow: var(--sticker); overflow: hidden; }
 .map-card h3 { margin: 0; font-size: 22px; }
 .map-card p { margin: 4px 0 8px; opacity: .85; font-size: 14px; }
 .map-card svg { width: 100%; height: auto; display: block; }

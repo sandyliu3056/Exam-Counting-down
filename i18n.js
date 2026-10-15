@@ -76,7 +76,7 @@ window.I18N = {
     range: "練習範圍", unitLv: "7000 單字 · Level {n} ({c})", unitPh: "片語", phCat1: "動詞片語 (up / down)", phCat2: "動詞片語 (out / in / into)", phCat3: "動詞片語 (on / off / over)", phCat4: "動詞片語 (away / back / through…)", phCat5: "動詞／形容詞＋介系詞", phCat6: "介系詞與副詞片語", phCat7: "連接詞與句型", phCat8: "慣用語", phCat9: "動詞搭配詞", phCat10: "商業與生活常用片語",
     seedUnits: { "Unit 1 · Study & Health": "Unit 1 · 學習與健康", "Unit 2 · Culture & Life": "Unit 2 · 文化與生活", "Unit 3 · Business & Letters": "Unit 3 · 商業與書信", "Unit 4 · High-frequency Words": "Unit 4 · 統測高頻字", "Reading · B1": "閱讀 · B1", "Reading · Practical": "閱讀 · 應用文", "Health": "健康", "Science": "科普", "Culture": "文化", "Life": "生活", "Letter": "書信", "Business": "商業" },
     dailyTitle: "每日一句", listen: "聽", chipHint: "點一下可以更改考試日期", daysLeftShort: "剩 {n} 天", examChipPassed: "已結束", headerToday: "今天考試！",
-    mapTitle: "英文帶你看世界", mapSub: "黃色點是以英文為母語的國家，統測是出發的第一步。", youAreHere: "你在這裡",
+    mapTitle: "英文帶你看世界", mapSub: "藍色海洋、綠色大地、土色沙漠。英文會帶你去哪裡？統測就是出發的第一步。", youAreHere: "你在這裡",
     tipVocab: "每題約 40 秒，不會先猜再標記", tipDialog: "看清最後一句是誰說、語氣正負", tipCloze: "先看空格前後的轉折詞與時態", tipReading: "先看題目，再回文章找關鍵字", tipWriting: "拼字和時態最容易失分，寫完一定要檢查", tipCheck: "回頭看做記號的題目", tipBuffer: "預留時間，不要提早交卷",
     examInfo: {
       cols: ["大題", "題數（近年）", "配分", "考什麼"],
@@ -159,7 +159,7 @@ window.I18N = {
     range: "Range", unitLv: "7000 Words · Level {n} ({c})", unitPh: "Phrases", phCat1: "Phrasal verbs (up / down)", phCat2: "Phrasal verbs (out / in / into)", phCat3: "Phrasal verbs (on / off / over)", phCat4: "Phrasal verbs (away / back / through…)", phCat5: "Verb / adjective + preposition", phCat6: "Prepositional & adverbial phrases", phCat7: "Linking words & sentence patterns", phCat8: "Idioms", phCat9: "Verb collocations", phCat10: "Business & everyday phrases",
     seedUnits: {},
     dailyTitle: "Sentence of the day", listen: "Listen", chipHint: "Tap to change the exam date", daysLeftShort: "{n} days left", examChipPassed: "finished", headerToday: "Exam day!",
-    mapTitle: "English takes you everywhere", mapSub: "Yellow dots are countries where English is the first language. The exam is your first step.", youAreHere: "You are here",
+    mapTitle: "English takes you everywhere", mapSub: "Blue seas, green land, sandy deserts. Where will English take you? The exam is your first step.", youAreHere: "You are here",
     tipVocab: "About 40 seconds per question; guess, mark it, and move on", tipDialog: "Check who says the last line and whether the tone is positive or negative", tipCloze: "Look at the linking words and tenses around each blank first", tipReading: "Read the questions first, then scan the passage for keywords", tipWriting: "Spelling and tenses lose the most points; always re-check", tipCheck: "Go back to the questions you marked", tipBuffer: "Keep a buffer; don't hand in early",
     examInfo: {
       cols: ["Part", "Questions (recent years)", "Marks", "What it tests"],
