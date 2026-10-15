@@ -185,6 +185,8 @@ def main(out_path="news.json"):
         kept = [l for l in old.get("lessons", []) if l.get("link") in links]
         if kept:
             data["lessons"], data["lessonsDate"] = kept, old.get("lessonsDate", "")
+            if old.get("lessonsModel"):
+                data["lessonsModel"] = old["lessonsModel"]
     except (OSError, ValueError):
         pass
     with open(out_path, "w", encoding="utf-8") as f:

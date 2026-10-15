@@ -235,7 +235,8 @@ def main(path="news.json"):
         data = json.load(f)
     items = data.get("items") or []
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    if data.get("lessonsDate") == today and any(l.get("paragraphs") for l in data.get("lessons", [])):
+    # hand-written sample lessons have no "lessonsModel", so they never block a real run
+    if data.get("lessonsDate") == today and data.get("lessonsModel") and data.get("lessons"):
         print("Today's lessons already exist; nothing to do.")
         return 0
     if not items:
@@ -256,7 +257,7 @@ def main(path="news.json"):
     if not lessons:
         print("No usable lessons; keeping the existing ones.")
         return 0
-    data["lessons"], data["lessonsDate"] = lessons, today
+    data["lessons"], data["lessonsDate"], data["lessonsModel"] = lessons, today, MODEL
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
     print(f"Wrote {len(lessons)} lessons.")
