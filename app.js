@@ -185,8 +185,8 @@
   }
   async function pushContent() {
     if (!cloud.enabled || !ui.teacher) return;
-    const { examName, examNameEn, examDate, motto, teacherCode } = state.settings;
-    await cloud.db.collection('content').doc('main').set({ articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], settings: { examName, examNameEn, examDate, motto, teacherCode }, updatedAt: new Date().toISOString() });
+    const { examName, examNameEn, examDate, motto, teacherCode } = state.settings, teacherEmail = state.settings.teacherEmail || '';
+    await cloud.db.collection('content').doc('main').set({ articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], settings: { examName, examNameEn, examDate, motto, teacherCode, teacherEmail }, updatedAt: new Date().toISOString() });
   }
   async function pushProgress() {
     if (!cloud.enabled || !ui.user || !ui.user.cloud) return;
@@ -993,9 +993,111 @@
     const total = Object.values(p.days).reduce((a, b) => a + b, 0);
     return `<h2 class="section-title" style="margin-top:8px">${t('progressTitle')}</h2><p class="section-sub">${t('progressSub')}</p>
       <div class="card"><div class="row"><div><b>🔥 ${t('streak')}</b> ${streak()} ${t('streakDays')}</div><div><b>${t('totalActivity')}</b> ${total}</div><span class="spacer"></span>
-        <button class="btn accent" data-action="sendTeacher">${t('sendToTeacher')}</button></div><p class="small muted" style="margin:6px 0 0">${t('sendHint')}</p></div>
+        <button class="btn accent" data-action="sendTeacher" ${view.reportBusy ? 'disabled' : ''}>${t('sendToTeacher')}</button></div><p class="small muted" style="margin:6px 0 0">${t('sendHint')}</p></div>
+      ${reportCard()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(p, VOCAB)}<h3>${t('activity')}</h3>${heatmap(p)}</div>
       <div class="card">${quizTables(p, state.articles)}<div class="row" style="margin-top:12px"><span class="spacer"></span><button class="btn danger sm" data-action="resetProgress">${t('resetProgress')}</button></div></div>`;
+  }
+
+  /* ---- Progress report for the teacher: a PDF (html2pdf.js, loaded only when needed) + email ---- */
+  let pdfLib = null;
+  function loadPdfLib() {
+    if (window.html2pdf) return Promise.resolve(window.html2pdf);
+    if (!pdfLib) pdfLib = new Promise((ok, no) => {
+      const s = document.createElement('script'); s.src = 'vendor/html2pdf.bundle.min.js';
+      s.onload = () => ok(window.html2pdf); s.onerror = () => { pdfLib = null; no(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return pdfLib;
+  }
+  // translation practice results: { id: { tries, ok, lastOk, answer, last } }
+  function trStats(progress) {
+    const tr = progress.translate || {}, items = window.TRANSLATION_ITEMS || [];
+    const done = Object.keys(tr), right = done.filter(id => tr[id].lastOk);
+    const wrong = done.filter(id => !tr[id].lastOk).map(id => Object.assign({ id }, tr[id], items.find(x => x.id === id) || {})).filter(x => x.zh)
+      .sort((a, b) => (b.tries - b.ok) - (a.tries - a.ok));
+    return { done: done.length, right: right.length, wrong, total: items.length };
+  }
+  const reportName = () => state.settings.studentName || (ui.user && ui.user.name) || t('roleStudent');
+  function reportHTML(progress, name) {
+    const A = analyzeReport(progress, name), T = trStats(progress);
+    const mastered = VOCAB.filter(v => (progress.cards[v.id] || {}).box === 3).length;
+    const days = []; for (let i = 13; i >= 0; i--) { const d = new Date(Date.now() - i * 864e5); const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); days.push([k.slice(5), progress.days[k] || 0]); }
+    const maxDay = Math.max(1, ...days.map(d => d[1]));
+    const stat = (k, v, s) => `<div class="pr-stat"><div class="pr-k">${k}</div><div class="pr-v">${v}</div>${s ? `<div class="pr-s">${s}</div>` : ''}</div>`;
+    const rq = A.rq.slice().reverse().slice(0, 10);
+    return `<div class="pdf-report">
+      <div class="pr-head"><div><div class="pr-title">${t('reportTitle')}</div><div class="pr-sub">${esc(name)} · ${t('reportDate')} ${todayStr()}</div></div>
+        <div class="pr-exam">${esc(state.settings.examName || '')}<br><b>${tf('reportDaysLeft', { n: daysLeft() })}</b></div></div>
+      <div class="pr-stats">
+        ${stat(t('streak'), `${streak(progress)} ${t('streakDays')}`, `${t('totalActivity')} ${A.total}`)}
+        ${stat(t('lastActive'), A.last || t('never'))}
+        ${stat(t('avgReading'), A.avg === null ? '—' : A.avg + '%', `${t('readingDone')} ${A.rq.length}`)}
+        ${stat(t('statMastered'), `${mastered}`, `/ ${VOCAB.length}`)}
+        ${stat(t('reportTranslate'), T.done ? `${T.right} / ${T.done}` : '—', T.total ? tf('trDoneOf', { n: T.done, t: T.total }) : '')}
+      </div>
+      <h2>📅 ${t('reportActivity')}</h2>
+      <div class="pr-bars">${days.map(([d, n]) => `<div class="pr-bar"><div class="pr-fill" style="height:${Math.round(n / maxDay * 60)}px"></div><div class="pr-n">${n || ''}</div><div class="pr-d">${d}</div></div>`).join('')}</div>
+      <h2>📖 ${t('reportReading')}</h2>
+      ${rq.length ? `<table class="pr-table"><tr><th>${t('reportWhen')}</th><th>${t('title')}</th><th>${t('reportScore')}</th><th>${t('reportTime')}</th></tr>${rq.map(r => `<tr><td>${fmtDate(r.date)}</td><td class="en">${esc(r.title)}</td><td>${r.score} / ${r.total}</td><td>${r.secs != null ? fmtDur(r.secs) : '—'}</td></tr>`).join('')}</table>` : `<p class="pr-none">${t('noData')}</p>`}
+      <h2>❌ ${t('wrongAnalysis')}</h2>
+      ${A.wrongs.length ? A.wrongs.slice(0, 10).map(w => `<div class="pr-item"><div class="pr-meta en">${esc(w.title)}</div><div class="en">${esc(w.q)}</div><div>${t('studentChose')}：<span class="pr-bad">${w.chosen.map(esc).join('、')}</span> → ${t('correctIs')}：<span class="pr-ok">${esc(w.correct)}</span>（${tf('wrongTimes', { n: w.n })}）</div></div>`).join('') : `<p class="pr-none">${t('noWrong')}</p>`}
+      <h2>🧠 ${t('weakWords')}</h2>
+      ${A.weakList.length ? `<div class="pr-words">${A.weakList.slice(0, 24).map(w => `<span><b class="en">${esc(w.word)}</b> ${esc(w.zh)}</span>`).join('')}</div>` : `<p class="pr-none">${t('noWeak')}</p>`}
+      <h2>✍️ ${t('reportTranslate')}</h2>
+      ${T.wrong.length ? T.wrong.slice(0, 10).map(x => `<div class="pr-item"><div>${esc(x.zh)}</div><div class="en">${t('trYours')}：<span class="pr-bad">${esc(x.answer || '—')}</span></div><div class="en">${t('trModel')}：<span class="pr-ok">${esc(x.en)}</span></div></div>`).join('') : `<p class="pr-none">${T.done ? t('trAllRight') : t('noData')}</p>`}
+      <div class="pr-foot">${t('reportFoot')}</div>
+    </div>`;
+  }
+  function reportText(progress, name) {
+    const A = analyzeReport(progress, name), T = trStats(progress);
+    const mastered = VOCAB.filter(v => (progress.cards[v.id] || {}).box === 3).length;
+    return [
+      `${t('reportTitle')} — ${name} (${todayStr()})`,
+      `${t('streak')}: ${streak(progress)} ${t('streakDays')} · ${t('totalActivity')} ${A.total} · ${t('lastActive')}: ${A.last || t('never')}`,
+      `${t('avgReading')}: ${A.avg === null ? '—' : A.avg + '%'} (${t('readingDone')} ${A.rq.length})`,
+      `${t('statMastered')}: ${mastered} / ${VOCAB.length}`,
+      T.done ? `${t('reportTranslate')}: ${T.right} / ${T.done}` : '',
+      A.wrongs.length ? `${t('wrongAnalysis')}: ` + A.wrongs.slice(0, 5).map(w => w.q).join(' | ') : '',
+      A.weakList.length ? `${t('weakWords')}: ` + A.weakList.slice(0, 10).map(w => w.word).join(', ') : '',
+    ].filter(Boolean).join('\n');
+  }
+  async function makeReportPDF(name) {
+    const lib = await loadPdfLib();
+    const stage = document.createElement('div'); stage.className = 'pdf-stage'; stage.innerHTML = reportHTML(state.progress, name);
+    document.body.appendChild(stage);
+    try {
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+      return await lib().set({
+        margin: [10, 10, 12, 10], image: { type: 'jpeg', quality: 0.92 },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['.pr-item', 'tr', '.pr-stats', '.pr-bars'] },
+      }).from(stage.firstElementChild).outputPdf('blob');
+    } finally { stage.remove(); }
+  }
+  const canShareFiles = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.pdf', { type: 'application/pdf' })] })); } catch (e) { return false; } };
+  function reportCard() {
+    if (view.reportBusy) return `<div class="card report-card"><p style="margin:0">⏳ ${t('pdfMaking')}</p></div>`;
+    const r = view.report; if (!r) return '';
+    const share = canShareFiles();
+    return `<div class="card report-card" id="reportCard"><h3 style="margin-top:0">📄 ${t('pdfReady')}</h3>
+      <div class="field"><label>${t('teacherEmail')}</label><input type="email" id="teacherEmailInput" value="${esc(state.settings.teacherEmail || '')}" placeholder="teacher@example.com" autocomplete="email" inputmode="email"></div>
+      <div class="row">
+        ${share ? `<button class="btn accent" data-action="sharePdf">📤 ${t('sharePdf')}</button>` : ''}
+        <button class="btn ${share ? '' : 'accent'}" data-action="mailPdf">📧 ${t('emailTeacher')}</button>
+        <a class="btn ghost" href="${r.url}" download="${esc(r.name)}">⬇️ ${t('downloadPdf')}</a>
+        <a class="btn ghost" href="${r.url}" target="_blank" rel="noopener">👀 ${t('previewPdf')}</a>
+        <button class="btn ghost sm" data-action="exportJson">${t('exportJson')}</button>
+      </div>
+      <p class="small muted" style="margin:8px 0 0">${t(share ? 'shareHintPdf' : 'mailHintPdf')}</p></div>`;
+  }
+  function saveTeacherEmail() {
+    const el = $('#teacherEmailInput'); if (!el) return state.settings.teacherEmail || '';
+    const v = el.value.trim();
+    if (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { toast(t('badEmail')); el.focus(); return null; }
+    if (v !== (state.settings.teacherEmail || '')) { state.settings.teacherEmail = v; save(); }
+    return v;
   }
 
   /* ---- Students (teacher) ---- */
@@ -1073,6 +1175,7 @@
           <div class="field"><label>${t('examNameEn')}</label><input type="text" id="stExamNameEn" value="${esc(s.examNameEn || '')}"></div>
           <div class="field"><label>${t('examDate')}</label><input type="date" id="stExamDate" value="${esc(s.examDate)}"></div>
           <div class="field"><label>${t('studentName')}</label><input type="text" id="stStudent" value="${esc(s.studentName || '')}"></div>
+          <div class="field"><label>${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>
         </div>
         <div class="field"><label>${t('mottoLbl')}</label><input type="text" id="stMotto" value="${esc(s.motto || '')}"></div>
         <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(s.teacherCode || '')}" autocomplete="off"></div>
@@ -1269,7 +1372,33 @@
       save(); view.bulkOpen = false; toast(`${t('imported')} +${n}`); render();
     },
     // progress
-    sendTeacher() {
+    async sendTeacher() {
+      if (view.reportBusy) return;
+      view.reportBusy = true; render();
+      try {
+        const name = reportName(), blob = await makeReportPDF(name);
+        if (view.report) URL.revokeObjectURL(view.report.url);
+        view.report = { blob, name: `${t('reportFile')}-${name}-${todayStr()}.pdf`.replace(/[\\/:*?"<>|]/g, '_'), url: URL.createObjectURL(blob) };
+      } catch (e) { toast(t('pdfFail')); }
+      view.reportBusy = false; render();
+      const c = $('#reportCard'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+    sharePdf() {
+      const email = saveTeacherEmail(); if (email === null || !view.report) return;
+      const file = new File([view.report.blob], view.report.name, { type: 'application/pdf' });
+      // both calls start inside the tap, which iPhone Safari requires
+      if (email && navigator.clipboard) navigator.clipboard.writeText(email).then(() => toast(tf('emailCopied', { e: email }))).catch(() => {});
+      navigator.share({ files: [file], title: t('reportTitle'), text: reportText(state.progress, reportName()) }).catch(e => { if (!e || e.name !== 'AbortError') toast(t('shareFail')); });
+    },
+    mailPdf() {
+      const email = saveTeacherEmail(); if (email === null || !view.report) return;
+      if (!email) { toast(t('needEmail')); const el = $('#teacherEmailInput'); if (el) el.focus(); return; }
+      const a = document.createElement('a'); a.href = view.report.url; a.download = view.report.name; document.body.appendChild(a); a.click(); a.remove();
+      const name = reportName();
+      const body = reportText(state.progress, name) + '\n\n' + tf('mailAttachHint', { f: view.report.name });
+      setTimeout(() => { location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(t('reportTitle') + ' — ' + name + ' ' + todayStr())}&body=${encodeURIComponent(body)}`; }, 300);
+    },
+    exportJson() {
       const obj = { type: 'student-report', studentName: state.settings.studentName || t('roleStudent'), exportedAt: new Date().toISOString(), progress: state.progress };
       shareOrDownload(`progress-${state.settings.studentName || 'student'}-${todayStr()}.json`, obj, t('sendToTeacher'));
     },
@@ -1281,6 +1410,7 @@
       s.examName = $('#stExamName').value.trim() || s.examName; s.examNameEn = $('#stExamNameEn').value.trim();
       if ($('#stExamDate').value) s.examDate = $('#stExamDate').value;
       s.studentName = $('#stStudent').value.trim(); s.motto = $('#stMotto').value.trim();
+      if ($('#stTeacherEmail')) s.teacherEmail = $('#stTeacherEmail').value.trim();
       if (ui.teacher && $('#stCode')) s.teacherCode = $('#stCode').value.trim() || s.teacherCode;
       save(); toast(t('saved')); render();
     },
