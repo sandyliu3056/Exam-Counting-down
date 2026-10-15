@@ -15,6 +15,7 @@ Which model writes the articles:
 - Claude: if the ANTHROPIC_API_KEY repository secret is set, Claude is used instead (paid).
 Runs in GitHub Actions after fetch_news.py. If no model is reachable, nothing changes.
 """
+import gzip
 import json
 import os
 import re
@@ -208,9 +209,18 @@ class GitHubModels:
     def _post(self, body):
         req = urllib.request.Request(GITHUB_MODELS_URL, data=json.dumps(body).encode("utf-8"), headers={
             "Authorization": f"Bearer {self.token}", "Content-Type": "application/json",
-            "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"})
+            "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
+            "Accept-Encoding": "identity"})
         with urllib.request.urlopen(req, timeout=180) as r:
-            return json.load(r)
+            raw = r.read()
+            if "gzip" in (r.headers.get("Content-Encoding") or ""):
+                raw = gzip.decompress(raw)
+            if not raw.strip():
+                raise ValueError(f"empty reply (HTTP {r.status}, {r.headers.get('Content-Type')}, {r.geturl()})")
+            try:
+                return json.loads(raw)
+            except ValueError:
+                raise ValueError(f"not JSON (HTTP {r.status}, {r.headers.get('Content-Type')}): {raw[:200]!r}")
 
     def write(self, system, prompt):
         while True:
@@ -244,6 +254,12 @@ class GitHubModels:
                 return None
             except (urllib.error.URLError, TimeoutError) as e:
                 raise StopRun(f"network: {e}")
+            except ValueError as e:
+                print(f"  bad reply: {e}")
+                self.errors += 1
+                if self.errors >= 3:
+                    raise StopRun("three requests in a row failed")
+                return None
             self.errors = 0
             choice = out["choices"][0]
             if choice.get("finish_reason") == "length":
