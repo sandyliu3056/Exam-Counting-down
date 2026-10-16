@@ -1,5 +1,5 @@
 /* =====================================================
-   統測英文衝刺站 — App
+   英語學習站 — App
    純前端，資料存在 localStorage，可匯出 / 匯入 JSON
    ===================================================== */
 (function () {
@@ -22,6 +22,8 @@
   const shuffleArr = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   /* ---------------- State ---------------- */
+  // the five levels a student can pick on the home page; B1 and B2 are the 統測 range
+  const LEVELS = ['A2', 'B1', 'B2', 'C1', 'C2'];
   const emptyProgress = () => ({ cards: {}, readingQuizzes: [], vocabQuizzes: [], days: {}, bookmarks: { vocab: [], articles: [] } });
   // Records from other devices (cloud sync, imported files) are shown on the teacher's pages. Keep their shape and
   // force every number and date to be one, so nothing inside a record can turn into HTML.
@@ -44,6 +46,8 @@
     if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { type: typeof r.type === 'string' && SAFE_ID.test(r.type) ? r.type : '', mode: r.mode === 'test' ? 'test' : 'practice', date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
     const b = obj(out.bookmarks); out.bookmarks = { vocab: arr0(b.vocab), articles: arr0(b.articles) };
     if (out.resetAt !== undefined) { if (when(out.resetAt)) out.resetAt = when(out.resetAt); else delete out.resetAt; }
+    // { v: 'B2', at: time chosen }; v '' = the student skipped the question
+    if (out.level !== undefined) { const l = obj(out.level); if (when(l.at) && (l.v === '' || LEVELS.includes(l.v))) out.level = { v: l.v, at: when(l.at) }; else delete out.level; }
     return out;
   }
   const arr0 = x => Array.isArray(x) ? x.filter(y => typeof y === 'string') : [];
@@ -115,7 +119,7 @@
   let state = load();
 
   /* ---------------- Built-in library (library.js) + custom words ---------------- */
-  const CEFR = { 1: 'A1', 2: 'A2', 3: 'B1', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B2+' };
+  const CEFR = { 1: 'A1', 2: 'A2', 3: 'B1', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B2+', 8: 'C1', 9: 'C2' };
   const LIBRARY = (window.VOCAB_LIBRARY_RAW || []).map(r => {
     // [id, word, pos, zh, syn, example, level, type, unit]
     const type = r[7] || 'word';
@@ -127,6 +131,7 @@
   const LIBMAP = {}; LIBRARY.forEach(v => { LIBMAP[v.id] = v; });
   function unitLabel(u) {
     if (!u) return '';
+    if (u === 'c1' || u === 'c2') return t(u === 'c1' ? 'unitC1' : 'unitC2');
     let m = /^lv(\d)$/.exec(u); if (m) return tf('unitLv', { n: m[1], c: CEFR[m[1]] || '' });
     m = /^ph(\d+)$/.exec(u); if (m) return `${t('unitPh')} · ${t('phCat' + m[1]) === 'phCat' + m[1] ? '' : t('phCat' + m[1])}`.replace(/ · $/, '');
     const map = t('seedUnits'); return (map && typeof map === 'object' && map[u]) || u;
@@ -138,8 +143,9 @@
   const cityName = c => ui.lang === 'zh' ? c.name_zh : c.name;
   let ARTICLES = [];
   function rebuildArticles() {
-    const hidden = new Set(state.hiddenArticles || []), own = new Set(state.articles.map(a => a.id));
-    ARTICLES = state.articles.concat(READ_LIB.filter(a => !own.has(a.id) && !hidden.has(a.id)));
+    // passages cannot be removed any more, so every built-in one is listed (an old hiddenArticles list is ignored)
+    const own = new Set(state.articles.map(a => a.id));
+    ARTICLES = state.articles.concat(READ_LIB.filter(a => !own.has(a.id)));
   }
   const articleById = id => ARTICLES.find(a => a.id === id);
   let VOCAB = [], VMAP = {};
@@ -193,17 +199,21 @@
   const flashEl = el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200); };
   const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'],
     mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
-  // phone bottom bar: five groups; every page is at most two taps away
+  // phone bottom bar: six groups; every page is at most two taps away
   const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'read', pages: ['reading', 'news'] }, { id: 'words', pages: ['flashcards', 'vocab', 'phrases'] },
-    { id: 'practice', pages: ['mcq', 'translate'] }, { id: 'more', pages: ['progress', 'students', 'settings'] }];
+    { id: 'practice', pages: ['mcq'] }, { id: 'translate', pages: ['translate'] }, { id: 'more', pages: ['progress', 'students', 'settings'] }];
   // desktop folder tabs: the same groups, with 紀錄 and 設定 as their own tabs
-  const DESK_GROUPS = GROUPS.slice(0, 4).concat([{ id: 'record', pages: ['progress', 'students'] }, { id: 'settings', pages: ['settings'] }]);
+  const DESK_GROUPS = GROUPS.slice(0, 5).concat([{ id: 'record', pages: ['progress', 'students'] }, { id: 'settings', pages: ['settings'] }]);
   const groupOf = (page, list = GROUPS) => (list.find(g => g.pages.includes(page)) || list[0]).id;
   const pagesOf = (gid, list) => ((list.find(g => g.id === gid) || list[0]).pages).filter(p => p !== 'students' || ui.teacher);
-  const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['mcq', 'translate'], ['progress', 'students']];
+  const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['progress', 'students']];
   // pill row for the pages that share a group (閱讀測驗 | 每日新聞 …)
+  const PRACTICE_PAIR = ['mcq', 'translate'];
   function subtabs(page) {
-    const g = SUB_GROUPS.find(x => x.includes(page)); if (!g) return '';
+    let g = SUB_GROUPS.find(x => x.includes(page));
+    // 選擇題 and 翻譯 are separate tabs; a paused session reopened from the menu (focus mode hides the bottom bar) still gets both pills
+    if (!g && PRACTICE_PAIR.includes(page) && inSessionNow() && view.pillsFor && view.pillsFor === sessionOf(page)) g = PRACTICE_PAIR;
+    if (!g) return '';
     const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length < 2) return '';
     return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}</nav>`;
   }
@@ -294,7 +304,7 @@
   const sbCheck = ({ data, error }) => { if (error) throw error; return data; };
 
   // does a record hold any practice at all? (an empty record must never replace real practice)
-  const hasPractice = p => isObj(p) && ['cards', 'days', 'mcq', 'translate', 'cities'].some(k => isObj(p[k]) && Object.keys(p[k]).length) || isObj(p) && ['readingQuizzes', 'vocabQuizzes', 'mcqTests', 'myWords'].some(k => Array.isArray(p[k]) && p[k].length) || isObj(p) && isObj(p.bookmarks) && ['vocab', 'articles'].some(k => Array.isArray(p.bookmarks[k]) && p.bookmarks[k].length);
+  const hasPractice = p => isObj(p) && ['cards', 'days', 'mcq', 'translate', 'cities'].some(k => isObj(p[k]) && Object.keys(p[k]).length) || isObj(p) && ['readingQuizzes', 'vocabQuizzes', 'mcqTests', 'myWords'].some(k => Array.isArray(p[k]) && p[k].length) || isObj(p) && isObj(p.bookmarks) && ['vocab', 'articles'].some(k => Array.isArray(p.bookmarks[k]) && p.bookmarks[k].length) || isObj(p) && isObj(p.level);
   const hash36 = x => { const t = JSON.stringify(x) || ''; let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
   // what this device last saw in the cloud, for the lists where removing something must stick (bookmarks, own words)
   const progressSnap = p => ({ bv: p.bookmarks.vocab.slice(), ba: p.bookmarks.articles.slice(), mw: (p.myWords || []).map(w => w.id) });
@@ -325,6 +335,9 @@
     if (a.mcqTests || b.mcqTests) out.mcqTests = union(a.mcqTests, b.mcqTests, r => [r.date, r.type, r.mode, r.score, r.total].join('|')).slice(-50);
     ['mcq', 'translate'].forEach(k => { if (!a[k] && !b[k]) return; const m = Object.assign({}, b[k]); Object.entries(a[k] || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o || r.tries > o.tries || (r.tries === o.tries && String(r.last || '') >= String(o.last || '')) ? r : o; }); out[k] = m; });
     if (a.cities || b.cities) { const m = Object.assign({}, b.cities); Object.entries(a.cities || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o ? r : { visited: String(r.visited || '') > String(o.visited || '') ? r.visited : o.visited, best: Math.max(r.best, o.best) }; }); out.cities = m; }
+    // the level chosen last, on whichever device; a real choice always beats "skip for now"
+    const lvRank = l => !l ? 0 : l.v ? 2 : 1;
+    if (a.level || b.level) out.level = lvRank(a.level) !== lvRank(b.level) ? (lvRank(a.level) > lvRank(b.level) ? a.level : b.level) : String(a.level.at) >= String(b.level.at) ? a.level : b.level;
     const sn = cut ? null : snap;
     out.bookmarks = { vocab: merge3(a.bookmarks.vocab, b.bookmarks.vocab, sn && sn.bv), articles: merge3(a.bookmarks.articles, b.bookmarks.articles, sn && sn.ba) };
     if (a.myWords || b.myWords) { const all = new Map((b.myWords || []).concat(a.myWords || []).map(w => [w.id, w])), keep = new Set(merge3((a.myWords || []).map(w => w.id), (b.myWords || []).map(w => w.id), sn && sn.mw)); out.myWords = Array.from(all.values()).filter(w => keep.has(w.id)); }
@@ -707,16 +720,52 @@
   function newToday() { const td = todayStr(); return Object.values(state.progress.cards).filter(c => c.first === td).length; }
   // the 高頻 set (of 100) that holds the first word not studied yet
   function hfNextSet() { const hf = window.HIGH_FREQ || []; const i = hf.findIndex(id => { const c = state.progress.cards[id]; return !c || !c.seen; }); return i < 0 ? Math.max(1, HF_SETS) : Math.floor(i / 100) + 1; }
-  // first passage not done yet, at the level of the last passage done (B1 to start)
+  // first passage not done yet, at the student's level (else the level of the last passage done, B1 to start)
   function nextArticle() {
     const rq = state.progress.readingQuizzes, done = new Set(rq.map(r => r.articleId));
-    const last = rq.length ? articleById(rq[rq.length - 1].articleId) : null, lv = (last && last.level) || 'Reading · B1';
-    return ARTICLES.find(a => a.level === lv && !done.has(a.id)) || ARTICLES.find(a => !done.has(a.id)) || ARTICLES[0] || null;
+    const last = rq.length ? articleById(rq[rq.length - 1].articleId) : null, lv = (myLevel() && 'Reading · ' + myLevel()) || (last && last.level) || 'Reading · B1';
+    // when that level is all done, the nearest level next (one step harder before one step easier)
+    const i0 = LEVELS.indexOf(lv.replace('Reading · ', ''));
+    const order = i0 < 0 ? [lv] : LEVELS.map((l, i) => [l, Math.abs(i - i0) + (i < i0 ? .5 : 0)]).sort((x, y) => x[1] - y[1]).map(x => 'Reading · ' + x[0]);
+    for (const l of order) { const a = ARTICLES.find(x => x.level === l && !done.has(x.id)); if (a) return a; }
+    return ARTICLES.find(a => !done.has(a.id)) || ARTICLES[0] || null;
   }
   const PRACTICAL_TAGS = ['Notice', 'Advertisement', 'Email', 'Letter', 'Schedule', 'Instructions'];
   const practicalText = a => a.level === 'Reading · Practical' || (a.tags || []).some(x => PRACTICAL_TAGS.includes(x));
-  const LV_SHORT = { 'Reading · A2': 'A2', 'Reading · B1': 'B1', 'Reading · B2': 'B2', 'Reading · C1': 'C1' };
+  const LV_SHORT = { 'Reading · A2': 'A2', 'Reading · B1': 'B1', 'Reading · B2': 'B2', 'Reading · C1': 'C1', 'Reading · C2': 'C2' };
   const lvShort = lv => LV_SHORT[lv] || (lv === 'Reading · Practical' ? t('grpPracticalShort') : unitLabel(lv || ''));
+  /* ---- My level (首頁「先選你的程度」): where reading, 選擇題, 克漏字, 翻譯, 單字卡 and 片語 start ---- */
+  const lvOf = p => { const l = p && p.level; return l && LEVELS.includes(l.v) ? l.v : ''; };
+  const myLevel = () => lvOf(state.progress);
+  const levelAsked = () => !!(state.progress.level && state.progress.level.at);
+  const LV_PRESET = { A2: '@A', B1: '@B1', B2: '@B2', C1: '@C1', C2: '@C2' };
+  const LV_TEST = ['B1', 'B2'];  // the 統測 range: starred as recommended
+  // a new level (chosen here or on another device) moves the starting filters with it; a filter changed by hand stays until then
+  function applyLevel() {
+    const lv = myLevel(); if (view.lvApplied === lv) return;
+    const first = view.lvApplied === undefined; view.lvApplied = lv;
+    if (first && !lv) return;
+    if (view.mcf) view.mcf.level = lv;
+    if (view.trf) { view.trf.level = lv; view.trf.page = 0; }
+    view.flashSetup.unit = LV_PRESET[lv] || ''; view.quizSetup.unit = LV_PRESET[lv] || '';
+  }
+  // the five choices with what each level means; B1 and B2 carry the ⭐ 統測生推薦 tag
+  function levelOptions() {
+    const cur = myLevel();
+    return `<div class="level-grid" role="group" aria-label="${esc(t('lvPickTitle'))}">${LEVELS.map(lv => `<button type="button" class="level-opt${cur === lv ? ' on' : ''}${LV_TEST.includes(lv) ? ' rec' : ''}" data-action="setLevel" data-v="${lv}" aria-pressed="${cur === lv}">
+        <span class="lv-top"><span class="lv-badge">${lv}</span><b class="lv-name">${t('lvName' + lv)}</b>${cur === lv ? `<span class="lv-check" aria-hidden="true">✓</span>` : ''}</span>
+        ${LV_TEST.includes(lv) ? `<span class="lv-star">⭐ ${t('lvRecommended')}</span>` : ''}
+        <span class="lv-desc">${t('lvDesc' + lv)}</span></button>`).join('')}</div>`;
+  }
+  function levelCard() {
+    const asked = levelAsked();
+    return `<section class="card level-card" aria-labelledby="lvH">
+      <h2 id="lvH">🎯 ${t(asked ? 'lvChangeTitle' : 'lvPickTitle')}</h2>
+      <p class="small muted lv-sub">${t('lvPickSub')}</p>
+      ${levelOptions()}
+      <div class="row lv-foot"><span class="small muted">${t('lvLaterNote')}</span><span class="spacer"></span>${asked ? `<button class="btn sm ghost" data-action="levelClose">${t('lvClose')}</button>` : `<button class="btn sm ghost" data-action="setLevel" data-v="">${t('lvSkip')}</button>`}</div>
+    </section>`;
+  }
   function todayPlan() {
     const td = todayStr(), p = state.progress, tasks = [];
     const due = dueCards().length;
@@ -757,7 +806,7 @@
       : next ? cta(next.act, `▶ ${esc(next.label)}`, esc(tf('todayMin', { m: next.min })))
       : cta('planMore', `🎉 ${t('todayAllDone')}`, esc(tf('taskMcq', { n: GOAL.mcq })));
     return `<section class="card today-card" aria-labelledby="todayH">
-      <div class="today-head"><h2 id="todayH">🗓️ ${t('todayTitle')}</h2><span class="today-min">${left.length ? tf('todayMin', { m: mins }) : t('todayDoneLine')}</span><span class="today-count">${tf('todayCount', { d: done, n: tasks.length })}</span></div>
+      <div class="today-head"><h2 id="todayH">🗓️ ${t('todayTitle')}</h2><span class="today-min">${left.length ? tf('todayMin', { m: mins }) : t('todayDoneLine')}</span><span class="today-count">${tf('todayCount', { d: done, n: tasks.length })}</span>${levelAsked() && !view.levelPick ? `<button type="button" class="lv-chip" data-action="levelOpen"><span class="sr-only">${esc(t('lvChangeTitle'))}：</span>🎯 ${myLevel() ? esc(myLevel()) : t('lvPickShort')}</button>` : ''}</div>
       <div class="today-bar" role="progressbar" aria-label="${t('todayTitle')}" aria-valuemin="0" aria-valuemax="${tasks.length}" aria-valuenow="${done}"><i style="width:${tasks.length ? done / tasks.length * 100 : 0}%"></i></div>
       ${hero}
       <ul class="task-list">${tasks.map(x => `<li class="task-row${x.done ? ' done' : ''}"><span class="li-tile${x.done ? ' done' : ''}" aria-hidden="true">${x.done ? '✓' : x.icon}</span>
@@ -781,21 +830,21 @@
   function pageHome() {
     const dl = daysLeft();
     const recent = state.progress.readingQuizzes.slice(-5).reverse();
-    const name = state.settings.studentName ? `${esc(state.settings.studentName)}，` : '';
     return `
       <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
+      ${!levelAsked() || view.levelPick ? levelCard() : ''}
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
       <div class="home-grid">
         <div class="hg-col">
           <div class="hg-today">${todayCard()}</div>
-          <div class="hg-daily">${dailyCard()}${state.settings.motto ? `<div class="card motto-card" style="border-style:dashed"><b>💬 ${t('motto')}：</b> ${name}${esc(state.settings.motto)}</div>` : ''}</div>
         </div>
         <div class="hg-col">
           <div class="hg-stats">${homeStats()}</div>
-          <div class="hg-plan"><h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}</div>
+          <div class="hg-daily">${dailyCard()}</div>
         </div>
       </div>
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
+      <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
       <h2 class="section-title">🔖 ${t('bookmarks')}</h2>
       ${homeBookmarks()}
       <h2 class="section-title">🏅 ${t('recentQuiz')}</h2>
@@ -1027,7 +1076,7 @@
   function pageMcq() {
     if (!mcItems().length && !clozeSets().length) return `${subtabs('mcq')}${pageHead('mcq', t('mcTitle'))}<div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
     if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
-    const f = view.mcf || (view.mcf = { type: '', level: '', status: '', mode: 'practice', count: 10 });
+    const f = view.mcf || (view.mcf = { type: '', level: myLevel(), status: '', mode: 'practice', count: 10 });
     const S = mcStats(state.progress);
     const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
     return `${subtabs('mcq')}${pageHead('mcq', tf('mcSub', { n: mcItems().length, c: clozeSets().length }))}
@@ -1042,7 +1091,7 @@
           ${MC_TYPES.map(([k, l, ic]) => { const b = S.byType[k]; return `<button class="phr-cat ${f.type === k ? 'on' : ''}" data-action="mcType" data-v="${k}"><b>${ic} ${t(l)}</b><span>${k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : b.total}${b.done ? ` · ${Math.round(b.right / b.done * 100)}%` : ''}</span></button>`; }).join('')}
         </div>
         <div class="row">
-          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="mcLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="mcLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="mcStatus" data-v="${v}">${l}</button>`).join('')}</div>
         </div>
         <div class="row" style="margin-top:10px">
@@ -1131,12 +1180,12 @@
   }
 
   /* ---- Translation practice (中譯英): window.TRANSLATION_ITEMS from translate.js ---- */
-  const TR_GROUPS = ['trG1', 'trG2', 'trG3', 'trG4', 'trG5', 'trG6', 'trG7', 'trG8', 'trG9', 'trG10']; // 9: A2 starter (T201-T225), 10: C1 challenge (T226-T250)
+  const TR_GROUPS = ['trG1', 'trG2', 'trG3', 'trG4', 'trG5', 'trG6', 'trG7', 'trG8', 'trG9', 'trG10', 'trG11']; // 9: A2 starter (T201-T225), 10: C1 challenge (T226-T250), 11: C2 expert (T251-T275)
   const trItems = () => window.TRANSLATION_ITEMS || [];
   const trGroupOf = it => Math.min(TR_GROUPS.length, Math.max(1, Math.ceil((parseInt(String(it.id).replace(/\D/g, ''), 10) || 1) / 25)));
   const trRec = id => (state.progress.translate || {})[id];
   function trFiltered() {
-    const f = view.trf || (view.trf = { group: 0, level: '', status: '' });
+    const f = view.trf || (view.trf = { group: 0, level: myLevel(), status: '' });
     return trItems().filter(it => (!f.group || trGroupOf(it) === f.group) && (!f.level || it.level === f.level)
       && (!f.status || (f.status === 'todo' ? !trRec(it.id) : (trRec(it.id) && !trRec(it.id).lastOk))));
   }
@@ -1148,7 +1197,7 @@
     const items = trItems();
     if (!items.length) return `${subtabs('translate')}${pageHead('translate', t('trTitle'))}<div class="card"><p class="muted" style="margin:0">${t('trNoItems')}</p></div>`;
     if (view.tr) return view.tr.i >= view.tr.ids.length ? trSummary() : trStage();
-    const f = view.trf || (view.trf = { group: 0, level: '', status: '' });
+    const f = view.trf || (view.trf = { group: 0, level: myLevel(), status: '' });
     const S = trStats(state.progress), list = trFiltered();
     // 20 questions per page, with page numbers above and below the list
     const pages = Math.max(1, Math.ceil(list.length / TR_PAGE)), cur = f.page = Math.min(f.page || 0, pages - 1);
@@ -1164,7 +1213,7 @@
       <div class="card">
         <div class="phr-cats" style="padding-top:0">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<button class="phr-cat ${f.group === g ? 'on' : ''}" data-action="trGroup" data-v="${g}"><b>${g ? t(TR_GROUPS[g - 1]) : t('newsAll')}</b><span>${g ? items.filter(it => trGroupOf(it) === g).length : items.length}</span></button>`).join('')}</div>
         <div class="row">
-          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="trStatus" data-v="${v}">${l}</button>`).join('')}</div>
           <span class="spacer"></span>
           <button class="btn accent block-cta" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
@@ -1240,7 +1289,7 @@
       <div class="card phr-tools">
         <div class="row">
           <label class="sr-only" for="phrSearch">${t('phrSearch')}</label><input type="search" id="phrSearch" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" style="max-width:300px" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
-          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="phrLevel" data-v="${v}">${l}</button>`).join('')}</div>
+          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="phrLevel" data-v="${v}">${l}</button>`).join('')}</div>
           <button class="btn sm ${f.bm ? 'accent' : 'ghost'}" data-action="phrBm">🔖 ${t('modeBookmark')}</button>
           <span class="spacer"></span>
           <span class="small muted">${tf('phrMastered', { n: mastered, t: inCat.length })}</span>
@@ -1550,7 +1599,10 @@
     rf.more = rf.more || {}; rf.q = rf.q || '';
     const histOf = id => state.progress.readingQuizzes.filter(r => r.articleId === id);
     const done = a => histOf(a.id).length > 0;
-    const RG = [['Reading · A2', 'grpA2', '📒', 'A2'], ['Reading · B1', 'grpB1', '📗', 'B1'], ['Reading · B2', 'grpB2', '📘', 'B2'], ['Reading · C1', 'grpC1', '📕', 'C1'], ['Reading · Practical', 'grpPractical', '✉️', t('grpPracticalShort')]];
+    // the student's own level comes first
+    const mine = myLevel() ? 'Reading · ' + myLevel() : '';
+    const RG = [['Reading · A2', 'grpA2', '📒', 'A2'], ['Reading · B1', 'grpB1', '📗', 'B1'], ['Reading · B2', 'grpB2', '📘', 'B2'], ['Reading · C1', 'grpC1', '📕', 'C1'], ['Reading · C2', 'grpC2', '📓', 'C2'], ['Reading · Practical', 'grpPractical', '✉️', t('grpPracticalShort')]]
+      .sort((x, y) => (y[0] === mine) - (x[0] === mine));
     const groupOfA = a => RG.some(g => g[0] === a.level) ? a.level : '_other';
     const topics = Array.from(new Set(ARTICLES.flatMap(a => a.tags || [])));
     const q = rf.q.trim().toLowerCase();
@@ -1567,7 +1619,6 @@
         <button type="button" class="icon-btn ri-bm" data-action="toggleBm" data-kind="articles" data-id="${esc(a.id)}" aria-pressed="${on}" aria-label="${esc(t('bookmark') + '：' + a.title)}">${on ? '★' : '☆'}</button>
         <div class="ri-meta">${here ? `<span class="chip here">📍 ${t('lastRead')}</span>` : ''}${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span>` : ''}<span>${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })}</span>${(a.tags || []).map(x => `<span class="chip ri-tag">${esc(unitLabel(x))}</span>`).join('')}</div>
         <button type="button" class="btn sm ghost ri-go" data-action="openArticle" data-id="${esc(a.id)}" aria-label="${esc((isDone ? t('retry') : t('go')) + '：' + a.title)}"><span class="ri-go-txt">${isDone ? t('retry') : t('go')}</span><span class="ri-go-chev" aria-hidden="true">›</span></button>
-        <div class="ri-teacher"><button class="btn sm ghost" data-action="editArticle" data-id="${esc(a.id)}">${t('editArticle')}</button><button class="btn sm danger" data-action="deleteArticle" data-id="${esc(a.id)}">${t('deleteArticle')}</button></div>
       </div>`;
     };
     const filtering = rf.topic || rf.status || q;
@@ -1579,7 +1630,7 @@
       // keep the passage just read on screen when coming back to the list
       if (view.lastArticle && list.slice(READ_SHOW).some(a => a.id === view.lastArticle)) rf.more[key] = true;
       const shown = rf.more[key] || filtering ? list : list.slice(0, READ_SHOW);
-      return `<section class="read-group" id="grp-${g[1]}"><h2 class="read-group-title">${g[2]} ${t(g[1])} <span class="read-progress"><span class="bar"><i style="width:${all.length ? nd / all.length * 100 : 0}%"></i></span>${nd} / ${all.length} ${t('readDoneShort')}</span></h2>
+      return `<section class="read-group" id="grp-${g[1]}"><h2 class="read-group-title">${g[2]} ${t(g[1])}${key === mine ? ` <span class="chip lv-mine">🎯 ${t('lvMine')}</span>` : ''} <span class="read-progress"><span class="bar"><i style="width:${all.length ? nd / all.length * 100 : 0}%"></i></span>${nd} / ${all.length} ${t('readDoneShort')}</span></h2>
         ${list.length ? `<div class="list">${shown.map(row).join('')}</div>${shown.length < list.length ? `<div class="center" style="margin-top:10px"><button class="btn ghost" data-action="readMore" data-v="${esc(key)}">${tf('readShowMore', { n: list.length - shown.length })}</button></div>` : ''}` : `<p class="small muted">${t('readNoneHere')}</p>`}</section>`;
     }).join('');
     const totalDone = ARTICLES.filter(done).length;
@@ -1677,13 +1728,15 @@
   function unitSelect(id, val) {
     const all = units();
     const custom = all.filter(u => !LIBRARY.some(v => v.unit === u));
-    const words = all.filter(u => LIBRARY.some(v => v.unit === u && v.type === 'word'));
+    const adv = u => u === 'c1' || u === 'c2';
+    const words = all.filter(u => !adv(u) && LIBRARY.some(v => v.unit === u && v.type === 'word')), advanced = all.filter(u => adv(u) && LIBRARY.some(v => v.unit === u));
     const phrases = all.filter(u => LIBRARY.some(v => v.unit === u && v.type === 'phrase'));
     const opt = u => `<option value="${esc(u)}" ${u === val ? 'selected' : ''}>${esc(unitLabel(u))}</option>`;
     const grp = (label, arr) => arr.length ? `<optgroup label="${esc(label)}">${arr.map(opt).join('')}</optgroup>` : '';
-    const presets = [['@B1', t('presetB1')], ['@B2', t('presetB2')], ['@A', t('presetA')], ['@phrase', t('presetPhrase')], ['@custom', t('presetCustom')]].filter(p => (p[0] === '@custom' ? custom.length : p[0] === '@phrase' ? phrases.length : words.length));
+    const presets = [['@A', t('presetA')], ['@B1', t('presetB1')], ['@B2', t('presetB2')], ['@C1', t('presetC1')], ['@C2', t('presetC2')], ['@phrase', t('presetPhrase')], ['@custom', t('presetCustom')]]
+      .filter(p => (p[0] === '@custom' ? custom.length : p[0] === '@phrase' ? phrases.length : p[0] === '@C1' ? advanced.includes('c1') : p[0] === '@C2' ? advanced.includes('c2') : words.length));
     const hf = HF_SETS ? `<optgroup label="${esc(t('hfGroup'))}"><option value="@hf" ${val === '@hf' ? 'selected' : ''}>${tf('hfAll', { n: (window.HIGH_FREQ || []).length })}</option>${Array.from({ length: HF_SETS }, (_, i) => `<option value="@hf:${i + 1}" ${val === '@hf:' + (i + 1) ? 'selected' : ''}>${tf('hfSet', { n: i + 1, a: i * 100 + 1, b: Math.min((i + 1) * 100, window.HIGH_FREQ.length) })}</option>`).join('')}</optgroup>` : '';
-    return `<select class="input" id="${id}"><option value="">${t('allUnits')}</option>${presets.map(p => `<option value="${p[0]}" ${p[0] === val ? 'selected' : ''}>${p[1]}</option>`).join('')}${hf}${grp(t('presetCustom'), custom)}${grp(t('libWords'), words)}${grp(t('libPhrases'), phrases)}</select>`;
+    return `<select class="input" id="${id}"><option value="">${t('allUnits')}</option>${presets.map(p => `<option value="${p[0]}" ${p[0] === val ? 'selected' : ''}>${p[1]}</option>`).join('')}${hf}${grp(t('presetCustom'), custom)}${grp(t('libWords'), words)}${grp(t('libAdv'), advanced)}${grp(t('libPhrases'), phrases)}</select>`;
   }
   // 統測高頻 3000 (highfreq.js): ids in order, most frequent first, in sets of 100
   const HF_RANK = {}; (window.HIGH_FREQ || []).forEach((id, i) => { HF_RANK[id] = i; });
@@ -1692,25 +1745,33 @@
     if (!unit) return true;
     if (unit === '@hf') return HF_RANK[v.id] !== undefined;
     if (unit.startsWith('@hf:')) { const r = HF_RANK[v.id], n = +unit.slice(4); return r !== undefined && r >= (n - 1) * 100 && r < n * 100; }
-    if (unit === '@B1') return v.type === 'word' && (v.level === 3 || v.level === 4);
-    if (unit === '@B2') return v.type === 'word' && (v.level === 5 || v.level === 6 || v.level === 7);
-    if (unit === '@A') return v.type === 'word' && (v.level === 1 || v.level === 2);
+    const lv = +v.level;  // library words edited by the teacher come back from storage with the level as text
+    if (unit === '@B1') return v.type === 'word' && (lv === 3 || lv === 4);
+    if (unit === '@B2') return v.type === 'word' && (lv === 5 || lv === 6 || lv === 7);
+    if (unit === '@A') return v.type === 'word' && (lv === 1 || lv === 2);
+    if (unit === '@C1') return v.type === 'word' && lv === 8;
+    if (unit === '@C2') return v.type === 'word' && lv === 9;
     if (unit === '@phrase') return v.type === 'phrase';
     if (unit === '@custom') return !LIBMAP[v.id] || v.override;
     return v.unit === unit;
   }
   function poolFor(mode, unit) {
     let pool = VOCAB.filter(v => inUnit(v, unit));
-    if (mode === 'due') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return !c || c.seen === 0 || c.due <= todayStr(); });
-    else if (mode === 'dueOnly') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= todayStr(); });
+    // a broad set (all words, or a level band such as the one picked as 我的程度) only chooses the NEW cards: reviews, missed and
+    // bookmarked cards come from everywhere. A narrow set (a Level, a phrase group, a 高頻 set, the teacher's unit) keeps everything inside it.
+    const src = !unit || /^@(A|B1|B2|C1|C2)$/.test(unit) ? VOCAB : pool;
+    const td = todayStr(), isDue = v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= td; };
+    if (mode === 'due') pool = src.filter(isDue).concat(pool.filter(v => { const c = state.progress.cards[v.id]; return !c || c.seen === 0; }));
+    else if (mode === 'dueOnly') pool = src.filter(isDue);
     // new words in 統測高頻 order (most frequent first); words without a rank go last
     else if (mode === 'newHF') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return !c || !c.seen; }).sort((a, b) => (HF_RANK[a.id] ?? 1e9) - (HF_RANK[b.id] ?? 1e9));
-    else if (mode === 'unknown') pool = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.wrong > 0 && c.box < 2; });
+    else if (mode === 'unknown') pool = src.filter(v => { const c = state.progress.cards[v.id]; return c && c.wrong > 0 && c.box < 2; });
     else if (mode === 'new') pool = pool.filter(v => !state.progress.cards[v.id] || state.progress.cards[v.id].seen === 0);
-    else if (mode === 'bookmark') pool = pool.filter(v => isBm('vocab', v.id));
+    else if (mode === 'bookmark') pool = src.filter(v => isBm('vocab', v.id));
     return pool;
   }
 
+  const MODE_HELP = { due: 'mhDue', dueOnly: 'mhDueOnly', newHF: 'mhNewHF', all: 'mhAll', unknown: 'mhUnknown', new: 'mhNew', bookmark: 'mhBookmark' };
   function pageFlash() {
     if (view.flash) return flashStage();
     if (view.quiz) return quizStage();
@@ -1719,14 +1780,14 @@
     return `${subtabs('flashcards')}${pageHead('flashcards', t('flashSub'))}
       <div class="card setup">
         <div class="grid-3">
-          <div class="field"><label for="fsMode">${t('range')}</label><select class="input" id="fsMode">
+          <div class="field"><label for="fsMode">${t('range')}</label><select class="input" id="fsMode" aria-describedby="fsModeHelp">
             <option value="due" ${fs.mode === 'due' ? 'selected' : ''}>${t('modeDueMix')}</option>
             <option value="dueOnly" ${fs.mode === 'dueOnly' ? 'selected' : ''}>${t('modeDueOnly')}</option>
             <option value="newHF" ${fs.mode === 'newHF' ? 'selected' : ''}>${t('modeNewHF')}</option>
             <option value="all" ${fs.mode === 'all' ? 'selected' : ''}>${t('modeAll')}</option>
             <option value="unknown" ${fs.mode === 'unknown' ? 'selected' : ''}>${t('modeUnknown')}</option>
             <option value="new" ${fs.mode === 'new' ? 'selected' : ''}>${t('modeNew')}</option>
-            <option value="bookmark" ${fs.mode === 'bookmark' ? 'selected' : ''}>🔖 ${t('modeBookmark')}</option></select></div>
+            <option value="bookmark" ${fs.mode === 'bookmark' ? 'selected' : ''}>🔖 ${t('modeBookmark')}</option></select><p class="small muted fs-help" id="fsModeHelp">💡 ${t(MODE_HELP[fs.mode] || 'mhDue')}</p></div>
           <div class="field"><label for="fsUnit">${t('unit')}</label>${unitSelect('fsUnit', fs.unit)}</div>
           <div class="field"><label for="fsShuffle">${t('shuffle')}</label><select class="input" id="fsShuffle"><option value="1" ${fs.shuffle ? 'selected' : ''}>✓ ${t('shuffle')}</option><option value="0" ${!fs.shuffle ? 'selected' : ''}>—</option></select></div>
           <div class="field"><label for="fsLimit">${t('perRound')}</label><select class="input" id="fsLimit">${[10, 20, 30, 50, 100, 0].map(n => `<option value="${n}" ${(fs.limit ?? 30) === n ? 'selected' : ''}>${n ? n : t('allCards')}</option>`).join('')}</select></div>
@@ -1785,8 +1846,8 @@
     const rest = shuffleArr(pool.filter(v => !weak.includes(v)));
     const items = weak.concat(rest).slice(0, Math.max(3, Math.min(50, s.count | 0 || 10)));
     const qs = items.map(v => {
-      let dpool = VOCAB.filter(x => x.type === v.type && x.id !== v.id && (v.type !== 'word' || !v.level || Math.abs((x.level || 3) - v.level) <= 1));
-      if (dpool.length < 3) dpool = VOCAB.filter(x => x.id !== v.id);
+      let dpool = VOCAB.filter(x => x.type === v.type && x.id !== v.id && x.zh !== v.zh && (v.type !== 'word' || !v.level || Math.abs((x.level || 3) - v.level) <= 1));
+      if (dpool.length < 3) dpool = VOCAB.filter(x => x.id !== v.id && x.zh !== v.zh);
       const distract = pickRandom(dpool, 3, v.id);
       const opts = shuffleArr([v, ...distract]);
       return { id: v.id, opts: opts.map(o => o.id) };
@@ -2073,7 +2134,7 @@
         ${src !== 'local' && !src.startsWith('cloud_') ? `<button class="btn danger sm" data-action="deleteReport" data-id="${esc(src)}">${t('deleteReport')}</button>` : ''}
       </div></div>
       <div class="stat-grid">
-        <div class="stat-card"><div class="k">${t('reportFrom')}</div><div class="v" style="font-size:22px">${esc(rep.name)}</div><div class="s">${rep.exportedAt ? t('exportedAt') + ' ' + fmtDate(rep.exportedAt) : ''}</div></div>
+        <div class="stat-card"><div class="k">${t('reportFrom')}</div><div class="v" style="font-size:22px">${esc(rep.name)}</div><div class="s">🎯 ${t('lvStudent')} ${lvOf(rep.progress) || '—'}${rep.exportedAt ? ' · ' + t('exportedAt') + ' ' + fmtDate(rep.exportedAt) : ''}</div></div>
         <div class="stat-card"><div class="k">${t('lastActive')}</div><div class="v" style="font-size:22px">${A.last || t('never')}</div><div class="s">🔥 ${t('streak')} ${streak(rep.progress)} ${t('streakDays')} · ${t('totalActivity')} ${A.total}</div></div>
         <div class="stat-card"><div class="k">${t('avgReading')}</div><div class="v">${A.avg === null ? '—' : A.avg + '%'}</div><div class="s">${t('readingDone')} ${A.rq.length}</div></div>
         <div class="stat-card"><div class="k">${t('statMastered')}</div><div class="v">${mastered} <span class="small muted">/ ${VOCAB.length}</span></div><div class="s">${t('notYetStudied')} ${A.notStudied.length}</div></div>
@@ -2107,8 +2168,9 @@
   /* ---- Settings ---- */
   function pageSettings() {
     const s = state.settings, T = ui.teacher;
-    // the exam name and 老師的話 are the teacher's to set; students still choose their exam date
+    // the exam name is the teacher's to set; students still choose their exam date
     return `${pageHead('settings', t('settingsSub'))}
+      <div class="card level-set"><h3 style="margin-top:0">🎯 ${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
       <div class="card">
         <div class="grid-2">
           ${T ? `<div class="field"><label for="stExamName">${t('examName')}</label><input type="text" id="stExamName" value="${esc(s.examName)}"></div>
@@ -2117,7 +2179,7 @@
           <div class="field"><label for="stStudent">${t('studentName')}</label><input type="text" id="stStudent" value="${esc(s.studentName || '')}"></div>
           <div class="field"><label for="stTeacherEmail">${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>
         </div>
-        ${T ? `<div class="field"><label for="stMotto">${t('mottoLbl')}</label><input type="text" id="stMotto" value="${esc(s.motto || '')}"></div>` : `<p class="small muted" style="margin:0 0 12px">🔒 ${t('teacherSetsNote')}</p>`}
+        ${T ? '' : `<p class="small muted" style="margin:0 0 12px">🔒 ${t('teacherSetsNote')}</p>`}
         <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(cloud.configured ? cloud.teacherCode : (s.teacherCode || ''))}" autocomplete="off"${cloud.configured ? ` placeholder="${t('inviteCodeCloudPh')}"` : ''}></div>
         <div class="row"><span class="muted small">${t('teacherHint')}</span><span class="spacer"></span><button class="btn accent" data-action="saveSettings">${t('save')}</button></div>
       </div>
@@ -2217,7 +2279,7 @@
   }
   const focusKeyOf = el => ['action', 'page', 'group', 'o', 'q', 'id', 'p', 'v', 'kind', 'known', 'ok', 'mode', 'to', 'n', 'src', 'target'].map(k => el.dataset[k] || '').join('|');
   function render(opts = {}) {
-    updateExamChip(); readClock();
+    updateExamChip(); readClock(); applyLevel();
     const app = $('#app'), a = document.activeElement;
     // remember which control had keyboard focus, so a re-render does not drop it back to the top of the page
     const fkey = !opts.focusHeading && a && a !== app && app.contains(a) && a.dataset && a.dataset.action && !/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) ? focusKeyOf(a) : null;
@@ -2356,9 +2418,11 @@
   function startPlanFlash(mode) {
     if (view.flash && view.flash.idx < view.flash.queue.length && view.flash.mode === mode) { nav('flashcards'); return; }
     if (wordsBusy()) return resumeBusy('flashcards');
-    view.flashSetup = Object.assign({}, view.flashSetup, { mode, unit: '' });
+    const own = view.flashSetup;
+    view.flashSetup = Object.assign({}, own, { mode, unit: '' });
     jumpTo(0);
     actions.startFlash({ plan: true });
+    view.flashSetup = own;
   }
   // 選擇題 / 克漏字 task: an open session of the same kind is resumed; one of the other kind too, when it has answers
   function planResumeMc(kind) {
@@ -2369,6 +2433,19 @@
 
   /* ---------------- Actions ---------------- */
   const actions = {
+    setLevel(el) {
+      const v = el.dataset.v || '', had = levelAsked();
+      state.progress.level = { v: LEVELS.includes(v) ? v : '', at: new Date().toISOString() }; view.levelPick = false; save();
+      toast(v ? tf('lvSaved', { lv: v + ' ' + t('lvName' + v) }) : t('lvSkipped'));
+      // in Settings only the five buttons are redrawn, so nothing typed into the form below is lost (the filters follow on the next page)
+      const grid = view.page === 'settings' && el.closest('.level-grid');
+      if (grid) { grid.outerHTML = levelOptions(); const b = $(`.level-set .level-opt[data-v="${v}"]`); if (b) b.focus({ preventScroll: true }); return; }
+      render();
+      // on the home page the question goes away: keyboard focus goes to the today card (first answer) or back to the 🎯 chip (a change)
+      if (view.page === 'home') { const h = had ? $('.lv-chip') : $('#todayH'); if (h) { if (!had) h.tabIndex = -1; h.focus({ preventScroll: true }); } }
+    },
+    levelOpen() { view.levelPick = true; render(); const c = $('.level-card'); if (c) { c.scrollIntoView({ block: 'start', behavior: smooth() }); const b = $('.level-opt.on', c) || $('.level-opt', c); if (b) { b.focus({ preventScroll: true }); setTimeout(() => b.scrollIntoView({ block: 'nearest', behavior: smooth() }), reduceMotion() ? 0 : 450); } } },
+    levelClose() { view.levelPick = false; render(); const b = $('.lv-chip'); if (b) b.focus({ preventScroll: true }); },
     nav(el) { if (el.dataset.page === 'reading' && view.page !== 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) view.articleId = null; nav(el.dataset.page); },
     // home: 開始 starts the practice itself (a running session is resumed, never wiped)
     goFlash(el) { startPlanFlash(el.dataset.mode); },
@@ -2376,9 +2453,10 @@
     planReview() { startPlanFlash('dueOnly'); },
     planNew() { startPlanFlash('newHF'); },
     planRead() { const a = nextArticle(); if (a) openArticleId(a.id); else nav('reading'); },
-    planMcq() { if (planResumeMc('items')) return; view.mcf = { type: '', level: '', status: 'todo', mode: 'practice', count: GOAL.mcq }; if (mcFiltered().length < GOAL.mcq) view.mcf.status = ''; view.page = 'mcq'; actions.mcStart(); },
-    planCloze() { if (planResumeMc('cloze')) return; view.mcf = { type: 'cloze', level: '', status: 'todo', mode: 'practice', count: 1 }; if (!mcClozeFiltered().length) view.mcf.status = ''; view.page = 'mcq'; actions.mcStart(); },
-    planTr() { if (view.tr && view.tr.i < view.tr.ids.length) return nav('translate'); view.trf = { group: 0, level: '', status: 'todo', page: 0 }; if (trFiltered().length < GOAL.tr) view.trf.status = ''; view.trScroll = 0; actions.trStart({ n: GOAL.tr }); },
+    // today's tasks: new items at the student's level, then any at that level, then any at all
+    planMcq() { if (planResumeMc('items')) return; view.mcf = { type: '', level: myLevel(), status: 'todo', mode: 'practice', count: GOAL.mcq }; if (mcFiltered().length < GOAL.mcq) view.mcf.status = ''; if (mcFiltered().length < GOAL.mcq) view.mcf.level = ''; view.page = 'mcq'; actions.mcStart(); },
+    planCloze() { if (planResumeMc('cloze')) return; view.mcf = { type: 'cloze', level: myLevel(), status: 'todo', mode: 'practice', count: 1 }; if (!mcClozeFiltered().length) view.mcf.status = ''; if (!mcClozeFiltered().length) view.mcf.level = ''; view.page = 'mcq'; actions.mcStart(); },
+    planTr() { if (view.tr && view.tr.i < view.tr.ids.length) return nav('translate'); view.trf = { group: 0, level: myLevel(), status: 'todo', page: 0 }; if (trFiltered().length < GOAL.tr) view.trf.status = ''; if (trFiltered().length < GOAL.tr) view.trf.level = ''; view.trScroll = 0; actions.trStart({ n: GOAL.tr }); },
     planNews() { nav('news'); },
     planMore() { actions.planMcq(); },
     newsRetry() { news.status = 'idle'; render(); },
@@ -2524,14 +2602,6 @@
     },
     retry() { view.answers = {}; view.submitted = false; view.readZh = null; view.readAcc = 0; view.readOn = false; jumpTo(0); render({ focusHeading: true }); },
     newArticle() { view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
-    editArticle(el) { const a = clone(articleById(el.dataset.id)); delete a.lib; view.editing = a; render(); },
-    deleteArticle(el) {
-      if (!confirm(t('confirmDel'))) return;
-      const id = el.dataset.id;
-      state.articles = state.articles.filter(x => x.id !== id);
-      if (READ_LIB.some(a => a.id === id)) { state.hiddenArticles = state.hiddenArticles || []; if (!state.hiddenArticles.includes(id)) state.hiddenArticles.push(id); }
-      save(); render();
-    },
     cancelEdit() { view.editing = null; render(); },
     addQ() { collectEditor(); view.editing.questions.push({ q: '', options: ['', '', '', ''], answer: 0, explain: '' }); render(); },
     removeQ(el) { collectEditor(); view.editing.questions.splice(+el.dataset.qi, 1); render(); },
@@ -2671,7 +2741,7 @@
       const obj = { type: 'student-report', studentName: state.settings.studentName || t('roleStudent'), exportedAt: new Date().toISOString(), progress: state.progress };
       shareOrDownload(`progress-${state.settings.studentName || 'student'}-${todayStr()}.json`, obj, t('sendToTeacher'));
     },
-    async resetProgress() { if (!await askConfirm({ title: t('resetProgress'), body: t('confirmReset'), ok: t('resetProgress'), danger: true })) return; state.progress = Object.assign(emptyProgress(), { resetAt: new Date().toISOString() }); save(); render(); },
+    async resetProgress() { if (!await askConfirm({ title: t('resetProgress'), body: t('confirmReset'), ok: t('resetProgress'), danger: true })) return; state.progress = Object.assign(emptyProgress(), { resetAt: new Date().toISOString() }, state.progress.level ? { level: state.progress.level } : {}); save(); render(); },  // the chosen level is a setting, not a record: it stays
     deleteReport(el) { if (!confirm(t('confirmDel'))) return; state.studentReports = state.studentReports.filter(r => r.id !== el.dataset.id); view.studentSource = 'local'; save(); render(); },
     // settings
     saveSettings() {
@@ -2679,7 +2749,6 @@
       if (ui.teacher && $('#stExamName')) { s.examName = $('#stExamName').value.trim() || s.examName; s.examNameEn = $('#stExamNameEn').value.trim(); }
       const d = $('#stExamDate').value; if (d && d !== s.examDate) setExamDate(d);
       s.studentName = $('#stStudent').value.trim();
-      if (ui.teacher && $('#stMotto')) s.motto = $('#stMotto').value.trim();
       if ($('#stTeacherEmail')) s.teacherEmail = $('#stTeacherEmail').value.trim();
       const code = ui.teacher && $('#stCode') ? $('#stCode').value.trim() : '';
       // in cloud mode the invite code lives only in the database, never in the shared material

@@ -1,7 +1,7 @@
 {
-  "name": "統測英文衝刺倒數站",
-  "short_name": "統測倒數",
-  "description": "高三統測英文：倒數計時、閱讀測驗、單字卡",
+  "name": "英語學習站",
+  "short_name": "英語學習站",
+  "description": "統測英文衝刺，A2–C2 閱讀測驗、單字卡、選擇題、翻譯練習與考前倒數",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

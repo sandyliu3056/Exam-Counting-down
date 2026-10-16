@@ -6,15 +6,15 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="統測倒數">
+  <meta name="apple-mobile-web-app-title" content="英語學習站">
   <meta name="theme-color" content="#1f3b73">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-  <title>統測英文衝刺站</title>
-  <meta name="description" content="高三統測英文家教系統：倒數計時、閱讀測驗、單字卡練習">
+  <title>英語學習站</title>
+  <meta name="description" content="英語學習站：統測英文衝刺，A2–C2 閱讀測驗、單字卡、選擇題、翻譯練習與考前倒數">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Patrick+Hand&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
   <!-- ===== Header ===== -->
   <header class="site-header">
     <div class="brand">
-      <p class="brand-title"><span class="bt-long" data-i18n="brandTitle">統測英文 · 衝刺倒數站</span><span class="bt-short" data-i18n="brandShort">統測英文</span></p>
+      <p class="brand-title"><span class="bt-long" data-i18n="brandTitle">英語學習站</span><span class="bt-short" data-i18n="brandShort">英語學習站</span></p>
       <time class="brand-now" id="nowClock"></time>
       <p class="brand-sub" data-i18n="brandSub">閱讀測驗 · 單字卡 · 考前倒數 · English for the TVE Joint College Entrance Exam</p>
     </div>
@@ -66,6 +66,7 @@
     <button class="tab" data-group="read"><span class="tab-icon" aria-hidden="true">📖</span><span data-i18n="grpRead">閱讀</span></button>
     <button class="tab" data-group="words"><span class="tab-icon" aria-hidden="true">🃏</span><span data-i18n="grpWords">單字</span></button>
     <button class="tab" data-group="practice"><span class="tab-icon" aria-hidden="true">📝</span><span data-i18n="grpPractice">題目</span></button>
+    <button class="tab" data-group="translate"><span class="tab-icon" aria-hidden="true">✍️</span><span data-i18n="grpTranslate">翻譯</span></button>
     <button class="tab" data-group="record"><span class="tab-icon" aria-hidden="true">📈</span><span data-i18n="grpRecord">紀錄</span></button>
     <button class="tab tab-settings" data-group="settings"><span class="tab-icon" aria-hidden="true">⚙️</span><span data-i18n="tabSettings">設定</span></button>
   </nav>
@@ -78,6 +79,7 @@
     <button class="bnav-btn" data-group="read"><span class="bnav-ico" aria-hidden="true">📖</span><span data-i18n="grpRead">閱讀</span></button>
     <button class="bnav-btn" data-group="words"><span class="bnav-ico" aria-hidden="true">🃏</span><span data-i18n="grpWords">單字</span><b class="bnav-badge" id="bnavBadge" hidden></b></button>
     <button class="bnav-btn" data-group="practice"><span class="bnav-ico" aria-hidden="true">📝</span><span data-i18n="grpPractice">題目</span></button>
+    <button class="bnav-btn" data-group="translate"><span class="bnav-ico" aria-hidden="true">✍️</span><span data-i18n="grpTranslate">翻譯</span></button>
     <button class="bnav-btn" data-group="more" aria-haspopup="dialog" aria-controls="moreSheet"><span class="bnav-ico" aria-hidden="true">☰</span><span data-i18n="grpMore">更多</span></button>
   </nav>
   <button type="button" class="to-top" id="toTop" aria-label="回到頂端" data-i18n-aria="toTop" hidden>↑</button>
