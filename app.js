@@ -169,7 +169,7 @@
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
 
   // volatile view state
-  const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true, limit: 30 }, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login', vocabBm: false, lastIn: {}, readPos: {} };
+  const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true, limit: 30 } /* cards are always shuffled (no 洗牌 option) */, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login', vocabBm: false, lastIn: {}, readPos: {} };
 
   /* ---------------- i18n ---------------- */
   const missingKeys = new Set();
@@ -1699,7 +1699,6 @@
             <option value="new" ${fs.mode === 'new' ? 'selected' : ''}>${t('modeNew')}</option>
             <option value="bookmark" ${fs.mode === 'bookmark' ? 'selected' : ''}>🔖 ${t('modeBookmark')}</option></select><p class="small muted fs-help" id="fsModeHelp">💡 ${t(MODE_HELP[fs.mode] || 'mhDue')}</p></div>
           <div class="field"><label for="fsUnit">${t('unit')}</label>${unitSelect('fsUnit', fs.unit)}</div>
-          <div class="field"><label for="fsShuffle">${t('shuffle')}</label><select class="input" id="fsShuffle"><option value="1" ${fs.shuffle ? 'selected' : ''}>✓ ${t('shuffle')}</option><option value="0" ${!fs.shuffle ? 'selected' : ''}>—</option></select></div>
           <div class="field"><label for="fsLimit">${t('perRound')}</label><select class="input" id="fsLimit">${[10, 20, 30, 50, 100, 0].map(n => `<option value="${n}" ${(fs.limit ?? 30) === n ? 'selected' : ''}>${n ? n : t('allCards')}</option>`).join('')}</select></div>
         </div>
         <div class="row"><span class="muted">${count} ${t('statDueS')}${fs.limit ? ` · ${t('perRound')} ${Math.min(count, fs.limit)}` : ''}</span><span class="spacer"></span><button class="btn accent block-cta" data-action="startFlash" ${count ? '' : 'disabled'} style="font-size:18px;padding:12px 30px">▶ ${t('startPractice')}</button></div>
@@ -2692,7 +2691,6 @@
     const id = e.target.id;
     if (id === 'fsMode') view.flashSetup.mode = e.target.value, render();
     else if (id === 'fsUnit') view.flashSetup.unit = e.target.value, render();
-    else if (id === 'fsShuffle') view.flashSetup.shuffle = e.target.value === '1';
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
     else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'phrGo') view.phr.page = +e.target.value, render();
