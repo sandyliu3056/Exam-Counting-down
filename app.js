@@ -3038,14 +3038,16 @@
     $('#miniCalMon').textContent = t('monthsShort')[ex.getMonth()];
     $('#miniCalDay').textContent = ex.getDate();
     $('#examChipDate').textContent = `${state.settings.examDate.replace(/-/g, '/')} (${t('weekdays')[ex.getDay()]})`;
-    $('#examChipDays').textContent = dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('headerToday') : t('examChipPassed');
+    // English on phones drops the word "left" (see .ecd-left) to leave room for the language drop-down
+    $('#examChipDays').innerHTML = dl > 0 ? (ui.lang === 'en' ? `${dl} days<span class="ecd-left"> left</span>` : esc(tf('daysLeftShort', { n: dl }))) : esc(dl === 0 ? t('headerToday') : t('examChipPassed'));
     chip.classList.toggle('soon', dl >= 0 && dl <= 30);
   }
   // today's date and the time under the site title; refreshed on the minute and whenever the page comes back into view
   function updateNow() {
     const el = $('#nowClock'); if (!el) return;
     const d = new Date(), hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'), wd = t('weekdays')[d.getDay()];
-    el.textContent = ui.lang === 'zh' ? `今天 ${d.getMonth() + 1}/${d.getDate()}（${wd}）${hm}` : `Today · ${wd}, ${t('monthsShort')[d.getMonth()].charAt(0)}${t('monthsShort')[d.getMonth()].slice(1).toLowerCase()} ${d.getDate()} · ${hm}`;
+    // phones hide the "今天" / "Today ·" prefix (.now-pre) so the date and the time always fit next to the header controls
+    el.innerHTML = ui.lang === 'zh' ? `<span class="now-pre">今天 </span>${d.getMonth() + 1}/${d.getDate()}（${wd}）${hm}` : `<span class="now-pre">Today · </span>${wd}, ${t('monthsShort')[d.getMonth()].charAt(0)}${t('monthsShort')[d.getMonth()].slice(1).toLowerCase()} ${d.getDate()} · ${hm}`;
     el.setAttribute('datetime', `${todayStr()}T${hm}`);
   }
   (function tick() { updateNow(); setTimeout(tick, 60000 - Date.now() % 60000 + 50); })();
@@ -3059,15 +3061,14 @@
     $('#authBtnIco').textContent = ui.user ? (ui.user.role === 'teacher' ? '🧑‍🏫' : '🎓') : '👤';
     $('#authBtnText').textContent = ui.user ? `${ui.user.name} · ${t('logout')}` : `${t('login')} / ${t('register')}`;
     langSel.value = ui.lang; fontSel.value = ui.font; themeSel.value = ui.theme;
-    // phones: one button at the top switches 中文 ⇄ English (it shows the language it switches to)
-    const lt = $('#langToggle'); lt.innerHTML = `<span lang="${ui.lang === 'zh' ? 'en' : 'zh-Hant'}" aria-hidden="true">${ui.lang === 'zh' ? 'EN' : '中'}</span>`; lt.setAttribute('aria-label', t('langSwitchTo'));
+    $('#langSelectM').value = ui.lang;  // phones: the language drop-down at the top of the header
     const tc = { navy: '#1f3b73', forest: '#1f4d3a', plum: '#4b2353', sakura: '#b83f73', mint: '#227a6e', sunset: '#b84a2c' }[ui.theme] || '#1f3b73';
     const m = $('meta[name=theme-color]'); if (m) m.content = tc;
     applyI18n();
     if (!moreEl.classList.contains('hidden')) renderMore();
   }
   langSel.addEventListener('change', () => { ui.lang = langSel.value; saveUi(); applyUi(); render(); });
-  $('#langToggle').addEventListener('click', () => { ui.lang = ui.lang === 'zh' ? 'en' : 'zh'; saveUi(); applyUi(); render(); $('#langToggle').focus({ preventScroll: true }); });
+  $('#langSelectM').addEventListener('change', e => { ui.lang = e.target.value; saveUi(); applyUi(); render(); });
   fontSel.addEventListener('change', () => { ui.font = fontSel.value; saveUi(); applyUi(); render(); });
   themeSel.addEventListener('change', () => { ui.theme = themeSel.value; saveUi(); applyUi(); render(); });
   // ---- auth modal ----

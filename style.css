@@ -1339,10 +1339,29 @@ body.in-session .lv-handle { display: none; }
 @media (prefers-reduced-motion: reduce) { .lvh-tip { animation: lvTipOut .01s linear 8s forwards; } .drawer .modal-card { animation: none; } }
 @media print { .lv-handle { display: none; } }
 
-/* phones: the language switch sits in the header (the three selects are desktop only) */
-.lang-toggle { display: none; }
+/* phones: a small language drop-down sits in the header (the three full selects are desktop only) */
+.lang-mini { display: none; }
 @media (max-width: 760px) {
-  .lang-toggle { display: inline-grid; place-items: center; min-width: 44px; height: 44px; padding: 0 8px; border-radius: 999px; border: 2px solid rgba(255,255,255,.75); background: transparent; color: #fff; font: inherit; font-size: 15px; font-weight: 800; letter-spacing: .03em; cursor: pointer; }
-  .lang-toggle:active { background: rgba(255,255,255,.15); }
+  .lang-mini { display: block; }
+  .lang-mini select { height: 40px; min-height: 40px; max-width: none; padding: 0 22px 0 10px; border-radius: 999px; border: 2px solid rgba(255,255,255,.75); background-color: transparent; color: #fff; font: inherit; font-size: 16px; font-weight: 800;
+    -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; cursor: pointer; }
+  .lang-mini select option { color: #1b2a44; background: #fff; }
 }
-@media (max-width: 360px) { .site-header { gap: 6px; } .header-controls { gap: 5px; } .lang-toggle { min-width: 40px; height: 40px; padding: 0 6px; font-size: 14px; } }
+@media (max-width: 360px) { .site-header { gap: 6px; } .header-controls { gap: 5px; } .lang-mini select { padding: 0 18px 0 8px; background-position: right 6px center; } }
+/* phone header with the language drop-down: the date line never runs under the controls; small phones get tighter controls */
+.brand-now { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 760px) { .ecd-left { display: none; } }
+@media (max-width: 360px) {
+  .auth-btn { width: 40px; height: 40px; font-size: 18px; }
+  .exam-chip { padding: 2px; }
+  .exam-chip-days { padding: 4px 8px; font-size: 13px; }
+  .brand-title { letter-spacing: 0; }
+  .brand-now { font-size: 12px; letter-spacing: 0; }
+}
+@media (max-width: 760px) { .now-pre { display: none; } }
+@media (max-width: 340px) {
+  .site-header { gap: 4px; padding-left: max(10px, env(safe-area-inset-left)); padding-right: max(10px, env(safe-area-inset-right)); }
+  .header-controls { gap: 4px; }
+  .lang-mini select { padding: 0 15px 0 6px; background-position: right 4px center; }
+  .exam-chip-days { padding: 4px 6px; }
+}
