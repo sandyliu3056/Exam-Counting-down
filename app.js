@@ -714,27 +714,11 @@
   function speakStop() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 
   /* ---------------- Pages ---------------- */
-  /* ---- Today (home): one next-step button, a checklist with minutes, personal tiles ---- */
-  const GOAL = { new: 10, read: 1, mcq: 10, tr: 5 };   // daily targets (about 20–25 minutes)
-  const dayOf = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? '' : todayStr(d); };
+  const GOAL = { new: 10 };   // new words a day (the cap of a 高頻 round started from the home bookmarks)
   function newToday() { const td = todayStr(); return Object.values(state.progress.cards).filter(c => c.first === td).length; }
-  // the 高頻 set (of 100) that holds the first word not studied yet
-  function hfNextSet() { const hf = window.HIGH_FREQ || []; const i = hf.findIndex(id => { const c = state.progress.cards[id]; return !c || !c.seen; }); return i < 0 ? Math.max(1, HF_SETS) : Math.floor(i / 100) + 1; }
-  // first passage not done yet, at the student's level (else the level of the last passage done, B1 to start)
-  function nextArticle() {
-    const rq = state.progress.readingQuizzes, done = new Set(rq.map(r => r.articleId));
-    const last = rq.length ? articleById(rq[rq.length - 1].articleId) : null, lv = (myLevel() && 'Reading · ' + myLevel()) || (last && last.level) || 'Reading · B1';
-    // when that level is all done, the nearest level next (one step harder before one step easier)
-    const i0 = LEVELS.indexOf(lv.replace('Reading · ', ''));
-    const order = i0 < 0 ? [lv] : LEVELS.map((l, i) => [l, Math.abs(i - i0) + (i < i0 ? .5 : 0)]).sort((x, y) => x[1] - y[1]).map(x => 'Reading · ' + x[0]);
-    for (const l of order) { const a = ARTICLES.find(x => x.level === l && !done.has(x.id)); if (a) return a; }
-    return ARTICLES.find(a => !done.has(a.id)) || ARTICLES[0] || null;
-  }
   const PRACTICAL_TAGS = ['Notice', 'Advertisement', 'Email', 'Letter', 'Schedule', 'Instructions'];
   const practicalText = a => a.level === 'Reading · Practical' || (a.tags || []).some(x => PRACTICAL_TAGS.includes(x));
-  const LV_SHORT = { 'Reading · A2': 'A2', 'Reading · B1': 'B1', 'Reading · B2': 'B2', 'Reading · C1': 'C1', 'Reading · C2': 'C2' };
-  const lvShort = lv => LV_SHORT[lv] || (lv === 'Reading · Practical' ? t('grpPracticalShort') : unitLabel(lv || ''));
-  /* ---- My level (首頁「先選你的程度」): where reading, 選擇題, 克漏字, 翻譯, 單字卡 and 片語 start ---- */
+  /* ---- My level (the 🎯 drawer): where reading, 選擇題, 克漏字, 翻譯 and 單字卡 start ---- */
   const lvOf = p => { const l = p && p.level; return l && LEVELS.includes(l.v) ? l.v : ''; };
   const myLevel = () => lvOf(state.progress);
   const levelAsked = () => !!(state.progress.level && state.progress.level.at);
@@ -757,66 +741,10 @@
         ${LV_TEST.includes(lv) ? `<span class="lv-star">⭐ ${t('lvRecommended')}</span>` : ''}
         <span class="lv-desc">${t('lvDesc' + lv)}</span></button>`).join('')}</div>`;
   }
-  function todayPlan() {
-    const td = todayStr(), p = state.progress, tasks = [];
-    const due = dueCards().length;
-    if (Object.values(p.cards).some(c => c.seen > 0)) tasks.push({ id: 'review', icon: '🃏', label: due ? tf('taskReviewN', { n: due }) : t('taskNoDue'), min: Math.max(1, Math.ceil(due * 6 / 60)), done: due === 0, act: 'planReview' });
-    const left = Math.max(0, GOAL.new - newToday());
-    tasks.push({ id: 'new', icon: '🌱', label: left ? tf('taskNewHF', { n: left, s: hfNextSet() }) : t('taskNewDone'), min: Math.max(1, Math.ceil((left || GOAL.new) * 25 / 60)), done: !left, act: 'planNew' });
-    const na = nextArticle();
-    if (na) tasks.push({ id: 'read', icon: '📖', label: tf('taskReadOne', { lv: lvShort(na.level) }), sub: na.title, min: 10, done: p.readingQuizzes.some(r => dayOf(r.date) === td), act: 'planRead' });
-    // a fourth task that rotates through the week
-    const rot = ['news', 'mcq', 'tr', 'cloze', 'mcq', 'tr', 'cloze'][new Date().getDay()];
-    const doneToday = (m, f) => Object.entries(m || {}).filter(([id, r]) => dayOf(r.last) === td && f(id)).length;
-    if (rot === 'mcq') tasks.push({ id: 'mcq', icon: '📝', label: tf('taskMcq', { n: GOAL.mcq }), min: Math.ceil(GOAL.mcq * 40 / 60), done: doneToday(p.mcq, id => !/-\d+$/.test(id)) >= GOAL.mcq, act: 'planMcq' });
-    else if (rot === 'tr') tasks.push({ id: 'tr', icon: '✍️', label: tf('taskTr', { n: GOAL.tr }), min: Math.ceil(GOAL.tr * 90 / 60), done: doneToday(p.translate, () => true) >= GOAL.tr, act: 'planTr' });
-    else if (rot === 'cloze') tasks.push({ id: 'cloze', icon: '🧩', label: t('taskCloze'), min: 6, done: doneToday(p.mcq, id => /-\d+$/.test(id)) > 0, act: 'planCloze' });
-    else tasks.push({ id: 'news', icon: '📰', label: t('taskNews'), min: 8, done: !!(p.newsDays && p.newsDays[td]), act: 'planNews' });
-    return tasks;
-  }
-  // a practice session that is open but not on screen (it can be resumed)
-  function liveSession() {
-    if (view.mc && !view.mc.done) return { page: 'mcq', label: tf(view.mc.kind === 'cloze' ? 'resumeCloze' : 'resumeMc', { i: view.mc.i + 1, n: view.mc.ids.length }) };
-    if (view.tr && view.tr.i < view.tr.ids.length) return { page: 'translate', label: tf('resumeTr', { i: view.tr.i + 1, n: view.tr.ids.length }) };
-    if (view.flash && view.flash.idx < view.flash.queue.length) return { page: 'flashcards', label: tf('resumeFlash', { i: view.flash.idx + 1, n: view.flash.queue.length }) };
-    if (view.quiz && view.quiz.idx < view.quiz.qs.length) return { page: 'flashcards', label: tf('resumeQuiz', { i: view.quiz.idx + 1, n: view.quiz.qs.length }) };
-    const rid = readOpen(); if (rid) return { page: 'reading', id: rid, label: tf('resumeRead', { x: articleById(rid).title }) };
-    return null;
-  }
   // a passage with answers chosen but not handed in, also after a back swipe to the list (view.answers belong to lastArticle)
   function readOpen() {
     const id = view.articleId || view.lastArticle;
     return id && !view.submitted && Object.keys(view.answers).length && articleById(id) ? id : null;
-  }
-  function todayCard() {
-    const tasks = todayPlan(), done = tasks.filter(x => x.done).length, live = liveSession();
-    const left = tasks.filter(x => !x.done), mins = left.reduce((a, x) => a + x.min, 0), next = left[0];
-    // the one big button: resume what is open, else the first task not done
-    const cta = (act, main, sub, extra = '') => `<button class="btn accent today-cta" data-action="${act}"${extra}><span class="cta-main">${main}</span><span class="cta-sub">${sub}</span></button>`;
-    const hero = live ? cta(live.id ? 'openArticle' : 'nav', `▶ ${esc(live.label)}`, `⏸ ${t('resumeHint')}`, live.id ? ` data-id="${esc(live.id)}"` : ` data-page="${live.page}"`)
-      : next ? cta(next.act, `▶ ${esc(next.label)}`, esc(tf('todayMin', { m: next.min })))
-      : cta('planMore', `🎉 ${t('todayAllDone')}`, esc(tf('taskMcq', { n: GOAL.mcq })));
-    return `<section class="card today-card" aria-labelledby="todayH">
-      <div class="today-head"><h2 id="todayH">🗓️ ${t('todayTitle')}</h2><span class="today-min">${left.length ? tf('todayMin', { m: mins }) : t('todayDoneLine')}</span><span class="today-count">${tf('todayCount', { d: done, n: tasks.length })}</span></div>
-      <div class="today-bar" role="progressbar" aria-label="${t('todayTitle')}" aria-valuemin="0" aria-valuemax="${tasks.length}" aria-valuenow="${done}"><i style="width:${tasks.length ? done / tasks.length * 100 : 0}%"></i></div>
-      ${hero}
-      <ul class="task-list">${tasks.map(x => `<li class="task-row${x.done ? ' done' : ''}"><span class="li-tile${x.done ? ' done' : ''}" aria-hidden="true">${x.done ? '✓' : x.icon}</span>
-        <div class="task-main"><b>${esc(x.label)}</b>${x.sub ? `<small>${esc(x.sub)}</small>` : ''}</div>
-        <div class="task-side">${x.done ? `<span class="task-done">✓ ${t('taskDone')}</span>` : `<span class="task-min">${tf('minApprox', { n: x.min })}</span><button class="btn sm ghost" data-action="${x.act}" aria-label="${esc(t('go') + '：' + x.label)}">${t('go')}</button>`}</div></li>`).join('')}</ul>
-    </section>`;
-  }
-  // personal tiles (the library totals move to the sub lines)
-  function homeStats() {
-    const due = dueCards().length, sk = streak(), hf = window.HIGH_FREQ || [];
-    const hfM = hf.filter(id => (state.progress.cards[id] || {}).box === 3).length;
-    const doneSet = new Set(state.progress.readingQuizzes.map(r => r.articleId)), rd = ARTICLES.filter(a => doneSet.has(a.id)).length;
-    const bar = (x, n) => `<div class="stat-bar" aria-hidden="true"><i style="width:${n ? Math.min(100, x / n * 100) : 0}%"></i></div>`;
-    return `<div class="stat-grid home-stats">
-      <button class="stat-card" data-action="nav" data-page="progress"><span class="ribbon" aria-hidden="true">🔥</span><div class="k">${t('statStreak')}</div><div class="v">${sk}</div><div class="s">${sk ? t('statStreakS') : t('statStreakZero')}</div></button>
-      <button class="stat-card" ${due ? 'data-action="planReview"' : 'data-action="nav" data-page="flashcards"'}><span class="ribbon" aria-hidden="true">⏰</span><div class="k">${t('statDueTile')}</div><div class="v">${due || '✓'}</div><div class="s">${due ? t('statDueTileS') : t('statDueNone')}</div></button>
-      <button class="stat-card" data-action="nav" data-page="progress"><span class="ribbon" aria-hidden="true">🌟</span><div class="k">${t('statHF')}</div><div class="v">${hfM} <small>/ ${hf.length}</small></div>${bar(hfM, hf.length)}<div class="s">${tf('statHFS', { n: VOCAB.length })}</div></button>
-      <button class="stat-card" data-action="nav" data-page="reading"><span class="ribbon" aria-hidden="true">📖</span><div class="k">${t('statReadDone')}</div><div class="v">${rd} <small>/ ${ARTICLES.length}</small></div>${bar(rd, ARTICLES.length)}<div class="s">${tf('statReadDoneS', { n: ARTICLES.length })}</div></button>
-    </div>`;
   }
   function pageHome() {
     const dl = daysLeft();
@@ -824,15 +752,7 @@
     return `
       <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
-      <div class="home-grid">
-        <div class="hg-col">
-          <div class="hg-today">${todayCard()}</div>
-        </div>
-        <div class="hg-col">
-          <div class="hg-stats">${homeStats()}</div>
-          <div class="hg-daily">${dailyCard()}</div>
-        </div>
-      </div>
+      <div class="home-daily">${dailyCard()}</div>
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
       <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
       <h2 class="section-title">🔖 ${t('bookmarks')}</h2>
@@ -2414,12 +2334,6 @@
     actions.startFlash({ plan: true });
     view.flashSetup = own;
   }
-  // 選擇題 / 克漏字 task: an open session of the same kind is resumed; one of the other kind too, when it has answers
-  function planResumeMc(kind) {
-    const s = view.mc; if (!s || s.done || (s.kind !== kind && !Object.keys(s.answers).length)) return false;
-    if (s.kind !== kind) resumeBusy('mcq'); else nav('mcq');
-    return true;
-  }
 
   /* ---------------- Actions ---------------- */
   const actions = {
@@ -2444,15 +2358,6 @@
     // home: 開始 starts the practice itself (a running session is resumed, never wiped)
     goFlash(el) { startPlanFlash(el.dataset.mode); },
     goQuiz() { if (view.quiz && view.quiz.idx < view.quiz.qs.length) return nav('flashcards'); if (wordsBusy()) return resumeBusy('flashcards'); view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $('#quizSetup'); if (h) h.scrollIntoView({ behavior: smooth() }); }, 50); },
-    planReview() { startPlanFlash('dueOnly'); },
-    planNew() { startPlanFlash('newHF'); },
-    planRead() { const a = nextArticle(); if (a) openArticleId(a.id); else nav('reading'); },
-    // today's tasks: new items at the student's level, then any at that level, then any at all
-    planMcq() { if (planResumeMc('items')) return; view.mcf = { type: '', level: myLevel(), status: 'todo', mode: 'practice', count: GOAL.mcq }; if (mcFiltered().length < GOAL.mcq) view.mcf.status = ''; if (mcFiltered().length < GOAL.mcq) view.mcf.level = ''; view.page = 'mcq'; actions.mcStart(); },
-    planCloze() { if (planResumeMc('cloze')) return; view.mcf = { type: 'cloze', level: myLevel(), status: 'todo', mode: 'practice', count: 1 }; if (!mcClozeFiltered().length) view.mcf.status = ''; if (!mcClozeFiltered().length) view.mcf.level = ''; view.page = 'mcq'; actions.mcStart(); },
-    planTr() { if (view.tr && view.tr.i < view.tr.ids.length) return nav('translate'); view.trf = { group: 0, level: myLevel(), status: 'todo', page: 0 }; if (trFiltered().length < GOAL.tr) view.trf.status = ''; if (trFiltered().length < GOAL.tr) view.trf.level = ''; view.trScroll = 0; actions.trStart({ n: GOAL.tr }); },
-    planNews() { nav('news'); },
-    planMore() { actions.planMcq(); },
     newsRetry() { news.status = 'idle'; render(); },
     czJump(el) { const q = document.getElementById('czq-' + el.dataset.n); if (!q) return; q.scrollIntoView({ block: 'center', behavior: smooth() }); flashEl(q); const f = $('.option', q); if (f) f.focus({ preventScroll: true }); },
     czBack(el) { const b = $$('.cz-blank').find(x => x.dataset.n === el.dataset.n); if (!b) return; b.scrollIntoView({ block: 'center', behavior: smooth() }); flashEl(b); b.focus({ preventScroll: true }); },

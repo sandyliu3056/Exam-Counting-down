@@ -1365,3 +1365,7 @@ body.in-session .lv-handle { display: none; }
   .lang-mini select { padding: 0 15px 0 6px; background-position: right 4px center; }
   .exam-chip-days { padding: 4px 6px; }
 }
+
+/* home: the sentence of the day sits right under the banner */
+.home-daily { margin-top: 14px; }
+.home-daily .daily-card { margin: 0; }
