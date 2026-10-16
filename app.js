@@ -163,7 +163,8 @@
   const pickRandom = (arr, n, excludeId) => { const out = [], used = new Set(); let guard = 0; while (out.length < n && guard++ < n * 20 && used.size < arr.length) { const i = Math.floor(Math.random() * arr.length); if (used.has(i)) continue; used.add(i); const x = arr[i]; if (x.id === excludeId) continue; out.push(x); } return out; };
   let ui = Object.assign({ lang: 'zh', font: 'hand', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
-  const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2, tour: ui.tour ? 1 : 0 })); } catch (e) { } };
+  // tour: once the invitation is answered in any tab it stays answered (another open tab must not write it back)
+  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2, tour: ui.tour ? 1 : 0 })); } catch (e) { } };
   // the old site saved English as its default on every device; switch those to Chinese once (a later English choice sticks)
   if (ui.uiv !== 2) { if (ui.lang === 'en') ui.lang = 'zh'; ui.uiv = 2; saveUi(); }
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
@@ -2858,7 +2859,7 @@
     const b = e.target.closest('button'); if (!b) return; const d = b.dataset;
     if (d.more === 'close') closeMore();
     else if (d.more === 'account') { closeMore(); if (ui.user) logoutFlow(); else openAuth('login'); }
-    else if (d.more === 'tour') { moreEl.classList.add('hidden'); startTour(); }
+    else if (d.more === 'tour') { closeMore(); startTour(); }
     else if (d.more) { moreEl.classList.add('hidden'); nav(d.more); }
     else if (d.moreLang || d.moreFont || d.moreTheme) {
       if (d.moreLang) ui.lang = d.moreLang; if (d.moreFont) ui.font = d.moreFont; if (d.moreTheme) ui.theme = d.moreTheme;
@@ -2938,7 +2939,7 @@
   });
 
   /* ---- First-visit tour: a dimmed walk-through with one spotlight per step (the 🎯 tab, the menu, the countdown, language, login, records) ---- */
-  const tourEl = $('#tour'), tourSpot = $('.tour-spot', tourEl), tourCard = $('.tour-card', tourEl);
+  const tourEl = $('#tour'), tourSpot = $('.tour-spot', tourEl), tourCard = $('.tour-card', tourEl), tourLive = $('#tourLive');
   const tour = { i: -1, steps: [], opener: null };
   const shown = el => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
   function tourSteps() {
@@ -2956,7 +2957,7 @@
     tourEl.classList.remove('hidden'); document.body.classList.add('touring');
     showTourStep();
   }
-  function showTourStep() {
+  function showTourStep(announce) {
     const x = tour.steps[tour.i], n = tour.steps.length;
     const body = x.last ? t(myLevel() ? 'tour8B2' : 'tour8B') : t(x.k + 'B');
     tourCard.innerHTML = `<p class="tour-count" aria-hidden="true">${tour.steps.map((_, j) => `<i class="${j === tour.i ? 'on' : ''}"></i>`).join('')}<span>${tour.i + 1} / ${n}</span></p>
@@ -2965,39 +2966,53 @@
         <span class="tour-go">${x.last ? `${myLevel() ? '' : `<button type="button" class="btn sm" data-tour="level">🎯 ${t('tourPickLevel')}</button>`}<button type="button" class="btn sm accent" data-tour="done">${t('tourDone')}</button>` : `<button type="button" class="btn sm accent" data-tour="next">${t('tourNext')} ›</button>`}</span></div>`;
     placeTour();
     const b = $('[data-tour=next], [data-tour=level], [data-tour=done]', tourCard); if (b) b.focus({ preventScroll: true });
+    // focus lands on a new button inside the same dialog, so screen readers hear the new step from a live region
+    tourLive.textContent = announce ? [t('tourStepOf').replace('{i}', tour.i + 1).replace('{n}', n), t(x.k + 'T'), body].join(ui.lang === 'en' ? '. ' : '。') : '';
   }
-  // the spotlight hugs the step's element; the card sits below it (or above, when the element is in the lower half)
+  // the spotlight hugs the step's element; the card sits below or above it, else beside it, else (short screens, e.g. a phone held
+  // sideways) a wider card below/above, else at the screen edge that hides less of it. The card never leaves the screen.
   function placeTour() {
     const x = tour.steps[tour.i]; if (!x) return;
-    const vw = document.documentElement.clientWidth, vh = innerHeight, cw = Math.min(360, vw - 24), pad = 6, gap = 14;
-    tourCard.style.width = cw + 'px';
-    const el = x.sel && $(x.sel), ch = tourCard.offsetHeight;
+    const vw = document.documentElement.clientWidth, vh = innerHeight, M = 12, pad = 6, gap = 14, cap = Math.max(0, vh - 2 * M);
+    // the card's full height at width w (on a very short screen it is capped and only its text scrolls; the buttons stay)
+    const size = w => { tourCard.style.width = w + 'px'; tourCard.style.maxHeight = 'none'; const h = tourCard.offsetHeight; tourCard.style.maxHeight = cap + 'px'; return h; };
+    const put = (l, t, w) => {
+      const h = Math.min(size(w), cap), tx = $('#tourText', tourCard);
+      Object.assign(tourCard.style, { left: Math.max(M, Math.min(l, vw - w - M)) + 'px', top: Math.max(M, Math.min(t, vh - h - M)) + 'px' });
+      tourCard.classList.toggle('scroll', tourCard.scrollHeight > tourCard.clientHeight + 1 || (!!tx && tx.scrollHeight > tx.clientHeight + 1));
+    };
+    const cw = Math.max(0, Math.min(360, vw - 2 * M)), el = x.sel && $(x.sel);
     if (!shown(el)) {
       Object.assign(tourSpot.style, { left: vw / 2 + 'px', top: vh / 2 + 'px', width: '0px', height: '0px' }); tourSpot.classList.add('none');
-      Object.assign(tourCard.style, { left: (vw - cw) / 2 + 'px', top: Math.max(12, (vh - ch) / 2) + 'px' }); return;
+      const h = size(cw); put((vw - cw) / 2, (vh - h) / 2, cw); return;
     }
     tourSpot.classList.remove('none');
+    if (el.getBoundingClientRect().bottom < 0 || el.getBoundingClientRect().top > vh) el.scrollIntoView({ block: 'center' }); // scrolled away somehow: bring it back
     const r = el.getBoundingClientRect(), L = Math.max(2, r.left - pad), T = Math.max(2, r.top - pad), R = Math.min(vw - 2, r.right + pad), B = Math.min(vh - 2, r.bottom + pad);
-    Object.assign(tourSpot.style, { left: L + 'px', top: T + 'px', width: R - L + 'px', height: B - T + 'px' });
-    const below = B + gap, above = T - gap - ch, fitsBelow = below + ch <= vh - 12, fitsAbove = above >= 12;
-    if (!fitsBelow && !fitsAbove) {
-      // no room above or below (the tall 🎯 tab on a small phone): beside it, on the wider side
-      const right = vw - R - gap - 12 >= L - gap - 12, w = Math.min(cw, right ? vw - R - gap - 12 : L - gap - 12);
-      tourCard.style.width = w + 'px';
-      const h = tourCard.offsetHeight, top = Math.min(Math.max(12, (T + B) / 2 - h / 2), vh - h - 12);
-      Object.assign(tourCard.style, { left: (right ? R + gap : L - gap - w) + 'px', top: Math.max(12, top) + 'px' }); return;
-    }
-    const top = ((T + B) / 2 < vh / 2 ? fitsBelow : !fitsAbove) ? below : above;
-    const left = Math.min(Math.max(12, (L + R) / 2 - cw / 2), vw - cw - 12);
-    Object.assign(tourCard.style, { left: left + 'px', top: top + 'px' });
+    Object.assign(tourSpot.style, { left: L + 'px', top: T + 'px', width: Math.max(0, R - L) + 'px', height: Math.max(0, B - T) + 'px' });
+    const upper = (T + B) / 2 < vh / 2;
+    const vert = w => {
+      const h = size(w), fitsBelow = B + gap + h <= vh - M, fitsAbove = T - gap - h >= M;
+      if (!fitsBelow && !fitsAbove) return false;
+      put((L + R) / 2 - w / 2, (upper ? fitsBelow : !fitsAbove) ? B + gap : T - gap - h, w); return true;
+    };
+    if (vert(cw)) return;
+    // beside it, on the wider side, when that side is roomy enough to read
+    const roomR = vw - R - gap - M, roomL = L - gap - M, side = Math.min(cw, Math.max(roomR, roomL));
+    if (side >= 200) { const h = size(side); if (h <= vh - 2 * M) { put(roomR >= roomL ? R + gap : L - gap - side, (T + B) / 2 - h / 2, side); return; } }
+    const wide = Math.max(cw, Math.min(560, vw - 2 * M));
+    if (wide > cw && vert(wide)) return;
+    // nothing fits: the screen edge that covers less of the highlighted thing
+    const h = size(wide), over = t => Math.max(0, Math.min(B, t + h) - Math.max(T, t));
+    put((vw - wide) / 2, over(M) <= over(vh - M - h) ? M : vh - M - h, wide);
   }
-  function tourGo(d) { const j = tour.i + d; if (j < 0 || j >= tour.steps.length) return; tour.i = j; showTourStep(); }
+  function tourGo(d) { const j = tour.i + d; if (j < 0 || j >= tour.steps.length) return; tour.i = j; showTourStep(true); }
   // seen = the tour was finished or skipped (the invitation goes away); a back swipe only hides it
   function endTour(seen) {
     if (tour.i < 0) return;
-    tour.i = -1; tourEl.classList.add('hidden'); document.body.classList.remove('touring');
+    tour.i = -1; tourEl.classList.add('hidden'); document.body.classList.remove('touring'); tourLive.textContent = '';
     if (seen) { ui.tour = 1; saveUi(); if (view.page === 'home') render(); }
-    const o = tour.opener; if (seen) { const h = (o && document.contains(o) && o !== document.body) ? o : $('#app h1'); if (h) h.focus({ preventScroll: true }); }
+    const o = tour.opener; if (seen) { const h = (o && o !== document.body && shown(o)) ? o : $('#app h1'); if (h) h.focus({ preventScroll: true }); }
   }
   tourEl.addEventListener('click', e => {
     const b = e.target.closest('[data-tour]'); if (!b) return; const d = b.dataset.tour;
@@ -3005,7 +3020,28 @@
     else if (d === 'skip' || d === 'done') endTour(true);
     else if (d === 'level') { endTour(true); openLvDrawer(); }
   });
-  window.addEventListener('resize', () => { if (tour.i >= 0) placeTour(); });
+  // rotating a phone (or resizing past 760px) swaps the bottom bar for the tabs: rebuild the steps and keep the place
+  window.addEventListener('resize', () => {
+    if (tour.i < 0) return;
+    const fresh = tourSteps(), sig = s => s.map(x => x.k + (x.sel || '')).join(), base = k => k.replace(/(\d)[md]$/, '$1');
+    if (sig(fresh) === sig(tour.steps)) { placeTour(); return; }
+    const j = fresh.findIndex(x => base(x.k) === base(tour.steps[tour.i].k));
+    tour.steps = fresh; tour.i = j >= 0 ? j : Math.min(tour.i, fresh.length - 1); showTourStep();
+  });
+  // the page must not scroll away under the spotlight (a swipe on the dim layer, the wheel); a long card scrolls by itself
+  const tourKeepPage = e => { if (!(tourCard.classList.contains('scroll') && tourCard.contains(e.target))) e.preventDefault(); };
+  tourEl.addEventListener('wheel', tourKeepPage, { passive: false });
+  tourEl.addEventListener('touchmove', tourKeepPage, { passive: false });
+  window.addEventListener('scroll', () => { if (tour.i >= 0) placeTour(); }, { passive: true });
+  // answered in another tab: the invitation goes away here too
+  window.addEventListener('storage', e => {
+    if (e.key !== LS_UI || ui.tour) return;
+    let o = {}; try { o = JSON.parse(e.newValue || '{}') || {}; } catch (x) { }
+    if (!o.tour) return;
+    ui.tour = 1; const c = $('#app .tour-invite'); if (c) c.remove(); document.body.classList.remove('tour-invited');
+  });
+  // a click on the dim layer or the card text keeps focus on the card's buttons
+  tourEl.addEventListener('mousedown', e => { if (!e.target.closest('button')) e.preventDefault(); });
 
   /* ---- back to top ---- */
   const toTopBtn = $('#toTop');
@@ -3126,7 +3162,13 @@
     if (!askEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeAsk(false); } else trapTab(e, askEl); return; }
     if (!moreEl.classList.contains('hidden')) { if (e.key === 'Escape') closeMore(); else trapTab(e, moreEl); return; }
     if (!lvDrawer.classList.contains('hidden')) { if (e.key === 'Escape') closeLvDrawer(); else trapTab(e, lvDrawer); return; }
-    if (tour.i >= 0) { if (e.key === 'Escape') { e.preventDefault(); endTour(true); } else if (e.key === 'ArrowRight') { e.preventDefault(); tourGo(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); tourGo(-1); } else trapTab(e, tourCard); return; }
+    if (tour.i >= 0) {
+      if (e.key === 'Escape') { e.preventDefault(); endTour(true); } else if (e.key === 'ArrowRight') { e.preventDefault(); tourGo(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); tourGo(-1); }
+      else if (e.key === 'Tab' && !tourCard.contains(document.activeElement)) { e.preventDefault(); const f = $$('button', tourCard), b = e.shiftKey ? f[f.length - 1] : f[0]; if (b) b.focus({ preventScroll: true }); }
+      else if (/^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End)$/.test(e.key) || (e.key === ' ' && !(e.target.closest && e.target.closest('button')))) e.preventDefault();
+      else trapTab(e, tourCard);
+      return;
+    }
     if (!modal.classList.contains('hidden')) { if (e.key === 'Escape') closeAuth(); else trapTab(e, modal); }
   }, true);
 
