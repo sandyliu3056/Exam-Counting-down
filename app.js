@@ -2351,7 +2351,7 @@
   /* ---------------- Actions ---------------- */
   const actions = {
     tourStart() { startTour(); },
-    tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
+    tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); jumpTo(0); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
     tourYes() { invEl.classList.add('hidden'); document.body.classList.remove('tour-invited'); startTour(); },
     setLevel(el) {
       const v = el.dataset.v || '';
@@ -2949,10 +2949,20 @@
     }
     invEl.classList.toggle('hidden', !want); document.body.classList.toggle('tour-invited', want);
   }
+  // a tap outside the card answers 不用了 only when it starts and ends outside (a press that slides off a button does not);
+  // the second tap of a double-tap must not land on the page underneath
+  let invDown = false, invUp = false;
+  invEl.addEventListener('pointerdown', e => { invDown = e.target === invEl; });
+  invEl.addEventListener('pointerup', e => { invUp = e.target === invEl; });
+  const invNo = () => {
+    actions.tourNo();
+    const eat = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    document.addEventListener('click', eat, true); setTimeout(() => document.removeEventListener('click', eat, true), 350);
+  };
   invEl.addEventListener('click', e => {
     const b = e.target.closest('[data-inv]');
-    if (b) (b.dataset.inv === 'yes' ? actions.tourYes : actions.tourNo)();
-    else if (e.target === invEl) actions.tourNo();
+    if (b) b.dataset.inv === 'yes' ? actions.tourYes() : invNo();
+    else if (e.target === invEl && invDown && invUp) invNo();
   });
 
   /* ---- First-visit tour: a dimmed walk-through with one spotlight per step (the 🎯 tab, the menu, the countdown, language, login, records) ---- */
@@ -3007,7 +3017,7 @@
       const h = size(cw); put((vw - cw) / 2, (vh - h) / 2, cw); return;
     }
     tourSpot.classList.remove('none');
-    if (el.getBoundingClientRect().bottom < 0 || el.getBoundingClientRect().top > vh) el.scrollIntoView({ block: 'center' }); // scrolled away somehow: bring it back
+    { const q = el.getBoundingClientRect(); if (q.bottom < 0 || q.top > vh || (inFlow(el) && (q.top < 0 || q.bottom > vh))) el.scrollIntoView({ block: 'center' }); } // (partly) scrolled away: bring it back
     const r = el.getBoundingClientRect(), L = Math.max(2, r.left - pad), T = Math.max(2, r.top - pad), R = Math.min(vw - 2, r.right + pad), B = Math.min(vh - 2, r.bottom + pad);
     Object.assign(tourSpot.style, { left: L + 'px', top: T + 'px', width: Math.max(0, R - L) + 'px', height: Math.max(0, B - T) + 'px' });
     const upper = (T + B) / 2 < vh / 2;
@@ -3033,8 +3043,8 @@
   function endTour(seen) {
     if (tour.i < 0) return;
     tour.i = -1; tourEl.classList.add('hidden'); document.body.classList.remove('touring'); tourLive.textContent = '';
-    if (seen) { ui.tour = 1; saveUi(); if (view.page === 'home') render(); jumpTo(tour.y); }
-    const o = tour.opener; if (seen) { const h = (o && o !== document.body && shown(o)) ? o : $('#app h1'); if (h) h.focus({ preventScroll: true }); }
+    if (seen) { ui.tour = 1; saveUi(); if (view.page === 'home') render(); }
+    const o = tour.opener; if (seen) { const back = !!o && o !== document.body && shown(o), h = back ? o : $('#app h1'); jumpTo(back ? tour.y : 0); if (h) h.focus({ preventScroll: true }); }
   }
   tourEl.addEventListener('click', e => {
     const b = e.target.closest('[data-tour]'); if (!b) return; const d = b.dataset.tour;
