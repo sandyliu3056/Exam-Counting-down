@@ -753,8 +753,6 @@
     return `
       <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
-      ${ui.tour ? '' : `<section class="card tour-invite" aria-labelledby="tourInviteH"><div class="ti-text"><h2 id="tourInviteH">👋 ${t('tourInviteT')}</h2><p>${t('tourInviteB')}</p></div>
-        <div class="ti-btns"><button type="button" class="btn accent" data-action="tourStart">🧭 ${t('tourStart')}</button><button type="button" class="btn ghost" data-action="tourNo">${t('tourNo')}</button></div></section>`}
       <div class="home-daily">${dailyCard()}</div>
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
       <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
@@ -2213,8 +2211,7 @@
     // a paused session reopened from the menu or the back swipe keeps its group's pills on phones (focus mode hides them otherwise)
     document.body.classList.toggle('pills-on', inSession && !!view.pillsFor && view.pillsFor === sessionOf(view.page));
     document.body.dataset.page = view.page;
-    // the 👈 level tip would sit on top of the tour invitation's buttons; it comes back once the invitation is answered
-    document.body.classList.toggle('tour-invited', !!$('#app .tour-invite'));
+    syncTourInvite();
     view.lastIn[groupOf(view.page)] = view.page; view.lastIn['d:' + groupOf(view.page, DESK_GROUPS)] = view.page;
     syncNav();
     // English text is read with an English voice; Chinese with a Chinese one when the interface is English
@@ -2355,6 +2352,7 @@
   const actions = {
     tourStart() { startTour(); },
     tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
+    tourYes() { invEl.classList.add('hidden'); document.body.classList.remove('tour-invited'); startTour(); },
     setLevel(el) {
       const v = el.dataset.v || '';
       state.progress.level = { v: LEVELS.includes(v) ? v : '', at: new Date().toISOString() }; save();
@@ -2758,7 +2756,7 @@
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
   document.addEventListener('keydown', e => {
-    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden') || !$('#lvDrawer').classList.contains('hidden') || !$('#tour').classList.contains('hidden')) return;
+    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden') || !$('#lvDrawer').classList.contains('hidden') || !$('#tour').classList.contains('hidden') || !$('#tourInvite').classList.contains('hidden')) return;
     const onControl = e.target.closest && e.target.closest('button, a, input, textarea, select, [role=button]');
     const typing = e.target.closest && e.target.closest('input, textarea, select, [contenteditable]');
     if (view.page === 'flashcards' && !view.flash && view.quiz && view.quiz.answered && e.key === 'Enter' && view.quiz.idx < view.quiz.qs.length && !onControl) { e.preventDefault(); actions.quizNext(); return; }
@@ -2938,6 +2936,25 @@
     else if (b.dataset.action === 'setLevel') actions.setLevel(b);
   });
 
+  /* ---- First visit: a big see-through card floats in the middle of the home page and offers the tour ---- */
+  const invEl = $('#tourInvite'), invCard = $('.ti-card', invEl); let invLang = '';
+  // shown on the home page until it is answered (開始導覽 / 不用了 / Esc / a tap outside); the 👈 level tip waits for it
+  function syncTourInvite() {
+    const want = view.page === 'home' && !ui.tour && tour.i < 0 && !inSessionNow(), was = !invEl.classList.contains('hidden');
+    if (want && (!was || invLang !== ui.lang)) {
+      invLang = ui.lang;
+      invCard.innerHTML = `<div class="ti-wave" aria-hidden="true">👋</div><h2 id="tourInviteH">${t('tourInviteT')}</h2><p id="tourInviteB">${t('tourInviteB')}</p>
+        <div class="ti-btns"><button type="button" class="btn accent" data-inv="yes">🧭 ${t('tourStart')}</button><button type="button" class="btn ghost" data-inv="no">${t('tourNo')}</button></div>`;
+      setTimeout(() => { const b = $('[data-inv=yes]', invCard); if (b && !invEl.classList.contains('hidden')) b.focus({ preventScroll: true }); }, 30);
+    }
+    invEl.classList.toggle('hidden', !want); document.body.classList.toggle('tour-invited', want);
+  }
+  invEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-inv]');
+    if (b) (b.dataset.inv === 'yes' ? actions.tourYes : actions.tourNo)();
+    else if (e.target === invEl) actions.tourNo();
+  });
+
   /* ---- First-visit tour: a dimmed walk-through with one spotlight per step (the 🎯 tab, the menu, the countdown, language, login, records) ---- */
   const tourEl = $('#tour'), tourSpot = $('.tour-spot', tourEl), tourCard = $('.tour-card', tourEl), tourLive = $('#tourLive');
   const tour = { i: -1, steps: [], opener: null };
@@ -3038,7 +3055,7 @@
     if (e.key !== LS_UI || ui.tour) return;
     let o = {}; try { o = JSON.parse(e.newValue || '{}') || {}; } catch (x) { }
     if (!o.tour) return;
-    ui.tour = 1; const c = $('#app .tour-invite'); if (c) c.remove(); document.body.classList.remove('tour-invited');
+    ui.tour = 1; syncTourInvite();
   });
   // a click on the dim layer or the card text keeps focus on the card's buttons
   tourEl.addEventListener('mousedown', e => { if (!e.target.closest('button')) e.preventDefault(); });
@@ -3155,13 +3172,15 @@
     if (e.key !== 'Tab') return;
     const f = $$('button:not([disabled]), [href], input:not([disabled]):not([type=hidden]), select, textarea, [tabindex]:not([tabindex="-1"])', box).filter(x => x.offsetParent !== null);
     if (!f.length) return;
-    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    if (!box.contains(document.activeElement)) { e.preventDefault(); (e.shiftKey ? f[f.length - 1] : f[0]).focus(); }
+    else if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
     else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
   }
   document.addEventListener('keydown', e => {
     if (!askEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeAsk(false); } else trapTab(e, askEl); return; }
     if (!moreEl.classList.contains('hidden')) { if (e.key === 'Escape') closeMore(); else trapTab(e, moreEl); return; }
     if (!lvDrawer.classList.contains('hidden')) { if (e.key === 'Escape') closeLvDrawer(); else trapTab(e, lvDrawer); return; }
+    if (!invEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); actions.tourNo(); } else trapTab(e, invCard); return; }
     if (tour.i >= 0) {
       if (e.key === 'Escape') { e.preventDefault(); endTour(true); } else if (e.key === 'ArrowRight') { e.preventDefault(); tourGo(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); tourGo(-1); }
       else if (e.key === 'Tab' && !tourCard.contains(document.activeElement)) { e.preventDefault(); const f = $$('button', tourCard), b = e.shiftKey ? f[f.length - 1] : f[0]; if (b) b.focus({ preventScroll: true }); }
