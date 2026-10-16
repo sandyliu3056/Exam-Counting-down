@@ -2957,8 +2957,10 @@
 
   /* ---- First-visit tour: a dimmed walk-through with one spotlight per step (the 🎯 tab, the menu, the countdown, language, login, records) ---- */
   const tourEl = $('#tour'), tourSpot = $('.tour-spot', tourEl), tourCard = $('.tour-card', tourEl), tourLive = $('#tourLive');
-  const tour = { i: -1, steps: [], opener: null };
+  const tour = { i: -1, steps: [], opener: null, y: 0 };
   const shown = el => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+  // false for anything inside a fixed or sticky bar (scrolling the page would not move it)
+  const inFlow = el => { for (let e = el; e && e !== document.body; e = e.parentElement) if (/fixed|sticky/.test(getComputedStyle(e).position)) return false; return true; };
   function tourSteps() {
     const phone = matchMedia('(max-width: 760px)').matches;
     return [{ k: 'tour1' }, { sel: '#lvHandle', k: 'tour2' }, { sel: phone ? '#bnav' : '#tabs', k: 'tour3' }, { sel: '#examChip', k: 'tour4' },
@@ -2969,8 +2971,8 @@
   function startTour() {
     if (inSessionNow()) return toast(t('sessionOpenFirst'));
     closeMore(); closeLvDrawer(true);
-    tour.opener = document.activeElement; tour.steps = tourSteps(); tour.i = 0;
-    window.scrollTo(0, 0);
+    tour.opener = document.activeElement; tour.steps = tourSteps(); tour.i = 0; tour.y = scrollY;
+    jumpTo(0);
     tourEl.classList.remove('hidden'); document.body.classList.add('touring');
     showTourStep();
   }
@@ -2988,13 +2990,14 @@
   }
   // the spotlight hugs the step's element; the card sits below or above it, else beside it, else (short screens, e.g. a phone held
   // sideways) a wider card below/above, else at the screen edge that hides less of it. The card never leaves the screen.
-  function placeTour() {
+  function placeTour(again) {
     const x = tour.steps[tour.i]; if (!x) return;
     const vw = document.documentElement.clientWidth, vh = innerHeight, M = 12, pad = 6, gap = 14, cap = Math.max(0, vh - 2 * M);
     // the card's full height at width w (on a very short screen it is capped and only its text scrolls; the buttons stay)
     const size = w => { tourCard.style.width = w + 'px'; tourCard.style.maxHeight = 'none'; const h = tourCard.offsetHeight; tourCard.style.maxHeight = cap + 'px'; return h; };
+    const tx0 = $('#tourText', tourCard), keep = tx0 ? tx0.scrollTop : 0; // re-placing must not lose where a long text was scrolled to
     const put = (l, t, w) => {
-      const h = Math.min(size(w), cap), tx = $('#tourText', tourCard);
+      const h = Math.min(size(w), cap), tx = tx0; if (tx) tx.scrollTop = keep;
       Object.assign(tourCard.style, { left: Math.max(M, Math.min(l, vw - w - M)) + 'px', top: Math.max(M, Math.min(t, vh - h - M)) + 'px' });
       tourCard.classList.toggle('scroll', tourCard.scrollHeight > tourCard.clientHeight + 1 || (!!tx && tx.scrollHeight > tx.clientHeight + 1));
     };
@@ -3019,6 +3022,8 @@
     if (side >= 200) { const h = size(side); if (h <= vh - 2 * M) { put(roomR >= roomL ? R + gap : L - gap - side, (T + B) / 2 - h / 2, side); return; } }
     const wide = Math.max(cw, Math.min(560, vw - 2 * M));
     if (wide > cw && vert(wide)) return;
+    // still nothing: a target in the page flow (the tabs of the computer layout on a phone held sideways) scrolls up near the top
+    if (!again && r.top > M + pad && inFlow(el)) { jumpTo(scrollY + r.top - pad - M); return placeTour(true); }
     // nothing fits: the screen edge that covers less of the highlighted thing
     const h = size(wide), over = t => Math.max(0, Math.min(B, t + h) - Math.max(T, t));
     put((vw - wide) / 2, over(M) <= over(vh - M - h) ? M : vh - M - h, wide);
@@ -3028,7 +3033,7 @@
   function endTour(seen) {
     if (tour.i < 0) return;
     tour.i = -1; tourEl.classList.add('hidden'); document.body.classList.remove('touring'); tourLive.textContent = '';
-    if (seen) { ui.tour = 1; saveUi(); if (view.page === 'home') render(); }
+    if (seen) { ui.tour = 1; saveUi(); if (view.page === 'home') render(); jumpTo(tour.y); }
     const o = tour.opener; if (seen) { const h = (o && o !== document.body && shown(o)) ? o : $('#app h1'); if (h) h.focus({ preventScroll: true }); }
   }
   tourEl.addEventListener('click', e => {
@@ -3046,7 +3051,11 @@
     tour.steps = fresh; tour.i = j >= 0 ? j : Math.min(tour.i, fresh.length - 1); showTourStep();
   });
   // the page must not scroll away under the spotlight (a swipe on the dim layer, the wheel); a long card scrolls by itself
-  const tourKeepPage = e => { if (!(tourCard.classList.contains('scroll') && tourCard.contains(e.target))) e.preventDefault(); };
+  const tourKeepPage = e => {
+    if (e.ctrlKey || (e.touches && e.touches.length > 1)) return; // pinch / Ctrl+wheel zoom
+    const over = el => !!el && el.scrollHeight > el.clientHeight + 1, tx = e.target.closest && e.target.closest('#tourText');
+    if (!(tourCard.contains(e.target) && (over(tourCard) || over(tx)))) e.preventDefault();
+  };
   tourEl.addEventListener('wheel', tourKeepPage, { passive: false });
   tourEl.addEventListener('touchmove', tourKeepPage, { passive: false });
   window.addEventListener('scroll', () => { if (tour.i >= 0) placeTour(); }, { passive: true });
@@ -3184,7 +3193,12 @@
     if (tour.i >= 0) {
       if (e.key === 'Escape') { e.preventDefault(); endTour(true); } else if (e.key === 'ArrowRight') { e.preventDefault(); tourGo(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); tourGo(-1); }
       else if (e.key === 'Tab' && !tourCard.contains(document.activeElement)) { e.preventDefault(); const f = $$('button', tourCard), b = e.shiftKey ? f[f.length - 1] : f[0]; if (b) b.focus({ preventScroll: true }); }
-      else if (/^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End)$/.test(e.key) || (e.key === ' ' && !(e.target.closest && e.target.closest('button')))) e.preventDefault();
+      else if (/^(ArrowUp|ArrowDown|PageUp|PageDown|Home|End)$/.test(e.key) || (e.key === ' ' && !(e.target.closest && e.target.closest('button')))) {
+        e.preventDefault();
+        const tx = $('#tourText', tourCard), k = e.key; if (!tx || tx.scrollHeight <= tx.clientHeight + 1) return;
+        if (k === 'Home') tx.scrollTop = 0; else if (k === 'End') tx.scrollTop = tx.scrollHeight;
+        else if (k !== ' ') tx.scrollTop += (/Up/.test(k) ? -1 : 1) * (/Page/.test(k) ? tx.clientHeight - 16 : 40);
+      }
       else trapTab(e, tourCard);
       return;
     }
