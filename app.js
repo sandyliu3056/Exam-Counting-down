@@ -163,7 +163,7 @@
   const pickRandom = (arr, n, excludeId) => { const out = [], used = new Set(); let guard = 0; while (out.length < n && guard++ < n * 20 && used.size < arr.length) { const i = Math.floor(Math.random() * arr.length); if (used.has(i)) continue; used.add(i); const x = arr[i]; if (x.id === excludeId) continue; out.push(x); } return out; };
   let ui = Object.assign({ lang: 'zh', font: 'hand', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
-  const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2 })); } catch (e) { } };
+  const saveUi = () => { try { localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2, tour: ui.tour ? 1 : 0 })); } catch (e) { } };
   // the old site saved English as its default on every device; switch those to Chinese once (a later English choice sticks)
   if (ui.uiv !== 2) { if (ui.lang === 'en') ui.lang = 'zh'; ui.uiv = 2; saveUi(); }
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
@@ -752,6 +752,8 @@
     return `
       <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
+      ${ui.tour ? '' : `<section class="card tour-invite" aria-labelledby="tourInviteH"><div class="ti-text"><h2 id="tourInviteH">👋 ${t('tourInviteT')}</h2><p>${t('tourInviteB')}</p></div>
+        <div class="ti-btns"><button type="button" class="btn accent" data-action="tourStart">🧭 ${t('tourStart')}</button><button type="button" class="btn ghost" data-action="tourNo">${t('tourNo')}</button></div></section>`}
       <div class="home-daily">${dailyCard()}</div>
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
       <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
@@ -2091,6 +2093,7 @@
     // the exam name is the teacher's to set; students still choose their exam date
     return `${pageHead('settings', t('settingsSub'))}
       <div class="card level-set"><h3 style="margin-top:0">🎯 ${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
+      <div class="card tour-again"><div><h3 style="margin:0">🧭 ${t('tourAgain')}</h3><p class="small muted" style="margin:4px 0 0">${t('tourAgainSub')}</p></div><button type="button" class="btn" data-action="tourStart">${t('tourStart')}</button></div>
       <div class="card">
         <div class="grid-2">
           ${T ? `<div class="field"><label for="stExamName">${t('examName')}</label><input type="text" id="stExamName" value="${esc(s.examName)}"></div>
@@ -2209,6 +2212,8 @@
     // a paused session reopened from the menu or the back swipe keeps its group's pills on phones (focus mode hides them otherwise)
     document.body.classList.toggle('pills-on', inSession && !!view.pillsFor && view.pillsFor === sessionOf(view.page));
     document.body.dataset.page = view.page;
+    // the 👈 level tip would sit on top of the tour invitation's buttons; it comes back once the invitation is answered
+    document.body.classList.toggle('tour-invited', !!$('#app .tour-invite'));
     view.lastIn[groupOf(view.page)] = view.page; view.lastIn['d:' + groupOf(view.page, DESK_GROUPS)] = view.page;
     syncNav();
     // English text is read with an English voice; Chinese with a Chinese one when the interface is English
@@ -2347,6 +2352,8 @@
 
   /* ---------------- Actions ---------------- */
   const actions = {
+    tourStart() { startTour(); },
+    tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
     setLevel(el) {
       const v = el.dataset.v || '';
       state.progress.level = { v: LEVELS.includes(v) ? v : '', at: new Date().toISOString() }; save();
@@ -2750,7 +2757,7 @@
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
   document.addEventListener('keydown', e => {
-    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden') || !$('#lvDrawer').classList.contains('hidden')) return;
+    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden') || !$('#lvDrawer').classList.contains('hidden') || !$('#tour').classList.contains('hidden')) return;
     const onControl = e.target.closest && e.target.closest('button, a, input, textarea, select, [role=button]');
     const typing = e.target.closest && e.target.closest('input, textarea, select, [contenteditable]');
     if (view.page === 'flashcards' && !view.flash && view.quiz && view.quiz.answered && e.key === 'Enter' && view.quiz.idx < view.quiz.qs.length && !onControl) { e.preventDefault(); actions.quizNext(); return; }
@@ -2818,7 +2825,7 @@
     if (!isRouteHash(location.hash)) return;
     const fromArticle = view.page === 'reading' && !!view.articleId, fromNews = view.page === 'news' && !!view.newsArticle;
     // a dialog or sheet left open would act on the new page: close them all (an open 要結束嗎？ counts as 繼續作答)
-    closeAsk(false); closeAuth(); closeMore(); closeLvDrawer(true); if (cal.open) closeCal(); if (view.city) closeCity(true);
+    closeAsk(false); closeAuth(); closeMore(); closeLvDrawer(true); endTour(false); if (cal.open) closeCal(); if (view.city) closeCity(true);
     if (!applyRoute(location.hash)) return;
     speakStop();
     view.pillsFor = sessionOf(view.page) || null;
@@ -2837,7 +2844,7 @@
     const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
-      <div class="more-tiles">${tile('progress', '📈', t('tabProgress'))}${tile('settings', '⚙️', t('tabSettings'))}${ui.teacher ? tile('students', '🧑‍🏫', t('tabStudents')) : ''}
+      <div class="more-tiles">${tile('progress', '📈', t('tabProgress'))}${tile('settings', '⚙️', t('tabSettings'))}${ui.teacher ? tile('students', '🧑‍🏫', t('tabStudents')) : ''}${tile('tour', '🧭', t('tourAgain'))}
         ${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : t('account'))}</div>
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
@@ -2851,6 +2858,7 @@
     const b = e.target.closest('button'); if (!b) return; const d = b.dataset;
     if (d.more === 'close') closeMore();
     else if (d.more === 'account') { closeMore(); if (ui.user) logoutFlow(); else openAuth('login'); }
+    else if (d.more === 'tour') { moreEl.classList.add('hidden'); startTour(); }
     else if (d.more) { moreEl.classList.add('hidden'); nav(d.more); }
     else if (d.moreLang || d.moreFont || d.moreTheme) {
       if (d.moreLang) ui.lang = d.moreLang; if (d.moreFont) ui.font = d.moreFont; if (d.moreTheme) ui.theme = d.moreTheme;
@@ -2928,6 +2936,76 @@
     if (b.dataset.lv === 'close') closeLvDrawer();
     else if (b.dataset.action === 'setLevel') actions.setLevel(b);
   });
+
+  /* ---- First-visit tour: a dimmed walk-through with one spotlight per step (the 🎯 tab, the menu, the countdown, language, login, records) ---- */
+  const tourEl = $('#tour'), tourSpot = $('.tour-spot', tourEl), tourCard = $('.tour-card', tourEl);
+  const tour = { i: -1, steps: [], opener: null };
+  const shown = el => !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+  function tourSteps() {
+    const phone = matchMedia('(max-width: 760px)').matches;
+    return [{ k: 'tour1' }, { sel: '#lvHandle', k: 'tour2' }, { sel: phone ? '#bnav' : '#tabs', k: 'tour3' }, { sel: '#examChip', k: 'tour4' },
+      { sel: phone ? '#langSelectM' : '#langSelect', k: 'tour5' }, { sel: '#authBtn', k: 'tour6' },
+      { sel: phone ? '.bnav-btn[data-group=more]' : '.tab[data-group=record]', k: phone ? 'tour7m' : 'tour7d' }, { k: 'tour8', last: true }]
+      .filter(x => !x.sel || shown($(x.sel)));
+  }
+  function startTour() {
+    if (inSessionNow()) return toast(t('sessionOpenFirst'));
+    closeMore(); closeLvDrawer(true);
+    tour.opener = document.activeElement; tour.steps = tourSteps(); tour.i = 0;
+    window.scrollTo(0, 0);
+    tourEl.classList.remove('hidden'); document.body.classList.add('touring');
+    showTourStep();
+  }
+  function showTourStep() {
+    const x = tour.steps[tour.i], n = tour.steps.length;
+    const body = x.last ? t(myLevel() ? 'tour8B2' : 'tour8B') : t(x.k + 'B');
+    tourCard.innerHTML = `<p class="tour-count" aria-hidden="true">${tour.steps.map((_, j) => `<i class="${j === tour.i ? 'on' : ''}"></i>`).join('')}<span>${tour.i + 1} / ${n}</span></p>
+      <h2 id="tourTitle">${t(x.k + 'T')}</h2><p id="tourText">${body}</p>
+      <div class="tour-btns">${tour.i ? `<button type="button" class="btn sm ghost" data-tour="prev">‹ ${t('tourPrev')}</button>` : `<button type="button" class="btn sm ghost" data-tour="skip">${t('tourSkip')}</button>`}<span class="spacer"></span>
+        <span class="tour-go">${x.last ? `${myLevel() ? '' : `<button type="button" class="btn sm" data-tour="level">🎯 ${t('tourPickLevel')}</button>`}<button type="button" class="btn sm accent" data-tour="done">${t('tourDone')}</button>` : `<button type="button" class="btn sm accent" data-tour="next">${t('tourNext')} ›</button>`}</span></div>`;
+    placeTour();
+    const b = $('[data-tour=next], [data-tour=level], [data-tour=done]', tourCard); if (b) b.focus({ preventScroll: true });
+  }
+  // the spotlight hugs the step's element; the card sits below it (or above, when the element is in the lower half)
+  function placeTour() {
+    const x = tour.steps[tour.i]; if (!x) return;
+    const vw = document.documentElement.clientWidth, vh = innerHeight, cw = Math.min(360, vw - 24), pad = 6, gap = 14;
+    tourCard.style.width = cw + 'px';
+    const el = x.sel && $(x.sel), ch = tourCard.offsetHeight;
+    if (!shown(el)) {
+      Object.assign(tourSpot.style, { left: vw / 2 + 'px', top: vh / 2 + 'px', width: '0px', height: '0px' }); tourSpot.classList.add('none');
+      Object.assign(tourCard.style, { left: (vw - cw) / 2 + 'px', top: Math.max(12, (vh - ch) / 2) + 'px' }); return;
+    }
+    tourSpot.classList.remove('none');
+    const r = el.getBoundingClientRect(), L = Math.max(2, r.left - pad), T = Math.max(2, r.top - pad), R = Math.min(vw - 2, r.right + pad), B = Math.min(vh - 2, r.bottom + pad);
+    Object.assign(tourSpot.style, { left: L + 'px', top: T + 'px', width: R - L + 'px', height: B - T + 'px' });
+    const below = B + gap, above = T - gap - ch, fitsBelow = below + ch <= vh - 12, fitsAbove = above >= 12;
+    if (!fitsBelow && !fitsAbove) {
+      // no room above or below (the tall 🎯 tab on a small phone): beside it, on the wider side
+      const right = vw - R - gap - 12 >= L - gap - 12, w = Math.min(cw, right ? vw - R - gap - 12 : L - gap - 12);
+      tourCard.style.width = w + 'px';
+      const h = tourCard.offsetHeight, top = Math.min(Math.max(12, (T + B) / 2 - h / 2), vh - h - 12);
+      Object.assign(tourCard.style, { left: (right ? R + gap : L - gap - w) + 'px', top: Math.max(12, top) + 'px' }); return;
+    }
+    const top = ((T + B) / 2 < vh / 2 ? fitsBelow : !fitsAbove) ? below : above;
+    const left = Math.min(Math.max(12, (L + R) / 2 - cw / 2), vw - cw - 12);
+    Object.assign(tourCard.style, { left: left + 'px', top: top + 'px' });
+  }
+  function tourGo(d) { const j = tour.i + d; if (j < 0 || j >= tour.steps.length) return; tour.i = j; showTourStep(); }
+  // seen = the tour was finished or skipped (the invitation goes away); a back swipe only hides it
+  function endTour(seen) {
+    if (tour.i < 0) return;
+    tour.i = -1; tourEl.classList.add('hidden'); document.body.classList.remove('touring');
+    if (seen) { ui.tour = 1; saveUi(); if (view.page === 'home') render(); }
+    const o = tour.opener; if (seen) { const h = (o && document.contains(o) && o !== document.body) ? o : $('#app h1'); if (h) h.focus({ preventScroll: true }); }
+  }
+  tourEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-tour]'); if (!b) return; const d = b.dataset.tour;
+    if (d === 'next') tourGo(1); else if (d === 'prev') tourGo(-1);
+    else if (d === 'skip' || d === 'done') endTour(true);
+    else if (d === 'level') { endTour(true); openLvDrawer(); }
+  });
+  window.addEventListener('resize', () => { if (tour.i >= 0) placeTour(); });
 
   /* ---- back to top ---- */
   const toTopBtn = $('#toTop');
@@ -3048,6 +3126,7 @@
     if (!askEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeAsk(false); } else trapTab(e, askEl); return; }
     if (!moreEl.classList.contains('hidden')) { if (e.key === 'Escape') closeMore(); else trapTab(e, moreEl); return; }
     if (!lvDrawer.classList.contains('hidden')) { if (e.key === 'Escape') closeLvDrawer(); else trapTab(e, lvDrawer); return; }
+    if (tour.i >= 0) { if (e.key === 'Escape') { e.preventDefault(); endTour(true); } else if (e.key === 'ArrowRight') { e.preventDefault(); tourGo(1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); tourGo(-1); } else trapTab(e, tourCard); return; }
     if (!modal.classList.contains('hidden')) { if (e.key === 'Escape') closeAuth(); else trapTab(e, modal); }
   }, true);
 

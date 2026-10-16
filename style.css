@@ -1409,3 +1409,28 @@ body.in-session .lv-handle { display: none; }
   .phr-prac-cat { display: none; }
   .phr-practice .btn { flex: 1; justify-content: center; }
 }
+
+/* ---------- First-visit tour: the invitation card, then a spotlight + card per step ---------- */
+.tour-invite { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 14px 0 0; background: var(--pastel-2); }
+.tour-invite .ti-text { flex: 1 1 260px; }
+.tour-invite h2 { margin: 0; font-size: 20px; }
+.tour-invite p { margin: 4px 0 0; color: var(--ink-soft); }
+.ti-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.tour-again { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.tour { position: fixed; inset: 0; z-index: 90; }
+.tour-spot { position: fixed; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(15, 25, 50, .62); outline: 3px solid var(--accent); outline-offset: 0; pointer-events: none; transition: left .25s, top .25s, width .25s, height .25s; }
+.tour-spot.none { outline: 0; }
+.tour-card { position: fixed; max-width: calc(100vw - 24px); background: #fffdf5; color: var(--ink); border: 3px solid var(--line); border-radius: 18px; padding: 12px 16px 14px; box-shadow: var(--sticker); transition: left .25s, top .25s; }
+.tour-card h2 { margin: 2px 0 6px; font-size: 20px; }
+.tour-card p { margin: 0 0 12px; line-height: 1.6; }
+.tour-count { display: flex; align-items: center; gap: 5px; margin: 0 0 4px !important; }
+.tour-count i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--line) 25%, transparent); }
+.tour-count i.on { width: 18px; border-radius: 4px; background: var(--header); }
+.tour-count span { margin-left: auto; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.tour-btns { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.tour-btns .spacer { flex: 1; }
+.tour-btns .btn { white-space: nowrap; }
+.tour-go { display: flex; gap: 8px; margin-left: auto; }
+body.touring .lvh-tip, body.tour-invited .lvh-tip { display: none; }
+@media (prefers-reduced-motion: reduce) { .tour-spot, .tour-card { transition: none; } }
+@media print { .tour, .tour-invite { display: none !important; } }
