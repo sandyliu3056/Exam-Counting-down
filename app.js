@@ -1811,50 +1811,58 @@
     const PAGE = window.innerWidth <= 640 ? 20 : 50, pages = Math.max(1, Math.ceil(list.length / PAGE));
     view.vocabPage = Math.min(Math.max(0, view.vocabPage || 0), pages - 1);
     const pageList = list.slice(view.vocabPage * PAGE, view.vocabPage * PAGE + PAGE);
-    const cur = view.vocabPage;
-    const span = window.innerWidth < 520 ? 1 : 2;
-    const nums = (() => {
-      const set = new Set([0, pages - 1]);
-      for (let i = cur - span; i <= cur + span; i++) if (i >= 0 && i < pages) set.add(i);
-      if (cur <= span + 2) for (let i = 0; i < Math.min(pages, span * 2 + 3); i++) set.add(i);
-      if (cur >= pages - span - 3) for (let i = Math.max(0, pages - span * 2 - 3); i < pages; i++) set.add(i);
-      const arr = [...set].sort((a, b) => a - b), out = [];
-      arr.forEach((n, i) => { if (i && n - arr[i - 1] > 1) out.push('…'); out.push(n); });
-      return out;
-    })();
-    const pager = pages > 1 ? `<div class="pager">
+    const cur = view.vocabPage, from = list.length ? cur * PAGE + 1 : 0, to = Math.min(list.length, cur * PAGE + PAGE);
+    const fmtN = n => n.toLocaleString('en-US');
+    // top: a compact ‹ [第 n 頁 ▾] ›; bottom: the full row of page numbers
+    const mini = pages > 1 ? `<div class="wb-mini">
       <button class="pg-btn" data-action="vocabGo" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
-      ${nums.map(n => n === '…' ? '<span class="pg-gap">…</span>' : `<button class="pg-btn pg-num ${n === cur ? 'on' : ''}" data-action="vocabGo" data-p="${n}" ${n === cur ? 'aria-current="page"' : ''}>${n + 1}</button>`).join('')}
-      <button class="pg-btn" data-action="vocabGo" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button>
       <select class="input pager-sel" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1} · ${esc((list[i * PAGE] || {}).word || '')}</option>`).join('')}</select>
-    </div>` : '';
+      <button class="pg-btn" data-action="vocabGo" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button></div>` : '';
+    const pager = pagerHTML(cur, pages, 'vocabGo', i => (list[i * PAGE] || {}).word || '');
+    const T = ui.teacher;
     const row = v => {
       if (view.vocabEdit && view.vocabEdit.id === v.id) return vocabEditRow(view.vocabEdit);
-      const c = state.progress.cards[v.id] || { box: 0, seen: 0 };
-      return `<tr><td class="bm-cell"><button class="icon-btn bm-star ${isBm('vocab', v.id) ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${isBm('vocab', v.id)}" aria-label="${esc(t('bookmark') + '：' + v.word)}">${isBm('vocab', v.id) ? '★' : '☆'}</button></td><td class="word">${esc(v.word)} <button class="icon-btn" data-action="speak" data-word="${esc(v.word)}" aria-label="${esc(t('listen') + ' ' + v.word)}">🔊</button>${v.cefr ? `<div class="small muted" style="font-weight:400">${esc(v.cefr)}</div>` : ''}</td><td class="pos">${esc(v.pos || '')}</td><td class="zh">${esc(v.zh)}</td><td class="syn en">${v.syn ? `<span class="wb-lbl">≈ </span>` : ''}${esc(v.syn || '')}</td><td class="example">${esc(v.example || '')}</td><td class="small muted unit">${esc(unitLabel(v.unit))}</td>
+      const c = state.progress.cards[v.id] || { box: 0, seen: 0 }, on = isBm('vocab', v.id);
+      const sub = [v.pos, v.cefr].filter(Boolean).map(esc).join(' · ');
+      return `<tr><td class="bm-cell"><button class="icon-btn bm-star ${on ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${on}" aria-label="${esc(t('bookmark') + '：' + v.word)}">${on ? '★' : '☆'}</button></td>
+        <td class="word"><span class="wb-w">${esc(v.word)}</span> <button class="icon-btn wb-say" data-action="speak" data-word="${esc(v.word)}" aria-label="${esc(t('listen') + ' ' + v.word)}">🔊</button>${sub ? `<div class="wb-sub">${sub}</div>` : ''}</td>
+        <td class="zh">${esc(v.zh)}${v.syn ? `<div class="wb-syn en"><span aria-hidden="true">≈ </span><span class="sr-only">${t('synonyms')}：</span>${esc(v.syn)}</div>` : ''}</td>
+        <td class="example">${esc(v.example || '')}</td>
+        <td class="unit">${esc(unitLabel(v.unit))}</td>
         <td class="box"><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
-        <td class="teacher-only acts"><button class="btn sm ghost" data-action="editVocab" data-id="${esc(v.id)}">${t('edit')}</button> <button class="btn sm danger" data-action="deleteVocab" data-id="${esc(v.id)}">${t('del')}</button></td></tr>`;
+        ${T ? `<td class="acts"><button class="btn sm ghost" data-action="editVocab" data-id="${esc(v.id)}" aria-label="${esc(t('edit') + '：' + v.word)}">${t('edit')}</button><button class="btn sm danger" data-action="deleteVocab" data-id="${esc(v.id)}" aria-label="${esc(t('del') + '：' + v.word)}">${t('del')}</button></td>` : ''}</tr>`;
     };
     return `${subtabs('vocab')}${pageHead('vocab', t('vocabSub'))}
-      <div class="row" style="margin-bottom:12px">
-        <label class="sr-only" for="vocabSearch">${t('search')}</label><input type="search" id="vocabSearch" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" style="max-width:320px" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
-        <button class="btn sm ${view.vocabBm ? 'accent' : 'ghost'}" data-action="toggleVocabBm">🔖 ${t('onlyBookmarks')}</button>
-        <div style="min-width:220px">${unitSelect('vocabUnit', view.vocabUnit)}</div>
-        <select class="input" id="vocabType" style="width:auto"><option value="" ${!ty ? 'selected' : ''}>${t('typeAll')}</option><option value="word" ${ty === 'word' ? 'selected' : ''}>${t('typeWord')}</option><option value="phrase" ${ty === 'phrase' ? 'selected' : ''}>${t('typePhrase')}</option><option value="custom" ${ty === 'custom' ? 'selected' : ''}>${t('presetCustom')}</option></select>
-        <span class="muted small">${t('total')} ${list.length} ${t('items')}</span><span class="spacer"></span>
-        <span class="teacher-only"><button class="btn accent sm" data-action="addVocab">${t('addVocab')}</button> <button class="btn sm" data-action="toggleBulk">${t('bulkImport')}</button></span>
+      <div class="card wb-tools">
+        <div class="wb-filters">
+          <label class="sr-only" for="vocabSearch">${t('search')}</label><input type="search" id="vocabSearch" class="wb-search" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <div class="wb-sel"><label class="sr-only" for="vocabUnit">${t('unit')}</label>${unitSelect('vocabUnit', view.vocabUnit)}</div>
+          <div class="wb-sel"><label class="sr-only" for="vocabType">${t('wbType')}</label><select class="input" id="vocabType"><option value="" ${!ty ? 'selected' : ''}>${t('typeAll')}</option><option value="word" ${ty === 'word' ? 'selected' : ''}>${t('typeWord')}</option><option value="phrase" ${ty === 'phrase' ? 'selected' : ''}>${t('typePhrase')}</option><option value="custom" ${ty === 'custom' ? 'selected' : ''}>${t('presetCustom')}</option></select></div>
+        </div>
+        <div class="wb-meta">
+          <button class="btn sm ${view.vocabBm ? 'accent' : 'ghost'}" data-action="toggleVocabBm" aria-pressed="${!!view.vocabBm}">🔖 ${t('onlyBookmarks')}</button>
+          <span class="small muted wb-count">${list.length ? tf('wbRange', { a: fmtN(from), b: fmtN(to), n: fmtN(list.length) }) : t('wbNone')}</span>
+          <span class="spacer"></span>${mini}
+          ${T ? `<span class="wb-teach"><button class="btn accent sm" data-action="addVocab">${t('addVocab')}</button><button class="btn sm" data-action="toggleBulk">${t('bulkImport')}</button></span>` : ''}
+        </div>
       </div>
       ${view.bulkOpen ? `<div class="card teacher-only block" style="margin-bottom:12px"><b>${t('bulkTitle')}</b><p class="small muted">${t('bulkHint')}</p>
         <div class="grid-2"><div class="field"><label>${t('unit')}</label><input type="text" id="bulkUnit" placeholder="Unit 5 ..." value="${esc(String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit)}"></div></div>
         <textarea id="bulkText" placeholder="adventure, n., 冒險, Life is an adventure.&#10;brave | adj. | 勇敢的"></textarea>
         <div class="row" style="margin-top:8px"><span class="spacer"></span><button class="btn ghost" data-action="toggleBulk">${t('cancel')}</button><button class="btn accent" data-action="bulkImport">${t('importBtn')}</button></div></div>` : ''}
-      ${pager}
-      <div style="overflow-x:auto"><table class="vocab-table wb-table"><thead><tr><th></th><th>${t('word')}</th><th>${t('pos')}</th><th>${t('meaning')}</th><th>${t('synonyms')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th><th class="teacher-only">${t('actions')}</th></tr></thead>
-      <tbody>${view.vocabEdit && !view.vocabEdit.id ? vocabEditRow(view.vocabEdit) : ''}${pageList.map(row).join('')}</tbody></table></div>${pager}`;
+      ${list.length ? `<table class="vocab-table wb-table${T ? ' wb-t' : ''}"><colgroup><col class="c-bm"><col class="c-word"><col class="c-zh"><col class="c-ex"><col class="c-unit"><col class="c-box">${T ? '<col class="c-acts">' : ''}</colgroup>
+        <thead><tr><th><span class="sr-only">${t('bookmark')}</span></th><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('example')}</th><th>${t('unit')}</th><th>${t('box')}</th>${T ? `<th>${t('actions')}</th>` : ''}</tr></thead>
+        <tbody>${view.vocabEdit && !view.vocabEdit.id ? vocabEditRow(view.vocabEdit) : ''}${pageList.map(row).join('')}</tbody></table>${pager}`
+        : `${view.vocabEdit && !view.vocabEdit.id ? `<table class="vocab-table wb-table wb-t"><tbody>${vocabEditRow(view.vocabEdit)}</tbody></table>` : ''}<p class="muted">${t('wbNone')}</p>`}`;
   }
   function vocabEditRow(v) {
-    return `<tr class="teacher-only wb-edit" style="display:table-row;background:#fff8df"><td></td><td><input type="text" id="veWord" value="${esc(v.word)}" placeholder="word"></td><td><input type="text" id="vePos" value="${esc(v.pos || '')}" placeholder="n."></td><td><input type="text" id="veZh" value="${esc(v.zh)}" placeholder="中文"></td><td><input type="text" id="veSyn" value="${esc(v.syn || '')}" placeholder="synonyms"></td><td><input type="text" id="veEx" value="${esc(v.example || '')}" placeholder="example"></td><td><input type="text" id="veUnit" value="${esc(v.unit || '')}" placeholder="Unit"></td><td></td>
-      <td><button class="btn sm ok" data-action="saveVocab">${t('save')}</button> <button class="btn sm ghost" data-action="cancelVocab">${t('cancel')}</button></td></tr>`;
+    // the same seven columns as a word row: word + 詞性, 中文 + 同義字, 例句, 單元, —, save / cancel
+    return `<tr class="wb-edit"><td></td>
+      <td><label class="sr-only" for="veWord">${t('word')}</label><input type="text" id="veWord" value="${esc(v.word)}" placeholder="word"><label class="sr-only" for="vePos">${t('pos')}</label><input type="text" id="vePos" value="${esc(v.pos || '')}" placeholder="${t('pos')} (n. / v.)"></td>
+      <td><label class="sr-only" for="veZh">${t('meaning')}</label><input type="text" id="veZh" value="${esc(v.zh)}" placeholder="中文"><label class="sr-only" for="veSyn">${t('synonyms')}</label><input type="text" id="veSyn" value="${esc(v.syn || '')}" placeholder="${t('synonyms')}"></td>
+      <td><label class="sr-only" for="veEx">${t('example')}</label><input type="text" id="veEx" value="${esc(v.example || '')}" placeholder="example"></td>
+      <td><label class="sr-only" for="veUnit">${t('unit')}</label><input type="text" id="veUnit" value="${esc(v.unit || '')}" placeholder="Unit"></td><td></td>
+      <td class="acts"><button class="btn sm ok" data-action="saveVocab">${t('save')}</button><button class="btn sm ghost" data-action="cancelVocab">${t('cancel')}</button></td></tr>`;
   }
 
   /* ---- Progress (student) ---- */
@@ -2391,7 +2399,7 @@
     toggleBm(el) { toggleBm(el.dataset.kind, el.dataset.id); if (view.flash && view.page === 'flashcards' && view.flash.idx < view.flash.queue.length) { const b = $('.flash-bm'), on = isBm('vocab', el.dataset.id); if (b) { b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); b.textContent = on ? '★' : '☆'; } } else render(); },
     toggleVocabBm() { view.vocabBm = !view.vocabBm; view.vocabPage = 0; render(); },
     vocabPage(el) { view.vocabPage = (view.vocabPage || 0) + (+el.dataset.d); render(); },
-    vocabGo(el) { view.vocabPage = +el.dataset.p; render(); const tb = $('.wb-table'); if (tb) tb.scrollIntoView({ block: 'start' }); },
+    vocabGo(el) { view.vocabPage = +el.dataset.p; render(); const tb = $('.wb-tools'); if (tb) tb.scrollIntoView({ block: 'start' }); },
     mcType(el) { view.mcf.type = el.dataset.v; view.mcf.count = el.dataset.v === 'cloze' ? 1 : (view.mcf.count > 4 ? view.mcf.count : 10); render(); },
     mcLevel(el) { view.mcf.level = el.dataset.v; render(); },
     mcStatus(el) { view.mcf.status = el.dataset.v; render(); },

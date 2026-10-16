@@ -387,7 +387,6 @@ textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
 .flash-pos { font-size: 16px; color: var(--ink-soft); margin-top: 6px; }
 .flash-zh { font-size: 34px; font-weight: 700; }
 .flash-syn { margin-top: 10px; font-family: var(--font-en); font-size: 18px; color: var(--accent); font-weight: 700; }
-.vocab-table td.syn { font-size: 14px; color: var(--ink-soft); min-width: 120px; }
 .pager { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; margin: 12px 0; gap: 6px; }
 .pg-btn { min-width: 36px; height: 36px; padding: 0 10px; border-radius: 999px; border: 2px solid var(--bg-soft); background: #fff; color: var(--header); font: 800 15px 'Nunito', var(--font-body); cursor: pointer; box-shadow: 0 2px 0 var(--bg-soft); }
 .pg-btn:hover:not(:disabled) { border-color: var(--header); }
@@ -760,33 +759,57 @@ body.teacher .teacher-only.flex { display: flex; }
 .mc-review { display: flex; flex-direction: column; gap: 6px; }
 @media (max-width: 520px) { .mc-q { font-size: 17px; } .row-opts { grid-template-columns: 1fr 1fr; } }
 
-/* word bank on phones: one card per word instead of a wide table (no sideways scrolling) */
-.wb-table .wb-lbl { display: none; }
+/* ---------- 單字庫: one tidy filter card, a fixed seven-column table (cards on phones) ---------- */
+.wb-tools { padding: 14px 16px; margin: 0 0 14px; }
+.wb-filters { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr) minmax(0, .8fr); gap: 10px; }
+.wb-filters .wb-search, .wb-filters .input { width: 100%; max-width: none; margin: 0; }
+.wb-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 10px; }
+.wb-count { font-variant-numeric: tabular-nums; }
+.wb-mini { display: flex; align-items: center; gap: 6px; }
+.wb-mini .pager-sel { margin: 0; max-width: 230px; }
+.wb-teach { display: flex; gap: 6px; }
+table.wb-table { table-layout: fixed; }
+.wb-table col.c-bm { width: 50px; }
+.wb-table col.c-word { width: 19%; }
+.wb-table col.c-zh { width: 22%; }
+.wb-table col.c-unit { width: 13%; }
+.wb-table col.c-box { width: 88px; }
+.wb-table col.c-acts { width: 138px; }
+.wb-table td.word { white-space: normal; overflow-wrap: anywhere; }
+.wb-say { width: 30px; height: 30px; font-size: 14px; vertical-align: 2px; }
+.wb-sub { font-family: var(--font-body); font-size: 13px; font-weight: 400; color: var(--ink-soft); margin-top: 2px; }
+.wb-syn { font-size: 13.5px; color: var(--ink-soft); margin-top: 3px; }
+.wb-table td.unit { font-size: 13px; color: var(--ink-soft); }
+.wb-table td.acts { white-space: nowrap; }
+.wb-table td.acts .btn + .btn { margin-left: 6px; }
+.wb-table tr.wb-edit td { background: #fff8df; }
+.wb-edit input { width: 100%; margin: 0 0 6px; }
+@media (max-width: 900px) { .wb-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .wb-filters .wb-search { grid-column: 1 / -1; } }
 @media (max-width: 640px) {
+  .wb-tools { padding: 12px; }
+  .wb-mini { flex: 1 1 100%; } .wb-mini .pager-sel { flex: 1; max-width: none; }
+  .wb-teach { flex: 1 1 100%; } .wb-teach .btn { flex: 1; justify-content: center; }
   table.wb-table { border: 0; background: transparent; }
-  .wb-table thead { display: none; }
+  .wb-table colgroup, .wb-table thead { display: none; }
   .wb-table, .wb-table tbody { display: block; }
-  .wb-table tr { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "word pos bm" "zh zh zh" "syn syn syn" "ex ex ex" "unit unit box" "acts acts acts";
+  .wb-table tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "word bm" "zh zh" "ex ex" "unit box" "acts acts";
     column-gap: 8px; background: var(--card); border: 2px solid var(--bg-soft); border-radius: 16px; padding: 10px 12px; margin-bottom: 10px; }
   .wb-table tr:hover td:not(.example) { background: transparent; }
   .wb-table tr:hover td.example { background: var(--bg-soft); }
   .wb-table td { display: block; padding: 2px 0; border: 0; }
-  .wb-table td.teacher-only { display: none; }
-  body.teacher .wb-table td.teacher-only { display: block; }
   .wb-table td.bm-cell { grid-area: bm; }
-  .wb-table td.word { grid-area: word; white-space: normal; }
-  .wb-table td.word .small { display: inline; margin-left: 4px; }
-  .wb-table td.pos { grid-area: pos; align-self: center; color: var(--ink-soft); font-size: 14px; }
+  .wb-table td.word { grid-area: word; }
   .wb-table td.zh { grid-area: zh; font-size: 17px; font-weight: 700; color: var(--ink); }
-  .wb-table td.syn { grid-area: syn; min-width: 0; }
-  .wb-table .wb-lbl { display: inline; }
+  .wb-table td.zh .wb-syn { font-weight: 400; }
   .wb-table td.example { grid-area: ex; background: var(--bg-soft); border-radius: 10px; padding: 6px 10px; margin-top: 4px; }
-  .wb-table td.example:empty, .wb-table td.syn:empty { display: none; }
+  .wb-table td.example:empty, .wb-table td.unit:empty { display: none; }
   .wb-table td.unit { grid-area: unit; align-self: center; margin-top: 4px; }
   .wb-table td.box { grid-area: box; margin-top: 4px; }
-  .wb-table td.acts { grid-area: acts; margin-top: 6px; }
-  .wb-table tr.wb-edit { display: flex !important; flex-direction: column; gap: 6px; }
-  .wb-table tr.wb-edit td { display: block; }
+  .wb-table td.acts { grid-area: acts; margin-top: 8px; display: flex; gap: 8px; }
+  .wb-table td.acts .btn { flex: 1; justify-content: center; }
+  .wb-table td.acts .btn + .btn { margin-left: 0; }
+  .wb-table tr.wb-edit { display: flex; flex-direction: column; gap: 4px; }
+  .wb-table tr.wb-edit td:empty { display: none; }
 }
 
 /* ---- City cards: tap a city on the world map ---- */
