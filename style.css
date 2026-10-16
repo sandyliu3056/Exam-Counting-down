@@ -1289,8 +1289,6 @@ button.cz-blank { font: inherit; color: inherit; background: none; border: 0; bo
 .fs-help { margin: 6px 2px 0; line-height: 1.5; }
 
 /* ---------- My level: the home question, the settings card, the 🎯 chip ---------- */
-.level-card { background: var(--pastel-4); margin: 0 0 14px; }
-.level-card h2 { margin: 0 0 4px; font-size: 22px; }
 .lv-sub { margin: 0 0 12px; }
 .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
 .level-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; text-align: left; padding: 12px 14px; border-radius: var(--r-md); border: 2px solid var(--line); background: var(--card); color: var(--ink); font: inherit; cursor: pointer; box-shadow: var(--depth-2); transition: transform .12s, box-shadow .12s; }
@@ -1306,16 +1304,45 @@ button.cz-blank { font: inherit; color: inherit; background: none; border: 0; bo
 .lv-desc { font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
 .level-opt.on .lv-desc { color: var(--accent-ink); }
 .lv-foot { margin-top: 12px; gap: 8px; }
-.lv-chip { font: inherit; font-size: 14px; font-weight: 800; padding: 1px 10px; border-radius: 999px; border: 2px solid var(--line); background: var(--accent); color: var(--accent-ink); cursor: pointer; }
 .lv-mine { font-size: 13px; vertical-align: middle; }
 .level-set .lv-desc { font-size: 13px; }
 @media (max-width: 520px) {
   .level-grid { grid-template-columns: 1fr; gap: 8px; }
   .level-opt { padding: 10px 12px; gap: 4px; }
-  .level-card h2 { font-size: 20px; }
 }
 @media (prefers-reduced-motion: reduce) { .level-opt { transition: none; } .level-opt:hover { transform: none; } }
 /* seven folder tabs between phone and wide desktop: tighter, so 設定 / Settings stays on the row (English is the longest) */
 @media (min-width: 761px) and (max-width: 1000px) { .tabs { gap: 4px; padding: 0 10px; } .tab { padding: 8px 9px 6px; gap: 5px; font-size: 15px; } }
 /* six bottom-bar buttons in English on small phones: "Translate" fits */
 @media (max-width: 380px) { html[lang="en"] .bnav-btn { font-size: 10.5px; letter-spacing: -.3px; } }
+
+/* ---------- 我的程度: the 🎯 tab on the left edge and the drawer it pulls out ---------- */
+.lv-handle { position: fixed; left: 0; top: 46%; z-index: 35; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 3px 9px 2px; border: 2px solid var(--line); border-left: 0; border-radius: 0 14px 14px 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-size: 13px; font-weight: 800; line-height: 1.1; cursor: grab; box-shadow: 2px 2px 0 var(--line); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+@media (max-width: 760px) { .lv-handle { width: 22px; padding: 8px 0; font-size: 12px; border-radius: 0 11px 11px 0; } .lvh-ico { font-size: 13px; } }
+.lvh-ico { font-size: 17px; line-height: 1; }
+.lvh-txt { writing-mode: vertical-rl; text-orientation: upright; letter-spacing: .04em; }
+.lvh-tip { position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; pointer-events: none; padding: 6px 11px; border-radius: 12px; background: var(--header); color: #fff; font-size: 14px; box-shadow: 2px 2px 0 var(--header-dark); animation: lvTip 1.6s ease-in-out 4, lvTipOut .5s ease-in 6.4s forwards; }
+@keyframes lvTipOut { to { opacity: 0; visibility: hidden; } }
+@keyframes lvTip { 0%, 100% { transform: translate(0, -50%); } 50% { transform: translate(5px, -50%); } }
+body.in-session .lv-handle { display: none; }
+.modal.drawer { justify-content: flex-start; align-items: stretch; padding: 0; z-index: 55; background: rgba(20, 30, 60, calc(.55 * var(--dim, 1))); }
+.drawer .modal-card { width: min(380px, 88vw); max-width: none; height: 100%; max-height: none; border-radius: 0 24px 24px 0; border-left: 0; background: #fffdf5; padding: calc(12px + env(safe-area-inset-top)) 16px calc(18px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); overflow: auto; overscroll-behavior: contain; touch-action: pan-y; animation: drawerIn .22s ease-out; }
+.drawer.dragging .modal-card { animation: none; transition: none; }
+@keyframes drawerIn { from { transform: translateX(-100%); } to { transform: none; } }
+.drawer .sheet-head { margin-bottom: 4px; }
+.drawer .lv-sub { margin: 0 0 12px; }
+.drawer .level-grid { grid-template-columns: 1fr; gap: 8px; }
+.drawer .level-opt { padding: 10px 12px; gap: 4px; }
+.drawer .lv-desc { font-size: 13.5px; }
+.lv-foot { margin-top: 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.lv-foot p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { .lvh-tip { animation: lvTipOut .01s linear 8s forwards; } .drawer .modal-card { animation: none; } }
+@media print { .lv-handle { display: none; } }
+
+/* phones: the language switch sits in the header (the three selects are desktop only) */
+.lang-toggle { display: none; }
+@media (max-width: 760px) {
+  .lang-toggle { display: inline-grid; place-items: center; min-width: 44px; height: 44px; padding: 0 8px; border-radius: 999px; border: 2px solid rgba(255,255,255,.75); background: transparent; color: #fff; font: inherit; font-size: 15px; font-weight: 800; letter-spacing: .03em; cursor: pointer; }
+  .lang-toggle:active { background: rgba(255,255,255,.15); }
+}
+@media (max-width: 360px) { .site-header { gap: 6px; } .header-controls { gap: 5px; } .lang-toggle { min-width: 40px; height: 40px; padding: 0 6px; font-size: 14px; } }

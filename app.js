@@ -757,15 +757,6 @@
         ${LV_TEST.includes(lv) ? `<span class="lv-star">⭐ ${t('lvRecommended')}</span>` : ''}
         <span class="lv-desc">${t('lvDesc' + lv)}</span></button>`).join('')}</div>`;
   }
-  function levelCard() {
-    const asked = levelAsked();
-    return `<section class="card level-card" aria-labelledby="lvH">
-      <h2 id="lvH">🎯 ${t(asked ? 'lvChangeTitle' : 'lvPickTitle')}</h2>
-      <p class="small muted lv-sub">${t('lvPickSub')}</p>
-      ${levelOptions()}
-      <div class="row lv-foot"><span class="small muted">${t('lvLaterNote')}</span><span class="spacer"></span>${asked ? `<button class="btn sm ghost" data-action="levelClose">${t('lvClose')}</button>` : `<button class="btn sm ghost" data-action="setLevel" data-v="">${t('lvSkip')}</button>`}</div>
-    </section>`;
-  }
   function todayPlan() {
     const td = todayStr(), p = state.progress, tasks = [];
     const due = dueCards().length;
@@ -806,7 +797,7 @@
       : next ? cta(next.act, `▶ ${esc(next.label)}`, esc(tf('todayMin', { m: next.min })))
       : cta('planMore', `🎉 ${t('todayAllDone')}`, esc(tf('taskMcq', { n: GOAL.mcq })));
     return `<section class="card today-card" aria-labelledby="todayH">
-      <div class="today-head"><h2 id="todayH">🗓️ ${t('todayTitle')}</h2><span class="today-min">${left.length ? tf('todayMin', { m: mins }) : t('todayDoneLine')}</span><span class="today-count">${tf('todayCount', { d: done, n: tasks.length })}</span>${levelAsked() && !view.levelPick ? `<button type="button" class="lv-chip" data-action="levelOpen"><span class="sr-only">${esc(t('lvChangeTitle'))}：</span>🎯 ${myLevel() ? esc(myLevel()) : t('lvPickShort')}</button>` : ''}</div>
+      <div class="today-head"><h2 id="todayH">🗓️ ${t('todayTitle')}</h2><span class="today-min">${left.length ? tf('todayMin', { m: mins }) : t('todayDoneLine')}</span><span class="today-count">${tf('todayCount', { d: done, n: tasks.length })}</span></div>
       <div class="today-bar" role="progressbar" aria-label="${t('todayTitle')}" aria-valuemin="0" aria-valuemax="${tasks.length}" aria-valuenow="${done}"><i style="width:${tasks.length ? done / tasks.length * 100 : 0}%"></i></div>
       ${hero}
       <ul class="task-list">${tasks.map(x => `<li class="task-row${x.done ? ' done' : ''}"><span class="li-tile${x.done ? ' done' : ''}" aria-hidden="true">${x.done ? '✓' : x.icon}</span>
@@ -832,7 +823,6 @@
     const recent = state.progress.readingQuizzes.slice(-5).reverse();
     return `
       <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
-      ${!levelAsked() || view.levelPick ? levelCard() : ''}
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
       <div class="home-grid">
         <div class="hg-col">
@@ -2279,7 +2269,7 @@
   }
   const focusKeyOf = el => ['action', 'page', 'group', 'o', 'q', 'id', 'p', 'v', 'kind', 'known', 'ok', 'mode', 'to', 'n', 'src', 'target'].map(k => el.dataset[k] || '').join('|');
   function render(opts = {}) {
-    updateExamChip(); readClock(); applyLevel();
+    updateExamChip(); readClock(); applyLevel(); renderLvHandle();
     const app = $('#app'), a = document.activeElement;
     // remember which control had keyboard focus, so a re-render does not drop it back to the top of the page
     const fkey = !opts.focusHeading && a && a !== app && app.contains(a) && a.dataset && a.dataset.action && !/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) ? focusKeyOf(a) : null;
@@ -2434,18 +2424,22 @@
   /* ---------------- Actions ---------------- */
   const actions = {
     setLevel(el) {
-      const v = el.dataset.v || '', had = levelAsked();
-      state.progress.level = { v: LEVELS.includes(v) ? v : '', at: new Date().toISOString() }; view.levelPick = false; save();
+      const v = el.dataset.v || '';
+      state.progress.level = { v: LEVELS.includes(v) ? v : '', at: new Date().toISOString() }; save();
       toast(v ? tf('lvSaved', { lv: v + ' ' + t('lvName' + v) }) : t('lvSkipped'));
+      // from the drawer: close it (focus goes back to the 🎯 tab) and redraw the page with the new starting filters
+      if (el.closest('#lvDrawer')) {
+        closeLvDrawer();
+        // a page with a form being filled in (Settings, a new passage, a word being edited) is not redrawn; the filters follow on the next page
+        if (view.page === 'settings' || view.editing || view.vocabEdit || view.bulkOpen) { const g = $('.level-set .level-grid'); if (g) g.outerHTML = levelOptions(); renderLvHandle(); }
+        else render();
+        return;
+      }
       // in Settings only the five buttons are redrawn, so nothing typed into the form below is lost (the filters follow on the next page)
       const grid = view.page === 'settings' && el.closest('.level-grid');
-      if (grid) { grid.outerHTML = levelOptions(); const b = $(`.level-set .level-opt[data-v="${v}"]`); if (b) b.focus({ preventScroll: true }); return; }
+      if (grid) { grid.outerHTML = levelOptions(); renderLvHandle(); const b = $(`.level-set .level-opt[data-v="${v}"]`); if (b) b.focus({ preventScroll: true }); return; }
       render();
-      // on the home page the question goes away: keyboard focus goes to the today card (first answer) or back to the 🎯 chip (a change)
-      if (view.page === 'home') { const h = had ? $('.lv-chip') : $('#todayH'); if (h) { if (!had) h.tabIndex = -1; h.focus({ preventScroll: true }); } }
     },
-    levelOpen() { view.levelPick = true; render(); const c = $('.level-card'); if (c) { c.scrollIntoView({ block: 'start', behavior: smooth() }); const b = $('.level-opt.on', c) || $('.level-opt', c); if (b) { b.focus({ preventScroll: true }); setTimeout(() => b.scrollIntoView({ block: 'nearest', behavior: smooth() }), reduceMotion() ? 0 : 450); } } },
-    levelClose() { view.levelPick = false; render(); const b = $('.lv-chip'); if (b) b.focus({ preventScroll: true }); },
     nav(el) { if (el.dataset.page === 'reading' && view.page !== 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) view.articleId = null; nav(el.dataset.page); },
     // home: 開始 starts the practice itself (a running session is resumed, never wiped)
     goFlash(el) { startPlanFlash(el.dataset.mode); },
@@ -2842,7 +2836,7 @@
     if (e.target.id === 'spellInput' && e.key === 'Enter') { e.preventDefault(); if (view.quiz && view.quiz.answered) actions.quizNext(); else actions.spellCheck(); }
   });
   document.addEventListener('keydown', e => {
-    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden')) return;
+    if (e.defaultPrevented || !askEl.classList.contains('hidden') || !$('#moreSheet').classList.contains('hidden') || !$('#lvDrawer').classList.contains('hidden')) return;
     const onControl = e.target.closest && e.target.closest('button, a, input, textarea, select, [role=button]');
     const typing = e.target.closest && e.target.closest('input, textarea, select, [contenteditable]');
     if (view.page === 'flashcards' && !view.flash && view.quiz && view.quiz.answered && e.key === 'Enter' && view.quiz.idx < view.quiz.qs.length && !onControl) { e.preventDefault(); actions.quizNext(); return; }
@@ -2910,7 +2904,7 @@
     if (!isRouteHash(location.hash)) return;
     const fromArticle = view.page === 'reading' && !!view.articleId, fromNews = view.page === 'news' && !!view.newsArticle;
     // a dialog or sheet left open would act on the new page: close them all (an open 要結束嗎？ counts as 繼續作答)
-    closeAsk(false); closeAuth(); closeMore(); if (cal.open) closeCal(); if (view.city) closeCity(true);
+    closeAsk(false); closeAuth(); closeMore(); closeLvDrawer(true); if (cal.open) closeCal(); if (view.city) closeCity(true);
     if (!applyRoute(location.hash)) return;
     speakStop();
     view.pillsFor = sessionOf(view.page) || null;
@@ -2950,6 +2944,75 @@
       const key = d.moreLang ? `[data-more-lang="${d.moreLang}"]` : d.moreFont ? `[data-more-font="${d.moreFont}"]` : `[data-more-theme="${d.moreTheme}"]`;
       const same = $(key, moreEl); if (same) same.focus({ preventScroll: true });
     }
+  });
+
+  /* ---- 我的程度: a drawer pulled out from the left edge (tap the 🎯 tab, or drag it to the right) ---- */
+  const lvDrawer = $('#lvDrawer'), lvHandle = $('#lvHandle'), lvCard = $('.modal-card', lvDrawer);
+  let lvOpener = null, lvDrag = null, lvTipDone = false, lvTipWho = null;
+  function renderLvHandle() {
+    // the "先選你的程度" tip shows for a few seconds, once per account (a new account without a level gets it again)
+    const who = ui.user ? ui.user.id : ''; if (who !== lvTipWho) { lvTipWho = who; lvTipDone = false; }
+    const lv = myLevel(), html = `<span class="sr-only">${esc(t(lv ? 'lvMine' : 'lvPickTitle'))}：</span><span class="lvh-ico" aria-hidden="true">🎯</span><span class="lvh-txt">${lv ? esc(lv) : t('lvHandleShort')}</span>`
+      + (levelAsked() || lvTipDone ? '' : `<span class="lvh-tip" aria-hidden="true">${t('lvTip')}</span>`);
+    if (lvHandle.dataset.html !== html) { lvHandle.innerHTML = html; lvHandle.dataset.html = html; }
+    lvHandle.classList.toggle('ask', !levelAsked());
+  }
+  function renderLvDrawer() {
+    lvCard.innerHTML = `<div class="sheet-head"><h2 id="lvDrawerTitle">🎯 ${t(levelAsked() ? 'lvMine' : 'lvPickTitle')}</h2><button type="button" class="modal-close" data-lv="close" aria-label="${t('close')}">✕</button></div>
+      <p class="small muted lv-sub">${t('lvPickSub')}</p>${levelOptions()}
+      <div class="lv-foot"><p class="small muted">${t('lvLaterNote')}</p>${levelAsked() ? '' : `<button type="button" class="btn sm ghost" data-action="setLevel" data-v="">${t('lvSkip')}</button>`}</div>`;
+  }
+  function openLvDrawer(dragging) {
+    if (!lvDrawer.classList.contains('hidden')) return;
+    lvOpener = document.activeElement; renderLvDrawer();
+    lvDrawer.classList.toggle('dragging', !!dragging); lvDrawer.classList.remove('hidden'); lvHandle.setAttribute('aria-expanded', 'true');
+    if (!dragging) setTimeout(() => { const b = $('.level-opt.on', lvDrawer) || $('.level-opt', lvDrawer); if (b) b.focus({ preventScroll: true }); }, 30);
+  }
+  function closeLvDrawer(quiet) {
+    if (lvDrawer.classList.contains('hidden')) return;
+    lvDrawer.classList.add('hidden'); lvDrawer.classList.remove('dragging'); lvCard.style.transform = ''; lvDrawer.style.removeProperty('--dim');
+    lvHandle.setAttribute('aria-expanded', 'false');
+    if (!quiet) (lvOpener && document.contains(lvOpener) && lvOpener !== document.body ? lvOpener : lvHandle).focus({ preventScroll: true });
+  }
+  // follow the finger: dx > 0 pulls the drawer out from the edge, dx < 0 pushes it back
+  const lvFollow = x => { const w = lvCard.offsetWidth || 320; const pos = Math.max(-w, Math.min(0, x)); lvCard.style.transform = `translateX(${pos}px)`; lvDrawer.style.setProperty('--dim', String(1 + pos / w)); };
+  lvHandle.addEventListener('animationend', e => { if (e.animationName !== 'lvTipOut') return; lvTipDone = true; const tip = $('.lvh-tip', lvHandle); if (tip) tip.remove(); lvHandle.dataset.html = lvHandle.innerHTML; });
+  lvHandle.addEventListener('pointerdown', e => { if (e.button) return; lvDrag = { x: e.clientX, from: 'handle', moved: false }; lvHandle.setPointerCapture(e.pointerId); });
+  lvHandle.addEventListener('pointermove', e => {
+    if (!lvDrag || lvDrag.from !== 'handle') return; const dx = e.clientX - lvDrag.x;
+    if (!lvDrag.moved && dx > 16) { lvDrag.moved = true; openLvDrawer(true); }
+    if (lvDrag.moved) lvFollow(dx - (lvCard.offsetWidth || 320));
+  });
+  // a drag ends: past 60 px it opens (from the tab) or closes (on the drawer); otherwise it snaps back. The click that follows a drag is not a tap.
+  const lvRelease = (e, cancel) => {
+    if (!lvDrag) return; const d = lvDrag; lvDrag = null; if (!d.moved) return;
+    const dx = e.clientX - d.x, el = d.from === 'handle' ? lvHandle : lvDrawer;
+    el.dataset.dragged = '1'; setTimeout(() => { delete el.dataset.dragged; }, 0);
+    lvCard.style.transform = ''; lvDrawer.style.removeProperty('--dim');
+    if (d.from === 'handle') {
+      if (cancel || dx < 60) closeLvDrawer(true);
+      else { const b = $('.level-opt.on', lvDrawer) || $('.level-opt', lvDrawer); if (b) b.focus({ preventScroll: true }); }
+    } else if (!cancel && dx < -60) closeLvDrawer();
+  };
+  lvHandle.addEventListener('pointerup', e => lvRelease(e)); lvHandle.addEventListener('pointercancel', e => lvRelease(e, true));
+  const lvToggle = () => { if (lvDrawer.classList.contains('hidden')) openLvDrawer(); else closeLvDrawer(); };
+  lvHandle.addEventListener('click', () => { if (lvHandle.dataset.dragged) return; lvToggle(); });
+  lvHandle.addEventListener('touchend', e => { if (!e.cancelable) return; e.preventDefault(); if (!lvHandle.dataset.dragged) lvToggle(); });
+  // swipe the open drawer back to the left to close it (vertical scrolling inside still works)
+  lvCard.addEventListener('pointerdown', e => { if (e.button || e.pointerType === 'mouse') return; lvDrag = { x: e.clientX, from: 'card', moved: false }; });
+  lvCard.addEventListener('pointermove', e => {
+    if (!lvDrag || lvDrag.from !== 'card') return; const dx = e.clientX - lvDrag.x;
+    if (!lvDrag.moved && dx < -12) { lvDrag.moved = true; lvDrawer.classList.add('dragging'); }
+    if (lvDrag.moved) lvFollow(Math.min(0, dx));
+  });
+  lvCard.addEventListener('pointerup', e => { if (lvDrag && lvDrag.from === 'card') lvRelease(e); });
+  lvCard.addEventListener('pointercancel', e => { if (lvDrag && lvDrag.from === 'card') lvRelease(e, true); });
+  lvDrawer.addEventListener('click', e => {
+    if (lvDrawer.dataset.dragged) return;
+    if (e.target === lvDrawer) { closeLvDrawer(); return; }
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.lv === 'close') closeLvDrawer();
+    else if (b.dataset.action === 'setLevel') actions.setLevel(b);
   });
 
   /* ---- back to top ---- */
@@ -2996,12 +3059,15 @@
     $('#authBtnIco').textContent = ui.user ? (ui.user.role === 'teacher' ? '🧑‍🏫' : '🎓') : '👤';
     $('#authBtnText').textContent = ui.user ? `${ui.user.name} · ${t('logout')}` : `${t('login')} / ${t('register')}`;
     langSel.value = ui.lang; fontSel.value = ui.font; themeSel.value = ui.theme;
+    // phones: one button at the top switches 中文 ⇄ English (it shows the language it switches to)
+    const lt = $('#langToggle'); lt.innerHTML = `<span lang="${ui.lang === 'zh' ? 'en' : 'zh-Hant'}" aria-hidden="true">${ui.lang === 'zh' ? 'EN' : '中'}</span>`; lt.setAttribute('aria-label', t('langSwitchTo'));
     const tc = { navy: '#1f3b73', forest: '#1f4d3a', plum: '#4b2353', sakura: '#b83f73', mint: '#227a6e', sunset: '#b84a2c' }[ui.theme] || '#1f3b73';
     const m = $('meta[name=theme-color]'); if (m) m.content = tc;
     applyI18n();
     if (!moreEl.classList.contains('hidden')) renderMore();
   }
   langSel.addEventListener('change', () => { ui.lang = langSel.value; saveUi(); applyUi(); render(); });
+  $('#langToggle').addEventListener('click', () => { ui.lang = ui.lang === 'zh' ? 'en' : 'zh'; saveUi(); applyUi(); render(); $('#langToggle').focus({ preventScroll: true }); });
   fontSel.addEventListener('change', () => { ui.font = fontSel.value; saveUi(); applyUi(); render(); });
   themeSel.addEventListener('change', () => { ui.theme = themeSel.value; saveUi(); applyUi(); render(); });
   // ---- auth modal ----
@@ -3066,6 +3132,7 @@
   document.addEventListener('keydown', e => {
     if (!askEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeAsk(false); } else trapTab(e, askEl); return; }
     if (!moreEl.classList.contains('hidden')) { if (e.key === 'Escape') closeMore(); else trapTab(e, moreEl); return; }
+    if (!lvDrawer.classList.contains('hidden')) { if (e.key === 'Escape') closeLvDrawer(); else trapTab(e, lvDrawer); return; }
     if (!modal.classList.contains('hidden')) { if (e.key === 'Escape') closeAuth(); else trapTab(e, modal); }
   }, true);
 
