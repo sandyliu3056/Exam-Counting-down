@@ -1191,33 +1191,36 @@
     const mastered = inCat.filter(v => box(v.id) === 3).length;
     const exampleHTML = v => { if (!v.example) return ''; const re = noteRe(v.word.replace(/\([^)]*\)/g, ' ').replace(/…|\.\.\./g, ' ')); return markTerms(v.example, [{ re, cls: 'lp' }]); };
     const pager = pagerHTML(cur, pages, 'phrGo', i => (list[i * PHR_PAGE] || {}).word || '');
-    return `${subtabs('phrases')}${pageHead('phrases', tf('phrSub', { n: all.length }))}
-      <div class="phr-cats">
-        <button class="phr-cat ${!f.cat ? 'on' : ''}" data-action="phrCat" data-v=""><b>${t('newsAll')}</b><span>${all.length}</span></button>
-        ${cats.map(c => { const n = all.filter(v => v.unit === c).length; return n ? `<button class="phr-cat ${f.cat === c ? 'on' : ''}" data-action="phrCat" data-v="${c}"><b>${esc(t('phCat' + c.slice(2)))}</b><span>${n}</span></button>` : ''; }).join('')}
-      </div>
-      <div class="card phr-tools">
-        <div class="row">
-          <label class="sr-only" for="phrSearch">${t('phrSearch')}</label><input type="search" id="phrSearch" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" style="max-width:300px" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
-          <div class="seg" role="group">${[['', t('newsAll')], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="phrLevel" data-v="${v}">${l}</button>`).join('')}</div>
-          <button class="btn sm ${f.bm ? 'accent' : 'ghost'}" data-action="phrBm">🔖 ${t('modeBookmark')}</button>
-          <span class="spacer"></span>
-          <span class="small muted">${tf('phrMastered', { n: mastered, t: inCat.length })}</span>
+    const fmtN = n => n.toLocaleString('en-US'), catName = c => t('phCat' + String(c).slice(2));
+    const from = list.length ? cur * PHR_PAGE + 1 : 0, to = Math.min(list.length, cur * PHR_PAGE + PHR_PAGE);
+    // the same tidy filter card as the word bank: search · 類別 · 程度, then bookmarks, the count and a compact pager, then practice
+    const mini = pages > 1 ? `<div class="wb-mini">
+      <button class="pg-btn" data-action="phrGo" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
+      <select class="input pager-sel" data-pager="phrGo" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1} · ${esc((list[i * PHR_PAGE] || {}).word || '')}</option>`).join('')}</select>
+      <button class="pg-btn" data-action="phrGo" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button></div>` : '';
+    return `${subtabs('phrases')}${pageHead('phrases', tf('phrSub', { n: fmtN(all.length) }))}
+      <div class="card wb-tools phr-tools">
+        <div class="wb-filters">
+          <label class="sr-only" for="phrSearch">${t('phrSearch')}</label><input type="search" id="phrSearch" class="wb-search" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
+          <div class="wb-sel"><label class="sr-only" for="phrCatSel">${t('phrCatLbl')}</label><select class="input" id="phrCatSel"><option value="">${t('phrAllCats')}（${fmtN(all.length)}）</option>${cats.map(c => { const n = all.filter(v => v.unit === c).length; return n ? `<option value="${c}" ${f.cat === c ? 'selected' : ''}>${esc(catName(c))}（${fmtN(n)}）</option>` : ''; }).join('')}</select></div>
+          <div class="wb-sel"><label class="sr-only" for="phrLevelSel">${t('phrLevelLbl')}</label><select class="input" id="phrLevelSel">${[['', t('phrAllLevels')], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<option value="${v}" ${f.level === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
         </div>
-        <div class="row" style="margin-top:10px">
-          <button class="btn accent" data-action="phrFlash">🃏 ${t('phrPractice')}</button>
-          <button class="btn" data-action="phrQuiz">📝 ${t('phrQuiz')}</button>
-          <span class="small muted">${f.cat ? esc(t('phCat' + f.cat.slice(2))) : t('phrAllCats')}</span>
+        <div class="wb-meta">
+          <button class="btn sm ${f.bm ? 'accent' : 'ghost'}" data-action="phrBm" aria-pressed="${!!f.bm}">🔖 ${t('onlyBookmarks')}</button>
+          <span class="small muted wb-count">${list.length ? tf('phrRange', { a: fmtN(from), b: fmtN(to), n: fmtN(list.length) }) : t('phrNoneShort')} · ${tf('phrMastered', { n: fmtN(mastered), t: fmtN(inCat.length) })}</span>
+          <span class="spacer"></span>${mini}
         </div>
+        <div class="phr-practice"><span class="small phr-prac-lbl">${t('phrPracticeA')}<span class="phr-prac-cat">${tf('phrPracticeCat', { c: esc(f.cat ? catName(f.cat) : t('phrAllCats')) })}</span>：</span>
+          <button class="btn sm accent" data-action="phrFlash">🃏 ${t('phrFlashBtn')}</button><button class="btn sm" data-action="phrQuiz">📝 ${t('phrQuizBtn')}</button></div>
       </div>
-      <p class="small muted" style="margin:6px 2px">${tf('phrCount', { n: list.length })}</p>
-      ${list.length ? `<div class="phr-grid">${shown.map(v => `<article class="phr-card">
-        <div class="phr-head"><span class="phr-word en">${esc(v.word)}</span><span class="chip">${esc(v.cefr || '')}</span>${box(v.id) === 3 ? `<span class="chip ok">✓ ${t('level3')}</span>` : ''}</div>
+      ${list.length ? `<div class="phr-grid">${shown.map(v => { const on = isBm('vocab', v.id); return `<article class="phr-card">
+        <div class="phr-head"><div class="phr-title"><span class="phr-word en">${esc(v.word)}</span> <span class="chip">${esc(v.cefr || '')}</span>${box(v.id) === 3 ? ` <span class="chip ok">✓ ${t('level3')}</span>` : ''}</div>
+          <div class="phr-icons"><button class="icon-btn phr-say" data-action="speak" data-word="${esc(v.example || v.word)}" aria-label="${esc(t('speak') + '：' + v.word)}">🔊</button><button class="icon-btn bm-star ${on ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${on}" aria-label="${esc(t('bookmark') + '：' + v.word)}">${on ? '★' : '☆'}</button></div></div>
         <div class="phr-zh">${esc(v.zh)}</div>
         ${v.example ? `<div class="phr-ex en">${exampleHTML(v)}</div>` : ''}
-        ${v.syn ? `<div class="small muted en">≈ ${esc(v.syn)}</div>` : ''}
-        <div class="row phr-acts"><button class="btn sm ghost" data-action="speak" data-word="${esc(v.example || v.word)}" aria-label="${t('speak')}">🔊</button>${bmBtn('vocab', v.id)}<span class="spacer"></span><span class="small muted">${esc(t('phCat' + String(v.unit || '').slice(2)))}</span></div>
-      </article>`).join('')}</div>${pager}` : `<div class="card"><p class="muted" style="margin:0">${t('phrNone')}</p></div>`}`;
+        ${v.syn ? `<div class="phr-syn en"><span aria-hidden="true">≈ </span><span class="sr-only">${t('synonyms')}：</span>${esc(v.syn)}</div>` : ''}
+        ${!f.cat ? `<div class="phr-cat-lbl">${esc(catName(v.unit))}</div>` : ''}
+      </article>`; }).join('')}</div>${pager}` : `<div class="card"><p class="muted" style="margin:0">${t('phrNone')}</p></div>`}`;
   }
 
   /* ---- Daily English news (news.json is refreshed every morning by a GitHub Action) ---- */
@@ -2478,8 +2481,6 @@
       bumpDay(); save(); render({ focusHeading: true }); scrollToApp();
     },
     phrGo(el) { view.phr.page = +el.dataset.p; render(); window.scrollTo({ top: 0, behavior: smooth() }); },
-    phrCat(el) { Object.assign(view.phr, { cat: el.dataset.v, page: 0 }); render(); },
-    phrLevel(el) { Object.assign(view.phr, { level: el.dataset.v, page: 0 }); render(); },
     phrBm() { Object.assign(view.phr, { bm: !view.phr.bm, page: 0 }); render(); },
     phrFlash() { if (wordsBusy()) return resumeBusy('flashcards'); Object.assign(view.flashSetup, { mode: 'due', unit: view.phr.cat || '@phrase' }); view.flash = null; view.quiz = null; nav('flashcards'); },
     phrQuiz() { if (wordsBusy()) return resumeBusy('flashcards'); view.quizSetup.unit = view.phr.cat || '@phrase'; view.flash = null; view.quiz = null; nav('flashcards'); setTimeout(() => { const h = $('#quizSetup'); if (h) h.scrollIntoView({ behavior: smooth() }); }, 50); },
@@ -2701,6 +2702,8 @@
     else if (id === 'fsUnit') view.flashSetup.unit = e.target.value, render();
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
+    else if (id === 'phrCatSel') Object.assign(view.phr, { cat: e.target.value, page: 0 }), render();
+    else if (id === 'phrLevelSel') Object.assign(view.phr, { level: e.target.value, page: 0 }), render();
     else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'phrGo') view.phr.page = +e.target.value, render();
     else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'trGo') view.trf.page = +e.target.value, render(), trScrollTop();
     else if (e.target.classList.contains('pager-sel')) view.vocabPage = +e.target.value, render();

@@ -787,7 +787,9 @@ table.wb-table { table-layout: fixed; }
 @media (max-width: 900px) { .wb-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .wb-filters .wb-search { grid-column: 1 / -1; } }
 @media (max-width: 640px) {
   .wb-tools { padding: 12px; }
-  .wb-mini { flex: 1 1 100%; } .wb-mini .pager-sel { flex: 1; max-width: none; }
+  .wb-mini { flex: 1 1 0; min-width: 0; } .wb-mini .pager-sel { flex: 1; min-width: 0; max-width: none; }
+  .wb-meta .wb-count { order: 3; flex: 1 1 100%; }
+  .wb-meta .spacer { display: none; }
   .wb-teach { flex: 1 1 100%; } .wb-teach .btn { flex: 1; justify-content: center; }
   table.wb-table { border: 0; background: transparent; }
   .wb-table colgroup, .wb-table thead { display: none; }
@@ -1392,3 +1394,18 @@ body.in-session .lv-handle { display: none; }
 /* home: the sentence of the day sits right under the banner */
 .home-daily { margin-top: 14px; }
 .home-daily .daily-card { margin: 0; }
+
+/* ---------- 片語: the word-bank filter card, a practice row, compact cards (🔊 and ☆ in the card head) ---------- */
+.phr-practice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 2px dashed var(--bg-soft); }
+.phr-card .phr-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 6px; }
+.phr-title { min-width: 0; line-height: 1.5; }
+.phr-title .chip { vertical-align: 2px; }
+.phr-icons { display: flex; gap: 6px; }
+.phr-say { width: 34px; height: 34px; font-size: 15px; }
+.phr-syn { font-size: 13.5px; color: var(--ink-soft); }
+.phr-cat-lbl { margin-top: auto; padding-top: 4px; font-size: 12.5px; color: var(--ink-soft); }
+.phr-grid { margin-top: 2px; }
+@media (max-width: 640px) {
+  .phr-prac-cat { display: none; }
+  .phr-practice .btn { flex: 1; justify-content: center; }
+}
