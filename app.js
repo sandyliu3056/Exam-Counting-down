@@ -834,12 +834,13 @@
       + `<path d="${shine}" stroke="#ffffff" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round"/>`;
     const xy = (lon, lat) => [((lon + 180) / W.step) * step, ((W.lat0 - lat) / W.step) * step + step / 2];
     const [tx, ty] = xy(121, 23.5), [lx, ly] = xy(-118, 34);
-    // each city is a button: tap it (or its chip below the map) to fly there and open its card
-    const ANCHOR = { london: 'end', toronto: 'end', singapore: 'end' };
+    // tap a city (or its chip below the map) to fly there and open its card; keyboards and screen readers use the chips, so each city is in the tab order once
+    // where a city's name sits: right of the dot (default), left ('end'), or under it, ending at the dot ('below': where neighbours leave no room on either side)
+    const ANCHOR = { london: 'end', toronto: 'end', singapore: 'end', sydney: 'end', seoul: 'end', bangkok: 'end', mumbai: 'below', auckland: 'below' };
     // plain labels when the city cards are not available
     const MAP_LABELS = [{ id: 'losangeles', name: 'Los Angeles', lon: -118, lat: 34 }, { id: 'newyork', name: 'New York', lon: -74, lat: 40.7 }, { id: 'london', name: 'London', lon: -0.1, lat: 51.5 }, { id: 'sydney', name: 'Sydney', lon: 151, lat: -33.9 }, { id: 'toronto', name: 'Toronto', lon: -79.4, lat: 43.7 }];
-    const pin = c => { const [x, y] = xy(c.lon, c.lat), a = ANCHOR[c.id] || 'start';
-      return `<g class="map-city" data-action="openCity" data-id="${esc(c.id)}" role="button" tabindex="0" aria-label="${esc(cityName(c))}"><circle cx="${x}" cy="${y}" r="26" fill="transparent"/><circle class="map-pulse" cx="${x}" cy="${y}" r="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="${x}" cy="${y}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${x + (a === 'end' ? -12 : 12)}" y="${y + 6}" class="map-pin-label desk-only" text-anchor="${a}">${esc(c.name)}</text></g>`; };
+    const pin = c => { const [x, y] = xy(c.lon, c.lat), a = ANCHOR[c.id] || 'start', lx = a === 'below' ? x + 8 : x + (a === 'end' ? -12 : 12), ly = a === 'below' ? y + 28 : y + 6;
+      return `<g class="map-city" data-action="openCity" data-id="${esc(c.id)}"><circle cx="${x}" cy="${y}" r="26" fill="transparent"/><circle class="map-pulse" cx="${x}" cy="${y}" r="7" fill="none" stroke="#fff" stroke-width="2"/><circle cx="${x}" cy="${y}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${lx}" y="${ly}" class="map-pin-label desk-only" text-anchor="${a === 'below' ? 'end' : a}">${esc(c.name)}</text></g>`; };
     const home = cityById('taipei');
     const arc = tx < lx ? `M${tx},${ty} Q${(tx + lx) / 2},${Math.min(ty, ly) - 140} ${lx},${ly}` : `M${tx},${ty} Q${tx + 300},${ty - 160} ${cols * step},${ly - 60}`;
     const done = state.progress.cities || {};
@@ -849,15 +850,15 @@
       return { x: .25 * x0 + .5 * cx + .25 * x2, y: .25 * y0 + .5 * cy + .25 * y2, a: Math.atan2(y2 - y0, x2 - x0) * 180 / Math.PI }; })();
     return `<div class="map-card"><span class="map-count"><span aria-hidden="true">📅</span> ${state.settings.examDate.replace(/-/g, '/')} · ${dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('today') : t('examChipPassed')}</span>
       <h3>🌍 ${t('mapTitle')}</h3><p>${t('mapSub')}</p>
-      <svg viewBox="0 0 ${cols * step} ${rows * step}" data-full="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg">${dots}
+      <svg viewBox="0 0 ${cols * step} ${rows * step}" data-full="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${dots}
         <path d="${arc}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <g${RM ? ` transform="translate(${mid.x.toFixed(1)},${mid.y.toFixed(1)}) rotate(${mid.a.toFixed(1)})"` : ''}><g transform="scale(1.5)"><path d="M14 0 4 -2.4 -2 -12 -6 -12 -2.6 -2.4 -10 -2.4 -13 -6.5 -15.5 -6.5 -13.5 0 -15.5 6.5 -13 6.5 -10 2.4 -2.6 2.4 -6 12 -2 12 4 2.4Z" fill="#ffffff" stroke="#1f3b73" stroke-width="1.2" stroke-linejoin="round"/></g>${RM ? '' : `<animateMotion dur="8s" repeatCount="indefinite" rotate="auto" path="${arc}"/>`}</g>
         ${(CITIES.length ? CITIES : MAP_LABELS).filter(c => c.id !== 'taipei').map(c => CITIES.length ? pin(c) : `<circle cx="${xy(c.lon, c.lat)[0]}" cy="${xy(c.lon, c.lat)[1]}" r="7" fill="#ff6b81" stroke="#fff" stroke-width="2"/><text x="${xy(c.lon, c.lat)[0] + (ANCHOR[c.id] ? -12 : 12)}" y="${xy(c.lon, c.lat)[1] + 6}" class="map-pin-label desk-only" text-anchor="${ANCHOR[c.id] || 'start'}">${esc(c.name)}</text>`).join('')}
-        <g transform="translate(${tx},${ty})"${home ? ` class="map-city" data-action="openCity" data-id="taipei" role="button" tabindex="0" aria-label="${esc(cityName(home))}"` : ''}><circle r="30" fill="transparent"/><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/>${RM ? '' : '<animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/>'}</g>
-        <text x="20" y="6" class="map-pin-label desk-only">Taiwan · ${esc(t('youAreHere'))}</text><text x="-26" y="-26" class="map-pin-label mobile-only" text-anchor="end">Taiwan · ${esc(t('youAreHere'))}</text></g>
+        <g transform="translate(${tx},${ty})"${home ? ' class="map-city" data-action="openCity" data-id="taipei"' : ''}><circle r="30" fill="transparent"/><g><polygon points="0,-16 5,-5 16,-4 8,4 10,15 0,9 -10,15 -8,4 -16,-4 -5,-5" fill="#ff6b81" stroke="#fff" stroke-width="2"/>${RM ? '' : '<animateTransform attributeName="transform" type="scale" values="1;1.3;1" dur="1.6s" repeatCount="indefinite"/>'}</g>
+        <text x="20" y="6" class="map-pin-label desk-only">Taiwan · ${esc(t('youAreHere'))}</text><text x="60" y="-110" class="map-pin-label mobile-only" text-anchor="end">Taiwan · ${esc(t('youAreHere'))}</text></g>
       </svg>
-      ${CITIES.length ? `<div class="city-chips"><span class="city-hint">👆 ${t('cityHint')}</span>${CITIES.map(c => `<button class="city-chip${done[c.id] ? ' done' : ''}" data-action="openCity" data-id="${esc(c.id)}">${done[c.id] ? '✓' : '📍'} ${esc(cityName(c))}</button>`).join('')}</div>` : ''}</div>`;
+      ${CITIES.length ? `<div class="city-hint">👆 ${t('cityHint')}</div><div class="city-chips">${CITIES.map(c => `<button class="city-chip${done[c.id] ? ' done' : ''}" data-action="openCity" data-id="${esc(c.id)}">${done[c.id] ? '✓' : '📍'} ${esc(cityName(c))}</button>`).join('')}</div>` : ''}</div>`;
   }
   /* ---------------- City cards (tap a city on the world map) ---------------- */
   const SCENE_ICON = { airport: '✈️', transport: '🚆', food: '🍜', directions: '🧭', shopping: '🛍️', hotel: '🏨', signs: '🪧', sightseeing: '📸', emergency: '🆘' };
@@ -919,7 +920,8 @@
     const vocabBtn = w => { const v = vocabEntry(w.word), on = v && isBm('vocab', v.id);
       return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="citySaveWord" data-id="${v ? esc(v.id) : ''}" data-word="${esc(v ? v.word : w.word)}" data-pos="${esc(w.pos)}" data-zh="${esc(w.zh)}" data-ex="${esc(w.example)}" aria-pressed="${!!on}" title="${t(on ? 'removeBookmark' : 'addBookmark')}">${on ? '★' : '☆'}</button>`; };
     const keys = (c.keywords || []).map(k => k.toLowerCase());
-    const hit = text => keys.some(k => (text || '').toLowerCase().includes(k));
+    const nots = (c.not || []).map(k => k.toLowerCase()); // phrases with a keyword in them that are about something else (The New York Times, Romeo …)
+    const hit = text => { let s = (text || '').toLowerCase(); nots.forEach(n => { s = s.split(n).join(' '); }); return keys.some(k => s.includes(k)); };
     const reads = (c.related || []).map(articleById).filter(Boolean);
     // today's news about this place that has a full article with translation
     const lessonLinks = new Set(newsLessons().map(l => l.link));

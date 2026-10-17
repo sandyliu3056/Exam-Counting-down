@@ -498,7 +498,7 @@ body.teacher .teacher-only.flex { display: flex; }
 .map-card svg { width: 100%; height: auto; display: block; }
 .map-card .map-count { position: absolute; right: 18px; top: 16px; background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 4px 14px; font-weight: 800; font-size: 15px; }
 .map-pin-label { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 800; fill: #fff; paint-order: stroke; stroke: #0f1e3d; stroke-width: 4px; }
-.map-pin-label.mobile-only { display: none; }
+.map-pin-label.mobile-only { display: none; pointer-events: none; }
 @media (max-width: 600px) {
   .map-pin-label.desk-only { display: none; }
   .map-pin-label.mobile-only { display: inline; font-size: 52px; stroke-width: 10px; }
@@ -820,8 +820,10 @@ table.wb-table { table-layout: fixed; }
 .map-city:focus-visible circle:last-of-type, .map-city:focus-visible polygon { stroke: var(--accent); stroke-width: 4; }
 .map-pulse { transform-box: fill-box; transform-origin: center; animation: mapPulse 2.6s ease-out infinite; }
 @keyframes mapPulse { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(3.2); opacity: 0; } }
-.city-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 8px; }
-.city-hint { width: 100%; font-size: 14px; opacity: .92; }
+.city-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+.city-hint { margin-top: 10px; font-size: 14px; opacity: .92; }
+/* phones: the 20 cities in two rows that scroll sideways, not a screenful of chips */
+@media (max-width: 640px) { .city-chips { display: grid; grid-auto-flow: column; grid-template-rows: auto auto; justify-content: start; overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 4px; } .city-chip { white-space: nowrap; } }
 .city-chip { font: inherit; font-size: 15px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, .18); border: 2px solid rgba(255, 255, 255, .6); border-radius: 999px; padding: 6px 13px; cursor: pointer; min-height: 40px; }
 .city-chip:hover { background: rgba(255, 255, 255, .3); }
 .city-chip:focus-visible { border-color: var(--accent); background: rgba(255, 255, 255, .3); }
