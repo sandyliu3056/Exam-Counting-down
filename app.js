@@ -984,34 +984,32 @@
   }
   // the explanation starts with the verdict and, when wrong, the right letter
   const explainHTML = (chosen, answer, options, explain) => `<div class="explain"><span class="explain-head">${chosen === answer ? t('explainRight') : esc(tf('explainWrong', { L: L4[answer], w: options[answer] }))}</span>${explain ? esc(explain) : ''}</div>`;
+  /* ---- 選擇題 / 翻譯: one tidy setup card — a line of stats, one labelled row per choice, then the hint and 開始 ---- */
+  const PX_LEVELS = () => [['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']];
+  const pxStats = list => `<div class="px-stats">${list.map(([k, v, s]) => `<span class="px-stat"><span class="k">${k}</span> <span class="v"><b>${v}</b>${s ? ` <small>${s}</small>` : ''}</span></span>`).join('')}</div>`;
+  // forId: the row holds a form control (a <label for>); otherwise the label names a group of chips
+  const pxRow = (id, label, body, forId) => `<div class="px-row">${forId ? `<label class="px-lbl" id="${id}" for="${forId}">${label}</label>` : `<span class="px-lbl" id="${id}">${label}</span>`}<div class="px-ctl">${body}</div></div>`;
+  // cols: how many chips share a row on phones (an even grid there; they simply wrap on wider screens)
+  const pxChips = (lbl, action, cur, opts, cols = opts.length) => `<div class="px-chips" style="--cols:${cols}" role="group" aria-labelledby="${lbl}">${opts.map(([v, l, n]) => `<button type="button" class="px-chip ${cur === v ? 'on' : ''}" data-action="${action}" data-v="${v}" aria-pressed="${cur === v}">${l}${n != null ? ` <span class="px-n">${n}</span>` : ''}</button>`).join('')}</div>`;
   function pageMcq() {
     if (!mcItems().length && !clozeSets().length) return `${subtabs('mcq')}${pageHead('mcq', t('mcTitle'))}<div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
     if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
     const f = view.mcf || (view.mcf = { type: '', level: myLevel(), status: '', mode: 'practice', count: 10 });
     const S = mcStats(state.progress);
     const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
+    const cloze = f.type === 'cloze', pct = S.done ? Math.round(S.right / S.done * 100) + '%' : '—';
     return `${subtabs('mcq')}${pageHead('mcq', tf('mcSub', { n: mcItems().length, c: clozeSets().length }))}
-      <div class="stat-grid three">
-        <div class="stat-card"><div class="k">${t('mcAnswered')}</div><div class="v">${S.done} <span class="small muted">/ ${S.total}</span></div></div>
-        <div class="stat-card"><div class="k">${t('accShort')}</div><div class="v">${S.done ? Math.round(S.right / S.done * 100) + '%' : '—'}</div><div class="s">${S.right} / ${S.done}</div></div>
-        <div class="stat-card"><div class="k">${t('trToReview')}</div><div class="v">${S.wrong.length}</div></div>
-      </div>
-      <div class="card">
-        <div class="phr-cats" style="padding-top:0">
-          <button class="phr-cat ${!f.type ? 'on' : ''}" data-action="mcType" data-v=""><b>🎯 ${t('mcMixed')}</b><span>${mcItems().length}</span></button>
-          ${MC_TYPES.map(([k, l, ic]) => { const b = S.byType[k]; return `<button class="phr-cat ${f.type === k ? 'on' : ''}" data-action="mcType" data-v="${k}"><b>${ic} ${t(l)}</b><span>${k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : b.total}${b.done ? ` · ${Math.round(b.right / b.done * 100)}%` : ''}</span></button>`; }).join('')}
+      <div class="card px-card">
+        ${pxStats([[t('mcAnswered'), S.done, `/ ${S.total}`], [t('accShort'), pct, S.done ? `${S.right} / ${S.done}` : ''], [t('trToReview'), S.wrong.length]])}
+        <div class="px-rows">
+          ${pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.map(([k, l, ic]) => [k, `${ic} ${t(k === 'cloze' ? 'pxCloze' : l)}`, k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : S.byType[k].total])), 2))}
+          ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'mcLevel', f.level, PX_LEVELS()))}
+          ${pxRow('pxShow', t('pxShow'), pxChips('pxShow', 'mcStatus', f.status, [['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]]))}
+          ${pxRow('pxMode', t('pxMode'), pxChips('pxMode', 'mcMode', f.mode, [['practice', '✏️ ' + t('mcPractice')], ['test', '⏱️ ' + t('mcTest')]]))}
+          ${pxRow('pxCount', t(cloze ? 'pxCountP' : 'pxCount'), pxChips('pxCount', 'mcCount', f.count, (cloze ? [1, 2, 4] : [10, 20, 30]).map(n => [n, tf(cloze ? 'mcNPassages' : 'mcNQ', { n })])))}
         </div>
-        <div class="row">
-          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="mcLevel" data-v="${v}">${l}</button>`).join('')}</div>
-          <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="mcStatus" data-v="${v}">${l}</button>`).join('')}</div>
-        </div>
-        <div class="row" style="margin-top:10px">
-          <div class="seg" role="group">${[['practice', '✏️ ' + t('mcPractice')], ['test', '⏱️ ' + t('mcTest')]].map(([v, l]) => `<button class="seg-btn ${f.mode === v ? 'on' : ''}" data-action="mcMode" data-v="${v}">${l}</button>`).join('')}</div>
-          <div class="seg" role="group">${(f.type === 'cloze' ? [1, 2, 4] : [10, 20, 30]).map(n => `<button class="seg-btn ${f.count === n ? 'on' : ''}" data-action="mcCount" data-v="${n}">${f.type === 'cloze' ? tf('mcNPassages', { n }) : tf('mcNQ', { n })}</button>`).join('')}</div>
-          <span class="spacer"></span>
-          <button class="btn accent block-cta" data-action="mcStart" ${count ? '' : 'disabled'}>▶ ${t('mcStart')}</button>
-        </div>
-        <p class="small muted" style="margin:8px 0 0">${t(f.mode === 'test' ? 'mcTestHint' : 'mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
+        <div class="px-go"><p class="small muted">${t(f.mode === 'test' ? 'mcTestHint' : 'mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
+          <button class="btn accent block-cta" data-action="mcStart" ${count ? '' : 'disabled'}>▶ ${t('mcStart')}</button></div>
       </div>
       ${(state.progress.mcqTests || []).length ? `<div class="card"><h3 style="margin-top:0">${t('mcRecent')}</h3><div class="list">${state.progress.mcqTests.slice(-8).reverse().map(r => `<div class="list-item"><span class="small muted">${fmtDate(r.date)}</span><span>${esc(r.type ? t((MC_TYPES.find(x => x[0] === r.type) || [0, 'mcMixed'])[1]) : t('mcMixed'))} · ${t(r.mode === 'test' ? 'mcTest' : 'mcPractice')}</span><span class="spacer"></span><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span>${r.secs != null ? `<span class="small muted">${fmtDur(r.secs)}</span>` : ''}</div>`).join('')}</div></div>` : ''}`;
   }
@@ -1115,20 +1113,17 @@
     const shown = list.slice(cur * TR_PAGE, cur * TR_PAGE + TR_PAGE);
     const pager = pagerHTML(cur, pages, 'trGo', i => { const z = (list[i * TR_PAGE] || {}).zh || ''; return z.length > 14 ? z.slice(0, 14) + '…' : z; });
     const mark = it => { const r = trRec(it.id); return r ? (r.lastOk ? '<span class="tr-mark ok">✓</span>' : '<span class="tr-mark bad">✗</span>') : '<span class="tr-mark">·</span>'; };
+    const groupSel = `<select class="input px-sel" id="trGroupSel">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<option value="${g}" ${f.group === g ? 'selected' : ''}>${g ? t(TR_GROUPS[g - 1]) : t('pxAllTopics')}（${g ? items.filter(it => trGroupOf(it) === g).length : items.length}）</option>`).join('')}</select>`;
     return `${subtabs('translate')}${pageHead('translate', tf('trSub', { n: items.length }))}
-      <div class="stat-grid three">
-        <div class="stat-card"><div class="k">${t('trPractised')}</div><div class="v">${S.done} <span class="small muted">/ ${items.length}</span></div></div>
-        <div class="stat-card"><div class="k">${t('trRight')}</div><div class="v">${S.right}</div><div class="s">${S.done ? Math.round(S.right / S.done * 100) + '%' : ''}</div></div>
-        <div class="stat-card"><div class="k">${t('trToReview')}</div><div class="v">${S.wrong.length}</div></div>
-      </div>
-      <div class="card">
-        <div class="phr-cats" style="padding-top:0">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<button class="phr-cat ${f.group === g ? 'on' : ''}" data-action="trGroup" data-v="${g}"><b>${g ? t(TR_GROUPS[g - 1]) : t('newsAll')}</b><span>${g ? items.filter(it => trGroupOf(it) === g).length : items.length}</span></button>`).join('')}</div>
-        <div class="row">
-          <div class="seg" role="group">${[['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<button class="seg-btn ${f.level === v ? 'on' : ''}" data-action="trLevel" data-v="${v}">${l}</button>`).join('')}</div>
-          <div class="seg" role="group">${[['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]].map(([v, l]) => `<button class="seg-btn ${f.status === v ? 'on' : ''}" data-action="trStatus" data-v="${v}">${l}</button>`).join('')}</div>
-          <span class="spacer"></span>
-          <button class="btn accent block-cta" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button>
+      <div class="card px-card">
+        ${pxStats([[t('trPractised'), S.done, `/ ${items.length}`], [t('trRight'), S.right, S.done ? Math.round(S.right / S.done * 100) + '%' : ''], [t('trToReview'), S.wrong.length]])}
+        <div class="px-rows">
+          ${pxRow('pxTopic', t('pxTopic'), groupSel, 'trGroupSel')}
+          ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'trLevel', f.level, PX_LEVELS()))}
+          ${pxRow('pxShow', t('pxShow'), pxChips('pxShow', 'trStatus', f.status, [['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]]))}
         </div>
+        <div class="px-go"><p class="small muted">${tf('mcAvailable', { n: list.length })}</p>
+          <button class="btn accent block-cta" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button></div>
       </div>
       ${list.length ? `<p class="small muted tr-range" id="trListTop">${tf('trRange', { a: cur * TR_PAGE + 1, b: cur * TR_PAGE + shown.length, n: list.length })}</p>` : ''}${pager}
       <div class="tr-list">${shown.map(it => `<button class="tr-row" data-action="trOne" data-id="${esc(it.id)}">${mark(it)}<span class="tr-zh">${esc(it.zh)}</span><span class="chip">${esc(it.level || '')}</span></button>`).join('') || `<p class="muted">${t('trNoMatch')}</p>`}</div>${pager}`;
@@ -2205,6 +2200,8 @@
     const app = $('#app'), a = document.activeElement;
     // remember which control had keyboard focus, so a re-render does not drop it back to the top of the page
     const fkey = !opts.focusHeading && a && a !== app && app.contains(a) && a.dataset && a.dataset.action && !/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) ? focusKeyOf(a) : null;
+    // a drop-down that changed the page (主題, 類別, 單元…) keeps the focus after the re-render
+    const fsel = !opts.focusHeading && a && a.tagName === 'SELECT' && a.id && app.contains(a) ? a.id : null;
     app.innerHTML = (PAGES[view.page] || pageHome)();
     const inSession = inSessionNow();
     document.body.classList.toggle('in-session', inSession);
@@ -2221,6 +2218,7 @@
     syncRoute();
     if (opts.focusHeading) { const h = $('#app .st-label, #app h1'); if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
     else if (fkey) { const same = $$('#app [data-action]').find(el => el.tabIndex >= 0 && focusKeyOf(el) === fkey); if (same && !same.disabled) same.focus({ preventScroll: true }); }
+    else if (fsel) { const same = document.getElementById(fsel); if (same && app.contains(same) && !same.disabled) same.focus({ preventScroll: true }); }
     const sp = $('#spellInput'); if (sp && !sp.disabled) sp.focus();
     fitWords();
     updateToTop();
@@ -2708,6 +2706,7 @@
     else if (id === 'fsUnit') view.flashSetup.unit = e.target.value, render();
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
+    else if (id === 'trGroupSel') Object.assign(view.trf, { group: +e.target.value, page: 0 }), render();
     else if (id === 'phrCatSel') Object.assign(view.phr, { cat: e.target.value, page: 0 }), render();
     else if (id === 'phrLevelSel') Object.assign(view.phr, { level: e.target.value, page: 0 }), render();
     else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'phrGo') view.phr.page = +e.target.value, render();
