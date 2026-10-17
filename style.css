@@ -1487,3 +1487,6 @@ body.touring .lvh-tip, body.tour-invited .lvh-tip { display: none; }
   .px-row:first-child .px-lbl { margin-top: 0; }
   .px-sel { max-width: none; }
 }
+/* ---------- 設定 → 🔊 發音聲音 ---------- */
+.voice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.voice-note { margin: 8px 0 0; }

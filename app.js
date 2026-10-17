@@ -164,7 +164,7 @@
   let ui = Object.assign({ lang: 'zh', font: 'hand', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
   // tour: once the invitation is answered in any tab it stays answered (another open tab must not write it back)
-  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2, tour: ui.tour ? 1 : 0 })); } catch (e) { } };
+  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2, tour: ui.tour ? 1 : 0, voice: ui.voice === 'f' ? 'f' : 'm' })); } catch (e) { } };
   // the old site saved English as its default on every device; switch those to Chinese once (a later English choice sticks)
   if (ui.uiv !== 2) { if (ui.lang === 'en') ui.lang = 'zh'; ui.uiv = 2; saveUi(); }
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
@@ -706,13 +706,44 @@
   const bmBtn = (kind, id, sm = true) => `<button class="btn ${sm ? 'sm' : ''} bm-btn ${isBm(kind, id) ? 'on' : ''}" data-action="toggleBm" data-kind="${kind}" data-id="${esc(id)}" title="${t('bookmark')}">${isBm(kind, id) ? t('removeBookmark') : t('addBookmark')}</button>`;
 
   /* ---------------- Speech ---------------- */
-  function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = 0.9;
-    speechSynthesis.speak(u);
+  // With no voice set, each device reads in its own default voice (an iPhone: Samantha, a woman; Windows: often David, a man).
+  // So the site picks one: a man's voice unless 女聲 is chosen (設定 / 更多 → 外觀). Browsers do not say which voices are male,
+  // so it goes by the well-known voice names; a device without one keeps its own default. The robotic novelty voices are skipped.
+  const VOICE_M = /\b(david|mark|guy|andrew|brian|christopher|eric|roger|steffan|davis|tony|jason|ryan|thomas|george|daniel|alex|aaron|arthur|gordon|rishi|evan|nathan|tom|oliver|james|william|liam|connor|mitchell|luke|ken|neil|duncan|brandon|jacob|noah|ethan|elliot|alfie|prabhat|ravi|male)\b|-x-(iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)-/i; // the codes: Android's Google voices (en-us-x-iom-local …)
+  const VOICE_F = /\b(samantha|zira|aria|jenny|michelle|ana|emma|ava|allison|susan|karen|moira|tessa|fiona|victoria|kate|serena|martha|catherine|sonia|libby|hazel|heera|neerja|natasha|clara|sara|nicky|zoe|joelle|veena|isha|emily|linda|heather|nancy|jane|elizabeth|amy|salli|kimberly|ivy|joanna|kendra|female|google us english)\b|-x-(iob|iog|tpc|tpf|sfg|gba|gbc|gbg|fis|aua|auc|ahp|ene)-/i;
+  const VOICE_ODD = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|princess|grandpa|grandma|rocko|eddy|reed|shelley|sandy|flo)\b/i;
+  const hasTTS = () => !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+  // strict: only this exact accent (the city dialogues); otherwise any English voice of the chosen kind will do
+  function voiceFor(lang, strict) {
+    if (!hasTTS()) return null;
+    const norm = l => String(l || '').replace('_', '-').toLowerCase(), L = norm(lang), base = L.split('-')[0];
+    const [kind, other] = ui.voice === 'f' ? [VOICE_F, VOICE_M] : [VOICE_M, VOICE_F];
+    let best = null, top = -1;
+    for (const v of speechSynthesis.getVoices()) {
+      const vl = norm(v.lang), n = `${v.name || ''} ${v.voiceURI || ''}`;
+      if (!kind.test(n) || other.test(n) || VOICE_ODD.test(n)) continue;
+      let s = vl === L ? 100 : (!strict && vl.split('-')[0] === base ? 40 : -1); if (s < 0) continue;
+      if (/natural|neural|online/i.test(n)) s += 20; if (/enhanced|premium/i.test(n)) s += 15; if (v.localService) s += 2;
+      if (s > top) { top = s; best = v; }
+    }
+    return best;
   }
-  function speakStop() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+  function utter(text, lang, strict) {
+    const u = new SpeechSynthesisUtterance(text), v = voiceFor(lang, strict);
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = lang;
+    u.rate = 0.9; return u;
+  }
+  if (hasTTS()) {
+    speechSynthesis.getVoices(); // most browsers load the list lazily
+    const vc = () => { if (view.page === 'settings') render(); };
+    if (speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', vc); else speechSynthesis.onvoiceschanged = vc;
+  }
+  function speak(text) {
+    if (!hasTTS()) return;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter(text, 'en-US'));
+  }
+  function speakStop() { if (hasTTS()) speechSynthesis.cancel(); }
 
   /* ---------------- Pages ---------------- */
   const GOAL = { new: 10 };   // new words a day (the cap of a 高頻 round started from the home bookmarks)
@@ -913,9 +944,9 @@
   }
   // speak a list of lines one after another in the city's accent
   function speakLines(lines, lang) {
-    if (!('speechSynthesis' in window)) return;
+    if (!hasTTS()) return;
     speechSynthesis.cancel();
-    lines.forEach(text => { const u = new SpeechSynthesisUtterance(text); u.lang = lang; u.rate = 0.9; speechSynthesis.speak(u); });
+    lines.forEach(text => speechSynthesis.speak(utter(text, lang, true)));
   }
   cityModal.addEventListener('click', e => {
     if (e.target === cityModal) { closeCity(); return; }
@@ -2082,11 +2113,21 @@
   }
 
   /* ---- Settings ---- */
+  // 🔊 發音聲音: 男聲 / 女聲 for this device, a 試聽 button, and which voice the device will actually use
+  function voiceCard() {
+    const has = hasTTS(), v = has ? voiceFor('en-US') : null, any = has && speechSynthesis.getVoices().length;
+    const note = !has ? t('voiceNone') : v ? tf('voiceUsing', { v: esc(v.name.replace(/\s+[-–(].*$/, '') || v.name), l: esc(v.lang) }) : any ? t(ui.voice === 'f' ? 'voiceNoF' : 'voiceNoM') : '';
+    return `<div class="card voice-set"><h3 style="margin-top:0">🔊 ${t('voiceTitle')}</h3><p class="small muted">${t('voiceSub')}</p>
+      <div class="voice-row"><div class="px-chips" role="group" aria-label="${t('voiceTitle')}">${[['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]].map(([k, l]) => `<button type="button" class="px-chip ${(ui.voice === 'f' ? 'f' : 'm') === k ? 'on' : ''}" data-action="setVoice" data-v="${k}" aria-pressed="${(ui.voice === 'f' ? 'f' : 'm') === k}">${l}</button>`).join('')}</div>
+        <button type="button" class="btn sm ghost" data-action="voiceTest" ${has ? '' : 'disabled'}>▶ ${t('voiceTest')}</button></div>
+      ${note ? `<p class="small muted voice-note">${note}</p>` : ''}</div>`;
+  }
   function pageSettings() {
     const s = state.settings, T = ui.teacher;
     // the exam name is the teacher's to set; students still choose their exam date
     return `${pageHead('settings', t('settingsSub'))}
       <div class="card level-set"><h3 style="margin-top:0">🎯 ${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
+      ${voiceCard()}
       <div class="card tour-again"><div><h3 style="margin:0">🧭 ${t('tourAgain')}</h3><p class="small muted" style="margin:4px 0 0">${t('tourAgainSub')}</p></div><button type="button" class="btn" data-action="tourStart">${t('tourStart')}</button></div>
       <div class="card">
         <div class="grid-2">
@@ -2349,6 +2390,8 @@
   /* ---------------- Actions ---------------- */
   const actions = {
     tourStart() { startTour(); },
+    setVoice(el) { ui.voice = el.dataset.v === 'f' ? 'f' : 'm'; saveUi(); render(); speak(t('voiceSample')); },
+    voiceTest() { speak(t('voiceSample')); },
     tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); jumpTo(0); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
     tourYes() { invEl.classList.add('hidden'); document.body.classList.remove('tour-invited'); startTour(); },
     setLevel(el) {
@@ -2847,6 +2890,7 @@
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
       <div class="ap-row"><span class="ap-lbl">${t('fontLabel')}</span>${seg('font', ui.font, [['hand', t('fontHand')], ['clean', t('fontClean')]], t('fontLabel'))}</div>
+      <div class="ap-row"><span class="ap-lbl">${t('voiceShort')}</span>${seg('voice', ui.voice === 'f' ? 'f' : 'm', [['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]], t('voiceTitle'))}</div>
       <div class="swatches" role="group" aria-label="${t('swatchLabel')}">${THEMES.map(([id, c, ac]) => `<button type="button" class="swatch" data-more-theme="${id}" aria-pressed="${ui.theme === id}" style="--sw:${c};--sw-a:${ac}"><i aria-hidden="true"></i><span>${t('theme' + id[0].toUpperCase() + id.slice(1))}</span></button>`).join('')}</div>`;
   }
   function openMore() { moreOpener = document.activeElement; renderMore(); moreEl.classList.remove('hidden'); setTimeout(() => { const b = $('.more-tile', moreEl); if (b) b.focus({ preventScroll: true }); }, 30); }
@@ -2858,6 +2902,7 @@
     else if (d.more === 'account') { closeMore(); if (ui.user) logoutFlow(); else openAuth('login'); }
     else if (d.more === 'tour') { closeMore(); startTour(); }
     else if (d.more) { moreEl.classList.add('hidden'); nav(d.more); }
+    else if (d.moreVoice) { ui.voice = d.moreVoice === 'f' ? 'f' : 'm'; saveUi(); render(); renderMore(); const same = $(`[data-more-voice="${ui.voice}"]`, moreEl); if (same) same.focus({ preventScroll: true }); speak(t('voiceSample')); }
     else if (d.moreLang || d.moreFont || d.moreTheme) {
       if (d.moreLang) ui.lang = d.moreLang; if (d.moreFont) ui.font = d.moreFont; if (d.moreTheme) ui.theme = d.moreTheme;
       saveUi(); applyUi(); render(); renderMore();
