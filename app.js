@@ -709,39 +709,50 @@
   // With no voice set, each device reads in its own default voice (an iPhone: Samantha, a woman; Windows: often David, a man).
   // So the site picks one: a man's voice unless 女聲 is chosen (設定 / 更多 → 外觀). Browsers do not say which voices are male,
   // so it goes by the well-known voice names; a device without one keeps its own default. The robotic novelty voices are skipped.
-  const VOICE_M = /\b(david|mark|guy|andrew|brian|christopher|eric|roger|steffan|davis|tony|jason|ryan|thomas|george|daniel|alex|aaron|arthur|gordon|rishi|evan|nathan|tom|oliver|james|william|liam|connor|mitchell|luke|ken|neil|duncan|brandon|jacob|noah|ethan|elliot|alfie|prabhat|ravi|male)\b|-x-(iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)-/i; // the codes: Android's Google voices (en-us-x-iom-local …)
-  const VOICE_F = /\b(samantha|zira|aria|jenny|michelle|ana|emma|ava|allison|susan|karen|moira|tessa|fiona|victoria|kate|serena|martha|catherine|sonia|libby|hazel|heera|neerja|natasha|clara|sara|nicky|zoe|joelle|veena|isha|emily|linda|heather|nancy|jane|elizabeth|amy|salli|kimberly|ivy|joanna|kendra|female|google us english)\b|-x-(iob|iog|tpc|tpf|sfg|gba|gbc|gbg|fis|aua|auc|ahp|ene)-/i;
-  const VOICE_ODD = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|princess|grandpa|grandma|rocko|eddy|reed|shelley|sandy|flo)\b/i;
+  const VOICE_M = /\b(david|mark|guy|andrew|brian|christopher|eric|roger|steffan|davis|tony|jason|ryan|thomas|george|daniel|alex|aaron|arthur|gordon|rishi|evan|nathan|tom|oliver|james|william|liam|connor|mitchell|luke|ken|neil|duncan|brandon|jacob|noah|ethan|elliot|alfie|prabhat|ravi|wayne|sam|chilemba|abeo|elimu|male)\b|-x-(iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)-|\+m\d\b/i; // the codes: Android's Google voices (en-us-x-iom-local …), espeak's +m1…
+  const VOICE_F = /\b(samantha|zira|aria|jenny|michelle|emma|ava|allison|susan|karen|moira|tessa|fiona|victoria|kate|serena|martha|catherine|sonia|libby|hazel|heera|neerja|natasha|clara|sara|nicky|zoe|joelle|veena|isha|emily|linda|heather|nancy|jane|elizabeth|amy|salli|kimberly|ivy|joanna|kendra|luna|molly|leah|yan|asilia|ezinne|rosa|imani|female|google us english)\b|-x-(iob|iog|tpc|tpf|sfg|gba|gbc|gbg|fis|aua|auc|ahp|ene)-|\+f\d\b/i;
+  const VOICE_ODD = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|princess|grandpa|grandma|rocko|eddy|reed|shelley|sandy|flo|ana|maisie)\b/i; // + Edge's child voices
   const hasTTS = () => !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
-  // strict: only this exact accent (the city dialogues); otherwise any English voice of the chosen kind will do
-  function voiceFor(lang, strict) {
+  // browsers on Android read with the phone's own text-to-speech voice for each language; a page cannot choose one
+  const sysVoice = /Android/i.test(navigator.userAgent);
+  let voicesSeen = false; // the voice list has (re)loaded at least once
+  // any English voice whose name tells a man's from a woman's voice (without one, 男聲/女聲 cannot change anything)
+  const voiceKnown = () => hasTTS() && speechSynthesis.getVoices().some(x => /^en/i.test(x.lang || '') && (n => VOICE_M.test(n) || VOICE_F.test(n))(`${x.name || ''} ${x.voiceURI || ''}`));
+  // strict: only this exact accent (the city dialogues); otherwise any English voice of the chosen kind will do.
+  // local: only voices on the device (Edge's Online (Natural) voices need the internet)
+  function voiceFor(lang, strict, local) {
     if (!hasTTS()) return null;
     const norm = l => String(l || '').replace('_', '-').toLowerCase(), L = norm(lang), base = L.split('-')[0];
     const [kind, other] = ui.voice === 'f' ? [VOICE_F, VOICE_M] : [VOICE_M, VOICE_F];
     let best = null, top = -1;
     for (const v of speechSynthesis.getVoices()) {
       const vl = norm(v.lang), n = `${v.name || ''} ${v.voiceURI || ''}`;
-      if (!kind.test(n) || other.test(n) || VOICE_ODD.test(n)) continue;
+      if (!kind.test(n) || other.test(n) || VOICE_ODD.test(n) || ((local || navigator.onLine === false) && v.localService === false)) continue;
       let s = vl === L ? 100 : (!strict && vl.split('-')[0] === base ? 40 : -1); if (s < 0) continue;
       if (/natural|neural|online/i.test(n)) s += 20; if (/enhanced|premium/i.test(n)) s += 15; if (v.localService) s += 2;
       if (s > top) { top = s; best = v; }
     }
     return best;
   }
-  function utter(text, lang, strict) {
-    const u = new SpeechSynthesisUtterance(text), v = voiceFor(lang, strict);
+  function utter(text, lang, strict, local) {
+    const u = new SpeechSynthesisUtterance(text), v = voiceFor(lang, strict, local);
     if (v) { u.voice = v; u.lang = v.lang; } else u.lang = lang;
-    u.rate = 0.9; return u;
+    u.rate = 0.9;
+    // a cloud voice that fails (no internet, the service down) says it again with a voice on the device
+    if (v && v.localService === false && !local) u.onerror = e => { if (!/interrupted|canceled/.test((e && e.error) || '')) speechSynthesis.speak(utter(text, lang, strict, true)); };
+    return u;
   }
   if (hasTTS()) {
     speechSynthesis.getVoices(); // most browsers load the list lazily
-    const vc = () => { if (view.page === 'settings') render(); };
+    const vc = () => { voicesSeen = true; refreshVoiceCard(); };
     if (speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', vc); else speechSynthesis.onvoiceschanged = vc;
   }
+  // a long text (a whole article) goes sentence by sentence: Chrome's online Google voices stop after about 15 seconds
+  const speechChunks = text => { const out = []; let cur = ''; (String(text).match(/[^.!?]+[.!?]+["'”’)\]]*\s*|[^.!?]+$/g) || [String(text)]).forEach(s => { if (cur && (cur + s).length > 200) { out.push(cur); cur = ''; } cur += s; }); if (cur.trim()) out.push(cur); return out; };
   function speak(text) {
     if (!hasTTS()) return;
     speechSynthesis.cancel();
-    speechSynthesis.speak(utter(text, 'en-US'));
+    (String(text).length > 200 ? speechChunks(text) : [text]).forEach(c => speechSynthesis.speak(utter(c, 'en-US')));
   }
   function speakStop() { if (hasTTS()) speechSynthesis.cancel(); }
 
@@ -2115,12 +2126,20 @@
   /* ---- Settings ---- */
   // 🔊 發音聲音: 男聲 / 女聲 for this device, a 試聽 button, and which voice the device will actually use
   function voiceCard() {
-    const has = hasTTS(), v = has ? voiceFor('en-US') : null, any = has && speechSynthesis.getVoices().length;
-    const note = !has ? t('voiceNone') : v ? tf('voiceUsing', { v: esc(v.name.replace(/\s+[-–(].*$/, '') || v.name), l: esc(v.lang) }) : any ? t(ui.voice === 'f' ? 'voiceNoF' : 'voiceNoM') : '';
+    const has = hasTTS(), v = has ? voiceFor('en-US') : null, en = has ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang || '')) : [];
+    const known = voiceKnown(), phoneOnly = sysVoice && !known; // Android: the phone decides, so no 男聲/女聲 buttons
+    const note = !has ? t('voiceNone') : v ? tf('voiceUsing', { v: esc(v.name.replace(/\s+-\s+.*$/, '') || v.name), l: esc(v.lang) })
+      : sysVoice ? t('voiceAndroid') : !en.length ? t(voicesSeen ? 'voiceNone' : 'voiceDefault') : !known ? t('voiceUnknown') : t(ui.voice === 'f' ? 'voiceNoF' : 'voiceNoM');
     return `<div class="card voice-set"><h3 style="margin-top:0">🔊 ${t('voiceTitle')}</h3><p class="small muted">${t('voiceSub')}</p>
-      <div class="voice-row"><div class="px-chips" role="group" aria-label="${t('voiceTitle')}">${[['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]].map(([k, l]) => `<button type="button" class="px-chip ${(ui.voice === 'f' ? 'f' : 'm') === k ? 'on' : ''}" data-action="setVoice" data-v="${k}" aria-pressed="${(ui.voice === 'f' ? 'f' : 'm') === k}">${l}</button>`).join('')}</div>
+      <div class="voice-row">${phoneOnly ? '' : `<div class="px-chips" role="group" aria-label="${t('voiceTitle')}">${[['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]].map(([k, l]) => `<button type="button" class="px-chip ${(ui.voice === 'f' ? 'f' : 'm') === k ? 'on' : ''}" data-action="setVoice" data-v="${k}" aria-pressed="${(ui.voice === 'f' ? 'f' : 'm') === k}">${l}</button>`).join('')}</div>`}
         <button type="button" class="btn sm ghost" data-action="voiceTest" ${has ? '' : 'disabled'}>▶ ${t('voiceTest')}</button></div>
       ${note ? `<p class="small muted voice-note">${note}</p>` : ''}</div>`;
+  }
+  function refreshVoiceCard(focusV) {
+    const c = $('#app .voice-set'); if (!c) return;
+    const a = document.activeElement, keep = a && c.contains(a) ? a.dataset.v || a.dataset.action : null;
+    c.outerHTML = voiceCard();
+    const k = focusV || keep, b = k && ($(`#app .voice-set [data-v="${k}"]`) || $(`#app .voice-set [data-action="${k}"]`)); if (b) b.focus({ preventScroll: true });
   }
   function pageSettings() {
     const s = state.settings, T = ui.teacher;
@@ -2390,8 +2409,9 @@
   /* ---------------- Actions ---------------- */
   const actions = {
     tourStart() { startTour(); },
-    setVoice(el) { ui.voice = el.dataset.v === 'f' ? 'f' : 'm'; saveUi(); render(); speak(t('voiceSample')); },
-    voiceTest() { speak(t('voiceSample')); },
+    setVoice(el) { ui.voice = el.dataset.v === 'f' ? 'f' : 'm'; saveUi(); refreshVoiceCard(ui.voice); speak(t('voiceSample')); },
+    // 試聽 says so when the device cannot read at all (a normal cancel or a second click is not an error)
+    voiceTest() { if (!hasTTS()) return; speechSynthesis.cancel(); const u = utter(t('voiceSample'), 'en-US'), cloud = u.onerror; u.onerror = e => { if (cloud) cloud(e); else if (!/cancel|interrupt/.test((e && e.error) || '')) toast(t('voiceNone')); }; speechSynthesis.speak(u); },
     tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); jumpTo(0); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
     tourYes() { invEl.classList.add('hidden'); document.body.classList.remove('tour-invited'); startTour(); },
     setLevel(el) {
@@ -2890,7 +2910,7 @@
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
       <div class="ap-row"><span class="ap-lbl">${t('fontLabel')}</span>${seg('font', ui.font, [['hand', t('fontHand')], ['clean', t('fontClean')]], t('fontLabel'))}</div>
-      <div class="ap-row"><span class="ap-lbl">${t('voiceShort')}</span>${seg('voice', ui.voice === 'f' ? 'f' : 'm', [['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]], t('voiceTitle'))}</div>
+      <div class="ap-row"><span class="ap-lbl">${t('voiceShort')}</span>${sysVoice && !voiceKnown() ? `<span class="small muted">${t('voiceAndroidShort')}</span>` : seg('voice', ui.voice === 'f' ? 'f' : 'm', [['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]], t('voiceTitle'))}</div>
       <div class="swatches" role="group" aria-label="${t('swatchLabel')}">${THEMES.map(([id, c, ac]) => `<button type="button" class="swatch" data-more-theme="${id}" aria-pressed="${ui.theme === id}" style="--sw:${c};--sw-a:${ac}"><i aria-hidden="true"></i><span>${t('theme' + id[0].toUpperCase() + id.slice(1))}</span></button>`).join('')}</div>`;
   }
   function openMore() { moreOpener = document.activeElement; renderMore(); moreEl.classList.remove('hidden'); setTimeout(() => { const b = $('.more-tile', moreEl); if (b) b.focus({ preventScroll: true }); }, 30); }
@@ -2902,7 +2922,7 @@
     else if (d.more === 'account') { closeMore(); if (ui.user) logoutFlow(); else openAuth('login'); }
     else if (d.more === 'tour') { closeMore(); startTour(); }
     else if (d.more) { moreEl.classList.add('hidden'); nav(d.more); }
-    else if (d.moreVoice) { ui.voice = d.moreVoice === 'f' ? 'f' : 'm'; saveUi(); render(); renderMore(); const same = $(`[data-more-voice="${ui.voice}"]`, moreEl); if (same) same.focus({ preventScroll: true }); speak(t('voiceSample')); }
+    else if (d.moreVoice) { ui.voice = d.moreVoice === 'f' ? 'f' : 'm'; saveUi(); refreshVoiceCard(); renderMore(); const same = $(`[data-more-voice="${ui.voice}"]`, moreEl); if (same) same.focus({ preventScroll: true }); speak(t('voiceSample')); }
     else if (d.moreLang || d.moreFont || d.moreTheme) {
       if (d.moreLang) ui.lang = d.moreLang; if (d.moreFont) ui.font = d.moreFont; if (d.moreTheme) ui.theme = d.moreTheme;
       saveUi(); applyUi(); render(); renderMore();
@@ -3115,10 +3135,11 @@
   window.addEventListener('scroll', () => { if (tour.i >= 0) placeTour(); }, { passive: true });
   // answered in another tab: the invitation goes away here too
   window.addEventListener('storage', e => {
-    if (e.key !== LS_UI || ui.tour) return;
+    if (e.key !== LS_UI) return;
     let o = {}; try { o = JSON.parse(e.newValue || '{}') || {}; } catch (x) { }
-    if (!o.tour) return;
-    ui.tour = 1; syncTourInvite();
+    if (o.tour && !ui.tour) { ui.tour = 1; syncTourInvite(); }
+    // another tab changed the reading voice: follow it, so this tab does not write the old one back
+    if ((o.voice === 'f' || o.voice === 'm') && o.voice !== (ui.voice === 'f' ? 'f' : 'm')) { ui.voice = o.voice; refreshVoiceCard(); if (!moreEl.classList.contains('hidden')) renderMore(); }
   });
   // a click on the dim layer or the card text keeps focus on the card's buttons
   tourEl.addEventListener('mousedown', e => { if (!e.target.closest('button')) e.preventDefault(); });
