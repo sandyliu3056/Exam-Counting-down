@@ -200,13 +200,15 @@
   const flashEl = el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200); };
   const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'],
     mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
-  // phone bottom bar: six groups; every page is at most two taps away
+  // phone bottom bar: seven groups (紀錄 has its own button, like the desktop tab); 更多 holds 設定, the tour, the account and 外觀
   const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'read', pages: ['reading', 'news'] }, { id: 'words', pages: ['flashcards', 'vocab', 'phrases'] },
-    { id: 'practice', pages: ['mcq'] }, { id: 'translate', pages: ['translate'] }, { id: 'more', pages: ['progress', 'students', 'settings'] }];
-  // desktop folder tabs: the same groups, with 紀錄 and 設定 as their own tabs
-  const DESK_GROUPS = GROUPS.slice(0, 5).concat([{ id: 'record', pages: ['progress', 'students'] }, { id: 'settings', pages: ['settings'] }]);
+    { id: 'practice', pages: ['mcq'] }, { id: 'translate', pages: ['translate'] }, { id: 'record', pages: ['progress', 'students'] }, { id: 'more', pages: ['settings'] }];
+  // desktop folder tabs: the same groups, with 設定 as its own tab
+  const DESK_GROUPS = GROUPS.slice(0, 6).concat([{ id: 'settings', pages: ['settings'] }]);
   const groupOf = (page, list = GROUPS) => (list.find(g => g.pages.includes(page)) || list[0]).id;
   const pagesOf = (gid, list) => ((list.find(g => g.id === gid) || list[0]).pages).filter(p => p !== 'students' || ui.teacher);
+  // the page a group opens on the first time: 紀錄 opens 學生狀況 for a teacher
+  const firstOf = (gid, list) => { const p = pagesOf(gid, list); return ui.teacher && p.includes('students') ? 'students' : p[0]; };
   const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['progress', 'students']];
   // pill row for the pages that share a group (閱讀測驗 | 每日新聞 …)
   const PRACTICE_PAIR = ['mcq', 'translate'];
@@ -765,7 +767,7 @@
   const lvOf = p => { const l = p && p.level; return l && LEVELS.includes(l.v) ? l.v : ''; };
   const myLevel = () => lvOf(state.progress);
   const levelAsked = () => !!(state.progress.level && state.progress.level.at);
-  const LV_PRESET = { A2: '@A', B1: '@B1', B2: '@B2', C1: '@C1', C2: '@C2' };
+  const LV_PRESET = { A2: '@A2', B1: '@B1', B2: '@B2', C1: '@C1', C2: '@C2' };
   const LV_TEST = ['B1', 'B2'];  // the 統測 range: starred as recommended
   // a new level (chosen here or on another device) moves the starting filters with it; a filter changed by hand stays until then
   function applyLevel() {
@@ -1037,6 +1039,7 @@
     if (!mcItems().length && !clozeSets().length) return `${subtabs('mcq')}${pageHead('mcq', t('mcTitle'))}<div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
     if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
     const f = view.mcf || (view.mcf = { type: '', level: myLevel(), status: '', mode: 'practice', count: 10 });
+    f.status = ''; f.mode = 'practice'; // the setup is just 題型 · 程度 · 題數: every question, practice mode (each answer explained)
     const S = mcStats(state.progress);
     const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
     const cloze = f.type === 'cloze', pct = S.done ? Math.round(S.right / S.done * 100) + '%' : '—';
@@ -1046,11 +1049,9 @@
         <div class="px-rows">
           ${pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.map(([k, l, ic]) => [k, `${ic} ${t(k === 'cloze' ? 'pxCloze' : l)}`, (k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : S.byType[k].total) + (S.byType[k].done ? ` · ${Math.round(S.byType[k].right / S.byType[k].done * 100)}%` : '')])), 2))}
           ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'mcLevel', f.level, PX_LEVELS()))}
-          ${pxRow('pxShow', t('pxShow'), pxChips('pxShow', 'mcStatus', f.status, [['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]]))}
-          ${pxRow('pxMode', t('pxMode'), pxChips('pxMode', 'mcMode', f.mode, [['practice', '✏️ ' + t('mcPractice')], ['test', '⏱️ ' + t('mcTest')]]))}
           ${pxRow('pxCount', t(cloze ? 'pxCountP' : 'pxCount'), pxChips('pxCount', 'mcCount', f.count, (cloze ? [1, 2, 4] : [10, 20, 30]).map(n => [n, tf(cloze ? 'mcNPassages' : 'mcNQ', { n })])))}
         </div>
-        <div class="px-go"><p class="small muted">${t(f.mode === 'test' ? 'mcTestHint' : 'mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
+        <div class="px-go"><p class="small muted">${t('mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
           <button class="btn accent block-cta" data-action="mcStart" ${count ? '' : 'disabled'}>▶ ${t('mcStart')}</button></div>
       </div>
       ${(state.progress.mcqTests || []).length ? `<div class="card"><h3 style="margin-top:0">${t('mcRecent')}</h3><div class="list">${state.progress.mcqTests.slice(-8).reverse().map(r => `<div class="list-item"><span class="small muted">${fmtDate(r.date)}</span><span>${esc(r.type ? t((MC_TYPES.find(x => x[0] === r.type) || [0, 'mcMixed'])[1]) : t('mcMixed'))} · ${t(r.mode === 'test' ? 'mcTest' : 'mcPractice')}</span><span class="spacer"></span><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span>${r.secs != null ? `<span class="small muted">${fmtDur(r.secs)}</span>` : ''}</div>`).join('')}</div></div>` : ''}`;
@@ -1149,11 +1150,12 @@
     if (!items.length) return `${subtabs('translate')}${pageHead('translate', t('trTitle'))}<div class="card"><p class="muted" style="margin:0">${t('trNoItems')}</p></div>`;
     if (view.tr) return view.tr.i >= view.tr.ids.length ? trSummary() : trStage();
     const f = view.trf || (view.trf = { group: 0, level: myLevel(), status: '' });
+    f.status = ''; // the setup is just 主題 · 程度
     const S = trStats(state.progress), list = trFiltered();
     // 20 questions per page, with page numbers above and below the list
     const pages = Math.max(1, Math.ceil(list.length / TR_PAGE)), cur = f.page = Math.min(f.page || 0, pages - 1);
     const shown = list.slice(cur * TR_PAGE, cur * TR_PAGE + TR_PAGE);
-    const pager = pagerHTML(cur, pages, 'trGo', i => { const z = (list[i * TR_PAGE] || {}).zh || ''; return z.length > 14 ? z.slice(0, 14) + '…' : z; });
+    const pager = pagerHTML(cur, pages, 'trGo');
     const mark = it => { const r = trRec(it.id); return r ? (r.lastOk ? '<span class="tr-mark ok">✓</span>' : '<span class="tr-mark bad">✗</span>') : '<span class="tr-mark">·</span>'; };
     const groupSel = `<select class="input px-sel" id="trGroupSel">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<option value="${g}" ${f.group === g ? 'selected' : ''}>${g ? t(TR_GROUPS[g - 1]) : t('pxAllTopics')}${ui.lang === 'en' ? ' (' : '（'}${g ? items.filter(it => trGroupOf(it) === g).length : items.length}${ui.lang === 'en' ? ')' : '）'}</option>`).join('')}</select>`;
     return `${subtabs('translate')}${pageHead('translate', tf('trSub', { n: items.length }))}
@@ -1162,7 +1164,6 @@
         <div class="px-rows">
           ${pxRow('pxTopic', t('pxTopic'), groupSel, 'trGroupSel')}
           ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'trLevel', f.level, PX_LEVELS()))}
-          ${pxRow('pxShow', t('pxShow'), pxChips('pxShow', 'trStatus', f.status, [['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]]))}
         </div>
         <div class="px-go"><p class="small muted">${tf('mcAvailable', { n: list.length })}</p>
           <button class="btn accent block-cta" data-action="trStart" ${list.length ? '' : 'disabled'}>✍️ ${tf('trStartN', { n: Math.min(10, list.length) })}</button></div>
@@ -1211,7 +1212,7 @@
       <button class="pg-btn" data-action="${action}" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
       ${nums.map(n => n === '…' ? '<span class="pg-gap">…</span>' : `<button class="pg-btn pg-num ${n === cur ? 'on' : ''}" data-action="${action}" data-p="${n}" ${n === cur ? 'aria-current="page"' : ''}>${n + 1}</button>`).join('')}
       <button class="pg-btn" data-action="${action}" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button>
-      <select class="input pager-sel" data-pager="${action}" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1}${labelOf ? ' · ' + esc(labelOf(i)) : ''}</option>`).join('')}</select>
+      <select class="input pager-sel" data-pager="${action}" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${tf('pgPageN', { n: i + 1 })}${labelOf ? ' · ' + esc(labelOf(i)) : ''}</option>`).join('')}</select>
     </div>`;
   }
   const PHR_PAGE = 24;
@@ -1234,7 +1235,7 @@
     // the same tidy filter card as the word bank: search · 類別 · 程度, then bookmarks, the count and a compact pager, then practice
     const mini = pages > 1 ? `<div class="wb-mini">
       <button class="pg-btn" data-action="phrGo" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
-      <select class="input pager-sel" data-pager="phrGo" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1} · ${esc((list[i * PHR_PAGE] || {}).word || '')}</option>`).join('')}</select>
+      <select class="input pager-sel" data-pager="phrGo" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${tf('pgPageN', { n: i + 1 })} · ${esc((list[i * PHR_PAGE] || {}).word || '')}</option>`).join('')}</select>
       <button class="pg-btn" data-action="phrGo" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button></div>` : '';
     return `${subtabs('phrases')}${pageHead('phrases', tf('phrSub', { n: fmtN(all.length) }))}
       <div class="card wb-tools phr-tools">
@@ -1676,18 +1677,37 @@
 
   /* ---- Flashcards & quiz ---- */
   function units() { return Array.from(new Set(VOCAB.map(v => v.unit || ''))).filter(Boolean); }
+  // the word drop-down: by level first (A1–C2, with the 7000-word Level and the number of words), then 片語, 統測高頻 3000 and the
+  // teacher's own words. The 統測高頻 sets of 100 come in a second drop-down beside it, only while 統測高頻 is chosen.
+  const UNIT_LEVELS = [['@A1', 'A1', [1]], ['@A2', 'A2', [2]], ['@B1', 'B1', [3, 4]], ['@B2', 'B2', [5, 6, 7]], ['@C1', 'C1', [8]], ['@C2', 'C2', [9]]];
+  function unitCounts() {
+    const c = { lv: {}, phrase: 0, custom: 0, hf: 0 };
+    for (const v of VOCAB) {
+      if (v.type === 'word') c.lv[+v.level] = (c.lv[+v.level] || 0) + 1; else if (v.type === 'phrase') c.phrase++;
+      if (!LIBMAP[v.id] || v.override) c.custom++;
+      if (HF_RANK[v.id] !== undefined) c.hf++;
+    }
+    return c;
+  }
   function unitSelect(id, val) {
-    const all = units();
-    const custom = all.filter(u => !LIBRARY.some(v => v.unit === u));
-    const adv = u => u === 'c1' || u === 'c2';
-    const words = all.filter(u => !adv(u) && LIBRARY.some(v => v.unit === u && v.type === 'word')), advanced = all.filter(u => adv(u) && LIBRARY.some(v => v.unit === u));
-    const phrases = all.filter(u => LIBRARY.some(v => v.unit === u && v.type === 'phrase'));
-    const opt = u => `<option value="${esc(u)}" ${u === val ? 'selected' : ''}>${esc(unitLabel(u))}</option>`;
-    const grp = (label, arr) => arr.length ? `<optgroup label="${esc(label)}">${arr.map(opt).join('')}</optgroup>` : '';
-    const presets = [['@A', t('presetA')], ['@B1', t('presetB1')], ['@B2', t('presetB2')], ['@C1', t('presetC1')], ['@C2', t('presetC2')], ['@phrase', t('presetPhrase')], ['@custom', t('presetCustom')]]
-      .filter(p => (p[0] === '@custom' ? custom.length : p[0] === '@phrase' ? phrases.length : p[0] === '@C1' ? advanced.includes('c1') : p[0] === '@C2' ? advanced.includes('c2') : words.length));
-    const hf = HF_SETS ? `<optgroup label="${esc(t('hfGroup'))}"><option value="@hf" ${val === '@hf' ? 'selected' : ''}>${tf('hfAll', { n: (window.HIGH_FREQ || []).length })}</option>${Array.from({ length: HF_SETS }, (_, i) => `<option value="@hf:${i + 1}" ${val === '@hf:' + (i + 1) ? 'selected' : ''}>${tf('hfSet', { n: i + 1, a: i * 100 + 1, b: Math.min((i + 1) * 100, window.HIGH_FREQ.length) })}</option>`).join('')}</optgroup>` : '';
-    return `<select class="input" id="${id}"><option value="">${t('allUnits')}</option>${presets.map(p => `<option value="${p[0]}" ${p[0] === val ? 'selected' : ''}>${p[1]}</option>`).join('')}${hf}${grp(t('presetCustom'), custom)}${grp(t('libWords'), words)}${grp(t('libAdv'), advanced)}${grp(t('libPhrases'), phrases)}</select>`;
+    val = val || '';
+    const c = unitCounts(), n = x => x.toLocaleString('en-US'), sum = lvs => lvs.reduce((s, l) => s + (c.lv[l] || 0), 0);
+    const hfOn = val === '@hf' || /^@hf:\d+$/.test(val);
+    const opt = (u, label) => `<option value="${esc(u)}" ${u === val || (u === '@hf' && hfOn) ? 'selected' : ''}>${label}</option>`;
+    const levels = UNIT_LEVELS.filter(x => sum(x[2])).map(([u, cefr, lvs]) => opt(u, tf('unitCefr', { c: cefr, name: t('lvName' + cefr),
+      lv: lvs[0] <= 7 ? tf('unitLvRange', { r: lvs.length > 1 ? `${lvs[0]}–${lvs[lvs.length - 1]}` : lvs[0] }) : '', n: n(sum(lvs)) })));
+    const custom = units().filter(u => !LIBRARY.some(v => v.unit === u));  // units the teacher named
+    const more = [c.phrase ? opt('@phrase', tf('unitPhrases', { n: n(c.phrase) })) : '', HF_SETS ? opt('@hf', '⭐ ' + esc(t('hfGroup'))) : ''].join('');
+    // the teacher's words: all of them, then each unit the teacher named
+    const own = c.custom || custom.length ? `<optgroup label="${esc(t('presetCustom'))}">${c.custom ? opt('@custom', tf('unitCustom', { n: n(c.custom) })) : ''}${custom.map(u => opt(u, esc(unitLabel(u)))).join('')}</optgroup>` : '';
+    const known = ['', '@phrase', '@hf', '@custom'].concat(UNIT_LEVELS.map(x => x[0]), custom);
+    // a phrase category sent from the 片語 page, or a choice saved before this list (a single Level, 7000 Level 1–2 …), still shows what it is
+    const legacy = !hfOn && !known.includes(val) ? `<optgroup label="${esc(t(/^ph\d+$/.test(val) ? 'libPhrases' : 'unitEarlier'))}">${opt(val, esc(val === '@A' ? t('presetA') : unitLabel(val)))}</optgroup>` : '';
+    const main = `<select class="input" id="${id}"><option value="">${t('allWords')}</option><optgroup label="${esc(t('unitByLevel'))}">${levels.join('')}</optgroup>`
+      + `${more ? `<optgroup label="${esc(t('unitMore'))}">${more}</optgroup>` : ''}${own}${legacy}</select>`;
+    const sets = hfOn && HF_SETS ? `<label class="sr-only" for="${id}Set">${t('hfSetLbl')}</label><select class="input unit-set" id="${id}Set"><option value="@hf" ${val === '@hf' ? 'selected' : ''}>${tf('hfAll', { n: n(c.hf) })}</option>`
+      + Array.from({ length: HF_SETS }, (_, i) => `<option value="@hf:${i + 1}" ${val === '@hf:' + (i + 1) ? 'selected' : ''}>${tf('hfSet', { n: i + 1, a: n(i * 100 + 1), b: n(Math.min((i + 1) * 100, window.HIGH_FREQ.length)) })}</option>`).join('') + '</select>' : '';
+    return `<div class="unit-pick${sets ? ' two' : ''}">${main}${sets}</div>`;
   }
   // 統測高頻 3000 (highfreq.js): ids in order, most frequent first, in sets of 100
   const HF_RANK = {}; (window.HIGH_FREQ || []).forEach((id, i) => { HF_RANK[id] = i; });
@@ -1700,6 +1720,8 @@
     if (unit === '@B1') return v.type === 'word' && (lv === 3 || lv === 4);
     if (unit === '@B2') return v.type === 'word' && (lv === 5 || lv === 6 || lv === 7);
     if (unit === '@A') return v.type === 'word' && (lv === 1 || lv === 2);
+    if (unit === '@A1') return v.type === 'word' && lv === 1;
+    if (unit === '@A2') return v.type === 'word' && lv === 2;
     if (unit === '@C1') return v.type === 'word' && lv === 8;
     if (unit === '@C2') return v.type === 'word' && lv === 9;
     if (unit === '@phrase') return v.type === 'phrase';
@@ -1710,7 +1732,7 @@
     let pool = VOCAB.filter(v => inUnit(v, unit));
     // a broad set (all words, or a level band such as the one picked as 我的程度) only chooses the NEW cards: reviews, missed and
     // bookmarked cards come from everywhere. A narrow set (a Level, a phrase group, a 高頻 set, the teacher's unit) keeps everything inside it.
-    const src = !unit || /^@(A|B1|B2|C1|C2)$/.test(unit) ? VOCAB : pool;
+    const src = !unit || /^@(A[12]?|B1|B2|C1|C2)$/.test(unit) ? VOCAB : pool;
     const td = todayStr(), isDue = v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= td; };
     if (mode === 'due') pool = src.filter(isDue).concat(pool.filter(v => { const c = state.progress.cards[v.id]; return !c || c.seen === 0; }));
     else if (mode === 'dueOnly') pool = src.filter(isDue);
@@ -1857,7 +1879,7 @@
     // top: a compact ‹ [第 n 頁 ▾] ›; bottom: the full row of page numbers
     const mini = pages > 1 ? `<div class="wb-mini">
       <button class="pg-btn" data-action="vocabGo" data-p="${cur - 1}" ${cur === 0 ? 'disabled' : ''} aria-label="${t('pgPrev')}">‹</button>
-      <select class="input pager-sel" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${t('pgJumpTo')} ${i + 1} · ${esc((list[i * PAGE] || {}).word || '')}</option>`).join('')}</select>
+      <select class="input pager-sel" aria-label="${t('pgJump')}">${Array.from({ length: pages }, (_, i) => `<option value="${i}" ${i === cur ? 'selected' : ''}>${tf('pgPageN', { n: i + 1 })} · ${esc((list[i * PAGE] || {}).word || '')}</option>`).join('')}</select>
       <button class="pg-btn" data-action="vocabGo" data-p="${cur + 1}" ${cur >= pages - 1 ? 'disabled' : ''} aria-label="${t('pgNext')}">›</button></div>` : '';
     const pager = pagerHTML(cur, pages, 'vocabGo', i => (list[i * PAGE] || {}).word || '');
     const T = ui.teacher;
@@ -1877,7 +1899,7 @@
       <div class="card wb-tools">
         <div class="wb-filters">
           <label class="sr-only" for="vocabSearch">${t('search')}</label><input type="search" id="vocabSearch" class="wb-search" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
-          <div class="wb-sel"><label class="sr-only" for="vocabUnit">${t('unit')}</label>${unitSelect('vocabUnit', view.vocabUnit)}</div>
+          <div class="wb-sel${String(view.vocabUnit).startsWith('@hf') ? ' wide' : ''}"><label class="sr-only" for="vocabUnit">${t('unit')}</label>${unitSelect('vocabUnit', view.vocabUnit)}</div>
           <div class="wb-sel"><label class="sr-only" for="vocabType">${t('wbType')}</label><select class="input" id="vocabType"><option value="" ${!ty ? 'selected' : ''}>${t('typeAll')}</option><option value="word" ${ty === 'word' ? 'selected' : ''}>${t('typeWord')}</option><option value="phrase" ${ty === 'phrase' ? 'selected' : ''}>${t('typePhrase')}</option><option value="custom" ${ty === 'custom' ? 'selected' : ''}>${t('presetCustom')}</option></select></div>
         </div>
         <div class="wb-meta">
@@ -2171,9 +2193,9 @@
     const k = focusV || keep, b = k && ($(`#app .voice-set [data-v="${k}"]`) || $(`#app .voice-set [data-action="${k}"]`)); if (b) b.focus({ preventScroll: true });
   }
   function pageSettings() {
-    const s = state.settings, T = ui.teacher;
+    const s = state.settings, T = ui.teacher, me = (ui.user && ui.user.email) || '';
     // the exam name is the teacher's to set; students still choose their exam date
-    return `${pageHead('settings', t('settingsSub'))}
+    return `${pageHead('settings', t(T ? 'settingsSubT' : 'settingsSub'))}
       <div class="card level-set"><h3 style="margin-top:0">🎯 ${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
       ${voiceCard()}
       <div class="card tour-again"><div><h3 style="margin:0">🧭 ${t('tourAgain')}</h3><p class="small muted" style="margin:4px 0 0">${t('tourAgainSub')}</p></div><button type="button" class="btn" data-action="tourStart">${t('tourStart')}</button></div>
@@ -2182,12 +2204,13 @@
           ${T ? `<div class="field"><label for="stExamName">${t('examName')}</label><input type="text" id="stExamName" value="${esc(s.examName)}"></div>
           <div class="field"><label for="stExamNameEn">${t('examNameEn')}</label><input type="text" id="stExamNameEn" value="${esc(s.examNameEn || '')}"></div>` : ''}
           <div class="field"><label for="stExamDate">${t('examDate')}</label><input type="date" id="stExamDate" value="${esc(s.examDate)}"></div>
-          <div class="field"><label for="stStudent">${t('studentName')}</label><input type="text" id="stStudent" value="${esc(s.studentName || '')}"></div>
-          <div class="field"><label for="stTeacherEmail">${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>
+          ${T ? `<div class="field"><label for="stTeacherEmail">${t('teacherEmailMine')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="${esc(me || 'teacher@example.com')}" inputmode="email" aria-describedby="stTeacherEmailNote"><p class="small muted field-note" id="stTeacherEmailNote">${t(!cloud.configured ? 'teacherEmailLocal' : s.teacherEmail ? 'teacherEmailMineNote' : 'teacherEmailUnsaved')}</p>${!s.teacherEmail && me ? `<button type="button" class="btn sm ghost" data-action="useMyEmail">✉️ ${t('useMyEmail')}</button>` : ''}</div>`
+            : `<div class="field"><label for="stStudent">${t('studentName')}</label><input type="text" id="stStudent" value="${esc(s.studentName || '')}"></div>
+          <div class="field"><label for="stTeacherEmail">${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>`}
         </div>
         ${T ? '' : `<p class="small muted" style="margin:0 0 12px">🔒 ${t('teacherSetsNote')}</p>`}
         <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(cloud.configured ? cloud.teacherCode : (s.teacherCode || ''))}" autocomplete="off"${cloud.configured ? ` placeholder="${t('inviteCodeCloudPh')}"` : ''}></div>
-        <div class="row"><span class="muted small">${t('teacherHint')}</span><span class="spacer"></span><button class="btn accent" data-action="saveSettings">${t('save')}</button></div>
+        <div class="row">${T ? '' : `<span class="muted small">${t('teacherHint')}</span>`}<span class="spacer"></span><button class="btn accent" data-action="saveSettings">${t('save')}</button></div>
       </div>
       <div class="card"><h3 style="margin-top:0">${t('dataTitle')}</h3><p class="small muted">${t('dataSub')}</p>
         <div class="row">
@@ -2316,7 +2339,7 @@
   // a tab or bottom-bar button: back to the page last used in that group
   function goGroup(gid, list, pfx) {
     const pages = pagesOf(gid, list); let target = view.lastIn[pfx + gid];
-    if (!pages.includes(target)) target = pages[0];
+    if (!pages.includes(target)) target = firstOf(gid, list);
     // an article with answers in progress is kept (or reopened after a back swipe to the list); otherwise the group opens on the list
     if (target === 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) { view.articleId = null; view.editing = null; }
     else if (target === 'reading' && !view.articleId && view.page !== 'reading' && readOpen()) view.articleId = view.lastArticle;
@@ -2501,8 +2524,6 @@
     vocabGo(el) { view.vocabPage = +el.dataset.p; render(); const tb = $('.wb-tools'); if (tb) tb.scrollIntoView({ block: 'start' }); },
     mcType(el) { view.mcf.type = el.dataset.v; view.mcf.count = el.dataset.v === 'cloze' ? 1 : (view.mcf.count > 4 ? view.mcf.count : 10); render(); },
     mcLevel(el) { view.mcf.level = el.dataset.v; render(); },
-    mcStatus(el) { view.mcf.status = el.dataset.v; render(); },
-    mcMode(el) { view.mcf.mode = el.dataset.v; render(); },
     mcCount(el) { view.mcf.count = +el.dataset.v; render(); },
     mcStart() {
       const f = view.mcf, cloze = f.type === 'cloze';
@@ -2768,19 +2789,22 @@
     async resetProgress() { if (!await askConfirm({ title: t('resetProgress'), body: t('confirmReset'), ok: t('resetProgress'), danger: true })) return; state.progress = Object.assign(emptyProgress(), { resetAt: new Date().toISOString() }, state.progress.level ? { level: state.progress.level } : {}); save(); render(); },  // the chosen level is a setting, not a record: it stays
     deleteReport(el) { if (!confirm(t('confirmDel'))) return; state.studentReports = state.studentReports.filter(r => r.id !== el.dataset.id); view.studentSource = 'local'; save(); render(); },
     // settings
+    useMyEmail() { const el = $('#stTeacherEmail'); if (el && ui.user && ui.user.email) { el.value = ui.user.email; el.focus(); } },
     saveSettings() {
-      const s = state.settings;
-      if (ui.teacher && $('#stExamName')) { s.examName = $('#stExamName').value.trim() || s.examName; s.examNameEn = $('#stExamNameEn').value.trim(); }
-      const d = $('#stExamDate').value; if (d && d !== s.examDate) setExamDate(d);
-      s.studentName = $('#stStudent').value.trim();
-      if ($('#stTeacherEmail')) s.teacherEmail = $('#stTeacherEmail').value.trim();
+      const s = state.settings, em = $('#stTeacherEmail'), ev = em ? em.value.trim() : '';
+      // every refusal comes first, so a refused save changes nothing; an address left as it was (e.g. from the class material) is not checked again
+      if (ev && ev !== (s.teacherEmail || '') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ev)) { toast(t('badEmail')); em.focus(); return; }
       const code = ui.teacher && $('#stCode') ? $('#stCode').value.trim() : '';
       // in cloud mode the invite code lives only in the database, never in the shared material
-      if (cloud.configured && ui.teacher && code !== cloud.teacherCode) {
-        if (code && code.length < 8) { toast(t('inviteTooShort')); return; }
-        if (!code && !confirm(t('inviteClearConfirm'))) return;
-        if (cloud.enabled && ui.user.cloud) cloud.sb.rpc('set_teacher_code', { new_code: code }).then(sbCheck).then(() => { cloud.teacherCode = code; toast(t(code ? 'inviteSaved' : 'inviteCleared')); }, e => toast('☁️ ' + e.message));
-      } else if (!cloud.configured && code) s.teacherCode = code;
+      const newCode = cloud.configured && ui.teacher && code !== cloud.teacherCode;
+      if (newCode && code && code.length < 8) { toast(t('inviteTooShort')); return; }
+      if (newCode && !code && !confirm(t('inviteClearConfirm'))) return;
+      if (ui.teacher && $('#stExamName')) { s.examName = $('#stExamName').value.trim() || s.examName; s.examNameEn = $('#stExamNameEn').value.trim(); }
+      const d = $('#stExamDate').value; if (d && d !== s.examDate) setExamDate(d);
+      if ($('#stStudent')) s.studentName = $('#stStudent').value.trim();
+      if (em) s.teacherEmail = ev;
+      if (newCode) { if (cloud.enabled && ui.user.cloud) cloud.sb.rpc('set_teacher_code', { new_code: code }).then(sbCheck).then(() => { cloud.teacherCode = code; toast(t(code ? 'inviteSaved' : 'inviteCleared')); }, e => toast('☁️ ' + e.message)); }
+      else if (!cloud.configured && code) s.teacherCode = code;
       save(); toast(t('saved')); render();
     },
     exportAll() { download(`tve-exam-all-${todayStr()}.json`, state); },
@@ -2816,7 +2840,7 @@
     if (!SEARCH_IDS.test(e.target.id)) flushSearch();
     const id = e.target.id;
     if (id === 'fsMode') view.flashSetup.mode = e.target.value, render();
-    else if (id === 'fsUnit') view.flashSetup.unit = e.target.value, render();
+    else if (id === 'fsUnit' || id === 'fsUnitSet') view.flashSetup.unit = e.target.value, render();
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
     else if (id === 'trGroupSel') Object.assign(view.trf, { group: +e.target.value, page: 0 }), render();
@@ -2826,9 +2850,9 @@
     else if (e.target.classList.contains('pager-sel') && e.target.dataset.pager === 'trGo') view.trf.page = +e.target.value, render(), trScrollTop();
     else if (e.target.classList.contains('pager-sel')) view.vocabPage = +e.target.value, render();
     else if (id === 'qsType') view.quizSetup.type = e.target.value;
-    else if (id === 'qsUnit') view.quizSetup.unit = e.target.value;
+    else if (id === 'qsUnit' || id === 'qsUnitSet') view.quizSetup.unit = e.target.value, render();
     else if (id === 'qsCount') view.quizSetup.count = +e.target.value;
-    else if (id === 'vocabUnit') view.vocabUnit = e.target.value, view.vocabPage = 0, render();
+    else if (id === 'vocabUnit' || id === 'vocabUnitSet') view.vocabUnit = e.target.value, view.vocabPage = 0, render();
     else if (id === 'studentSource') view.studentSource = e.target.value, render();
     else if (id === 'importFile') { const f = e.target.files[0]; if (f) readFile(f, obj => { try {
       // in cloud mode a teacher's import changes the material of the whole class: say what will change first
@@ -2945,7 +2969,7 @@
     else { render({ focusHeading: true }); jumpTo(0); }
   });
 
-  /* ---- 更多 sheet (phone): 學習紀錄, 設定, 學生狀況, account, appearance ---- */
+  /* ---- 更多 sheet (phone): 設定, 使用導覽, account, appearance ---- */
   const THEMES = [['navy', '#1f3b73', '#f6c445'], ['forest', '#1f4d3a', '#f2d388'], ['plum', '#4b2353', '#ffd27a'], ['sakura', '#b83f73', '#fff0a6'], ['mint', '#227a6e', '#ffe08a'], ['sunset', '#b84a2c', '#ffe27a']];
   const moreEl = $('#moreSheet');
   let moreOpener = null;
@@ -2955,7 +2979,7 @@
     const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
-      <div class="more-tiles">${tile('progress', '📈', t('tabProgress'))}${tile('settings', '⚙️', t('tabSettings'))}${ui.teacher ? tile('students', '🧑‍🏫', t('tabStudents')) : ''}${tile('tour', '🧭', t('tourAgain'))}
+      <div class="more-tiles">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}
         ${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : t('account'))}</div>
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
@@ -3089,7 +3113,7 @@
     const phone = matchMedia('(max-width: 760px)').matches;
     return [{ k: 'tour1' }, { sel: '#lvHandle', k: 'tour2' }, { sel: phone ? '#bnav' : '#tabs', k: 'tour3' }, { sel: '#examChip', k: 'tour4' },
       { sel: phone ? '#langSelectM' : '#langSelect', k: 'tour5' }, { sel: '#authBtn', k: 'tour6' },
-      { sel: phone ? '.bnav-btn[data-group=more]' : '.tab[data-group=record]', k: phone ? 'tour7m' : 'tour7d' }, { k: 'tour8', last: true }]
+      { sel: phone ? '.bnav-btn[data-group=record]' : '.tab[data-group=record]', k: phone ? 'tour7m' : 'tour7d' }, { k: 'tour8', last: true }]
       .filter(x => !x.sel || shown($(x.sel)));
   }
   function startTour() {
