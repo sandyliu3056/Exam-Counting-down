@@ -761,7 +761,7 @@ body.teacher .teacher-only.flex { display: flex; }
 
 /* ---------- 單字庫: one tidy filter card, a fixed seven-column table (cards on phones) ---------- */
 .wb-tools { padding: 14px 16px; margin: 0 0 14px; }
-.wb-filters { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr) minmax(0, .8fr); gap: 10px; align-items: start; }
+.wb-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: start; }
 .wb-filters .wb-search, .wb-filters .input { width: 100%; max-width: none; margin: 0; }
 .wb-filters .wb-search, .wb-filters select.input { height: 46px; }
 .wb-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 10px; }
@@ -785,7 +785,7 @@ table.wb-table { table-layout: fixed; }
 .wb-table td.acts .btn + .btn { margin-left: 6px; }
 .wb-table tr.wb-edit td { background: #fff8df; }
 .wb-edit input { width: 100%; margin: 0 0 6px; }
-@media (max-width: 1080px) { .wb-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .wb-filters .wb-search { grid-column: 1 / -1; } }
+@media (max-width: 760px) { .wb-filters { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 640px) {
   .wb-tools { padding: 12px; }
   .wb-mini { flex: 1 1 0; min-width: 0; } .wb-mini .pager-sel { flex: 1; min-width: 0; max-width: none; }
@@ -1511,6 +1511,5 @@ label.px-lbl { min-height: 40px; }
 /* ---------- the word drop-down: level list, plus the 統測高頻 set beside it ---------- */
 /* the word drop-down and, for 統測高頻, its sets beside it (one under the other when there is no room) */
 .unit-pick { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
-.unit-pick > select { flex: 1 1 210px; min-width: 0; width: auto; max-width: none; margin: 0; }
-@media (max-width: 1080px) { .wb-filters .wb-sel.wide { grid-column: 1 / -1; } }
+.unit-pick > select { flex: 1 1 240px; min-width: 0; width: auto; max-width: none; margin: 0; }
 

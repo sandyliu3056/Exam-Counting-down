@@ -1744,23 +1744,15 @@
     return pool;
   }
 
-  const MODE_HELP = { due: 'mhDue', dueOnly: 'mhDueOnly', newHF: 'mhNewHF', all: 'mhAll', unknown: 'mhUnknown', new: 'mhNew', bookmark: 'mhBookmark' };
   function pageFlash() {
     if (view.flash) return flashStage();
     if (view.quiz) return quizStage();
     const fs = view.flashSetup, qsu = view.quizSetup;
+    fs.mode = 'due'; // the setup is just 單元 · 每輪張數: today's reviews first, then new words from the unit
     const count = poolFor(fs.mode, fs.unit).length;
     return `${subtabs('flashcards')}${pageHead('flashcards', t('flashSub'))}
       <div class="card setup">
-        <div class="grid-3">
-          <div class="field"><label for="fsMode">${t('range')}</label><select class="input" id="fsMode" aria-describedby="fsModeHelp">
-            <option value="due" ${fs.mode === 'due' ? 'selected' : ''}>${t('modeDueMix')}</option>
-            <option value="dueOnly" ${fs.mode === 'dueOnly' ? 'selected' : ''}>${t('modeDueOnly')}</option>
-            <option value="newHF" ${fs.mode === 'newHF' ? 'selected' : ''}>${t('modeNewHF')}</option>
-            <option value="all" ${fs.mode === 'all' ? 'selected' : ''}>${t('modeAll')}</option>
-            <option value="unknown" ${fs.mode === 'unknown' ? 'selected' : ''}>${t('modeUnknown')}</option>
-            <option value="new" ${fs.mode === 'new' ? 'selected' : ''}>${t('modeNew')}</option>
-            <option value="bookmark" ${fs.mode === 'bookmark' ? 'selected' : ''}>🔖 ${t('modeBookmark')}</option></select><p class="small muted fs-help" id="fsModeHelp">💡 ${t(MODE_HELP[fs.mode] || 'mhDue')}</p></div>
+        <div class="grid-2">
           <div class="field"><label for="fsUnit">${t('unit')}</label>${unitSelect('fsUnit', fs.unit)}</div>
           <div class="field"><label for="fsLimit">${t('perRound')}</label><select class="input" id="fsLimit">${[10, 20, 30, 50, 100, 0].map(n => `<option value="${n}" ${(fs.limit ?? 30) === n ? 'selected' : ''}>${n ? n : t('allCards')}</option>`).join('')}</select></div>
         </div>
@@ -1868,8 +1860,7 @@
   /* ---- Vocab bank ---- */
   function pageVocab() {
     const s = view.vocabSearch.toLowerCase();
-    const ty = view.vocabType || '';
-    const list = VOCAB.filter(v => inUnit(v, view.vocabUnit) && (!ty || (ty === 'custom' ? (!LIBMAP[v.id] || v.override) : v.type === ty)) && (!view.vocabBm || isBm('vocab', v.id)) && (!s || v.word.toLowerCase().includes(s) || (v.zh || '').includes(s) || (v.syn || '').toLowerCase().includes(s) || (v.example || '').toLowerCase().includes(s)));
+    const list = VOCAB.filter(v => inUnit(v, view.vocabUnit) && (!view.vocabBm || isBm('vocab', v.id)) && (!s || v.word.toLowerCase().includes(s) || (v.zh || '').includes(s) || (v.syn || '').toLowerCase().includes(s) || (v.example || '').toLowerCase().includes(s)));
     if (String(view.vocabUnit).startsWith('@hf')) list.sort((a, b) => HF_RANK[a.id] - HF_RANK[b.id]);  // most frequent first
     const PAGE = window.innerWidth <= 640 ? 20 : 50, pages = Math.max(1, Math.ceil(list.length / PAGE));
     view.vocabPage = Math.min(Math.max(0, view.vocabPage || 0), pages - 1);
@@ -1899,8 +1890,7 @@
       <div class="card wb-tools">
         <div class="wb-filters">
           <label class="sr-only" for="vocabSearch">${t('search')}</label><input type="search" id="vocabSearch" class="wb-search" placeholder="🔍 ${t('search')}" value="${esc(view.vocabSearch)}" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
-          <div class="wb-sel${String(view.vocabUnit).startsWith('@hf') ? ' wide' : ''}"><label class="sr-only" for="vocabUnit">${t('unit')}</label>${unitSelect('vocabUnit', view.vocabUnit)}</div>
-          <div class="wb-sel"><label class="sr-only" for="vocabType">${t('wbType')}</label><select class="input" id="vocabType"><option value="" ${!ty ? 'selected' : ''}>${t('typeAll')}</option><option value="word" ${ty === 'word' ? 'selected' : ''}>${t('typeWord')}</option><option value="phrase" ${ty === 'phrase' ? 'selected' : ''}>${t('typePhrase')}</option><option value="custom" ${ty === 'custom' ? 'selected' : ''}>${t('presetCustom')}</option></select></div>
+          <div class="wb-sel"><label class="sr-only" for="vocabUnit">${t('unit')}</label>${unitSelect('vocabUnit', view.vocabUnit)}</div>
         </div>
         <div class="wb-meta">
           <button class="btn sm ${view.vocabBm ? 'accent' : 'ghost'}" data-action="toggleVocabBm" aria-pressed="${!!view.vocabBm}">🔖 ${t('onlyBookmarks')}</button>
@@ -1981,8 +1971,14 @@
     return { done: done.length, right: right.length, wrong, total: items.length };
   }
   const reportName = () => state.settings.studentName || (ui.user && ui.user.name) || t('roleStudent');
+  // 單字卡 and 單字小考 for the report: words studied, how many the student remembered last time, the latest quizzes
+  const QUIZ_NAME = { choice: 'quizChoice', choiceRev: 'quizChoiceRev', spell: 'quizSpell' };
+  function wordStats(progress) {
+    const seen = Object.values(progress.cards).filter(c => c.seen > 0), known = seen.filter(c => c.box > 0).length;
+    return { seen: seen.length, known, learning: seen.length - known, quizzes: progress.vocabQuizzes.slice(-5).reverse() };
+  }
   function reportHTML(progress, name) {
-    const A = analyzeReport(progress, name), T = trStats(progress);
+    const A = analyzeReport(progress, name), T = trStats(progress), W = wordStats(progress);
     const mastered = VOCAB.filter(v => (progress.cards[v.id] || {}).box === 3).length;
     const days = []; for (let i = 13; i >= 0; i--) { const d = new Date(Date.now() - i * 864e5); const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); days.push([k.slice(5), progress.days[k] || 0]); }
     const maxDay = Math.max(1, ...days.map(d => d[1]));
@@ -2004,6 +2000,9 @@
       ${rq.length ? `<table class="pr-table"><tr><th>${t('reportWhen')}</th><th>${t('title')}</th><th>${t('reportScore')}</th><th>${t('reportTime')}</th></tr>${rq.map(r => `<tr><td>${fmtDate(r.date)}</td><td class="en">${esc(r.title)}</td><td>${r.score} / ${r.total}</td><td>${r.secs != null ? fmtDur(r.secs) : '—'}</td></tr>`).join('')}</table>` : `<p class="pr-none">${t('noData')}</p>`}
       <h2>❌ ${t('wrongAnalysis')}</h2>
       ${A.wrongs.length ? A.wrongs.slice(0, 10).map(w => `<div class="pr-item"><div class="pr-meta en">${esc(w.title)}</div><div class="en">${esc(w.q)}</div><div>${t('studentChose')}：<span class="pr-bad">${w.chosen.map(esc).join('、')}</span> → ${t('correctIs')}：<span class="pr-ok">${esc(w.correct)}</span>（${tf('wrongTimes', { n: w.n })}）</div></div>`).join('') : `<p class="pr-none">${t('noWrong')}</p>`}
+      <h2>🃏 ${t('reportWords')}</h2>
+      ${W.seen || W.quizzes.length ? `<div class="pr-words"><span><b>${t('reportCardsSeen')}</b> ${W.seen}</span><span><b>${t('reportCardsKnown')}</b> ${W.known}</span><span><b>${t('reportCardsLearning')}</b> ${W.learning}</span></div>
+        ${W.quizzes.length ? `<table class="pr-table"><tr><th>${t('reportWhen')}</th><th>${t('reportQuizzes')}</th><th>${t('reportScore')}</th></tr>${W.quizzes.map(r => `<tr><td>${fmtDate(r.date)}</td><td>${t(QUIZ_NAME[r.type] || 'quizChoice')}</td><td>${r.score} / ${r.total}</td></tr>`).join('')}</table>` : ''}` : `<p class="pr-none">${t('noData')}</p>`}
       <h2>🧠 ${t('weakWords')}</h2>
       ${A.weakList.length ? `<div class="pr-words">${A.weakList.slice(0, 24).map(w => `<span><b class="en">${esc(w.word)}</b> ${esc(w.zh)}</span>`).join('')}</div>` : `<p class="pr-none">${t('noWeak')}</p>`}
       ${(() => { const M = mcStats(progress); return `<h2>📝 ${t('tabMcq')}</h2>${M.done ? `<div class="pr-words">${MC_TYPES.map(([k, l]) => { const b = M.byType[k]; return `<span><b>${t(l)}</b> ${b.done ? `${b.right} / ${b.done}（${Math.round(b.right / b.done * 100)}%）` : '—'}</span>`; }).join('')}</div>
@@ -2014,32 +2013,51 @@
     </div>`;
   }
   function reportText(progress, name) {
-    const A = analyzeReport(progress, name), T = trStats(progress);
+    const A = analyzeReport(progress, name), T = trStats(progress), W = wordStats(progress);
     const mastered = VOCAB.filter(v => (progress.cards[v.id] || {}).box === 3).length;
     return [
       `${t('reportTitle')} — ${name} (${todayStr()})`,
       `${t('streak')}: ${streak(progress)} ${t('streakDays')} · ${t('totalActivity')} ${A.total} · ${t('lastActive')}: ${A.last || t('never')}`,
       `${t('avgReading')}: ${A.avg === null ? '—' : A.avg + '%'} (${t('readingDone')} ${A.rq.length})`,
       `${t('statMastered')}: ${mastered} / ${VOCAB.length}`,
+      W.seen ? `${t('reportWords')}: ${t('reportCardsSeen')} ${W.seen} · ${t('reportCardsKnown')} ${W.known} · ${t('reportCardsLearning')} ${W.learning}` : '',
+      W.quizzes.length ? `${t('reportQuizzes')}: ` + W.quizzes.map(r => `${r.score}/${r.total}`).join(', ') : '',
       T.done ? `${t('reportTranslate')}: ${T.right} / ${T.done}` : '',
       (() => { const M = mcStats(progress); return M.done ? `${t('tabMcq')}: ${M.right} / ${M.done}` : ''; })(),
       A.wrongs.length ? `${t('wrongAnalysis')}: ` + A.wrongs.slice(0, 5).map(w => w.q).join(' | ') : '',
       A.weakList.length ? `${t('weakWords')}: ` + A.weakList.slice(0, 10).map(w => w.word).join(', ') : '',
     ].filter(Boolean).join('\n');
   }
+  // a drawn report is blank when (almost) every sampled pixel is white
+  function blankCanvas(c) {
+    if (!c || !c.width || !c.height) return true;
+    try {
+      const w = 60, h = Math.max(1, Math.round(60 * c.height / c.width)), s = document.createElement('canvas'); s.width = w; s.height = h;
+      const g = s.getContext('2d'); g.drawImage(c, 0, 0, w, h); const d = g.getImageData(0, 0, w, h).data;
+      let ink = 0; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 0 && d[i] + d[i + 1] + d[i + 2] < 690) ink++;
+      return ink < 20;
+    } catch (e) { return false; } // cannot look: trust it
+  }
   async function makeReportPDF(name) {
     const lib = await loadPdfLib();
     const stage = document.createElement('div'); stage.className = 'pdf-stage'; stage.innerHTML = reportHTML(state.progress, name);
     document.body.appendChild(stage);
+    const y = window.scrollY;
     try {
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
-      return await lib().set({
-        margin: [10, 10, 12, 10], image: { type: 'jpeg', quality: 0.92 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'], avoid: ['.pr-item', 'tr', '.pr-stats', '.pr-bars'] },
-      }).from(stage.firstElementChild).outputPdf('blob');
-    } finally { stage.remove(); }
+      for (const [i, scale] of [2, 1.5].entries()) {
+        if (i) window.scrollTo(0, 0);
+        const w = lib().set({
+          margin: [10, 10, 12, 10], image: { type: 'jpeg', quality: 0.92 },
+          html2canvas: { scale, backgroundColor: '#ffffff', useCORS: true, scrollX: 0, scrollY: 0 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: ['css', 'legacy'], avoid: ['.pr-item', 'tr', '.pr-stats', '.pr-bars'] },
+        }).from(stage.firstElementChild).toCanvas();
+        if (blankCanvas(await w.get('canvas'))) continue;
+        return await w.toPdf().outputPdf('blob');
+      }
+      throw new Error('blank');
+    } finally { stage.remove(); if (window.scrollY !== y) window.scrollTo(0, y); }
   }
   const canShareFiles = () => { try { return !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.pdf', { type: 'application/pdf' })] })); } catch (e) { return false; } };
   function reportCard() {
@@ -2306,14 +2324,18 @@
     view.page = page;
     return true;
   }
+  // keyboard or pointer, for the drop-down focus below: on an iPhone, focusing a drop-down opens its list again
+  let kbdUse = false;
+  document.addEventListener('keydown', () => { kbdUse = true; }, true);
+  document.addEventListener('pointerdown', () => { kbdUse = false; }, true);
   const focusKeyOf = el => ['action', 'page', 'group', 'o', 'q', 'id', 'p', 'v', 'kind', 'known', 'ok', 'mode', 'to', 'n', 'src', 'target'].map(k => el.dataset[k] || '').join('|');
   function render(opts = {}) {
     updateExamChip(); readClock(); applyLevel(); renderLvHandle();
     const app = $('#app'), a = document.activeElement;
     // remember which control had keyboard focus, so a re-render does not drop it back to the top of the page
     const fkey = !opts.focusHeading && a && a !== app && app.contains(a) && a.dataset && a.dataset.action && !/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) ? focusKeyOf(a) : null;
-    // a drop-down that changed the page (主題, 類別, 單元…) keeps the focus after the re-render
-    const fsel = !opts.focusHeading && a && a.tagName === 'SELECT' && a.id && app.contains(a) ? a.id : null;
+    // a drop-down that changed the page (主題, 類別, 單元…) keeps the focus after the re-render, for keyboard users only
+    const fsel = kbdUse && !opts.focusHeading && a && a.tagName === 'SELECT' && a.id && app.contains(a) ? a.id : null;
     app.innerHTML = (PAGES[view.page] || pageHome)();
     const inSession = inSessionNow();
     document.body.classList.toggle('in-session', inSession);
@@ -2742,7 +2764,7 @@
         const name = reportName(), blob = await makeReportPDF(name);
         if (view.report) URL.revokeObjectURL(view.report.url);
         view.report = { blob, name: `${t('reportFile')}-${name}-${todayStr()}.pdf`.replace(/[\\/:*?"<>|]/g, '_'), url: URL.createObjectURL(blob) }; view.mail = null; view.mailTo = null;
-      } catch (e) { toast(t('pdfFail')); }
+      } catch (e) { if (view.report) { URL.revokeObjectURL(view.report.url); view.report = null; } toast(t('pdfFail')); } // never leave an older report looking like the new one
       view.reportBusy = false; render();
       const c = $('#reportCard'); if (c) c.scrollIntoView({ behavior: smooth(), block: 'center' });
     },
@@ -2839,10 +2861,8 @@
   $('#app').addEventListener('change', e => {
     if (!SEARCH_IDS.test(e.target.id)) flushSearch();
     const id = e.target.id;
-    if (id === 'fsMode') view.flashSetup.mode = e.target.value, render();
-    else if (id === 'fsUnit' || id === 'fsUnitSet') view.flashSetup.unit = e.target.value, render();
+    if (id === 'fsUnit' || id === 'fsUnitSet') view.flashSetup.unit = e.target.value, render();
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
-    else if (id === 'vocabType') view.vocabType = e.target.value, view.vocabPage = 0, render();
     else if (id === 'trGroupSel') Object.assign(view.trf, { group: +e.target.value, page: 0 }), render();
     else if (id === 'phrCatSel') Object.assign(view.phr, { cat: e.target.value, page: 0 }), render();
     else if (id === 'phrLevelSel') Object.assign(view.phr, { level: e.target.value, page: 0 }), render();
