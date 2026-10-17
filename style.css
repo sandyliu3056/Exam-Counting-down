@@ -1461,15 +1461,20 @@ body.touring .lvh-tip, body.tour-invited .lvh-tip { display: none; }
 .px-stat:nth-child(2) { background: var(--pastel-2); } .px-stat:nth-child(3) { background: var(--pastel-3); }
 .px-stat b { color: var(--ink); font-size: 18px; font-variant-numeric: tabular-nums; }
 .px-stat small { font-size: 13px; font-weight: 400; font-variant-numeric: tabular-nums; }
-.px-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; gap: 10px 16px; margin: 12px 0 0; padding: 12px 0; border-top: 2px dashed color-mix(in srgb, var(--line) 22%, transparent); border-bottom: 2px dashed color-mix(in srgb, var(--line) 22%, transparent); }
+.px-rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: 10px 16px; margin: 12px 0 0; padding: 12px 0; border-top: 2px dashed color-mix(in srgb, var(--line) 22%, transparent); border-bottom: 2px dashed color-mix(in srgb, var(--line) 22%, transparent); }
 .px-row { display: contents; }
-.px-lbl { min-width: 3em; color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+/* a label sits level with the first line of its choices, also when they wrap */
+.px-lbl { display: flex; align-items: center; min-width: 3em; min-height: 36px; color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+label.px-lbl { min-height: 40px; }
 .px-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .px-chip { min-height: 36px; padding: 4px 14px; border: 2px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); font: inherit; font-size: 14px; line-height: 1.2; cursor: pointer; }
 .px-chip:hover { background: color-mix(in srgb, var(--accent) 22%, var(--card)); }
 .px-chip.on { background: var(--header); color: #fff; }
-@media (pointer: coarse) { .px-chip { min-height: 44px; } }
+@media (pointer: coarse) { .px-chip, .px-lbl { min-height: 44px; } }
+/* tablets: 題型's five choices as 3 + 2 instead of 4 + 1 with 克漏字 alone */
+@media (min-width: 561px) and (max-width: 900px) { .px-chips[aria-labelledby="pxType"] { display: grid; grid-template-columns: repeat(3, minmax(0, max-content)); } }
 .px-chip .px-n { font-size: 12px; opacity: .72; font-variant-numeric: tabular-nums; }
+.px-chip.on .px-n { opacity: 1; }
 .px-sel { width: 100%; max-width: 340px; margin: 0; }
 .px-go { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 12px; }
 .px-go p { flex: 1 1 260px; margin: 0; }
@@ -1477,13 +1482,14 @@ body.touring .lvh-tip, body.tour-invited .lvh-tip { display: none; }
   .px-card { padding: 12px; }
   .px-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
   .px-stat { flex-direction: column; align-items: flex-start; gap: 0; padding: 5px 10px 6px; border-radius: 14px; font-size: 12px; line-height: 1.3; }
-  .px-stat b { font-size: 20px; }
+  .px-stat b { font-size: 20px; white-space: nowrap; }
+  .px-stat small { display: block; white-space: nowrap; }
   .px-rows { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .px-chips { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
   .px-chip { padding: 4px 6px; }
   .px-chips[style*="--cols:6"] .px-chip { padding-inline: 2px; }
   .px-chips[style*="--cols:2"] .px-chip:first-child:nth-last-child(odd) { grid-column: 1 / -1; }
-  .px-lbl { margin-top: 6px; }
+  .px-lbl, label.px-lbl { min-height: 0; margin-top: 6px; }
   .px-row:first-child .px-lbl { margin-top: 0; }
   .px-sel { max-width: none; }
 }

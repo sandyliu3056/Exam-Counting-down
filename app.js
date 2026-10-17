@@ -1033,7 +1033,7 @@
       <div class="card px-card">
         ${pxStats([[t('mcAnswered'), S.done, `/ ${S.total}`], [t('accShort'), pct, S.done ? `${S.right} / ${S.done}` : ''], [t('trToReview'), S.wrong.length]])}
         <div class="px-rows">
-          ${pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.map(([k, l, ic]) => [k, `${ic} ${t(k === 'cloze' ? 'pxCloze' : l)}`, k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : S.byType[k].total])), 2))}
+          ${pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.map(([k, l, ic]) => [k, `${ic} ${t(k === 'cloze' ? 'pxCloze' : l)}`, (k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : S.byType[k].total) + (S.byType[k].done ? ` · ${Math.round(S.byType[k].right / S.byType[k].done * 100)}%` : '')])), 2))}
           ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'mcLevel', f.level, PX_LEVELS()))}
           ${pxRow('pxShow', t('pxShow'), pxChips('pxShow', 'mcStatus', f.status, [['', t('trAll')], ['todo', t('trTodo')], ['wrong', t('trWrongOnly')]]))}
           ${pxRow('pxMode', t('pxMode'), pxChips('pxMode', 'mcMode', f.mode, [['practice', '✏️ ' + t('mcPractice')], ['test', '⏱️ ' + t('mcTest')]]))}
@@ -1144,7 +1144,7 @@
     const shown = list.slice(cur * TR_PAGE, cur * TR_PAGE + TR_PAGE);
     const pager = pagerHTML(cur, pages, 'trGo', i => { const z = (list[i * TR_PAGE] || {}).zh || ''; return z.length > 14 ? z.slice(0, 14) + '…' : z; });
     const mark = it => { const r = trRec(it.id); return r ? (r.lastOk ? '<span class="tr-mark ok">✓</span>' : '<span class="tr-mark bad">✗</span>') : '<span class="tr-mark">·</span>'; };
-    const groupSel = `<select class="input px-sel" id="trGroupSel">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<option value="${g}" ${f.group === g ? 'selected' : ''}>${g ? t(TR_GROUPS[g - 1]) : t('pxAllTopics')}（${g ? items.filter(it => trGroupOf(it) === g).length : items.length}）</option>`).join('')}</select>`;
+    const groupSel = `<select class="input px-sel" id="trGroupSel">${[0].concat(TR_GROUPS.map((_, i) => i + 1)).map(g => `<option value="${g}" ${f.group === g ? 'selected' : ''}>${g ? t(TR_GROUPS[g - 1]) : t('pxAllTopics')}${ui.lang === 'en' ? ' (' : '（'}${g ? items.filter(it => trGroupOf(it) === g).length : items.length}${ui.lang === 'en' ? ')' : '）'}</option>`).join('')}</select>`;
     return `${subtabs('translate')}${pageHead('translate', tf('trSub', { n: items.length }))}
       <div class="card px-card">
         ${pxStats([[t('trPractised'), S.done, `/ ${items.length}`], [t('trRight'), S.right, S.done ? Math.round(S.right / S.done * 100) + '%' : ''], [t('trToReview'), S.wrong.length]])}
