@@ -1496,3 +1496,12 @@ label.px-lbl { min-height: 40px; }
 /* ---------- 設定 → 🔊 發音聲音 ---------- */
 .voice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .voice-note { margin: 8px 0 0; }
+/* ---------- 學習紀錄 → PDF 報告: 📨 直接寄給老師 ---------- */
+.mail-box { margin: 4px 0 12px; padding: 12px 14px; border: 2px dashed color-mix(in srgb, var(--line) 30%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--pastel-2) 55%, var(--card)); }
+.mail-box h4 { margin: 0 0 8px; font-size: 16px; }
+.mail-box textarea { width: 100%; min-height: 3.2em; resize: vertical; }
+.mail-box .row { flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.mail-status.ok { color: var(--ok-strong, #1f7a45); font-weight: 700; }
+.mail-status.bad { color: #b3261e; font-weight: 700; }
+.mail-other { margin: 0 0 6px; }
+

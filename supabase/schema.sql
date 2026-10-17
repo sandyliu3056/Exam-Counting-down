@@ -8,6 +8,7 @@
 --   · 老師可以看所有學生的紀錄，也只有老師能改共用教材。
 --   · 帳號是學生還是老師，只有資料庫能決定；網頁改不了。
 --   · 老師邀請碼存在 private 結構裡，任何人都無法從網頁讀到。
+--   · 寄信紀錄（mail_log）只有伺服器的寄信功能能讀寫。
 -- =====================================================================
 
 -- ---------- 1. 資料表 ----------
@@ -40,6 +41,15 @@ create table if not exists public.content (
   updated_at timestamptz not null default now()
 );
 
+-- 學生「直接寄給老師」的寄信紀錄：寄信功能（supabase/functions/send-report）用來算每天寄了幾封，網頁讀不到
+create table if not exists public.mail_log (
+  id bigint generated always as identity primary key,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  to_email text not null,
+  sent_at timestamptz not null default now()
+);
+create index if not exists mail_log_recent on public.mail_log (user_id, sent_at);
+
 -- 老師邀請碼：放在不對外開放的 private 結構
 create schema if not exists private;
 create table if not exists private.app_secrets (
@@ -60,6 +70,11 @@ grant select, insert, update on public.content to authenticated;
 alter table public.profiles enable row level security;
 alter table public.progress enable row level security;
 alter table public.content enable row level security;
+
+-- 寄信紀錄只有伺服器（寄信功能）能讀寫
+revoke all on public.mail_log from public, anon, authenticated;
+grant select, insert, delete on public.mail_log to service_role;
+alter table public.mail_log enable row level security;
 
 -- ---------- 3. 小工具函式 ----------
 

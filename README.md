@@ -21,7 +21,7 @@
 | 時間觀念 | 首頁「100 分鐘怎麼用」時間分配條（字彙 8、對話 8、綜合 14、閱讀 40、非選 15、檢查 10、緩衝 5 分）與答題小抄；閱讀測驗交卷後顯示「你花了幾分鐘、考試節奏約每篇 10 分鐘」 |
 | 每日一句 | 首頁每天換一句英文勵志句（附中文、重點單字、發音），600 多句，考前不重複 |
 | 書籤 | 文章與單字都能加入書籤 🔖，首頁「我的書籤」集中顯示，單字卡可只練書籤單字；老師也看得到學生收藏了什麼 |
-| 學習紀錄 | 熟練度、連續學習天數、12 週活動圖、測驗歷史、一鍵傳送紀錄給老師 |
+| 學習紀錄 | 熟練度、連續學習天數、12 週活動圖、測驗歷史、一鍵傳送紀錄給老師：產生 PDF 報告後，雲端模式登入的學生可以填「老師的 Email」「我的 Email」和想說的話，按「📨 直接寄出」就由網站寄出（PDF 自動附上，老師按回覆會回到學生的信箱；要先完成下面的「直接寄給老師」設定）；也可以用分享、寄信程式或下載的方式自己寄 |
 | 學生狀況（老師） | 閱讀錯題分析（學生選了什麼、正解是什麼）、不熟單字排行、拼錯的字、活動時間軸 |
 | 設定 | 我的程度、🔊 發音聲音、考試日期、學生姓名、匯出 / 匯入 JSON；老師另可設定考試名稱、老師邀請碼 |
 | 發音聲音 | 🔊 朗讀預設用英文男聲（在「設定」或手機的「更多 → 外觀」可改成女聲，有「試聽」）。瀏覽器不會告訴網頁哪個聲音是男是女，所以依常見的聲音名稱挑（例如 Windows 的 Guy / David、iPhone 的 Aaron、Chrome 的 Google UK English Male）；這台裝置沒有英文男聲時，就用裝置預設的聲音，設定頁會寫出實際用的是哪一個。Android 手機的瀏覽器不讓網站選聲音，一律用手機「文字轉語音」設定的聲音，設定頁會說明怎麼在手機裡換成男聲。城市對話維持各城市的口音。選擇只存在這台裝置 |
@@ -93,6 +93,22 @@
 > 免費專案若連續 7 天沒有人使用會自動暫停（寒暑假可能發生），到 Supabase 後台按 **Restore** 即可恢復。暫停超過 90 天就不能一鍵恢復，放長假前後記得登入看看。
 > 想把某位學生改成老師、刪除帳號：Supabase 後台 **Table Editor → profiles** 改 `role`，或 **Authentication → Users** 刪除（紀錄會一起刪除）。
 
+### 選配：讓學生「直接寄給老師」（Resend 寄信服務）
+
+網頁本身不能寄信，所以「📨 直接寄出」是由 Supabase 上的一個小程式（Edge Function `send-report`）透過 [Resend](https://resend.com) 寄出。沒設定之前，學生按下去會看到「老師還沒開啟直接寄信」，其他寄送方式照常可用。
+
+1. **Resend 註冊**（免費方案每天 100 封、每月 3,000 封）。登入後 **Domains → Add Domain**，填 `funenglishlearning.com`。
+2. 畫面會列出幾筆 **DNS 記錄**（MX、TXT）。到你買網域的地方（網域在 Vercel 買的就到 Vercel → Domains → DNS Records）照抄加上，回到 Resend 按 **Verify**，等狀態變成 **Verified**（通常幾分鐘到幾小時）。
+3. Resend → **API Keys → Create API Key**（權限選 Sending access），複製金鑰（`re_` 開頭，只會顯示一次）。**金鑰請自己保管，不要貼到聊天或程式碼裡。**
+4. Supabase 後台 → **SQL Editor**：把最新的 `supabase/schema.sql` 整份再執行一次（會新增寄信紀錄表 `mail_log`，舊資料不會動）。
+5. Supabase 後台 → **Edge Functions** → 建立新的 Function，名稱填 **`send-report`**，把 `supabase/functions/send-report/index.ts` 整份貼到網頁編輯器裡，按 **Deploy**。保持預設的「Verify JWT」開啟。（會用 Supabase CLI 的話：`supabase functions deploy send-report`。）
+6. Edge Functions → **Secrets**，新增兩筆：
+   - `RESEND_API_KEY`：第 3 步的金鑰
+   - `MAIL_FROM`：寄件人，例如 `英語學習站 <report@funenglishlearning.com>`（`@` 後面要是第 2 步驗證過的網域）
+7. 測試：用學生帳號登入 → 學習紀錄 → 傳送學習紀錄給老師 → 填老師的 Email（要是**本站的老師帳號**的 email）→ 📨 直接寄出。
+
+防止被拿去亂寄信的規則（都在伺服器上執行）：只有登入且 email 已確認的帳號能寄；收件人一定要是本站的老師帳號；每個學生 24 小時內最多 5 封、全站最多 90 封；附件只能是 6 MB 以內的 PDF。老師收到的信裡有學生的名字、帳號 email、想說的話和學習摘要，按「回覆」就會寄到學生填的 email。
+
 ## 部署到 GitHub Pages
 
 1. GitHub 專案 → **Settings → Pages**。
@@ -129,6 +145,7 @@
 | `i18n.js` | 中 / 英介面文字 |
 | `supabase-config.js` | 雲端模式設定（預設關閉） |
 | `supabase/schema.sql` | 雲端模式的資料表與安全規則（貼到 Supabase SQL Editor 執行） |
+| `supabase/functions/send-report/index.ts` | 「📨 直接寄給老師」的寄信程式（Supabase Edge Function，透過 Resend 寄出） |
 | `vendor/` | 內附的第三方程式（Supabase、html2pdf，MIT 授權，授權檔在同資料夾） |
 | `manifest.json` / `sw.js` / `icons/` | PWA（加入主畫面、離線） |
 

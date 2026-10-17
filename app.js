@@ -2024,17 +2024,46 @@
     if (view.reportBusy) return `<div class="card report-card"><p style="margin:0">⏳ ${t('pdfMaking')}</p></div>`;
     const r = view.report; if (!r) return '';
     const share = canShareFiles();
+    const direct = cloud.configured, inBox = direct && ui.user && ui.user.cloud; // logged in: both emails sit in the 直接寄給老師 box
     return `<div class="card report-card" id="reportCard"><h3 style="margin-top:0">📄 ${t('pdfReady')}</h3>
-      <div class="field"><label>${t('teacherEmail')}</label><input type="email" id="teacherEmailInput" value="${esc(state.settings.teacherEmail || '')}" placeholder="teacher@example.com" autocomplete="email" inputmode="email"></div>
+      ${inBox ? '' : teacherEmailField()}
+      ${direct ? mailBoxHTML() : ''}
+      ${direct ? `<p class="small muted mail-other">${t('mailOther')}</p>` : ''}
       <div class="row">
-        ${share ? `<button class="btn accent" data-action="sharePdf">📤 ${t('sharePdf')}</button>` : ''}
-        <button class="btn ${share ? '' : 'accent'}" data-action="mailPdf">📧 ${t('emailTeacher')}</button>
+        ${share ? `<button class="btn ${direct ? '' : 'accent'}" data-action="sharePdf">📤 ${t('sharePdf')}</button>` : ''}
+        <button class="btn ${share || direct ? '' : 'accent'}" data-action="mailPdf">📧 ${t(direct ? 'emailTeacherApp' : 'emailTeacher')}</button>
         <a class="btn ghost" href="${r.url}" download="${esc(r.name)}">⬇️ ${t('downloadPdf')}</a>
         <a class="btn ghost" href="${r.url}" target="_blank" rel="noopener">👀 ${t('previewPdf')}</a>
         <button class="btn ghost sm" data-action="exportJson">${t('exportJson')}</button>
       </div>
-      <p class="small muted" style="margin:8px 0 0">${t(share ? 'shareHintPdf' : 'mailHintPdf')}</p></div>`;
+      <p class="small muted" style="margin:8px 0 0">${t(share ? 'shareHintPdf' : direct ? 'mailHintPdfApp' : 'mailHintPdf')}</p></div>`;
   }
+  // 📨 直接寄給老師 (cloud mode): the student's own email for the teacher's reply, an optional message, and one button.
+  // supabase/functions/send-report sends it, only to a teacher account of this site and a few times a day.
+  function mailBoxHTML() {
+    const m = view.mail || {};
+    if (!ui.user || !ui.user.cloud) return `<div class="mail-box" id="mailBox"><p class="small" style="margin:0">📨 ${t('mailLoginFirst')}</p>
+      <button type="button" class="btn sm accent" data-action="openAuth">👤 ${t('login')}</button></div>`;
+    const status = m.sending ? `⏳ ${t('mailSending')}` : m.sentTo ? tf('mailSent', { e: esc(m.sentTo) }) : m.err ? `⚠️ ${tf('mailErr_' + (MAIL_ERRS.includes(m.err) ? m.err : 'other'), { n: m.limit || 5 })}` : '';
+    return `<div class="mail-box" id="mailBox"><h4>📨 ${t('mailDirectTitle')}</h4>
+      ${teacherEmailField(view.mailTo)}
+      <div class="field"><label for="myEmailInput">${t('mailMyEmail')}</label><input type="email" id="myEmailInput" value="${esc(view.mailFrom != null ? view.mailFrom : (ui.user.email || ''))}" autocomplete="email" inputmode="email"></div>
+      <div class="field"><label for="mailMsg">${t('mailMsgLbl')}</label><textarea id="mailMsg" rows="2" maxlength="500">${esc(view.mailMsg || '')}</textarea></div>
+      <div class="row"><button type="button" class="btn accent" data-action="mailDirect" ${m.sending ? 'aria-disabled="true"' : ''}>📨 ${t(m.sending ? 'mailSending' : 'mailSend')}</button>
+        <span class="small mail-status ${m.err ? 'bad' : m.sentTo ? 'ok' : ''}" role="status">${status}</span></div></div>`;
+  }
+  const teacherEmailField = v => `<div class="field"><label for="teacherEmailInput">${t('teacherEmail')}</label><input type="email" id="teacherEmailInput" value="${esc(v != null ? v : state.settings.teacherEmail || '')}" placeholder="teacher@example.com" autocomplete="off" inputmode="email"></div>`;
+  const MAIL_ERRS = ['not_configured', 'not_teacher', 'rate_user', 'rate_site', 'login', 'bad_to', 'bad_reply', 'bad_pdf'];
+  // only the mail box is redrawn, so nothing typed elsewhere on the page is lost
+  function refreshMailBox() {
+    const box = $('#mailBox'); if (!box) return;
+    const a = document.activeElement, had = a && box.contains(a) ? a.id || a.dataset.action : null;
+    const val = (id, keep) => { const el = $('#' + id); return el ? el.value : keep; };
+    view.mailTo = val('teacherEmailInput', view.mailTo); view.mailFrom = val('myEmailInput', view.mailFrom); view.mailMsg = val('mailMsg', view.mailMsg);
+    box.outerHTML = mailBoxHTML();
+    const back = had && ($('#' + had) || $(`#mailBox [data-action="${had}"]`)); if (back) back.focus({ preventScroll: true });
+  }
+  const blobToB64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(blob); });
   function saveTeacherEmail() {
     const el = $('#teacherEmailInput'); if (!el) return state.settings.teacherEmail || '';
     const v = el.value.trim();
@@ -2691,10 +2720,31 @@
       try {
         const name = reportName(), blob = await makeReportPDF(name);
         if (view.report) URL.revokeObjectURL(view.report.url);
-        view.report = { blob, name: `${t('reportFile')}-${name}-${todayStr()}.pdf`.replace(/[\\/:*?"<>|]/g, '_'), url: URL.createObjectURL(blob) };
+        view.report = { blob, name: `${t('reportFile')}-${name}-${todayStr()}.pdf`.replace(/[\\/:*?"<>|]/g, '_'), url: URL.createObjectURL(blob) }; view.mail = null; view.mailTo = null;
       } catch (e) { toast(t('pdfFail')); }
       view.reportBusy = false; render();
       const c = $('#reportCard'); if (c) c.scrollIntoView({ behavior: smooth(), block: 'center' });
+    },
+    async mailDirect() {
+      if (!view.report || (view.mail && view.mail.sending)) return;
+      const to = saveTeacherEmail(); if (to === null) return;
+      if (!to) { toast(t('needEmail')); const el = $('#teacherEmailInput'); if (el) el.focus(); return; }
+      const meEl = $('#myEmailInput'), me = meEl ? meEl.value.trim() : '';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(me)) { toast(t('badMyEmail')); if (meEl) meEl.focus(); return; }
+      view.mailFrom = me; view.mailMsg = ($('#mailMsg') || {}).value || '';
+      view.mail = { sending: true }; refreshMailBox();
+      try {
+        const pdf = await blobToB64(view.report.blob);
+        const { error } = await cloud.sb.functions.invoke('send-report', { body: { to, replyTo: me, pdf, fileName: view.report.name, summary: reportText(state.progress, reportName()), message: view.mailMsg } });
+        if (error) {
+          let j = null; try { j = error.context && typeof error.context.json === 'function' ? await error.context.json() : null; } catch (e) { }
+          const st = error.context && error.context.status;
+          // a missing function (not deployed yet) answers 404 without our error code
+          throw { code: j && j.error ? j.error : st === 404 ? 'not_configured' : 'other', limit: j && j.limit };
+        }
+        view.mail = { sentTo: to }; toast(tf('mailSent', { e: to }));
+      } catch (e) { view.mail = { err: (e && e.code) || 'other', limit: e && e.limit }; }
+      refreshMailBox();
     },
     sharePdf() {
       const email = saveTeacherEmail(); if (email === null || !view.report) return;
