@@ -228,6 +228,9 @@
   const core = s => { const c = String(s).replace(/[^一-鿿]/g, ''), m = c.replace(/[的之性狀態動作名詞使成為做人者與有關某於或等地]/g, ''); return new Set(m || c); };
   const near = (a, b) => { const B = core(b); return [...core(a)].some(c => B.has(c)); };
   const sameAffix = (a, b) => a.keys.some(k => b.keys.includes(k)); // in-/im-, -en, -ant/-ent and -al each have two entries
+  // a label two entries share (-ant / -ent, -en, -ly, -ar, -ish …) could be right in either meaning: never a choice of form
+  const formUses = ALL.reduce((m, e) => m.set(e.form, (m.get(e.form) || 0) + 1), new Map());
+  const oneForm = e => formUses.get(e.form) === 1;
   const clash = (a, b) => a.sense === b.sense || near(a.mean, b.mean) || sameAffix(a, b);
   // three wrong options that also differ from each other (two options meaning the same would give both away)
   function pick3(cands, ok, apart) {
@@ -242,7 +245,8 @@
       return { id: e.id, type, ask: `${KIND_NAME[e.kind]} <span class="rt-big" lang="en">${esc(e.form)}</span> 是什麼意思？`, hint: `例：${e.examples.slice(0, 2).map(x => `<span lang="en">${esc(x.w)}</span>`).join('、')}`, opts: shuffle([e.mean, ...d.map(o => o.mean)]), answer: e.mean, en: false, x: e.examples[0] };
     }
     if (type === 'form') {
-      const d = pick3(same, o => !clash(o, e), (a, b) => !clash(a, b) && a.form !== b.form); if (!d) return null;
+      if (!oneForm(e)) return null;
+      const d = pick3(same, o => !clash(o, e) && oneForm(o), (a, b) => !clash(a, b) && a.form !== b.form); if (!d) return null;
       return { id: e.id, type, ask: `哪一個${KIND_NAME[e.kind]}的意思是「${esc(e.mean)}」？`, hint: '', opts: shuffle([e.form, ...d.map(o => o.form)]), answer: e.form, en: true, x: e.examples[0] };
     }
     const x = shuffle(e.examples)[0];
