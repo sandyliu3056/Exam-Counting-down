@@ -71,7 +71,30 @@
 .rt-groups .subtab[aria-pressed="true"] { background: var(--header); color: #fff; border-color: var(--header-dark); }
 .rt-groups .subtab[aria-pressed="true"] b { color: rgba(255, 255, 255, .85); }
 .rt-groups .subtab[aria-pressed="false"]:hover { background: var(--bg-soft); }
-.rt-count { margin: 10px 0 0; font-size: 14px; color: var(--ink-soft); }
+.rt-count { margin: 10px 0 0; font-size: 14px; color: var(--ink-soft); scroll-margin-top: 12px; }
+
+/* ---------- 目錄 and pages ---------- */
+.rt-index { margin-top: 12px; border-top: 2px dashed var(--bg-soft); padding-top: 10px; }
+.rt-index > summary { cursor: pointer; font-weight: 700; font-size: 15px; color: var(--header); list-style: none; display: flex; align-items: center; gap: 6px; min-height: 36px; }
+.rt-index > summary::-webkit-details-marker { display: none; }
+.rt-index > summary::after { content: '▾'; margin-left: 4px; transition: transform .2s; }
+.rt-index[open] > summary::after { transform: rotate(180deg); }
+.rt-ix-h { margin: 12px 0 6px; font-size: 14px; color: var(--ink-soft); }
+.rt-ix-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 6px; }
+.rt-ix { display: flex; flex-direction: column; align-items: flex-start; gap: 0; min-height: 44px; padding: 5px 10px; border: 2px solid var(--bg-soft); border-left-width: 6px; border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.rt-ix b { font-family: var(--font-en); font-size: 17px; line-height: 1.2; }
+.rt-ix span { font-size: 12.5px; color: var(--ink-soft); line-height: 1.3; }
+.rt-ix.k-p { border-left-color: var(--kp); } .rt-ix.k-r { border-left-color: var(--kr); } .rt-ix.k-s { border-left-color: var(--ks); }
+.rt-ix:hover { border-color: var(--line); }
+.rt-pager { margin: 14px 0; }
+@media (max-width: 600px) { /* phones: ‹ 第 n 頁 › in one row, like the 片語 page */
+  .rt-pager { flex-wrap: nowrap; }
+  .rt-pager .pg-num, .rt-pager .pg-gap { display: none; }
+  .rt-pager .pager-sel { order: 1; flex: 1 1 auto; min-width: 0; max-width: none; margin: 0; }
+  .rt-pager .pg-btn:last-of-type { order: 2; }
+}
+.rt-card:focus { outline: none; }
+.rt-card:focus-visible { outline: 4px solid var(--accent); outline-offset: 2px; }
 
 /* ---------- cards ---------- */
 .rt-sec { margin: 22px 0 12px; }

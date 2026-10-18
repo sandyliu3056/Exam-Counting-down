@@ -29,7 +29,7 @@
   $('#fontSelect').addEventListener('change', e => saveLook('font', e.target.value));
   window.addEventListener('storage', e => { if (e.key === LS_UI) { ui = readJSON(LS_UI); applyLook(); } });
   applyLook();
-  const store = readJSON(LS_ROOTS); // { how: 0/1 (怎麼用 open), best: { all: 8, root: 10 … } }
+  const store = readJSON(LS_ROOTS); // { how: 0/1 (怎麼用 open), idx: 0/1 (目錄 open), best: { all: 8, root: 10 … } }
   const saveStore = () => { try { localStorage.setItem(LS_ROOTS, JSON.stringify(store)); } catch (e) { } };
 
   /* ---------------- Toast + read-aloud ---------------- */
@@ -67,7 +67,7 @@
 
   /* ---------------- State + address (#prefix, #root/r-spect, #quiz …) ---------------- */
   const VIEWS = ['prefix', 'root', 'suffix', 'quiz'];
-  const state = { view: 'prefix', group: '', q: '', range: 'all', quiz: null };
+  const state = { view: 'prefix', group: '', q: '', page: 0, range: 'all', quiz: null };
   function readHash() {
     let raw = location.hash.replace(/^#\/?/, ''); try { raw = decodeURIComponent(raw); } catch (e) { }
     const [v, id] = raw.split('/'), known = VIEWS.includes(v);
@@ -90,7 +90,7 @@
     </li>`;
   }
   function card(e, hits) {
-    return `<article class="card rt-card" id="${esc(e.id)}">
+    return `<article class="card rt-card" id="${esc(e.id)}" tabindex="-1">
       <div class="rt-head"><span class="rt-form k-${CODE[e.kind]}" lang="en">${esc(e.form)}</span><div class="rt-mean"><b>${esc(e.mean)}</b><span class="en" lang="en">${esc(e.meanEn)}</span></div></div>
       <div class="rt-meta"><span class="chip">${KIND_NAME[e.kind]}・${esc(GROUP_NAME[e.group] || '')}</span>${e.makes ? `<span class="chip info">變成${POS_NAME[e.makes] || esc(e.makes)}</span>` : ''}<span class="chip">${esc(e.origin)}</span></div>
       <p class="rt-tip">💡 ${esc(e.tip)}</p>
@@ -117,22 +117,52 @@
     if (!/^[a-z]{5,}$/.test(q)) return [];
     return ALL.filter(e => e.keys.some(k => k !== q && (e.kind === 'root' ? k.length >= 4 && q.includes(k) : e.kind === 'prefix' ? k.length >= 3 && q.startsWith(k) : k.length >= 3 && q.endsWith(k))));
   }
-  // the list and the line that counts it (the count is its own live line, outside the list that gets replaced)
-  function listParts() {
+  /* ---------------- Pages of cards, and the 目錄 ---------------- */
+  const PER = 6; // cards on a page
+  // the entries the list shows now, in order, and the heading each goes under (its group, or in a search its kind)
+  function shown() {
     const q = norm(state.q);
-    if (q) {
-      const { found, hits } = search(q);
-      if (!found.length) {
-        const maybe = partsIn(q);
-        return { count: `找不到「${state.q.trim()}」。`, html: maybe.length ? `<h2 class="section-title rt-sec">拼字裡有這些字首字根字尾</h2><p class="section-sub">只是線索：拼字相同時，意思不一定有關。</p>${grid(maybe)}` : `<div class="card rt-empty"><p>試試輸入字首、字根、字尾（例：un、spect、tion），或中文意思（例：看、不）。</p></div>` };
-      }
-      return { count: `找到 ${found.length} 個（${KINDS.map(([k, zh]) => `${zh} ${found.filter(e => e.kind === k).length}`).join('・')}）`,
-        html: KINDS.map(([k, zh]) => { const l = found.filter(e => e.kind === k); return l.length ? `<h2 class="section-title rt-sec">${zh}</h2>${grid(l, hits)}` : ''; }).join('') };
+    if (q) { const { found, hits } = search(q); return { q, hits, list: KINDS.flatMap(([k]) => found.filter(e => e.kind === k)), head: e => KIND_NAME[e.kind] }; }
+    const k = state.view;
+    return { q, hits: null, list: GROUPS[k].flatMap(([g]) => !state.group || state.group === g ? DATA[k].filter(e => e.group === g) : []), head: e => GROUP_NAME[e.group] };
+  }
+  const pageOf = (list, id) => Math.max(0, Math.floor(list.findIndex(e => e.id === id) / PER));
+  // the main site's pager: ‹ 1 … 4 5 6 … 12 › and a 第 n 頁 list that names the first card of each page
+  function pager(cur, pages, list, bottom) {
+    if (pages < 2) return '';
+    const nums = []; for (let i = 0; i < pages; i++) if (i === 0 || i === pages - 1 || Math.abs(i - cur) <= 1) nums.push(i); else if (nums[nums.length - 1] !== '…') nums.push('…');
+    return `<nav class="pager rt-pager" aria-label="${bottom ? '換頁（頁尾）' : '換頁'}">
+      <button type="button" class="pg-btn" data-pg="${cur - 1}" data-dir="prev"${cur === 0 ? ' disabled' : ''} aria-label="上一頁">‹</button>
+      ${nums.map(n => n === '…' ? '<span class="pg-gap" aria-hidden="true">…</span>' : `<button type="button" class="pg-btn pg-num${n === cur ? ' on' : ''}" data-pg="${n}"${n === cur ? ' aria-current="page"' : ''} aria-label="第 ${n + 1} 頁">${n + 1}</button>`).join('')}
+      <button type="button" class="pg-btn" data-pg="${cur + 1}" data-dir="next"${cur >= pages - 1 ? ' disabled' : ''} aria-label="下一頁">›</button>
+      <select class="input pager-sel" data-pgsel aria-label="跳到第幾頁">${Array.from({ length: pages }, (_, i) => `<option value="${i}"${i === cur ? ' selected' : ''}>第 ${i + 1} 頁 · ${esc(list[i * PER].form)}</option>`).join('')}</select>
+    </nav>`;
+  }
+  // this page's cards under their headings, with the pager above and below; and the line that counts them
+  // (the count is its own live line, outside the list that gets replaced)
+  function listParts() {
+    const s = shown(), n = s.list.length;
+    if (s.q && !n) {
+      const maybe = partsIn(s.q);
+      return { count: `找不到「${state.q.trim()}」。`, html: maybe.length ? `<h2 class="section-title rt-sec">拼字裡有這些字首字根字尾</h2><p class="section-sub">只是線索：拼字相同時，意思不一定有關。</p>${grid(maybe)}` : `<div class="card rt-empty"><p>試試輸入字首、字根、字尾（例：un、spect、tion），或中文意思（例：看、不）。</p></div>` };
     }
-    const k = state.view, gs = GROUPS[k].filter(([g]) => !state.group || g === state.group);
-    const n = DATA[k].filter(e => !state.group || e.group === state.group).length;
-    return { count: `共 ${n} 個${KIND_NAME[k]}${state.group ? `（${GROUP_NAME[state.group]}）` : ''}`,
-      html: gs.map(([g, name]) => { const l = DATA[k].filter(e => e.group === g); return l.length ? `<h2 class="section-title rt-sec">${name}</h2>${grid(l)}` : ''; }).join('') };
+    const pages = Math.max(1, Math.ceil(n / PER)); state.page = Math.min(Math.max(0, state.page), pages - 1);
+    const a = state.page * PER, items = s.list.slice(a, a + PER);
+    let html = '', head = null, run = [];
+    const flush = () => { if (run.length) html += `<h2 class="section-title rt-sec">${esc(head)}</h2>${grid(run, s.hits)}`; run = []; };
+    items.forEach(e => { if (s.head(e) !== head) { flush(); head = s.head(e); } run.push(e); }); flush();
+    const what = s.q ? `找到 ${n} 個（${KINDS.map(([k, zh]) => `${zh} ${s.list.filter(e => e.kind === k).length}`).join('・')}）` : `共 ${n} 個${KIND_NAME[state.view]}${state.group ? `（${GROUP_NAME[state.group]}）` : ''}`;
+    return { count: pages > 1 ? `${what}・第 ${state.page + 1} / ${pages} 頁（第 ${a + 1}–${a + items.length} 個）` : what, html: pager(state.page, pages, s.list) + html + pager(state.page, pages, s.list, true) };
+  }
+  // 目錄: every entry of the list as a small button, under its heading; a tap opens the page with that card
+  function indexHTML() {
+    const s = shown(); if (!s.list.length) return '';
+    let html = '', head = null;
+    s.list.forEach(e => {
+      if (s.head(e) !== head) { html += `${head === null ? '' : '</div>'}<h3 class="rt-ix-h">${esc(s.head(e))}</h3><div class="rt-ix-row">`; head = s.head(e); }
+      html += `<button type="button" class="rt-ix k-${CODE[e.kind]}" data-jump="${esc(e.id)}"><b lang="en">${esc(e.form)}</b><span>${esc(e.mean)}</span></button>`;
+    });
+    return `<details class="rt-index"${store.idx === 1 ? ' open' : ''}><summary>📋 目錄（${s.list.length} 個）：點一下直接看那一張</summary>${html}</div></details>`;
   }
   function groupPills() {
     if (norm(state.q)) return '';
@@ -167,14 +197,14 @@
   function render(opts = {}) {
     const { view, id } = readHash();
     // another kind: a fresh list (the search too); a quiz stays where it was, for when the student comes back to 🎯
-    if (view !== state.view) { state.group = ''; state.q = ''; }
+    if (view !== state.view) { state.group = ''; state.q = ''; state.page = 0; }
     state.view = view;
-    if (id && view !== 'quiz') { state.q = ''; const e = byId.get(id); if (e && state.group && e.group !== state.group) state.group = ''; }
+    if (id && view !== 'quiz') { state.q = ''; const e = byId.get(id); if (e && state.group && e.group !== state.group) state.group = ''; state.page = pageOf(shown().list, id); }
     let body;
     if (view === 'quiz') body = state.quiz ? (state.quiz.i < state.quiz.qs.length ? questionHTML() : resultHTML()) : quizSetHTML();
     else body = `${howHTML()}<div class="card rt-tools">
         <div class="rt-search"><input type="search" id="rtQ" value="${esc(state.q)}" placeholder="搜尋：spect、看、inspect…" aria-label="搜尋字首、字根、字尾、單字或中文" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"><button type="button" class="rt-clear" data-act="clear" aria-label="清除搜尋"${state.q ? '' : ' hidden'}>✕</button></div>
-        <div id="rtPills">${groupPills()}</div>
+        <div id="rtPills">${groupPills()}</div><div id="rtIdx">${indexHTML()}</div>
       </div>${(p => `<p class="rt-count" id="rtCount" role="status">${esc(p.count)}</p><div id="rtList">${p.html}</div>`)(listParts())}`;
     app.innerHTML = headHTML() + body;
     document.title = `${view === 'quiz' ? '拆字測驗' : KIND_NAME[view]}｜字根字首字尾｜英語學習站`;
@@ -186,7 +216,7 @@
     if (opts.focus) { const f = $(opts.focus, app); if (f) f.focus({ preventScroll: !!id }); }
   }
   function refreshList() {
-    const p = listParts(); $('#rtCount').textContent = p.count; $('#rtList').innerHTML = p.html; $('#rtPills').innerHTML = groupPills();
+    const p = listParts(); $('#rtCount').textContent = p.count; $('#rtList').innerHTML = p.html; $('#rtPills').innerHTML = groupPills(); $('#rtIdx').innerHTML = indexHTML();
     const c = $('.rt-clear', app); if (c) c.hidden = !state.q;
   }
 
@@ -281,7 +311,9 @@
   /* ---------------- Events ---------------- */
   app.addEventListener('click', e => {
     const say1 = e.target.closest('[data-say]'); if (say1) { say(say1.dataset.say); return; }
-    const g = e.target.closest('[data-group]'); if (g) { state.group = g.dataset.group; refreshList(); const b = $(`[data-group="${state.group}"]`, app); if (b) b.focus({ preventScroll: true }); return; }
+    const pg = e.target.closest('[data-pg]'); if (pg) { goPage(+pg.dataset.pg, pg); return; }
+    const j = e.target.closest('[data-jump]'); if (j) { showCard(j.dataset.jump); return; }
+    const g = e.target.closest('[data-group]'); if (g) { state.group = g.dataset.group; state.page = 0; refreshList(); const b = $(`[data-group="${state.group}"]`, app); if (b) b.focus({ preventScroll: true }); return; }
     const r = e.target.closest('[data-range]'); if (r) { state.range = r.dataset.range; render({ focus: `[data-range="${state.range}"]` }); return; }
     const o = e.target.closest('[data-opt]'); if (o) { answer(+o.dataset.opt); return; }
     const a = e.target.closest('[data-act]'); if (!a) return;
@@ -294,9 +326,32 @@
   let typing = 0;
   app.addEventListener('input', e => {
     if (e.target.id !== 'rtQ') return;
-    state.q = e.target.value; clearTimeout(typing); typing = setTimeout(refreshList, 120);
+    state.q = e.target.value; state.page = 0; clearTimeout(typing); typing = setTimeout(refreshList, 120);
   });
-  app.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('rt-how')) { store.how = e.target.open ? 1 : 0; saveStore(); } }, true);
+  app.addEventListener('change', e => { if (e.target.matches('[data-pgsel]')) goPage(+e.target.value, e.target); });
+  // another page: from the bottom pager, back up to the top of the list; the focus stays on the same control
+  // (‹, ›, the page number or the list) of the same pager
+  function goPage(n, el) {
+    const bottom = !!el.closest('.rt-pager') && el.closest('.rt-pager') !== $('.rt-pager', app);
+    const same = el.matches('[data-pgsel]') ? '[data-pgsel]' : el.dataset.dir ? `[data-dir="${el.dataset.dir}"]` : `.pg-num[data-pg="${n}"]`;
+    state.page = n; refreshList();
+    if (bottom) jumpTo($('#rtCount'));
+    const pagers = $$('.rt-pager', app), p = bottom ? pagers[pagers.length - 1] : pagers[0];
+    let f = p && $(same, p); if (f && f.disabled) f = $('[data-pgsel]', p) && getComputedStyle($('.pg-num', p)).display === 'none' ? $('[data-pgsel]', p) : $(`.pg-num[data-pg="${n}"]`, p);
+    if (f) f.focus({ preventScroll: true });
+  }
+  // open the page with this card, bring it to the top, highlight it and move the focus there
+  function showCard(id) {
+    const s = shown(); if (!s.list.some(e => e.id === id)) return;
+    state.page = pageOf(s.list, id); refreshList();
+    const c = document.getElementById(id); if (!c) return;
+    jumpTo(c); c.classList.add('rt-flash'); setTimeout(() => c.classList.remove('rt-flash'), 2400); c.focus({ preventScroll: true });
+  }
+  app.addEventListener('toggle', e => {
+    if (!e.target.classList) return;
+    if (e.target.classList.contains('rt-how')) { store.how = e.target.open ? 1 : 0; saveStore(); }
+    if (e.target.classList.contains('rt-index')) { store.idx = e.target.open ? 1 : 0; saveStore(); }
+  }, true);
   // 1–4 picks an answer, Enter goes on
   document.addEventListener('keydown', e => {
     if (state.view !== 'quiz' || !state.quiz || e.altKey || e.ctrlKey || e.metaKey || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
