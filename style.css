@@ -627,7 +627,7 @@ body.teacher .teacher-only.flex { display: flex; }
 .toast {
   position: fixed; bottom: 24px; border: 2px solid #fff; left: 50%; transform: translateX(-50%) translateY(30px);
   background: var(--ink); color: #fff; padding: 10px 20px; border-radius: 22px; /* a pill on one line, rounded on two */
-  width: max-content; max-width: min(560px, calc(100vw - 32px)); text-align: center; line-height: 1.45;
+  width: max-content; max-width: min(560px, calc(100vw - 32px)); text-align: center; line-height: 1.45; overflow-wrap: anywhere;
   opacity: 0; transition: all .25s; pointer-events: none; z-index: 99; font-size: 15px;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -952,6 +952,7 @@ body[data-font="clean"] .tab, body[data-font="clean"] .btn { font-weight: 600; }
 .subtabs::-webkit-scrollbar { display: none; }
 .subtab { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 6px 16px; border: 2px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); font: inherit; font-weight: 700; font-size: 15px; box-shadow: var(--depth-1); cursor: pointer; }
 .subtab[aria-current="page"] { background: var(--header); color: #fff; border-color: var(--header-dark); }
+a.subtab, a.more-tile { text-decoration: none; }
 .subtab:hover:not([aria-current]) { background: var(--bg-soft); }
 @media (max-width: 760px) {
   .subtabs, .phr-cats { padding-right: 16px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); }

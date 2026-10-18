@@ -218,7 +218,9 @@
     if (!g && PRACTICE_PAIR.includes(page) && inSessionNow() && view.pillsFor && view.pillsFor === sessionOf(page)) g = PRACTICE_PAIR;
     if (!g) return '';
     const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length < 2) return '';
-    return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}</nav>`;
+    // 單字 also leads to the 字根字首字尾 page (roots.html, its own page in the same look)
+    const roots = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>` : '';
+    return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}${roots}</nav>`;
   }
   // one page title per page: the tab's emoji and name, with the longer description underneath
   function pageHead(page, sub) {
@@ -707,120 +709,10 @@
   function toggleBm(kind, id) { const l = bm()[kind]; const i = l.indexOf(id); if (i >= 0) l.splice(i, 1); else l.push(id); save(); toast(i >= 0 ? t('bookmarkRemoved') : t('bookmarkAdded')); }
   const bmBtn = (kind, id, sm = true) => `<button class="btn ${sm ? 'sm' : ''} bm-btn ${isBm(kind, id) ? 'on' : ''}" data-action="toggleBm" data-kind="${kind}" data-id="${esc(id)}" title="${t('bookmark')}">${isBm(kind, id) ? t('removeBookmark') : t('addBookmark')}</button>`;
 
-  /* ---------------- Speech ---------------- */
-  // With no voice set, each device reads in its own default voice (an iPhone: Samantha, a woman; Windows: often David, a man).
-  // So the site picks one: a man's voice unless 女聲 is chosen (設定 / 更多 → 外觀). Browsers do not say which voices are male,
-  // so it goes by the well-known voice names; a device without one keeps its own default. The robotic novelty voices are skipped.
-  const VOICE_M = /\b(david|mark|guy|andrew|brian|christopher|eric|roger|steffan|davis|tony|jason|ryan|thomas|george|daniel|alex|aaron|arthur|gordon|rishi|evan|nathan|tom|oliver|james|william|liam|connor|mitchell|luke|ken|neil|duncan|brandon|jacob|noah|ethan|elliot|alfie|prabhat|ravi|wayne|sam|chilemba|abeo|elimu|male)\b|-x-(iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)-|\+m\d\b/i; // the codes: Android's Google voices (en-us-x-iom-local …), espeak's +m1…
-  const VOICE_F = /\b(samantha|zira|aria|jenny|michelle|emma|ava|allison|susan|karen|moira|tessa|fiona|victoria|kate|serena|martha|catherine|sonia|libby|hazel|heera|neerja|natasha|clara|sara|nicky|zoe|joelle|veena|isha|emily|linda|heather|nancy|jane|elizabeth|amy|salli|kimberly|ivy|joanna|kendra|luna|molly|leah|yan|asilia|ezinne|rosa|imani|female|google us english)\b|-x-(iob|iog|tpc|tpf|sfg|gba|gbc|gbg|fis|aua|auc|ahp|ene)-|\+f\d\b/i;
-  const VOICE_ODD = /\b(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|princess|grandpa|grandma|rocko|eddy|reed|shelley|sandy|flo|ana|maisie)\b/i; // + Edge's child voices
-  const hasTTS = () => !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
-  // browsers on Android read with the phone's own text-to-speech voice for each language; a page cannot choose one
-  const sysVoice = /Android/i.test(navigator.userAgent);
-  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPads say Macintosh
-  let voicesSeen = false; // the voice list has (re)loaded at least once
-  const badVoices = new Set(); // voices that said nothing during this visit (an iPhone can list a voice that is not installed)
-  const normLang = l => String(l || '').replace('_', '-').toLowerCase();
-  // any English voice whose name tells a man's from a woman's voice (without one, 男聲/女聲 cannot change anything)
-  const voiceKnown = () => hasTTS() && speechSynthesis.getVoices().some(x => /^en/i.test(x.lang || '') && (n => VOICE_M.test(n) || VOICE_F.test(n))(`${x.name || ''} ${x.voiceURI || ''}`));
-  // strict (the city dialogues): this exact accent first, in the chosen kind if there is one, else any voice of it;
-  // otherwise, and when the device has no voice of that accent (Nairobi, Manila …), an English voice of the chosen kind.
-  // local: only voices on the device (Edge's Online (Natural) voices need the internet)
-  function voiceFor(lang, strict, local) {
-    if (!hasTTS()) return null;
-    const L = normLang(lang), base = L.split('-')[0];
-    const [kind, other] = ui.voice === 'f' ? [VOICE_F, VOICE_M] : [VOICE_M, VOICE_F];
-    let best = null, top = -1;
-    for (const v of speechSynthesis.getVoices()) {
-      const vl = normLang(v.lang), n = `${v.name || ''} ${v.voiceURI || ''}`, mine = kind.test(n) && !other.test(n);
-      if (VOICE_ODD.test(n) || badVoices.has(v.voiceURI || v.name) || ((local || navigator.onLine === false) && v.localService === false)) continue;
-      // (of the other accents, American and then British English first)
-      let s = vl === L ? (mine ? 400 : !strict ? -1 : other.test(n) ? 200 : 300) : mine && vl.split('-')[0] === base ? (vl === 'en-us' ? 100 : vl === 'en-gb' ? 90 : 80) : -1; if (s < 0) continue;
-      if (/natural|neural|online/i.test(n)) s += 20; if (/enhanced|premium/i.test(n)) s += 15; if (v.localService) s += 2;
-      if (s > top) { top = s; best = v; }
-    }
-    return best;
-  }
-  let starts = 0; // utterances that began to speak (say() checks that one did)
-  function utter(text, lang, strict, local, plain) {
-    const u = new SpeechSynthesisUtterance(text), v = plain ? null : voiceFor(lang, strict, local), all = speechSynthesis.getVoices();
-    // no voice picked: the device's default for this accent, or American English when it has none (not its own language)
-    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = !all.length || all.some(x => normLang(x.lang) === normLang(lang)) ? lang : 'en-US';
-    u.rate = 0.9;
-    u.onstart = () => { starts++; };
-    // a cloud voice that fails (no internet, the service down) says it again with a voice on the device
-    if (v && v.localService === false && !local) u.onerror = e => { if (!/interrupted|canceled/.test((e && e.error) || '')) speechSynthesis.speak(utter(text, lang, strict, true)); };
-    return u;
-  }
-  if (hasTTS()) {
-    speechSynthesis.getVoices(); // most browsers load the list lazily
-    const vc = () => { voicesSeen = true; refreshVoiceCard(); };
-    if (speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', vc); else speechSynthesis.onvoiceschanged = vc;
-  }
-  // iPhone / iPad: Silent mode (the side switch) mutes web speech but not a playing video. A silent sound looping while
-  // the voice speaks puts the page in playback mode like a video, so the voice is heard (audioSession says so on iOS 17+).
-  let bridge = null, bridgeTimer = 0;
-  function silentWav() { // 0.25 s of 16-bit mono silence
-    const n = 5512, d = new DataView(new ArrayBuffer(44 + n * 2)), str = (o, x) => [...x].forEach((c, i) => d.setUint8(o + i, c.charCodeAt(0)));
-    str(0, 'RIFF'); d.setUint32(4, 36 + n * 2, true); str(8, 'WAVEfmt '); d.setUint32(16, 16, true); d.setUint16(20, 1, true); d.setUint16(22, 1, true);
-    d.setUint32(24, 22050, true); d.setUint32(28, 44100, true); d.setUint16(32, 2, true); d.setUint16(34, 16, true); str(36, 'data'); d.setUint32(40, n * 2, true);
-    return URL.createObjectURL(new Blob([d.buffer], { type: 'audio/wav' }));
-  }
-  function bridgeOn() {
-    if (!isIOS) return;
-    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { }
-    try {
-      if (!bridge) { bridge = new Audio(); bridge.loop = true; bridge.setAttribute('playsinline', ''); bridge.setAttribute('x-webkit-airplay', 'deny'); bridge.src = silentWav(); }
-      const p = bridge.play(); if (p && p.catch) p.catch(() => { });
-    } catch (e) { }
-    // stop once nothing has been speaking for a second (after giving the voice 3 s to begin), or after 15 minutes
-    clearInterval(bridgeTimer); let ticks = 0, idle = 0;
-    bridgeTimer = setInterval(() => { ticks++; idle = speechSynthesis.speaking || speechSynthesis.pending ? 0 : idle + 1; if ((ticks > 6 && idle > 1) || ticks > 1800) bridgeOff(); }, 500);
-  }
-  function bridgeOff() {
-    clearInterval(bridgeTimer); bridgeTimer = 0;
-    try { if (bridge && !bridge.paused) bridge.pause(); if (isIOS && navigator.audioSession && navigator.audioSession.type === 'playback') navigator.audioSession.type = 'auto'; } catch (e) { }
-  }
-  document.addEventListener('visibilitychange', () => { if (document.hidden) bridgeOff(); });
-  // …and a reminder about Silent mode, once a day on an iPhone (and on every 試聽)
-  const LS_HINT = 'tve_exam_mutehint_v1';
-  let hintDay = (() => { try { return localStorage.getItem(LS_HINT); } catch (e) { return null; } })();
-  function muteHint(force) {
-    if (!isIOS || (!force && hintDay === todayStr())) return;
-    hintDay = todayStr(); try { localStorage.setItem(LS_HINT, hintDay); } catch (e) { }
-    toast(t('voiceMuteHint'), 5000);
-  }
-  // say these lines one after another. iPhone Safari can drop a speak() made right after cancel(), so cancel only when
-  // something is playing and wait a moment after it. If nothing starts (a listed voice that is not installed, a stuck
-  // queue), try once more with the device's default voice, and say so if that does not start either.
-  let speakSeq = 0;
-  function say(lines, lang, strict, test) {
-    if (!hasTTS() || !lines.length) return;
-    const ss = speechSynthesis, my = ++speakSeq, busy = ss.speaking || ss.pending;
-    bridgeOn(); muteHint(test); // both inside the tap, which iPhone Safari requires
-    if (busy) ss.cancel();
-    if (ss.paused) ss.resume();
-    const run = plain => {
-      if (my !== speakSeq) return;
-      const us = lines.map(text => utter(text, lang, strict, false, plain)), v = us[0].voice, s0 = starts;
-      let gone = false, timer = 0, ended = false;
-      const fail = () => {
-        if (gone || ended || my !== speakSeq || starts > s0) return; gone = true; clearTimeout(timer);
-        if (plain) { toast(t(voicesSeen && !ss.getVoices().length ? 'voiceNone' : 'voiceStuck'), 6000); return; }
-        if (v) { badVoices.add(v.voiceURI || v.name); refreshVoiceCard(); }
-        ss.cancel(); bridgeOn(); setTimeout(() => run(true), 150);
-      };
-      if (!us[0].onerror) us[0].onerror = e => { if (!/interrupted|canceled/.test((e && e.error) || '')) fail(); }; // a cloud voice retries on the device first
-      const t0 = performance.now(); us.forEach(u => { u.onend = () => { if (performance.now() - t0 > 400) ended = true; }; }); // a browser that never says "start"
-      us.forEach(u => ss.speak(u));
-      timer = setTimeout(fail, v && v.localService === false ? 6000 : 4000);
-    };
-    if (busy) setTimeout(() => run(false), 150); else run(false);
-  }
-  // a long text (a whole article) goes sentence by sentence: Chrome's online Google voices stop after about 15 seconds
-  const speechChunks = text => { const out = []; let cur = ''; (String(text).match(/[^.!?]+[.!?]+["'”’)\]]*\s*|[^.!?]+$/g) || [String(text)]).forEach(s => { if (cur && (cur + s).length > 200) { out.push(cur); cur = ''; } cur += s; }); if (cur.trim()) out.push(cur); return out; };
-  function speak(text, test) { say(String(text).length > 200 ? speechChunks(text) : [String(text)], 'en-US', false, test); }
-  function speakStop() { speakSeq++; bridgeOff(); if (hasTTS() && (speechSynthesis.speaking || speechSynthesis.pending)) speechSynthesis.cancel(); }
+  /* ---------------- Speech: speech.js, shared with roots.html ---------------- */
+  const SP = window.TVESpeech;
+  SP.setup({ kind: () => ui.voice, toast, text: k => t(k), changed: () => refreshVoiceCard() });
+  const { hasTTS, sysVoice, isIOS, voiceFor, voiceKnown, say, speak } = SP, speakStop = SP.stop;
 
   /* ---------------- Pages ---------------- */
   const GOAL = { new: 10 };   // new words a day (the cap of a 高頻 round started from the home bookmarks)
@@ -2260,7 +2152,7 @@
     const has = hasTTS(), v = has ? voiceFor('en-US') : null, en = has ? speechSynthesis.getVoices().filter(x => /^en/i.test(x.lang || '')) : [];
     const known = voiceKnown(), phoneOnly = sysVoice && !known; // Android: the phone decides, so no 男聲/女聲 buttons
     const note = !has ? t('voiceNone') : v ? tf('voiceUsing', { v: esc(v.name.replace(/\s+-\s+.*$/, '') || v.name), l: esc(v.lang) })
-      : sysVoice ? t('voiceAndroid') : !en.length ? t(voicesSeen ? 'voiceNone' : 'voiceDefault') : !known ? t('voiceUnknown') : t(ui.voice === 'f' ? 'voiceNoF' : 'voiceNoM');
+      : sysVoice ? t('voiceAndroid') : !en.length ? t(SP.voicesSeen() ? 'voiceNone' : 'voiceDefault') : !known ? t('voiceUnknown') : t(ui.voice === 'f' ? 'voiceNoF' : 'voiceNoM');
     return `<div class="card voice-set"><h3 style="margin-top:0">🔊 ${t('voiceTitle')}</h3><p class="small muted">${t('voiceSub')}</p>
       <div class="voice-row">${phoneOnly ? '' : `<div class="px-chips" role="group" aria-label="${t('voiceTitle')}">${[['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]].map(([k, l]) => `<button type="button" class="px-chip ${(ui.voice === 'f' ? 'f' : 'm') === k ? 'on' : ''}" data-action="setVoice" data-v="${k}" aria-pressed="${(ui.voice === 'f' ? 'f' : 'm') === k}">${l}</button>`).join('')}</div>`}
         <button type="button" class="btn sm ghost" data-action="voiceTest" ${has ? '' : 'disabled'}>▶ ${t('voiceTest')}</button></div>
@@ -3061,7 +2953,7 @@
     const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
-      <div class="more-tiles">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}
+      <div class="more-tiles">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}<a class="more-tile" href="roots.html"><span class="mt-ico" aria-hidden="true">🌱</span><span class="mt-txt">${t('rootsNav')}<small>${t('rootsNavSub')}</small></span></a>
         ${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : t('account'))}</div>
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
