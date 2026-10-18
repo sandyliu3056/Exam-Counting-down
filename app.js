@@ -1192,7 +1192,7 @@
       <div class="row" style="justify-content:center"><button class="btn accent" data-action="trStart">${t('trAgain')}</button>${s.right < s.ids.length ? `<button class="btn" data-action="trRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="trExit">${t('back')}</button></div></div>`;
   }
 
-  /* ---- Phrases tab: the 2,800+ built-in phrases by category ---- */
+  /* ---- Phrases tab: the 3,000+ built-in phrases by category (library.js keeps each category A1 → C2) ---- */
   function pagerHTML(cur, pages, action, labelOf) {
     if (pages <= 1) return '';
     const span = window.innerWidth < 600 ? 1 : 2;
@@ -1210,6 +1210,25 @@
     </div>`;
   }
   const PHR_PAGE = 24;
+  // a phrase in dictionary form → the regexes that find it in its example sentence: V, V-ing, adj, A and B are gaps like sth;
+  // "too much/too many" and "there is/are" give one regex per choice; oneself is any -self word; a/an/the may be my, his …;
+  // and a leading "be" may be a contraction ("I'm bad at"), so the phrase without it is tried too
+  const SELF = 'myself yourself himself herself itself ourselves yourselves themselves'.split(' ');
+  const DETS = 'a an the my your his her our their its'.split(' ');
+  function phraseExRes(word) {
+    const w = word.replace(/\([^)]*\)/g, ' ').replace(/…|\.\.\./g, ' ').replace(/(^|\s)(?:V|v|V-ing|v-ing|adj|A|B)(?=\s|$)/g, '$1sth').replace(/\s+/g, ' ').trim();
+    const sides = w.split('/'), notes = sides.length > 1 && sides.every(x => x.trim().includes(' ')) ? sides.map(x => x.trim()) : [w];
+    const out = new Set();
+    const walk = (toks, i, acc) => {
+      if (out.size >= 40) return;
+      if (i === toks.length) { out.add(acc.join(' ')); return; }
+      const x = toks[i];
+      const opts = x.includes('/') && !/^(sb|sth)\/(sb|sth)$/.test(x) ? x.split('/').filter(Boolean) : x === 'oneself' ? SELF : i > 0 && /^(a|an|the)$/.test(x) ? DETS : [x];
+      opts.forEach(o => walk(toks, i + 1, acc.concat(o)));
+    };
+    notes.forEach(n => { const toks = n.split(' '); walk(toks, 0, []); if (toks[0] === 'be' && toks.length > 2) walk(toks.slice(1), 0, []); });
+    return [...out].map(noteRe);
+  }
   function pagePhrases() {
     const f = view.phr || (view.phr = { cat: '', level: '', q: '', bm: false, page: 0 });
     const all = VOCAB.filter(v => v.type === 'phrase');
@@ -1222,7 +1241,7 @@
     const shown = list.slice(cur * PHR_PAGE, cur * PHR_PAGE + PHR_PAGE);
     const inCat = f.cat ? all.filter(v => v.unit === f.cat) : all;
     const mastered = inCat.filter(v => box(v.id) === 3).length;
-    const exampleHTML = v => { if (!v.example) return ''; const re = noteRe(v.word.replace(/\([^)]*\)/g, ' ').replace(/…|\.\.\./g, ' ')); return markTerms(v.example, [{ re, cls: 'lp' }]); };
+    const exampleHTML = v => v.example ? markTerms(v.example, phraseExRes(v.word).map(re => ({ re, cls: 'lp' }))) : '';
     const pager = pagerHTML(cur, pages, 'phrGo', i => (list[i * PHR_PAGE] || {}).word || '');
     const fmtN = n => n.toLocaleString('en-US'), catName = c => t('phCat' + String(c).slice(2));
     const from = list.length ? cur * PHR_PAGE + 1 : 0, to = Math.min(list.length, cur * PHR_PAGE + PHR_PAGE);
@@ -1236,7 +1255,7 @@
         <div class="wb-filters">
           <label class="sr-only" for="phrSearch">${t('phrSearch')}</label><input type="search" id="phrSearch" class="wb-search" placeholder="🔍 ${t('phrSearch')}" value="${esc(f.q)}" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false">
           <div class="wb-sel"><label class="sr-only" for="phrCatSel">${t('phrCatLbl')}</label><select class="input" id="phrCatSel"><option value="">${t('phrAllCats')}（${fmtN(all.length)}）</option>${cats.map(c => { const n = all.filter(v => v.unit === c).length; return n ? `<option value="${c}" ${f.cat === c ? 'selected' : ''}>${esc(catName(c))}（${fmtN(n)}）</option>` : ''; }).join('')}</select></div>
-          <div class="wb-sel"><label class="sr-only" for="phrLevelSel">${t('phrLevelLbl')}</label><select class="input" id="phrLevelSel">${[['', t('phrAllLevels')], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<option value="${v}" ${f.level === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+          <div class="wb-sel"><label class="sr-only" for="phrLevelSel">${t('phrLevelLbl')}</label><select class="input" id="phrLevelSel">${[['', t('phrAllLevels')], ['A1', 'A1'], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']].map(([v, l]) => `<option value="${v}" ${f.level === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
         </div>
         <div class="wb-meta">
           <button class="btn sm ${f.bm ? 'accent' : 'ghost'}" data-action="phrBm" aria-pressed="${!!f.bm}">🔖 ${t('onlyBookmarks')}</button>
@@ -1322,7 +1341,7 @@
   const termRe = s => new RegExp(`\\b${s.trim().split(/\s+/).map(escRe).join('[\\s,]+')}\\b`, 'gi');
 
   // Phrases from the built-in list as regular expressions: verb forms, "be" forms, and gaps for sb/sth/one's.
-  const IRREG = { be: "am is are was were been being isn't aren't wasn't weren't", can: "can't cannot could couldn't", will: "won't would wouldn't", understand: 'understood', become: 'became', sleep: 'slept', wake: 'woke woken', have: 'has had having', do: 'does did done doing', go: 'goes went gone going', get: 'gets got gotten getting', make: 'made', take: 'took taken', give: 'gave given', come: 'came', keep: 'kept', bring: 'brought', find: 'found', hold: 'held', stand: 'stood', catch: 'caught', think: 'thought', run: 'ran running', put: 'putting', set: 'setting', cut: 'cutting', let: 'letting', break: 'broke broken', fall: 'fell fallen', grow: 'grew grown', show: 'shown', see: 'saw seen', know: 'knew known', tell: 'told', say: 'said', pay: 'paid', lead: 'led', leave: 'left', sit: 'sat sitting', wear: 'wore worn', throw: 'threw thrown', draw: 'drew drawn', write: 'wrote written', drive: 'drove driven', eat: 'ate eaten', begin: 'began begun beginning', deal: 'dealt', feel: 'felt', hang: 'hung', lay: 'laid', lie: 'lay lain lying', lose: 'lost', mean: 'meant', meet: 'met', send: 'sent', sell: 'sold', spend: 'spent', stick: 'stuck', strike: 'struck', teach: 'taught', buy: 'bought', fight: 'fought', win: 'won winning', speak: 'spoke spoken', wake: 'woke woken', rise: 'rose risen', ride: 'rode ridden', fly: 'flew flown', shake: 'shook shaken', choose: 'chose chosen', forget: 'forgot forgotten', hide: 'hid hidden', build: 'built', light: 'lit', shoot: 'shot', blow: 'blew blown', dig: 'dug digging', swim: 'swam swum swimming', stop: 'stopped stopping', drop: 'dropped dropping', plan: 'planned planning', shut: 'shutting', hit: 'hitting', step: 'stepped stepping', carry: 'carried carries', try: 'tried tries', rely: 'relied relies', apply: 'applied applies', worry: 'worried worries' };
+  const IRREG = { be: "am is are was were been being isn't aren't wasn't weren't", lend: 'lent', can: "can't cannot could couldn't", will: "won't would wouldn't", understand: 'understood', become: 'became', sleep: 'slept', wake: 'woke woken', have: 'has had having', do: 'does did done doing', go: 'goes went gone going', get: 'gets got gotten getting', make: 'made', take: 'took taken', give: 'gave given', come: 'came', keep: 'kept', bring: 'brought', find: 'found', hold: 'held', stand: 'stood', catch: 'caught', think: 'thought', run: 'ran running', put: 'putting', set: 'setting', cut: 'cutting', let: 'letting', break: 'broke broken', fall: 'fell fallen', grow: 'grew grown', show: 'shown', see: 'saw seen', know: 'knew known', tell: 'told', say: 'said', pay: 'paid', lead: 'led', leave: 'left', sit: 'sat sitting', wear: 'wore worn', throw: 'threw thrown', draw: 'drew drawn', write: 'wrote written', drive: 'drove driven', eat: 'ate eaten', begin: 'began begun beginning', deal: 'dealt', feel: 'felt', hang: 'hung', lay: 'laid', lie: 'lay lain lying', lose: 'lost', mean: 'meant', meet: 'met', send: 'sent', sell: 'sold', spend: 'spent', stick: 'stuck', strike: 'struck', teach: 'taught', buy: 'bought', fight: 'fought', win: 'won winning', speak: 'spoke spoken', wake: 'woke woken', rise: 'rose risen', ride: 'rode ridden', fly: 'flew flown', shake: 'shook shaken', choose: 'chose chosen', forget: 'forgot forgotten', hide: 'hid hidden', build: 'built', light: 'lit', shoot: 'shot', blow: 'blew blown', dig: 'dug digging', swim: 'swam swum swimming', stop: 'stopped stopping', drop: 'dropped dropping', plan: 'planned planning', shut: 'shutting', hit: 'hitting', step: 'stepped stepping', carry: 'carried carries', try: 'tried tries', rely: 'relied relies', apply: 'applied applies', worry: 'worried worries' };
   const NOT_VERB = new Set('a an the in on at by for of to as from with out up off over under into onto all so no not and or but than more most less least very too much many such what how when where who which one each every this that these those it its after before about around'.split(' '));
   const POSS = "(?:my|your|his|her|its|our|their|one's|[a-z]+'s)";
   const PARTICLES = new Set('on up off out down in over away back around about through along apart aside'.split(' '));
@@ -1365,7 +1384,7 @@
       if (v.type !== 'phrase') return;
       const toks = v.word.replace(/\([^)]*\)/g, ' ').replace(/[…]|\.\.\./g, ' ').split(/\s+/).map(x => x.replace(/[,;:!?]+$/, '')).filter(Boolean);
       const isGap = x => /^(sb|sth|sb\/sth|someone|something|somebody|V|v-ing|V-ing|A|B|Z)$/.test(x);
-      if (PHRASE_SKIP.has(v.word)) return;
+      if (PHRASE_SKIP.has(v.word) || v.level === 'A1') return; // A1 phrases (a lot of, every day) are too basic to point out in the news
       while (toks.length && isGap(toks[0])) toks.shift();
       const tailGap = toks.length && isGap(toks[toks.length - 1]);
       while (toks.length && isGap(toks[toks.length - 1])) toks.pop();
