@@ -40,18 +40,8 @@
   .rt-kind .rt-dot { width: 9px; height: 9px; margin-right: 3px; }
 }
 
-/* ---------- 怎麼用 (the formula) ---------- */
-.rt-how { margin-bottom: 16px; background: #fffdf5; }
-.rt-how > summary { cursor: pointer; font-weight: 700; font-size: 18px; list-style: none; display: flex; align-items: center; gap: 8px; }
-.rt-how > summary::-webkit-details-marker { display: none; }
-.rt-how > summary::after { content: '▾'; margin-left: auto; transition: transform .2s; }
-.rt-how[open] > summary::after { transform: rotate(180deg); }
-.rt-how ol { margin: 10px 0 0; padding-left: 1.4em; }
-.rt-how li { margin: 4px 0; }
-.rt-formula { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 14px 0 6px; }
-.rt-formula .rt-eq { font-size: 22px; font-weight: 800; color: var(--ink-soft); }
-.rt-formula .rt-whole { font-family: var(--font-en); font-size: 26px; font-weight: 700; }
-.rt-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 14px; color: var(--ink-soft); }
+/* ---------- colour key (under the search) ---------- */
+.rt-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 13px; color: var(--ink-soft); }
 .rt-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .rt-legend i { width: 16px; height: 16px; border-radius: 5px; border: 2px solid; display: inline-block; }
 .rt-legend .rl-p i { background: var(--kp-bg); border-color: var(--kp); }
@@ -186,7 +176,7 @@
 }
 
 @media print {
-  .site-header, .rt-kinds, .rt-tools, .rt-how, .site-footer, .to-top, .rt-say, .subtabs { display: none !important; }
+  .site-header, .rt-kinds, .rt-tools, .site-footer, .to-top, .rt-say, .subtabs { display: none !important; }
   .rt-card { break-inside: avoid; box-shadow: none; }
 }
 

@@ -29,7 +29,7 @@
   $('#fontSelect').addEventListener('change', e => saveLook('font', e.target.value));
   window.addEventListener('storage', e => { if (e.key === LS_UI) { ui = readJSON(LS_UI); applyLook(); } });
   applyLook();
-  const store = readJSON(LS_ROOTS); // { how: 0/1 (怎麼用 open), idx: 0/1 (目錄 open), best: { all: 8, root: 10 … } }
+  const store = readJSON(LS_ROOTS); // { idx: 0/1 (目錄 open), best: { all: 8, root: 10 … } }
   const saveStore = () => { try { localStorage.setItem(LS_ROOTS, JSON.stringify(store)); } catch (e) { } };
 
   /* ---------------- Toast + read-aloud ---------------- */
@@ -63,7 +63,6 @@
   const CEFR = { 1: 'A1', 2: 'A2', 3: 'B1', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B2+', 8: 'C1', 9: 'C2' }; // the same as the 單字庫
   const ALL = [].concat(DATA.prefix, DATA.root, DATA.suffix);
   const byId = new Map(ALL.map(e => [e.id, e]));
-  const nEx = ALL.reduce((n, e) => n + e.examples.length, 0);
 
   /* ---------------- State + address (#prefix, #root/r-spect, #quiz …) ---------------- */
   const VIEWS = ['prefix', 'root', 'suffix', 'quiz'];
@@ -152,7 +151,7 @@
     const flush = () => { if (run.length) html += `<h2 class="section-title rt-sec">${esc(head)}</h2>${grid(run, s.hits)}`; run = []; };
     items.forEach(e => { if (s.head(e) !== head) { flush(); head = s.head(e); } run.push(e); }); flush();
     const what = s.q ? `找到 ${n} 個（${KINDS.map(([k, zh]) => `${zh} ${s.list.filter(e => e.kind === k).length}`).join('・')}）` : `共 ${n} 個${KIND_NAME[state.view]}${state.group ? `（${GROUP_NAME[state.group]}）` : ''}`;
-    return { count: pages > 1 ? `${what}・第 ${state.page + 1} / ${pages} 頁（第 ${a + 1}–${a + items.length} 個）` : what, html: pager(state.page, pages, s.list) + html + pager(state.page, pages, s.list, true) };
+    return { count: pages > 1 ? `${what}・第 ${state.page + 1} / ${pages} 頁` : what, html: pager(state.page, pages, s.list) + html + pager(state.page, pages, s.list, true) };
   }
   // 目錄: every entry of the list as a small button, under its heading; a tap opens the page with that card
   function indexHTML() {
@@ -162,7 +161,7 @@
       if (s.head(e) !== head) { html += `${head === null ? '' : '</div>'}<h3 class="rt-ix-h">${esc(s.head(e))}</h3><div class="rt-ix-row">`; head = s.head(e); }
       html += `<button type="button" class="rt-ix k-${CODE[e.kind]}" data-jump="${esc(e.id)}"><b lang="en">${esc(e.form)}</b><span>${esc(e.mean)}</span></button>`;
     });
-    return `<details class="rt-index"${store.idx === 1 ? ' open' : ''}><summary>📋 目錄（${s.list.length} 個）：點一下直接看那一張</summary>${html}</div></details>`;
+    return `<details class="rt-index"${store.idx === 1 ? ' open' : ''}><summary>📋 目錄</summary>${html}</div></details>`;
   }
   function groupPills() {
     if (norm(state.q)) return '';
@@ -177,22 +176,8 @@
     return `<nav class="subtabs" aria-label="單字">
         <a class="subtab" href="./#/flashcards"><span aria-hidden="true">🃏</span> 單字卡</a><a class="subtab" href="./#/vocab"><span aria-hidden="true">📚</span> 單字庫</a><a class="subtab" href="./#/phrases"><span aria-hidden="true">🧩</span> 片語</a><a class="subtab" href="roots.html" aria-current="page"><span aria-hidden="true">🌱</span> 字根字首</a>
       </nav>
-      <header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">🌱</span> 字根字首字尾</h1>
-        <p>把單字拆成「字首＋字根＋字尾」，認得每一塊的意思，就能猜出沒看過的單字。共 ${DATA.prefix.length} 個字首、${DATA.root.length} 個字根、${DATA.suffix.length} 個字尾，${nEx} 個例字；點 🔊 聽發音。</p></header>
+      <header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">🌱</span> 字根字首字尾</h1></header>
       <nav class="rt-kinds" aria-label="字首、字根、字尾、測驗">${KINDS.map(([k, zh, en]) => tab(k, zh, `${en} · ${DATA[k].length}`, true)).join('')}${tab('quiz', '🎯 測驗', 'Quiz')}</nav>`;
-  }
-  function howHTML() {
-    const open = store.how !== 0;
-    return `<details class="card rt-how"${open ? ' open' : ''}><summary>💡 怎麼用拆字記單字？</summary>
-      <div class="rt-formula">${seg(['un', 'p', '不'])}<span class="rt-eq">+</span>${seg(['believ', 'b', '相信'])}<span class="rt-eq">+</span>${seg(['able', 's', '可…的'])}<span class="rt-eq">=</span><span class="rt-whole" lang="en">unbelievable</span><span>難以置信的</span><button type="button" class="icon-btn rt-say" data-say="unbelievable" aria-label="唸 unbelievable">🔊</button></div>
-      <ol>
-        <li><b>字首</b>在最前面，常常改變意思：un-（不）、re-（再）、pre-（之前）。</li>
-        <li><b>字根</b>是核心意思，多半來自拉丁文或希臘文：spect（看）、port（搬運）。</li>
-        <li><b>字尾</b>在最後面，常常決定詞性：-tion 名詞、-able 形容詞、-ly 副詞。</li>
-        <li>拆出來的「字面意思」是線索；真正的意思還是要看例句。</li>
-      </ol>
-      <div class="rt-legend"><span class="rl-p"><i></i>字首</span><span class="rl-r"><i></i>字根</span><span class="rl-s"><i></i>字尾</span><span class="rl-b"><i></i>原本就是一個單字</span></div>
-    </details>`;
   }
   function render(opts = {}) {
     const { view, id } = readHash();
@@ -202,8 +187,9 @@
     if (id && view !== 'quiz') { state.q = ''; const e = byId.get(id); if (e && state.group && e.group !== state.group) state.group = ''; state.page = pageOf(shown().list, id); }
     let body;
     if (view === 'quiz') body = state.quiz ? (state.quiz.i < state.quiz.qs.length ? questionHTML() : resultHTML()) : quizSetHTML();
-    else body = `${howHTML()}<div class="card rt-tools">
+    else body = `<div class="card rt-tools">
         <div class="rt-search"><input type="search" id="rtQ" value="${esc(state.q)}" placeholder="搜尋：spect、看、inspect…" aria-label="搜尋字首、字根、字尾、單字或中文" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"><button type="button" class="rt-clear" data-act="clear" aria-label="清除搜尋"${state.q ? '' : ' hidden'}>✕</button></div>
+        <div class="rt-legend" aria-hidden="true"><span class="rl-p"><i></i>字首</span><span class="rl-r"><i></i>字根</span><span class="rl-s"><i></i>字尾</span><span class="rl-b"><i></i>單字</span></div>
         <div id="rtPills">${groupPills()}</div><div id="rtIdx">${indexHTML()}</div>
       </div>${(p => `<p class="rt-count" id="rtCount" role="status">${esc(p.count)}</p><div id="rtList">${p.html}</div>`)(listParts())}`;
     app.innerHTML = headHTML() + body;
@@ -353,7 +339,6 @@
   }
   app.addEventListener('toggle', e => {
     if (!e.target.classList) return;
-    if (e.target.classList.contains('rt-how')) { store.how = e.target.open ? 1 : 0; saveStore(); }
     if (e.target.classList.contains('rt-index')) { store.idx = e.target.open ? 1 : 0; saveStore(); }
   }, true);
   // 1–4 picks an answer, Enter goes on
