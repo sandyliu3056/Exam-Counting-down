@@ -688,20 +688,60 @@
       <div class="row" style="margin-top:8px">${d.word ? `<span class="chip info"><span class="en">${esc(d.word)}</span> · ${esc(d.wordZh || '')}</span>` : ''}<span class="spacer"></span><button class="btn sm ghost" data-action="speak" data-word="${esc(d.en)}">🔊 ${t('listen')}</button></div>
     </div>`;
   }
-  function timePlanCard() {
-    const total = TIME_PLAN.reduce((a, x) => a + x[1], 0);
+  const TP_TOTAL = TIME_PLAN.reduce((a, x) => a + x[1], 0);
+  // the 100-minute bar with the 30′ and 50′ marks (home card and the guide window)
+  function timePlanBar() {
     const segs = TIME_PLAN.map(([k, m, c]) => `<div class="tp-seg" style="flex:${m};background:${c}" title="${esc(t(k))} ${m} ${t('min')}"><span>${m}</span></div>`).join('');
+    const mark = (min, key) => `<div class="tp-mark" style="left:${min / TP_TOTAL * 100}%"><span>${esc(t(key))}</span></div>`;
+    return `<div class="tp-bar">${segs}</div><div class="tp-marks">${mark(30, 'tpMark30')}${mark(50, 'tpMark50')}</div>`;
+  }
+  function timePlanCard() {
     const legend = TIME_PLAN.map(([k, m, c]) => `<span class="tp-leg"><i style="background:${c}"></i>${esc(t(k))} <b>${m}′</b></span>`).join('');
-    const mark = (min, key) => `<div class="tp-mark" style="left:${min / total * 100}%"><span>${esc(t(key))}</span></div>`;
     return `<div class="card timeplan">
-      <div class="row" style="justify-content:space-between"><b>${total} ${t('min')}</b><span class="small muted">${t('tpScore')}</span></div>
-      <div class="tp-bar">${segs}</div>
-      <div class="tp-marks">${mark(30, 'tpMark30')}${mark(50, 'tpMark50')}</div>
+      <div class="row" style="justify-content:space-between"><b>${TP_TOTAL} ${t('min')}</b><span class="small muted">${t('tpScore')}</span></div>
+      ${timePlanBar()}
       <div class="tp-legend">${legend}</div>
       <ul class="tp-tips"><li>${t('tpTip1')}</li><li>${t('tpTip2')}</li><li>${t('tpTip3')}</li></ul>
-      <a class="small" href="docs/tve-english-exam-guide.pdf" target="_blank" rel="noopener">${t('pdfLink')}</a>
+      <button type="button" class="btn sm ghost tp-guide" data-action="openGuide" aria-haspopup="dialog" aria-controls="guideModal">${t('guideOpen')}</button>
     </div>`;
   }
+  /* ---- 題型與時間分配: the whole guide in a window with a ✕ (the PDF opened on its own left phones with no way back) ---- */
+  const guideModal = $('#guideModal');
+  let guideOpener = null;
+  function guideHTML() {
+    const I = t('examInfo'), zh = ui.lang === 'zh', colon = zh ? '：' : ': ', dot = zh ? '・' : ' · ';
+    const [cCount, cMarks] = I.cols.slice(1, 3).map(c => c.replace(/\s*[（(].*?[）)]/, '')); // 題數（近年） → 題數
+    return `<div class="guide-head"><h2 id="guideTitle">📄 ${t('guideTitle')}</h2><button type="button" class="modal-close" data-guide="close" aria-label="${t('close')}">✕</button></div>
+      <div class="guide-body">
+        <h3>📋 ${t('structureTitle')}</h3>
+        <div class="gd-parts">${I.rows.map(r => `<div class="gd-part"><b>${esc(r[0])}</b><div class="gd-meta">${esc(cCount)}${colon}${esc(r[1])}${dot}${esc(cMarks)}${colon}${esc(r[2])}</div><div>${esc(r[3])}</div></div>`).join('')}</div>
+        <h3>🧮 ${t('guideSplitTitle')}</h3>
+        <div class="gd-split">${I.split.map(([n, x]) => `<div class="gd-num"><b>${esc(n)}</b><span>${esc(x)}</span></div>`).join('')}</div>
+        <h3>⏱️ ${t('timePlanTitle')}</h3>
+        ${timePlanBar()}
+        <ul class="gd-tips">${TIME_PLAN.map(([k, m, c]) => `<li><i style="background:${c}" aria-hidden="true"></i><span><b>${esc(t(k))} ${m}′</b>　${esc(t('tip' + k.slice(3)))}</span></li>`).join('')}</ul>
+        <h3>📈 ${t('trendTitle')}</h3>
+        <div class="list">${I.trends.map((x, i) => `<div class="list-item"><span class="gd-no">0${i + 1}</span><div class="grow"><div class="title">${esc(x[0])}</div><div class="meta">${esc(x[1])}</div></div></div>`).join('')}</div>
+        <h3>✅ ${t('rulesTitle')}</h3>
+        <div class="list">${I.rules.map(x => `<div class="list-item"><span aria-hidden="true">${x[0]}</span><div class="grow"><div class="title">${esc(x[1])}</div><div class="meta">${esc(x[2])}</div></div></div>`).join('')}</div>
+        <p class="gd-line">「${t('oneLine')}」</p>
+        <p class="gd-src">${t('guideSrc')}</p>
+        <div class="gd-foot"><a class="btn sm ghost" href="docs/tve-english-exam-guide.pdf" download>${t('pdfLink')}</a><button type="button" class="btn" data-guide="close">✕ ${t('close')}</button></div>
+      </div>`;
+  }
+  function openGuide(opener) {
+    if (!guideModal.classList.contains('hidden')) return;
+    guideOpener = opener || null;
+    const box = $('#guideSheet'); box.innerHTML = guideHTML();
+    guideModal.classList.remove('hidden'); document.body.classList.add('guide-open'); box.scrollTop = 0;
+    requestAnimationFrame(() => { const x = $('#guideSheet .modal-close'); if (x) x.focus({ preventScroll: true }); });
+  }
+  function closeGuide(leaving) {
+    if (guideModal.classList.contains('hidden')) return;
+    guideModal.classList.add('hidden'); document.body.classList.remove('guide-open');
+    if (!leaving && guideOpener && document.contains(guideOpener)) guideOpener.focus({ preventScroll: true });
+  }
+  guideModal.addEventListener('click', e => { if (e.target === guideModal || e.target.closest('[data-guide="close"]')) closeGuide(); });
 
   /* ---------------- Bookmarks ---------------- */
   const bm = () => { const p = state.progress; if (!p.bookmarks) p.bookmarks = { vocab: [], articles: [] }; return p.bookmarks; };
@@ -2797,6 +2837,7 @@
     openAuth() { openAuth('login'); },
     openCity(el) { openCity(el.dataset.id, el); },
     closeCity() { closeCity(); },
+    openGuide(el) { openGuide(el); },
     citySpeak(el) { const c = cityById(view.city); speakLines([el.dataset.word], c ? c.lang : 'en-US'); },
     cityPlay() { const c = cityById(view.city); if (c) speakLines(c.dialogue.lines.map(l => l.en), c.lang); },
     cityZh(el) { view.cityZh = el.dataset.v === '1'; renderCity(); },
@@ -2941,7 +2982,7 @@
     if (!isRouteHash(location.hash)) return;
     const fromArticle = view.page === 'reading' && !!view.articleId, fromNews = view.page === 'news' && !!view.newsArticle;
     // a dialog or sheet left open would act on the new page: close them all (an open 要結束嗎？ counts as 繼續作答)
-    closeAsk(false); closeAuth(); closeMore(); closeLvDrawer(true); endTour(false); if (cal.open) closeCal(); if (view.city) closeCity(true);
+    closeAsk(false); closeAuth(); closeMore(); closeGuide(true); closeLvDrawer(true); endTour(false); if (cal.open) closeCal(); if (view.city) closeCity(true);
     if (!applyRoute(location.hash)) return;
     speakStop();
     view.pillsFor = sessionOf(view.page) || null;
@@ -3333,6 +3374,7 @@
   document.addEventListener('keydown', e => {
     if (!askEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeAsk(false); } else trapTab(e, askEl); return; }
     if (!moreEl.classList.contains('hidden')) { if (e.key === 'Escape') closeMore(); else trapTab(e, moreEl); return; }
+    if (!guideModal.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); closeGuide(); } else trapTab(e, guideModal); return; }
     if (!lvDrawer.classList.contains('hidden')) { if (e.key === 'Escape') closeLvDrawer(); else trapTab(e, lvDrawer); return; }
     if (!invEl.classList.contains('hidden')) { if (e.key === 'Escape') { e.preventDefault(); actions.tourNo(); } else trapTab(e, invCard); return; }
     if (tour.i >= 0) {
