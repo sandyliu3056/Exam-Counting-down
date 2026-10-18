@@ -1217,7 +1217,7 @@
   const DETS = 'a an the my your his her our their its'.split(' ');
   function phraseExRes(word) {
     const w = word.replace(/\([^)]*\)/g, ' ').replace(/…|\.\.\./g, ' ').replace(/(^|\s)(?:V|v|V-ing|v-ing|adj|A|B)(?=\s|$)/g, '$1sth').replace(/\s+/g, ' ').trim();
-    const sides = w.split('/'), notes = sides.length > 1 && sides.every(x => x.trim().includes(' ')) ? sides.map(x => x.trim()) : [w];
+    const sides = w.split(/\/(?!(?:sb|sth)\b)/), notes = sides.length > 1 && sides.every(x => x.trim().includes(' ')) ? sides.map(x => x.trim()) : [w];
     const out = new Set();
     const walk = (toks, i, acc) => {
       if (out.size >= 40) return;
@@ -1227,7 +1227,8 @@
       opts.forEach(o => walk(toks, i + 1, acc.concat(o)));
     };
     notes.forEach(n => { const toks = n.split(' '); walk(toks, 0, []); if (toks[0] === 'be' && toks.length > 2) walk(toks.slice(1), 0, []); });
-    return [...out].map(noteRe);
+    // whole-phrase choices are matched word for word: noteRe's gaps would let "too much" reach across "too many people and too much"
+    return [...out].map(notes.length > 1 ? termRe : noteRe);
   }
   function pagePhrases() {
     const f = view.phr || (view.phr = { cat: '', level: '', q: '', bm: false, page: 0 });
