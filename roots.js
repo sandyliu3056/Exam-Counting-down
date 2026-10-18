@@ -192,25 +192,26 @@
   const core = s => new Set(String(s).replace(/[^一-鿿]/g, '').replace(/[的之性狀態動作名詞使成為做人者與有關某於或等地]/g, ''));
   const near = (a, b) => { const B = core(b); return [...core(a)].some(c => B.has(c)); };
   const clash = (a, b) => a.sense === b.sense || near(a.mean, b.mean);
-  function pick3(cands, ok, val) {
+  // three wrong options that also differ from each other (two options meaning the same would give both away)
+  function pick3(cands, ok, apart) {
     const out = [];
-    for (const c of shuffle(cands)) { if (out.length === 3) break; if (ok(c) && !out.some(o => val(o) === val(c))) out.push(c); }
+    for (const c of shuffle(cands)) { if (out.length === 3) break; if (ok(c) && !out.some(o => !apart(o, c))) out.push(c); }
     return out.length === 3 ? out : null;
   }
   function makeQ(e, type) {
     const same = DATA[e.kind].filter(o => o !== e);
     if (type === 'mean') {
-      const d = pick3(same, o => !clash(o, e) && o.mean !== e.mean, o => o.mean); if (!d) return null;
+      const d = pick3(same, o => !clash(o, e), (a, b) => !clash(a, b)); if (!d) return null;
       return { id: e.id, type, ask: `${KIND_NAME[e.kind]} <span class="rt-big" lang="en">${esc(e.form)}</span> 是什麼意思？`, hint: `例：${e.examples.slice(0, 2).map(x => `<span lang="en">${esc(x.w)}</span>`).join('、')}`, opts: shuffle([e.mean, ...d.map(o => o.mean)]), answer: e.mean, en: false, x: e.examples[0] };
     }
     if (type === 'form') {
-      const d = pick3(same, o => !clash(o, e), o => o.form); if (!d) return null;
+      const d = pick3(same, o => !clash(o, e), (a, b) => !clash(a, b) && a.form !== b.form); if (!d) return null;
       return { id: e.id, type, ask: `哪一個${KIND_NAME[e.kind]}的意思是「${esc(e.mean)}」？`, hint: '', opts: shuffle([e.form, ...d.map(o => o.form)]), answer: e.form, en: true, x: e.examples[0] };
     }
     const x = shuffle(e.examples)[0];
     const others = ALL.filter(o => o !== e).flatMap(o => o.examples).filter(y => y.w !== x.w && !near(y.zh, x.zh));
     const samePos = others.filter(y => y.pos === x.pos);
-    const d = pick3(samePos.length >= 12 ? samePos : others, () => true, y => y.zh); if (!d) return null;
+    const d = pick3(samePos.length >= 12 ? samePos : others, () => true, (a, b) => a.w !== b.w && !near(a.zh, b.zh)); if (!d) return null;
     return { id: e.id, type: 'word', ask: `<span class="rt-split rt-q-split">${split(x, e)}</span> 合起來是 <span class="rt-big" lang="en">${esc(x.w)}</span>，意思最可能是？`, hint: '', opts: shuffle([x.zh, ...d.map(y => y.zh)]), answer: x.zh, en: false, x };
   }
   function startQuiz() {
