@@ -100,9 +100,13 @@ window.TVESpeech = (() => {
     if (!hasTTS() || !lines.length) return;
     // tapped again while the last voice was still silent: that silence counts, so 4 s in all marks the voice
     // (taps every 2–3 s would otherwise restart its 4 s each time and never move on)
-    if (last && last.v && !last.heard()) {
-      const k = vkey(last.v), ms = (silentMs.get(k) || 0) + performance.now() - last.t0; silentMs.set(k, ms);
-      if (ms >= 4000) { badVoices.add(k); cfg.changed(); }
+    if (last && last.v) {
+      const k = vkey(last.v);
+      if (last.heard()) silentMs.delete(k);
+      else {
+        const now = performance.now(), ms = (silentMs.get(k) || 0) + now - last.t0; silentMs.set(k, ms); last.t0 = now; // counted once
+        if (ms >= 4000) { badVoices.add(k); cfg.changed(); }
+      }
     }
     const ss = speechSynthesis, my = ++speakSeq, busy = ss.speaking || ss.pending;
     bridgeOn(); muteHint(test); // both inside the tap, which iPhone Safari requires
@@ -113,6 +117,7 @@ window.TVESpeech = (() => {
       const us = lines.map(text => utter(text, lang, strict, false, tries >= 2)), v = us[0].voice, s0 = starts, t0 = performance.now();
       let gone = false, timer = 0, ended = false;
       const heard = () => ended || starts > s0;
+      if (v) { const os = us[0].onstart; us[0].onstart = e => { os(e); silentMs.delete(vkey(v)); }; } // heard: its silent time starts again from 0
       last = { v, t0, heard };
       const fail = () => {
         if (gone || my !== speakSeq || heard()) return; gone = true; clearTimeout(timer);

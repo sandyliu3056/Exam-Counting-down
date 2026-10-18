@@ -63,5 +63,11 @@
   <script src="roots-data.js"></script>
   <script src="speech.js"></script>
   <script src="roots.js"></script>
+  <script>
+    // the same offline cache as the main site (a first visit may start here, or a home-screen icon made from this page)
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
 </body>
 </html>

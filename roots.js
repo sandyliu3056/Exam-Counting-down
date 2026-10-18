@@ -69,8 +69,10 @@
   const VIEWS = ['prefix', 'root', 'suffix', 'quiz'];
   const state = { view: 'prefix', group: '', q: '', range: 'all', quiz: null };
   function readHash() {
-    const [v, id] = decodeURIComponent(location.hash.replace(/^#\/?/, '')).split('/');
-    return { view: VIEWS.includes(v) ? v : 'prefix', id: id && byId.has(id) ? id : '' };
+    let raw = location.hash.replace(/^#\/?/, ''); try { raw = decodeURIComponent(raw); } catch (e) { }
+    const [v, id] = raw.split('/'), known = VIEWS.includes(v);
+    // an unknown address (the skip link's #app, a mangled link) keeps the current view
+    return { view: known ? v : state.view, id: known && id && byId.has(id) ? id : '', known: known || !raw };
   }
 
   /* ---------------- Pieces ---------------- */
@@ -115,31 +117,33 @@
     if (!/^[a-z]{5,}$/.test(q)) return [];
     return ALL.filter(e => e.keys.some(k => k !== q && (e.kind === 'root' ? k.length >= 4 && q.includes(k) : e.kind === 'prefix' ? k.length >= 3 && q.startsWith(k) : k.length >= 3 && q.endsWith(k))));
   }
-  function listHTML() {
+  // the list and the line that counts it (the count is its own live line, outside the list that gets replaced)
+  function listParts() {
     const q = norm(state.q);
     if (q) {
       const { found, hits } = search(q);
       if (!found.length) {
         const maybe = partsIn(q);
-        return `<p class="rt-count" role="status">找不到「${esc(state.q.trim())}」。</p>${maybe.length ? `<h2 class="section-title rt-sec">拼字裡有這些字首字根字尾</h2><p class="section-sub">只是線索：拼字相同時，意思不一定有關。</p>${grid(maybe)}` : `<div class="card rt-empty"><p>試試輸入字首、字根、字尾（例：un、spect、tion），或中文意思（例：看、不）。</p></div>`}`;
+        return { count: `找不到「${state.q.trim()}」。`, html: maybe.length ? `<h2 class="section-title rt-sec">拼字裡有這些字首字根字尾</h2><p class="section-sub">只是線索：拼字相同時，意思不一定有關。</p>${grid(maybe)}` : `<div class="card rt-empty"><p>試試輸入字首、字根、字尾（例：un、spect、tion），或中文意思（例：看、不）。</p></div>` };
       }
-      return `<p class="rt-count" role="status">找到 ${found.length} 個（${KINDS.map(([k, zh]) => `${zh} ${found.filter(e => e.kind === k).length}`).join('・')}）</p>`
-        + KINDS.map(([k, zh]) => { const l = found.filter(e => e.kind === k); return l.length ? `<h2 class="section-title rt-sec">${zh}</h2>${grid(l, hits)}` : ''; }).join('');
+      return { count: `找到 ${found.length} 個（${KINDS.map(([k, zh]) => `${zh} ${found.filter(e => e.kind === k).length}`).join('・')}）`,
+        html: KINDS.map(([k, zh]) => { const l = found.filter(e => e.kind === k); return l.length ? `<h2 class="section-title rt-sec">${zh}</h2>${grid(l, hits)}` : ''; }).join('') };
     }
     const k = state.view, gs = GROUPS[k].filter(([g]) => !state.group || g === state.group);
     const n = DATA[k].filter(e => !state.group || e.group === state.group).length;
-    return `<p class="rt-count" role="status">共 ${n} 個${KIND_NAME[k]}${state.group ? `（${GROUP_NAME[state.group]}）` : ''}</p>`
-      + gs.map(([g, name]) => { const l = DATA[k].filter(e => e.group === g); return l.length ? `<h2 class="section-title rt-sec">${name}</h2>${grid(l)}` : ''; }).join('');
+    return { count: `共 ${n} 個${KIND_NAME[k]}${state.group ? `（${GROUP_NAME[state.group]}）` : ''}`,
+      html: gs.map(([g, name]) => { const l = DATA[k].filter(e => e.group === g); return l.length ? `<h2 class="section-title rt-sec">${name}</h2>${grid(l)}` : ''; }).join('') };
   }
   function groupPills() {
     if (norm(state.q)) return '';
-    const k = state.view, pill = (g, name, n) => `<button type="button" class="subtab" data-group="${g}"${state.group === g ? ' aria-current="true"' : ''}>${name}<b>${n}</b></button>`;
+    const k = state.view, pill = (g, name, n) => `<button type="button" class="subtab" data-group="${g}" aria-pressed="${state.group === g}">${name}<b>${n}</b></button>`;
     return `<nav class="subtabs rt-groups" aria-label="小分類">${pill('', '全部', DATA[k].length)}${GROUPS[k].map(([g, name]) => pill(g, name, DATA[k].filter(e => e.group === g).length)).join('')}</nav>`;
   }
 
   /* ---------------- Page ---------------- */
   function headHTML() {
-    const tab = (v, label, sub, dot) => `<a class="rt-kind" data-kind="${v}" href="#${v}"${state.view === v ? ' aria-current="page"' : ''}><span>${dot ? '<i class="rt-dot" aria-hidden="true"></i>' : ''}${label}</span><small>${sub}</small></a>`;
+    const going = state.quiz && state.quiz.i < state.quiz.qs.length && state.view !== 'quiz'; // a quiz waiting to be finished
+    const tab = (v, label, sub, dot) => `<a class="rt-kind${v === 'quiz' && going ? ' has-session' : ''}" data-kind="${v}" href="#${v}"${state.view === v ? ' aria-current="page"' : ''}><span>${dot ? '<i class="rt-dot" aria-hidden="true"></i>' : ''}${label}</span><small>${sub}${v === 'quiz' && going ? '<span class="sr-only">（還沒做完）</span>' : ''}</small></a>`;
     return `<nav class="subtabs" aria-label="單字">
         <a class="subtab" href="./#/flashcards"><span aria-hidden="true">🃏</span> 單字卡</a><a class="subtab" href="./#/vocab"><span aria-hidden="true">📚</span> 單字庫</a><a class="subtab" href="./#/phrases"><span aria-hidden="true">🧩</span> 片語</a><a class="subtab" href="roots.html" aria-current="page"><span aria-hidden="true">🌱</span> 字根字首</a>
       </nav>
@@ -162,7 +166,8 @@
   }
   function render(opts = {}) {
     const { view, id } = readHash();
-    if (view !== state.view) { state.group = ''; if (view !== 'quiz') state.quiz = null; }
+    // another kind: a fresh list (the search too); a quiz stays where it was, for when the student comes back to 🎯
+    if (view !== state.view) { state.group = ''; state.q = ''; }
     state.view = view;
     if (id && view !== 'quiz') { state.q = ''; const e = byId.get(id); if (e && state.group && e.group !== state.group) state.group = ''; }
     let body;
@@ -170,7 +175,7 @@
     else body = `${howHTML()}<div class="card rt-tools">
         <div class="rt-search"><input type="search" id="rtQ" value="${esc(state.q)}" placeholder="搜尋：spect、看、inspect…" aria-label="搜尋字首、字根、字尾、單字或中文" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"><button type="button" class="rt-clear" data-act="clear" aria-label="清除搜尋"${state.q ? '' : ' hidden'}>✕</button></div>
         <div id="rtPills">${groupPills()}</div>
-      </div><div id="rtList">${listHTML()}</div>`;
+      </div>${(p => `<p class="rt-count" id="rtCount" role="status">${esc(p.count)}</p><div id="rtList">${p.html}</div>`)(listParts())}`;
     app.innerHTML = headHTML() + body;
     document.title = `${view === 'quiz' ? '拆字測驗' : KIND_NAME[view]}｜字根字首字尾｜英語學習站`;
     if (id && view !== 'quiz') {
@@ -181,7 +186,7 @@
     if (opts.focus) { const f = $(opts.focus, app); if (f) f.focus({ preventScroll: !!id }); }
   }
   function refreshList() {
-    $('#rtList').innerHTML = listHTML(); $('#rtPills').innerHTML = groupPills();
+    const p = listParts(); $('#rtCount').textContent = p.count; $('#rtList').innerHTML = p.html; $('#rtPills').innerHTML = groupPills();
     const c = $('.rt-clear', app); if (c) c.hidden = !state.q;
   }
 
@@ -189,9 +194,11 @@
   const QN = 10;
   const RANGES = [['all', '全部'], ['prefix', '字首'], ['root', '字根'], ['suffix', '字尾']];
   // two meanings clash (and cannot both be options) when they share a sense tag or a meaningful Chinese character
-  const core = s => new Set(String(s).replace(/[^一-鿿]/g, '').replace(/[的之性狀態動作名詞使成為做人者與有關某於或等地]/g, ''));
+  // (a meaning made only of those common characters, e.g. 動作（名詞）, keeps them)
+  const core = s => { const c = String(s).replace(/[^一-鿿]/g, ''), m = c.replace(/[的之性狀態動作名詞使成為做人者與有關某於或等地]/g, ''); return new Set(m || c); };
   const near = (a, b) => { const B = core(b); return [...core(a)].some(c => B.has(c)); };
-  const clash = (a, b) => a.sense === b.sense || near(a.mean, b.mean);
+  const sameAffix = (a, b) => a.keys.some(k => b.keys.includes(k)); // in-/im-, -en, -ant/-ent and -al each have two entries
+  const clash = (a, b) => a.sense === b.sense || near(a.mean, b.mean) || sameAffix(a, b);
   // three wrong options that also differ from each other (two options meaning the same would give both away)
   function pick3(cands, ok, apart) {
     const out = [];
@@ -236,17 +243,17 @@
     const s = state.quiz, q = s.qs[s.i], done = s.chosen != null, e = byId.get(q.id);
     const opt = (o, n) => {
       const cls = !done ? '' : o === q.answer ? ' is-right' : n === s.chosen ? ' is-wrong' : '';
-      return `<button type="button" class="rt-opt${q.en ? ' en-opt' : ''}${cls}" data-opt="${n}"${done ? ' disabled' : ''}${q.en ? ' lang="en"' : ''}><span class="rt-n" aria-hidden="true">${n + 1}</span><span>${esc(o)}</span>${done && o === q.answer ? '<span class="sr-only">（正確答案）</span>' : ''}</button>`;
+      return `<button type="button" class="rt-opt${q.en ? ' en-opt' : ''}${cls}" data-opt="${n}"${done ? ' disabled' : ''}${q.en ? ' lang="en"' : ''}><span class="rt-n" aria-hidden="true">${n + 1}</span><span>${esc(o)}</span>${done && o === q.answer ? '<span class="sr-only">（正確答案）</span>' : done && n === s.chosen ? '<span class="sr-only">（你的答案）</span>' : ''}</button>`;
     };
     const ok = done && q.opts[s.chosen] === q.answer;
     return `<section class="card rt-q" aria-labelledby="qTitle">
       <div class="rt-q-top"><span>第 ${s.i + 1} / ${s.qs.length} 題</span><span class="rt-bar" aria-hidden="true"><i style="width:${Math.round((s.i + (done ? 1 : 0)) / s.qs.length * 100)}%"></i></span><span>✓ ${s.right}</span></div>
       <h2 id="qTitle" tabindex="-1">${q.ask}</h2>${q.hint ? `<p class="rt-q-hint">${q.hint}</p>` : ''}
       <div class="rt-q-opts">${q.opts.map(opt).join('')}</div>
-      ${done ? `<div class="rt-fb" role="status"><p class="rt-fb-title ${ok ? 'ok' : 'bad'}">${ok ? '✔ 答對了！' : `✘ 正確答案：${esc(q.answer)}`}</p>
-        <p style="margin:0"><span class="rt-form k-${CODE[e.kind]}" lang="en" style="font-size:20px">${esc(e.form)}</span> ${esc(e.mean)}　<a href="#${e.kind}/${esc(e.id)}" data-act="see">看這張卡 →</a></p>
+      ${done ? `<div class="rt-fb"><p class="rt-fb-title ${ok ? 'ok' : 'bad'}" id="rtVerdict">${ok ? '✔ 答對了！' : `✘ 正確答案：${esc(q.answer)}`}</p>
+        <p style="margin:0"><span class="rt-form k-${CODE[e.kind]}" lang="en" style="font-size:20px">${esc(e.form)}</span> ${esc(e.mean)}　<a href="#${e.kind}/${esc(e.id)}">看這張卡 →</a></p>
         <ul class="rt-ex">${row(e, q.x)}</ul></div>
-        <div class="rt-next"><button type="button" class="btn accent" data-act="next">${s.i + 1 < s.qs.length ? '下一題 →' : '看成績 🎉'}</button></div>` : ''}
+        <div class="rt-next"><button type="button" class="btn accent" data-act="next" aria-describedby="rtVerdict">${s.i + 1 < s.qs.length ? '下一題 →' : '看成績 🎉'}</button></div>` : ''}
     </section>`;
   }
   function resultHTML() {
@@ -283,7 +290,6 @@
     else if (act === 'start' || act === 'again') { if (act === 'again') state.range = state.quiz.range; startQuiz(); render({ focus: '#qTitle', top: true }); }
     else if (act === 'next') next();
     else if (act === 'setup') { state.quiz = null; render({ focus: '#qsTitle', top: true }); }
-    else if (act === 'see') state.quiz = null; // the link changes the address; the card opens there
   });
   let typing = 0;
   app.addEventListener('input', e => {
@@ -297,7 +303,13 @@
     const s = state.quiz;
     if (s.chosen == null && /^[1-4]$/.test(e.key) && s.i < s.qs.length) { e.preventDefault(); answer(+e.key - 1); }
   });
-  window.addEventListener('hashchange', () => { if (SP) SP.stop(); render({ top: !readHash().id, focus: readHash().id ? '' : 'h1' }); });
+  window.addEventListener('hashchange', () => {
+    const h = readHash(); if (!h.known) { app.focus(); return; }
+    if (SP) SP.stop(); render({ top: !h.id, focus: h.id ? '' : 'h1' });
+  });
+  $('.skip-link').addEventListener('click', e => { e.preventDefault(); app.focus(); });
+  // back on this page from the main site (Back keeps the old page): it may have changed the look
+  window.addEventListener('pageshow', e => { if (e.persisted) { ui = readJSON(LS_UI); applyLook(); } });
   const toTop = $('#toTop');
   window.addEventListener('scroll', () => { toTop.hidden = window.scrollY < 700; }, { passive: true });
   toTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); $('h1', app).focus({ preventScroll: true }); });

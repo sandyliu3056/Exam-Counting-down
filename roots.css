@@ -29,6 +29,8 @@
 .rt-kind[data-kind="root"] .rt-dot { background: var(--kr); }
 .rt-kind[data-kind="suffix"] .rt-dot { background: var(--ks); }
 .rt-kind:hover { background: var(--bg-soft); }
+.rt-kind { position: relative; }
+.rt-kind.has-session::after { content: ''; position: absolute; top: 7px; right: 9px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: 2px solid var(--header-dark); } /* a quiz waiting to be finished */
 .rt-kind[aria-current="page"] { background: var(--header); color: #fff; border-color: var(--header-dark); transform: translateY(2px); box-shadow: var(--depth-1); }
 .rt-kind[aria-current="page"] small { color: rgba(255, 255, 255, .85); }
 @media (max-width: 520px) {
@@ -66,7 +68,9 @@
 .rt-groups { margin: 12px 0 0; }
 .rt-groups .subtab { min-height: 36px; padding: 4px 14px; font-size: 14px; }
 .rt-groups .subtab b { font-family: var(--font-en); font-weight: 600; color: var(--ink-soft); margin-left: 2px; }
-.rt-groups .subtab[aria-current="page"] b { color: rgba(255, 255, 255, .85); }
+.rt-groups .subtab[aria-pressed="true"] { background: var(--header); color: #fff; border-color: var(--header-dark); }
+.rt-groups .subtab[aria-pressed="true"] b { color: rgba(255, 255, 255, .85); }
+.rt-groups .subtab[aria-pressed="false"]:hover { background: var(--bg-soft); }
 .rt-count { margin: 10px 0 0; font-size: 14px; color: var(--ink-soft); }
 
 /* ---------- cards ---------- */

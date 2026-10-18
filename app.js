@@ -2379,6 +2379,13 @@
   $('#askNo').addEventListener('click', () => closeAsk(false));
   askEl.addEventListener('click', e => { if (e.target === askEl) closeAsk(false); });
   async function endSessionAsk(n, body) { return n ? askConfirm({ title: t('endAskTitle'), body, ok: t('endAndSee'), cancel: t('keepGoing') }) : true; }
+  // 🌱 字根字首 is a page of its own: going there ends a practice still open here, so ask first (a new tab is fine)
+  document.addEventListener('click', async e => {
+    const a = e.target.closest && e.target.closest('a[href="roots.html"]');
+    if (!a || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || (!inSessionNow() && !sessionPages().length)) return;
+    e.preventDefault();
+    if (await askConfirm({ title: t('leaveAskTitle'), body: t('leaveAskBody'), ok: t('leaveAskOk'), cancel: t('keepGoing') })) location.href = a.href;
+  });
 
   /* ---------------- Export / Import ---------------- */
   function download(name, obj) {
@@ -3182,10 +3189,25 @@
   tourEl.addEventListener('touchmove', tourKeepPage, { passive: false });
   window.addEventListener('scroll', () => { if (tour.i >= 0) placeTour(); }, { passive: true });
   // answered in another tab: the invitation goes away here too
+  // the theme and font chosen in another tab, or on the 字根字首 page: follow them, so this page does not write the old ones back
+  function followLook(o) {
+    let ch = false;
+    if (THEMES.some(x => x[0] === o.theme) && o.theme !== ui.theme) { ui.theme = o.theme; ch = true; }
+    if ((o.font === 'hand' || o.font === 'clean') && o.font !== ui.font) { ui.font = o.font; ch = true; }
+    if (ch) { applyUi(); if (!moreEl.classList.contains('hidden')) renderMore(); }
+  }
+  // back from the 字根字首 page with the browser's Back (the old page is kept as it was): read the choices again
+  window.addEventListener('pageshow', e => {
+    if (!e.persisted) return;
+    let o = {}; try { o = JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}; } catch (x) { }
+    followLook(o);
+    if ((o.voice === 'f' || o.voice === 'm') && o.voice !== (ui.voice === 'f' ? 'f' : 'm')) { ui.voice = o.voice; refreshVoiceCard(); }
+  });
   window.addEventListener('storage', e => {
     if (e.key !== LS_UI) return;
     let o = {}; try { o = JSON.parse(e.newValue || '{}') || {}; } catch (x) { }
     if (o.tour && !ui.tour) { ui.tour = 1; syncTourInvite(); }
+    followLook(o);
     // another tab changed the reading voice: follow it, so this tab does not write the old one back
     if ((o.voice === 'f' || o.voice === 'm') && o.voice !== (ui.voice === 'f' ? 'f' : 'm')) { ui.voice = o.voice; refreshVoiceCard(); if (!moreEl.classList.contains('hidden')) renderMore(); }
   });
