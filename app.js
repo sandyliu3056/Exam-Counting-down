@@ -198,13 +198,13 @@
   const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const smooth = () => reduceMotion() ? 'auto' : 'smooth';
   const flashEl = el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200); };
-  const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'],
+  const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'], grammar: ['📐', 'tabGrammar'],
     mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
   // phone bottom bar: seven groups (紀錄 has its own button, like the desktop tab); 更多 holds 設定, the tour, the account and 外觀
   const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'read', pages: ['reading', 'news'] }, { id: 'words', pages: ['flashcards', 'vocab', 'phrases'] },
-    { id: 'practice', pages: ['mcq'] }, { id: 'translate', pages: ['translate'] }, { id: 'record', pages: ['progress', 'students'] }, { id: 'more', pages: ['settings'] }];
+    { id: 'grammar', pages: ['grammar'] }, { id: 'practice', pages: ['mcq'] }, { id: 'translate', pages: ['translate'] }, { id: 'record', pages: ['progress', 'students'] }, { id: 'more', pages: ['settings'] }];
   // desktop folder tabs: the same groups, with 設定 as its own tab
-  const DESK_GROUPS = GROUPS.slice(0, 6).concat([{ id: 'settings', pages: ['settings'] }]);
+  const DESK_GROUPS = GROUPS.slice(0, 7).concat([{ id: 'settings', pages: ['settings'] }]);
   const groupOf = (page, list = GROUPS) => (list.find(g => g.pages.includes(page)) || list[0]).id;
   const pagesOf = (gid, list) => ((list.find(g => g.id === gid) || list[0]).pages).filter(p => p !== 'students' || ui.teacher);
   // the page a group opens on the first time: 紀錄 opens 學生狀況 for a teacher
@@ -216,11 +216,9 @@
     let g = SUB_GROUPS.find(x => x.includes(page));
     // 選擇題 and 翻譯 are separate tabs; a paused session reopened from the menu (focus mode hides the bottom bar) still gets both pills
     if (!g && PRACTICE_PAIR.includes(page) && inSessionNow() && view.pillsFor && view.pillsFor === sessionOf(page)) g = PRACTICE_PAIR;
-    if (!g && page === 'mcq') g = ['mcq'];
     if (!g) return '';
-    // 單字 also leads to the 字根字首字尾 page and 題目 to the 文法 page (roots.html, grammar.html: pages of their own in the same look)
-    const more = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>`
-      : g.includes('mcq') && g !== PRACTICE_PAIR ? `<a class="subtab" href="grammar.html"><span aria-hidden="true">📐</span> ${t('grammarNav')}</a>` : '';
+    // 單字 also leads to the 字根字首字尾 page (roots.html, a page of its own in the same look)
+    const more = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>` : '';
     const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length + (more ? 1 : 0) < 2) return '';
     return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}${more}</nav>`;
   }
@@ -789,7 +787,7 @@
   // every key the news grammar detector (GRAMMAR, below) can find, in its order
   const GRAM_KEY = { passive: 'g-passive', perfect: 'g-perfect', relative: 'g-relative', compare: 'g-compare', modal: 'g-modal', future: 'g-future', ifClause: 'g-conditional', whTo: 'g-infinitive', thereBe: 'g-agree', gerund: 'g-gerund', question: 'g-question' };
   const gramChapter = text => { const hit = GRAM_FIND.find(([re]) => re.test(String(text || ''))); return hit ? hit[1] : ''; };
-  const gramLink = id => GRAM_CH[id] ? `<p class="small gram-ch">📐 <a href="grammar.html#ch/${id}">${esc(tf('grammarReview', { t: GRAM_CH[id][ui.lang === 'en' ? 1 : 0] }))}</a></p>` : '';
+  const gramLink = id => GRAM_CH[id] ? `<p class="small gram-ch">📐 <a href="#/grammar/${id}">${esc(tf('grammarReview', { t: GRAM_CH[id][ui.lang === 'en' ? 1 : 0] }))}</a></p>` : '';
 
   /* ---------------- Bookmarks ---------------- */
   const bm = () => { const p = state.progress; if (!p.bookmarks) p.bookmarks = { vocab: [], articles: [] }; return p.bookmarks; };
@@ -1322,6 +1320,177 @@
         ${v.syn ? `<div class="phr-syn en"><span aria-hidden="true">≈ </span><span class="sr-only">${t('synonyms')}：</span>${esc(v.syn)}</div>` : ''}
         ${!f.cat ? `<div class="phr-cat-lbl">${esc(catName(v.unit))}</div>` : ''}
       </article>`; }).join('')}</div>${pager}` : `<div class="card"><p class="muted" style="margin:0">${t('phrNone')}</p></div>`}`;
+  }
+
+  /* ---- 📐 文法 tab: the chapters by unit, one chapter with its 小測驗, and the 綜合測驗 (#/grammar, #/grammar/g-passive, #/grammar/quiz) ---- */
+  const GR = window.GRAMMAR_DATA || { units: [], chapters: [] }, GR_CH = GR.chapters;
+  // the 7 units: [id, name, icon, what is in it, short name]; a chapter is numbered by its unit and its place there (2-1 = 第二單元第 1 章)
+  const GR_UNITS = GR.units.map(([id, name, icon, desc, short], i) => ({ id, name, icon, desc, short: short || name, n: i + 1 }));
+  const GR_UNIT = new Map(GR_UNITS.map(u => [u.id, u]));
+  const grById = new Map(GR_CH.map(c => [c.id, c]));
+  const grUnitLabel = u => `第${'一二三四五六七八九十'[u.n - 1]}單元`;
+  const grCode = c => { const u = GR_UNIT.get(c.unit); return `${u ? u.n : 0}-${GR_CH.filter(x => x.unit === c.unit).indexOf(c) + 1}`; };
+  const GR_TITLE = new Map(GR_CH.map(c => [c.title, c.id]));
+  const GR_BANDS = [['', '全部'], ['A', '基礎 A1–A2'], ['B1', '統測核心 B1'], ['B2', '進階 B2']];
+  const grBand = c => /^A/.test(c.level) ? 'A' : c.level;
+  const GR_QN = 8, GR_PASS = 6, GR_MIXN = 10; // a chapter's 小測驗 counts as done from 6 of 8; a 綜合測驗 has 10 questions
+  // the text marks: **key term**, [[the words that show the point]], 〈another chapter〉 (a link to it)
+  const grRich = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[\[(.+?)\]\]/g, '<mark class="gr-hl">$1</mark>')
+    .replace(/〈([^〉]+)〉/g, (m, x) => GR_TITLE.has(x) ? `<a href="#/grammar/${GR_TITLE.get(x)}">〈${esc(x)}〉</a>` : m);
+  const grNoLinks = h => h.replace(/<a [^>]*>|<\/a>/g, '');
+  const grPlain = s => String(s).replace(/\[\[|\]\]/g, '');
+  const grBlank = (q, fill) => esc(q).replace('______', fill == null ? '<span class="gr-blank"><span class="sr-only" lang="zh-Hant-TW">空格</span></span>' : `<span class="gr-blank filled">${esc(fill)}</span>`);
+  // this device's progress: { ch: { 'g-passive': { best: 7, at: '2026-10-19' } }, mix: { all: 8 }, last: 'g-passive' }
+  const LS_GR = 'tve_grammar_v1';
+  const grStore = (() => { try { const o = JSON.parse(localStorage.getItem(LS_GR) || '{}') || {}; return { ch: o.ch && typeof o.ch === 'object' ? o.ch : {}, mix: o.mix && typeof o.mix === 'object' ? o.mix : {}, last: o.last || '' }; } catch (e) { return { ch: {}, mix: {}, last: '' }; } })();
+  const grSave = () => { try { localStorage.setItem(LS_GR, JSON.stringify(grStore)); } catch (e) { } };
+  const grStatus = c => { const r = grStore.ch[c.id]; return r && r.best != null ? r : null; };
+  const grDone = list => list.filter(c => (grStatus(c) || {}).best >= GR_PASS).length;
+  view.gr = { sub: 'list', id: '', q: '', unit: '', band: '', picks: {}, mix: null, range: '' };
+  const GR_HAY = new Map(GR_CH.map(c => [c.id, [c.title, c.en, c.lead,
+    ...c.sections.flatMap(s => [s.h, ...s.text, s.formula || '', ...(s.table ? [...s.table.cols, ...s.table.rows.flat()] : []), ...s.ex.flatMap(x => [x.en, x.zh])]),
+    ...c.mistakes.flatMap(m => [m.wrong, m.right, m.why]), ...c.tips].join('\n').replace(/\*\*|\[\[|\]\]/g, '').toLowerCase()]));
+  // 📖 章節 (how many are done) · 🎯 綜合測驗 (a dot while one waits to be finished)
+  function grKinds() {
+    const g = view.gr, going = g.mix && g.mix.i < g.mix.qs.length && g.sub !== 'quiz', onQuiz = g.sub === 'quiz';
+    const tab = (quiz, href, label, sub) => `<a class="gr-kind${quiz && going ? ' has-session' : ''}" href="${href}"${onQuiz === quiz ? ' aria-current="page"' : ''}><span>${label}</span><small>${sub}${quiz && going ? '<span class="sr-only">（還沒做完）</span>' : ''}</small></a>`;
+    return `<nav class="gr-kinds" aria-label="章節、綜合測驗">${tab(false, '#/grammar', '📖 章節', `${GR_CH.length} 章 · 完成 ${grDone(GR_CH)}`)}${tab(true, '#/grammar/quiz', '🎯 綜合測驗', 'Quiz')}</nav>`;
+  }
+  function grCard(c) {
+    const r = grStatus(c);
+    const st = !r ? '<span class="gr-st">還沒做小測驗</span>' : r.best >= GR_PASS ? `<span class="gr-st ok">✓ 小測驗 ${r.best} / ${GR_QN}</span>` : `<span class="gr-st">小測驗 ${r.best} / ${GR_QN}</span>`;
+    return `<a class="card gr-ch${r && r.best >= GR_PASS ? ' is-done' : ''}" href="#/grammar/${c.id}"><span class="gr-no" aria-hidden="true">${grCode(c)}</span>
+      <span class="gr-ch-body"><span class="gr-ch-t"><b>${esc(c.title)}</b><span class="chip">${esc(c.level)}</span></span><span class="gr-ch-en" lang="en">${esc(c.en)}</span>
+      <span class="gr-ch-lead">${grNoLinks(grRich(c.lead))}</span>${st}</span></a>`;
+  }
+  function grList() {
+    const g = view.gr, q = g.q.trim(), ql = q.toLowerCase();
+    const list = GR_CH.filter(c => (!g.unit || c.unit === g.unit) && (!g.band || grBand(c) === g.band) && (!ql || GR_HAY.get(c.id).includes(ql)));
+    const upill = (u, name, n) => `<button type="button" class="subtab" data-action="grUnit" data-v="${u}" aria-pressed="${g.unit === u}">${name}<b>${n}</b></button>`;
+    const bpill = (b, name) => `<button type="button" class="subtab" data-action="grBand" data-v="${b}" aria-pressed="${g.band === b}">${name}<b>${GR_CH.filter(c => !b || grBand(c) === b).length}</b></button>`;
+    const last = grById.get(grStore.last);
+    let body = '';
+    GR_UNITS.forEach(u => {
+      const run = list.filter(c => c.unit === u.id); if (!run.length) return;
+      const all = GR_CH.filter(c => c.unit === u.id), done = grDone(all);
+      body += `<section class="gr-unit" aria-labelledby="gu-${u.id}"><h2 class="gr-unit-h" id="gu-${u.id}"><span class="gr-unit-ic" aria-hidden="true">${u.icon}</span><span class="gr-unit-t"><small>${grUnitLabel(u)}</small>${esc(u.name)}</span><span class="gr-unit-n">${all.length} 章${done ? `・完成 ${done}` : ''}</span></h2>
+        <p class="gr-unit-d">${esc(u.desc)}</p><div class="gr-grid">${run.map(grCard).join('')}</div></section>`;
+    });
+    // the whole list needs no count line: the 章節 tab already counts it
+    const count = !list.length ? (q ? `找不到「${q}」。` : '這個分類沒有這個程度的章節。') : q || g.band || g.unit ? `${q ? '找到' : '共'} ${list.length} 章` : '';
+    return `<div class="card gr-tools">
+        <div class="gr-search"><label class="sr-only" for="grQ">搜尋文法章節</label><input type="search" id="grQ" value="${esc(g.q)}" placeholder="搜尋：被動、現在完成、which…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
+        <div class="gr-frow"><span class="gr-flbl" id="grUnitsLbl">分類</span><nav class="subtabs gr-pills units" aria-labelledby="grUnitsLbl">${upill('', '全部', GR_CH.length)}${GR_UNITS.map(u => upill(u.id, `${u.icon} ${esc(u.short)}`, GR_CH.filter(c => c.unit === u.id).length)).join('')}</nav></div>
+        <div class="gr-frow"><span class="gr-flbl" id="grBandsLbl">程度</span><nav class="subtabs gr-pills gr-bands" aria-labelledby="grBandsLbl">${GR_BANDS.map(([b, n]) => bpill(b, n)).join('')}</nav></div>
+        ${last ? `<p class="gr-last">📌 上次看到：<a href="#/grammar/${last.id}">${grCode(last)}　${esc(last.title)} →</a></p>` : ''}
+      </div><p class="gr-count" role="status">${esc(count)}</p>
+      ${list.length ? body : `<div class="card gr-empty"><p>${q ? '試試輸入中文或英文，例如：被動、現在完成、which、if。' : '換一個程度或分類看看。'}</p></div>`}`;
+  }
+  function grSection(s, i) {
+    const table = s.table ? `<div class="gr-table-wrap" tabindex="0" role="region" aria-label="${esc(s.h)}（表格）"><table class="gr-table"><thead><tr>${s.table.cols.map(x => `<th scope="col">${grRich(x)}</th>`).join('')}</tr></thead>
+      <tbody>${s.table.rows.map(r => `<tr>${r.map((x, k) => k ? `<td>${grRich(x)}</td>` : `<th scope="row">${grRich(x)}</th>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
+    return `<section class="card gr-sec" id="gs-${i + 1}" tabindex="-1" aria-labelledby="gsh-${i + 1}">
+      <h2 id="gsh-${i + 1}"><span class="gr-sn" aria-hidden="true">${i + 1}</span>${grRich(s.h)}</h2>
+      ${s.text.map(p => `<p>${grRich(p)}</p>`).join('')}
+      ${s.formula ? `<p class="gr-formula">${grRich(s.formula)}</p>` : ''}${table}
+      <ul class="gr-ex">${s.ex.map(x => `<li><p class="gr-ex-en"><span lang="en">${grRich(x.en)}</span><button type="button" class="icon-btn gr-say" data-action="speak" data-word="${esc(grPlain(x.en))}" aria-label="${t('listen')}">🔊</button></p><p class="gr-ex-zh">${esc(x.zh)}</p></li>`).join('')}</ul>
+    </section>`;
+  }
+  function grOpt(q, n, picked, attrs, big) {
+    const done = picked != null, cls = !done ? '' : n === q.answer ? ' is-right' : n === picked ? ' is-wrong' : '';
+    return `<button type="button" class="gr-opt${big ? ' big' : ''}${cls}" ${attrs}${done ? ' disabled' : ''} lang="en"><span class="gr-l" aria-hidden="true">${L4[n]}</span><span>${esc(q.options[n])}</span>${done && n === q.answer ? '<span class="sr-only" lang="zh-Hant-TW">（正確答案）</span>' : done && n === picked ? '<span class="sr-only" lang="zh-Hant-TW">（你的答案）</span>' : ''}</button>`;
+  }
+  const grVerdict = (q, picked, id) => `<p class="gr-verdict" id="${id}" tabindex="-1">${picked === q.answer ? '✔ 答對了！' : `✘ 正確答案：(${L4[q.answer]}) <span lang="en">${esc(q.options[q.answer])}</span>`}</p><p>${esc(q.explain)}</p>`;
+  function grQItem(c, i) {
+    const q = c.quiz[i], pick = (view.gr.picks[c.id] || [])[i], done = pick != null;
+    return `<li class="gr-qi" id="gq-${i}"><p class="gr-qq" lang="en"><span class="gr-qn">${i + 1}.</span> ${grBlank(q.q, done ? q.options[q.answer] : null)}</p>
+      <div class="gr-opts" role="group" aria-label="第 ${i + 1} 題的選項">${q.options.map((_, n) => grOpt(q, n, pick, `data-action="grAnswer" data-q="${i}" data-o="${n}"`)).join('')}</div>
+      ${done ? `<div class="gr-exp ${pick === q.answer ? 'ok' : 'bad'}">${grVerdict(q, pick, 'gv-' + i)}</div>` : ''}</li>`;
+  }
+  function grQSum(c) {
+    const picks = view.gr.picks[c.id] || [], n = picks.filter(x => x != null).length, right = picks.filter((x, i) => x === c.quiz[i].answer).length, r = grStatus(c);
+    if (n < c.quiz.length) return `<p class="gr-qsum">已答 ${n} / ${c.quiz.length} 題・答對 ${right} 題${r ? `・最佳成績 ${r.best} / ${GR_QN}` : ''}</p>`;
+    return `<div class="gr-qdone"><p class="gr-score"><b>${right} / ${c.quiz.length}</b> ${right === c.quiz.length ? '全對！🎉' : right >= GR_PASS ? '很不錯！把答錯的解析再看一次。' : '再讀一次上面的說明，然後重做一次！'}</p>
+      <p class="small muted">最佳成績：${r ? r.best : right} / ${GR_QN}</p><button type="button" class="btn" data-action="grRedo">↻ 再做一次</button></div>`;
+  }
+  function grChapter(c) {
+    const n = GR_CH.indexOf(c), prev = GR_CH[n - 1], next = GR_CH[n + 1], u = GR_UNIT.get(c.unit) || { icon: '', name: '', n: 0 };
+    const toc = [...c.sections.map((s, i) => [`gs-${i + 1}`, s.h]), ['gs-mis', '⚠️ 常見錯誤'], ['gs-tips', '🎯 統測重點'], ['gs-quiz', '📝 小測驗']];
+    return `<nav class="gr-crumb" aria-label="位置"><a href="#/grammar">← 文法目錄</a><span>${u.icon} ${grUnitLabel(u)}・${esc(u.name)}・${grCode(c)}</span></nav>
+      <header class="page-head gr-head"><h1 tabindex="-1">${esc(c.title)}</h1><p><span lang="en">${esc(c.en)}</span><span class="chip">${esc(c.level)}</span></p></header>
+      <p class="gr-lead">💡 ${grRich(c.lead)}</p>
+      <nav class="gr-toc" aria-label="本章內容">${toc.map(([id, h]) => `<button type="button" class="gr-toc-b" data-action="grJump" data-to="${id}">${grNoLinks(grRich(h))}</button>`).join('')}</nav>
+      ${c.sections.map(grSection).join('')}
+      <section class="card gr-mis" id="gs-mis" tabindex="-1" aria-labelledby="gsh-mis"><h2 id="gsh-mis">⚠️ 常見錯誤</h2>
+        <ul>${c.mistakes.map(m => `<li><p class="gr-wrong" lang="en"><span class="gr-mk" aria-hidden="true">✘</span><span class="sr-only" lang="zh-Hant-TW">錯誤：</span><s>${esc(m.wrong)}</s></p><p class="gr-right" lang="en"><span class="gr-mk" aria-hidden="true">✔</span><span class="sr-only" lang="zh-Hant-TW">正確：</span>${grRich(m.right)}</p><p class="gr-why">${grRich(m.why)}</p></li>`).join('')}</ul></section>
+      <section class="card gr-tips" id="gs-tips" tabindex="-1" aria-labelledby="gsh-tips"><h2 id="gsh-tips">🎯 統測重點</h2><ul>${c.tips.map(x => `<li>${grRich(x)}</li>`).join('')}</ul></section>
+      <section class="card gr-quiz" id="gs-quiz" tabindex="-1" aria-labelledby="gsh-quiz"><h2 id="gsh-quiz">📝 小測驗</h2>
+        <ol class="gr-qs">${c.quiz.map((_, i) => grQItem(c, i)).join('')}</ol>
+        <div id="grQsum" role="status">${grQSum(c)}</div></section>
+      <nav class="gr-pn" aria-label="上一章、下一章">${prev ? `<a class="btn ghost" href="#/grammar/${prev.id}">← ${grCode(prev)} ${esc(prev.title)}</a>` : '<span></span>'}${next ? `<a class="btn accent" href="#/grammar/${next.id}">${grCode(next)} ${esc(next.title)} →</a>` : `<a class="btn accent" href="#/grammar/quiz">🎯 綜合測驗 →</a>`}</nav>`;
+  }
+  // 綜合測驗 ranges: '' (all), 'u:tense' (a unit) or a level band ('A', 'B1', 'B2')
+  const grInRange = (c, r) => !r || (r.startsWith('u:') ? c.unit === r.slice(2) : grBand(c) === r);
+  const grRangeName = r => !r ? '全部' : r.startsWith('u:') ? (GR_UNIT.get(r.slice(2)) || {}).name : (GR_BANDS.find(x => x[0] === r) || [0, ''])[1];
+  function grMix() {
+    const g = view.gr, s = g.mix;
+    if (!s) {
+      const best = grStore.mix[g.range || 'all'], pick = (r, l) => `<button type="button" class="gr-pick" data-action="grRange" data-v="${r}" aria-pressed="${g.range === r}">${esc(l)}</button>`;
+      return `<section class="card gr-mix-set" aria-labelledby="qsTitle"><h2 id="qsTitle" style="margin-top:0">🎯 綜合測驗</h2>
+        <p class="muted">從各章的題目隨機抽 ${GR_MIXN} 題，答完看解析，答錯可以直接回到那一章。</p>
+        <h3 class="small gr-rh" id="grRu">依單元</h3><div class="gr-ranges units" role="group" aria-labelledby="grRu">${pick('', '全部')}${GR_UNITS.map(u => pick('u:' + u.id, `${u.icon} ${u.short}`)).join('')}</div>
+        <h3 class="small gr-rh" id="grRb">依程度</h3><div class="gr-ranges" role="group" aria-labelledby="grRb">${GR_BANDS.slice(1).map(([b, l]) => pick(b, l)).join('')}</div>
+        <p class="gr-best">${best != null ? `「${esc(grRangeName(g.range))}」的最佳成績：${best} / ${GR_MIXN}` : `「${esc(grRangeName(g.range))}」還沒有成績。`}</p>
+        <button type="button" class="btn accent gr-go" data-action="grStart">開始測驗 ▶</button></section>`;
+    }
+    const n = s.qs.length;
+    if (s.i >= n) {
+      const wrongCh = [...new Set(s.wrong)].map(id => grById.get(id));
+      return `<section class="card gr-result" aria-labelledby="rTitle"><div class="big-icon" aria-hidden="true">${s.right / n >= .8 ? '🎉' : '💪'}</div>
+        <h2 id="rTitle" tabindex="-1">綜合測驗完成</h2><p class="gr-rscore">${s.right} / ${n}</p>
+        <p class="muted">${s.right === n ? '全對！太厲害了。' : s.right / n >= .7 ? '很不錯！把答錯的章節再看一次。' : '回到答錯的章節讀一讀，再挑戰一次！'}</p>
+        ${wrongCh.length ? `<div class="gr-review"><h3>要再看的章節</h3><ul>${wrongCh.map(c => `<li><a href="#/grammar/${c.id}">${grCode(c)}　${esc(c.title)}</a></li>`).join('')}</ul></div>` : ''}
+        <div class="row" style="justify-content:center;margin-top:16px"><button type="button" class="btn accent" data-action="grStart" data-v="again">再測一次</button><button type="button" class="btn ghost" data-action="grSetup">換範圍</button></div></section>`;
+    }
+    const x = s.qs[s.i], c = grById.get(x.id), q = c.quiz[x.i], done = s.chosen != null;
+    return `<section class="card gr-mq" aria-labelledby="qTitle">
+      <div class="gr-mq-top"><span>第 ${s.i + 1} / ${n} 題</span><span class="gr-bar" aria-hidden="true"><i style="width:${Math.round((s.i + (done ? 1 : 0)) / n * 100)}%"></i></span><span>✓ ${s.right}</span></div>
+      <h2 id="qTitle" tabindex="-1" lang="en">${grBlank(q.q, done ? q.options[q.answer] : null)}</h2>
+      <div class="gr-opts two">${q.options.map((_, k) => grOpt(q, k, s.chosen, `data-action="grMixAnswer" data-o="${k}"`, true)).join('')}</div>
+      ${done ? `<div class="gr-exp ${s.chosen === q.answer ? 'ok' : 'bad'}">${grVerdict(q, s.chosen, 'grVerdict')}<p class="gr-from">出自 <a href="#/grammar/${c.id}">${grCode(c)}〈${esc(c.title)}〉→</a></p></div>
+        <div class="gr-next"><button type="button" class="btn accent" data-action="grNext" aria-describedby="grVerdict">${s.i + 1 < n ? '下一題 →' : '看成績 🎉'}</button></div>` : ''}
+    </section>`;
+  }
+  function pageGrammar() {
+    const g = view.gr, c = g.sub === 'ch' ? grById.get(g.id) : null;
+    if (c && grStore.last !== c.id) { grStore.last = c.id; grSave(); }
+    if (c) return grKinds() + grChapter(c);
+    return `${pageHead('grammar', g.sub === 'quiz' ? '' : t('grammarSub'))}${grKinds()}${g.sub === 'quiz' ? grMix() : grList()}`;
+  }
+  // a chapter's question answered: redraw only that question and the count (the page stays where it is); the 8th saves the score
+  function grAnswer(i, n) {
+    const g = view.gr, c = grById.get(g.id); if (!c || !c.quiz[i]) return;
+    const picks = g.picks[c.id] || (g.picks[c.id] = []); if (picks[i] != null) return;
+    picks[i] = n;
+    if (c.quiz.every((_, k) => picks[k] != null)) {
+      const right = picks.filter((x, k) => x === c.quiz[k].answer).length, r = grStore.ch[c.id] || {};
+      grStore.ch[c.id] = { best: Math.max(r.best || 0, right), at: todayStr() }; grSave();
+      const k = $('#app .gr-kinds'); if (k) k.outerHTML = grKinds(); // the 完成 count on the 📖 章節 tab
+    }
+    const li = $(`#gq-${i}`); if (li) li.outerHTML = grQItem(c, i);
+    const sum = $('#grQsum'); if (sum) sum.innerHTML = grQSum(c);
+    const v = $(`#gv-${i}`); if (v) v.focus({ preventScroll: true });
+  }
+  // 綜合測驗: 1–4 (or A–D) picks an answer
+  document.addEventListener('keydown', e => {
+    const s = view.page === 'grammar' && view.gr.sub === 'quiz' && view.gr.mix;
+    if (!s || s.chosen != null || s.i >= s.qs.length || e.altKey || e.ctrlKey || e.metaKey || e.key.length !== 1 || (e.target.closest && e.target.closest('input, textarea, select')) || !$('#moreSheet').classList.contains('hidden')) return;
+    const k = /^[1-4]$/.test(e.key) ? +e.key - 1 : 'abcd'.indexOf(e.key.toLowerCase()); if (k < 0) return;
+    e.preventDefault(); actions.grMixAnswer({ dataset: { o: String(k) } });
+  });
+  function grMixGo(focusSel) {
+    render(); const f = $(focusSel); if (f) f.focus({ preventScroll: true });
+    const top = $('#app .gr-mq, #app .gr-result, #app .gr-mix-set'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' });
   }
 
   /* ---- Daily English news (news.json is refreshed every morning by a GitHub Action) ---- */
@@ -2307,7 +2476,7 @@
   }
 
   /* ---------------- Render ---------------- */
-  const PAGES = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
+  const PAGES = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, grammar: pageGrammar, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
   // a practice session is on screen: on phones the header, tabs and bottom bar step aside (focus mode)
   function inSessionNow() {
     const p = view.page;
@@ -2358,6 +2527,7 @@
   function routeOf() {
     if (view.page === 'reading' && view.articleId && !view.editing) return '#/reading/' + encodeURIComponent(view.articleId);
     if (view.page === 'news' && view.newsArticle) return '#/news/' + encodeURIComponent(view.newsArticle);
+    if (view.page === 'grammar' && view.gr.sub !== 'list') return '#/grammar/' + (view.gr.sub === 'quiz' ? 'quiz' : encodeURIComponent(view.gr.id));
     return '#/' + view.page;
   }
   let routeReady = false;
@@ -2383,6 +2553,7 @@
       view.editing = null;
     }
     if (page === 'news') view.newsArticle = rest || null;
+    if (page === 'grammar') { const g = view.gr; g.sub = rest === 'quiz' ? 'quiz' : rest && grById.has(rest) ? 'ch' : 'list'; g.id = g.sub === 'ch' ? rest : ''; }
     view.page = page;
     return true;
   }
@@ -2410,7 +2581,8 @@
     // English text is read with an English voice; Chinese with a Chinese one when the interface is English
     $$('#app .en:not([lang])').forEach(e => { e.lang = 'en'; });
     if (ui.lang === 'en') $$('#app .rp-zh, #app .daily-zh, #app .flash-zh, #app td.zh, #app .tr-zh, #app .tr-q').forEach(e => { e.lang = 'zh-Hant'; });
-    document.title = `${t(PAGE_META[view.page] ? PAGE_META[view.page][1] : 'tabHome')} · ${t('siteName')}`;
+    const grCh = view.page === 'grammar' && view.gr.sub === 'ch' && grById.get(view.gr.id);
+    document.title = `${grCh ? grCh.title + ' · ' : ''}${t(PAGE_META[view.page] ? PAGE_META[view.page][1] : 'tabHome')} · ${t('siteName')}`;
     syncRoute();
     if (opts.focusHeading) { const h = $('#app .st-label, #app h1'); if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
     else if (fkey) { const same = $$('#app [data-action]').find(el => el.tabIndex >= 0 && focusKeyOf(el) === fkey); if (same && !same.disabled) same.focus({ preventScroll: true }); }
@@ -2428,6 +2600,7 @@
     if (target === 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) { view.articleId = null; view.editing = null; }
     else if (target === 'reading' && !view.articleId && view.page !== 'reading' && readOpen()) view.articleId = view.lastArticle;
     if (target === 'news' && view.page === 'news') view.newsArticle = null;
+    if (target === 'grammar' && view.page === 'grammar') { view.gr.sub = 'list'; view.gr.id = ''; }
     view.pillsFor = sessionOf(target) || null;
     nav(target);
   }
@@ -2487,9 +2660,9 @@
   $('#askNo').addEventListener('click', () => closeAsk(false));
   askEl.addEventListener('click', e => { if (e.target === askEl) closeAsk(false); });
   async function endSessionAsk(n, body) { return n ? askConfirm({ title: t('endAskTitle'), body, ok: t('endAndSee'), cancel: t('keepGoing') }) : true; }
-  // 🌱 字根字首 and 📐 文法 are pages of their own: going there ends a practice still open here, so ask first (a new tab is fine)
+  // 🌱 字根字首 is a page of its own: going there ends a practice still open here, so ask first (a new tab is fine)
   document.addEventListener('click', async e => {
-    const a = e.target.closest && e.target.closest('a[href="roots.html"], a[href^="grammar.html"]');
+    const a = e.target.closest && e.target.closest('a[href="roots.html"]');
     if (!a || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || (!inSessionNow() && !sessionPages().length)) return;
     e.preventDefault();
     if (await askConfirm({ title: t('leaveAskTitle'), body: t('leaveAskBody'), ok: t('leaveAskOk'), cancel: t('keepGoing') })) location.href = a.href;
@@ -2593,6 +2766,34 @@
       window.scrollTo({ top: Math.max(0, y), behavior: smooth() });
     },
     speak(el) { speak(el.dataset.word); },
+    // 📐 文法
+    grUnit(el) { view.gr.unit = el.dataset.v; render(); },
+    grBand(el) { view.gr.band = el.dataset.v; render(); },
+    grJump(el) { const x = document.getElementById(el.dataset.to); if (x) { x.scrollIntoView({ block: 'start', behavior: smooth() }); x.focus({ preventScroll: true }); } },
+    grAnswer(el) { grAnswer(+el.dataset.q, +el.dataset.o); },
+    grRedo() { const c = grById.get(view.gr.id); if (!c) return; view.gr.picks[c.id] = []; render(); const q = $('#gs-quiz'); if (q) { q.scrollIntoView({ block: 'start' }); q.focus({ preventScroll: true }); } },
+    grRange(el) { view.gr.range = el.dataset.v; render(); },
+    grStart(el) {
+      const g = view.gr; if (el.dataset.v === 'again' && g.mix) g.range = g.mix.range;
+      // ten questions, at most two from one chapter unless the range has too few chapters for that
+      const pool = shuffleArr(GR_CH.filter(c => grInRange(c, g.range)).flatMap(c => c.quiz.map((_, i) => ({ id: c.id, i })))), per = {}, qs = [];
+      for (const x of pool) { if (qs.length === GR_MIXN) break; if ((per[x.id] = (per[x.id] || 0) + 1) <= 2) qs.push(x); }
+      for (const x of pool) { if (qs.length === GR_MIXN) break; if (!qs.includes(x)) qs.push(x); }
+      g.mix = { range: g.range, qs, i: 0, chosen: null, right: 0, wrong: [] }; jumpTo(0); grMixGo('#qTitle');
+    },
+    grMixAnswer(el) {
+      const s = view.gr.mix; if (!s || s.chosen != null || s.i >= s.qs.length) return;
+      const x = s.qs[s.i], q = grById.get(x.id).quiz[x.i]; s.chosen = +el.dataset.o;
+      if (s.chosen === q.answer) s.right++; else s.wrong.push(x.id);
+      grMixGo('#app [data-action=grNext]');
+    },
+    grNext() {
+      const s = view.gr.mix; if (!s || s.chosen == null) return;
+      s.i++; s.chosen = null;
+      if (s.i >= s.qs.length) { const k = s.range || 'all'; grStore.mix[k] = Math.max(grStore.mix[k] || 0, s.right); grSave(); }
+      grMixGo(s.i < s.qs.length ? '#qTitle' : '#rTitle');
+    },
+    grSetup() { view.gr.mix = null; jumpTo(0); grMixGo('#qsTitle'); },
     newsSource(el) { news.source = el.dataset.src; render(); },
     newsStudy(el) { const o = view.newsOpen || (view.newsOpen = {}); o[el.dataset.i] = !o[el.dataset.i]; render(); },
     openNewsArticle(el) { view.newsArticle = el.dataset.link; view.newsScroll = window.scrollY; const p = state.progress; p.newsDays = Object.assign({}, p.newsDays, { [todayStr()]: 1 }); save(); speakStop(); jumpTo(0); render({ focusHeading: true }); },
@@ -2951,12 +3152,13 @@
   });
   // Search boxes re-render the page, which would throw away a Zhuyin/IME word still being composed:
   // wait for the composition to end, and for a short pause in typing.
-  const SEARCH_IDS = /^(readSearch|phrSearch|vocabSearch)$/;
+  const SEARCH_IDS = /^(readSearch|phrSearch|vocabSearch|grQ)$/;
   let composing = false, searchT = null, searchId = null;
   function applySearch(el) {
     if (el.id === 'readSearch') view.readFilter.q = el.value;
     else if (el.id === 'phrSearch') { view.phr.q = el.value; view.phr.page = 0; }
     else if (el.id === 'vocabSearch') { view.vocabSearch = el.value; view.vocabPage = 0; }
+    else if (el.id === 'grQ') view.gr.q = el.value;
     else return false;
     return true;
   }

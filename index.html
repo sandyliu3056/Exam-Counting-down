@@ -19,6 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Patrick+Hand&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="grammar.css">
 </head>
 <body data-theme="navy" data-font="hand">
   <a class="skip-link" href="#app" data-i18n="skipToMain">跳到主要內容</a>
@@ -69,6 +70,7 @@
     <button class="tab" data-group="home"><span class="tab-icon" aria-hidden="true">🏠</span><span data-i18n="grpHome">首頁</span></button>
     <button class="tab" data-group="read"><span class="tab-icon" aria-hidden="true">📖</span><span data-i18n="grpRead">閱讀</span></button>
     <button class="tab" data-group="words"><span class="tab-icon" aria-hidden="true">🃏</span><span data-i18n="grpWords">單字</span></button>
+    <button class="tab" data-group="grammar"><span class="tab-icon" aria-hidden="true">📐</span><span data-i18n="grpGrammar">文法</span></button>
     <button class="tab" data-group="practice"><span class="tab-icon" aria-hidden="true">📝</span><span data-i18n="grpPractice">題目</span></button>
     <button class="tab" data-group="translate"><span class="tab-icon" aria-hidden="true">✍️</span><span data-i18n="grpTranslate">翻譯</span></button>
     <button class="tab" data-group="record"><span class="tab-icon" aria-hidden="true">📈</span><span data-i18n="grpRecord">紀錄</span></button>
@@ -83,6 +85,7 @@
     <button class="bnav-btn" data-group="home"><span class="bnav-ico" aria-hidden="true">🏠</span><span data-i18n="grpHome">首頁</span></button>
     <button class="bnav-btn" data-group="read"><span class="bnav-ico" aria-hidden="true">📖</span><span data-i18n="grpRead">閱讀</span></button>
     <button class="bnav-btn" data-group="words"><span class="bnav-ico" aria-hidden="true">🃏</span><span data-i18n="grpWords">單字</span><b class="bnav-badge" id="bnavBadge" hidden></b></button>
+    <button class="bnav-btn" data-group="grammar"><span class="bnav-ico" aria-hidden="true">📐</span><span data-i18n="grpGrammar">文法</span></button>
     <button class="bnav-btn" data-group="practice"><span class="bnav-ico" aria-hidden="true">📝</span><span data-i18n="grpPractice">題目</span></button>
     <button class="bnav-btn" data-group="translate"><span class="bnav-ico" aria-hidden="true">✍️</span><span data-i18n="grpTranslate">翻譯</span></button>
     <button class="bnav-btn" data-group="record"><span class="bnav-ico" aria-hidden="true">📈</span><span data-i18n="grpRecord">紀錄</span></button>
@@ -154,6 +157,7 @@
   <script src="mcq.js"></script>
   <script src="cloze.js"></script>
   <script src="cities.js"></script>
+  <script src="grammar-data.js"></script>
   <script src="i18n.js"></script>
   <script src="speech.js"></script>
   <script src="app.js"></script>
