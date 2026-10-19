@@ -263,7 +263,7 @@
     const s = state.quiz, q = s.qs[s.i], done = s.chosen != null, e = byId.get(q.id);
     const opt = (o, n) => {
       const cls = !done ? '' : o === q.answer ? ' is-right' : n === s.chosen ? ' is-wrong' : '';
-      return `<button type="button" class="rt-opt${q.en ? ' en-opt' : ''}${cls}" data-opt="${n}"${done ? ' disabled' : ''}${q.en ? ' lang="en"' : ''}><span class="rt-n" aria-hidden="true">${n + 1}</span><span>${esc(o)}</span>${done && o === q.answer ? '<span class="sr-only">（正確答案）</span>' : done && n === s.chosen ? '<span class="sr-only">（你的答案）</span>' : ''}</button>`;
+      return `<button type="button" class="rt-opt${q.en ? ' en-opt' : ''}${cls}" data-opt="${n}"${done ? ' disabled' : ''}${q.en ? ' lang="en"' : ''}><span class="rt-n" aria-hidden="true">${n + 1}</span><span>${esc(o)}</span>${done && o === q.answer ? '<span class="sr-only" lang="zh-Hant-TW">（正確答案）</span>' : done && n === s.chosen ? '<span class="sr-only" lang="zh-Hant-TW">（你的答案）</span>' : ''}</button>`;
     };
     const ok = done && q.opts[s.chosen] === q.answer;
     return `<section class="card rt-q" aria-labelledby="qTitle">

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="英語學習站">
+  <meta name="theme-color" content="#1f3b73">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+  <title>文法｜英語學習站</title>
+  <meta name="description" content="統測英文文法：時態、被動語態、不定詞與動名詞、關係子句、假設語氣、倒裝句等章節，每章有說明、例句、常見錯誤、統測重點與小測驗。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=Patrick+Hand&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="grammar.css">
+</head>
+<body class="grammar-page" data-theme="navy" data-font="hand">
+  <a class="skip-link" href="#app">跳到主要內容</a>
+
+  <!-- ===== Header: the same as the main site's ===== -->
+  <header class="site-header">
+    <div class="brand">
+      <p class="brand-title"><a class="gr-brand" href="./">英語學習站</a></p>
+    </div>
+    <div class="header-controls">
+      <label class="ctrl ctrl-sel">
+        <select id="fontSelect" aria-label="字體">
+          <option value="hand">手寫風</option>
+          <option value="clean">標準字體</option>
+        </select>
+      </label>
+      <label class="ctrl ctrl-sel">
+        <select id="themeSelect" aria-label="主題顏色">
+          <option value="navy">深藍</option>
+          <option value="forest">墨綠</option>
+          <option value="plum">莓紫</option>
+          <option value="sakura">櫻花粉</option>
+          <option value="mint">薄荷綠</option>
+          <option value="sunset">夕陽橘</option>
+        </select>
+      </label>
+      <a class="btn accent gr-home" href="./" aria-label="回英語學習站"><span aria-hidden="true">🏠</span><span class="gr-home-txt"> 回英語學習站</span></a>
+    </div>
+  </header>
+
+  <main id="app" class="page-wrap" tabindex="-1">
+    <noscript><div class="card">這個頁面需要開啟 JavaScript。</div></noscript>
+  </main>
+
+  <footer class="site-footer">
+    <p>依統測範圍整理的英文文法，每章附小測驗。<br><a href="./">← 回英語學習站</a></p>
+  </footer>
+
+  <button type="button" class="to-top" id="toTop" aria-label="回到頂端" hidden>↑</button>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="grammar-data.js"></script>
+  <script src="speech.js"></script>
+  <script src="grammar.js"></script>
+  <script>
+    // the same offline cache as the main site (a first visit may start here, or a home-screen icon made from this page)
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>

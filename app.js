@@ -216,11 +216,13 @@
     let g = SUB_GROUPS.find(x => x.includes(page));
     // 選擇題 and 翻譯 are separate tabs; a paused session reopened from the menu (focus mode hides the bottom bar) still gets both pills
     if (!g && PRACTICE_PAIR.includes(page) && inSessionNow() && view.pillsFor && view.pillsFor === sessionOf(page)) g = PRACTICE_PAIR;
+    if (!g && page === 'mcq') g = ['mcq'];
     if (!g) return '';
-    const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length < 2) return '';
-    // 單字 also leads to the 字根字首字尾 page (roots.html, its own page in the same look)
-    const roots = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>` : '';
-    return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}${roots}</nav>`;
+    // 單字 also leads to the 字根字首字尾 page and 題目 to the 文法 page (roots.html, grammar.html: pages of their own in the same look)
+    const more = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>`
+      : g.includes('mcq') ? `<a class="subtab" href="grammar.html"><span aria-hidden="true">📐</span> ${t('grammarNav')}</a>` : '';
+    const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length + (more ? 1 : 0) < 2) return '';
+    return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}${more}</nav>`;
   }
   // one page title per page: the tab's emoji and name, with the longer description underneath
   function pageHead(page, sub) {
@@ -743,6 +745,52 @@
   }
   guideModal.addEventListener('click', e => { if (e.target === guideModal || e.target.closest('[data-guide="close"]')) closeGuide(); });
 
+  /* ---------------- 📐 文法 chapters (grammar.html) a grammar point belongs to ---------------- */
+  // the titles for the links (grammar.html has the chapters themselves); the first pattern that matches an MCQ topic
+  // ("present perfect", "inversion (little)") or a news lesson's point ("現在完成式 (Present Perfect Tense)") wins
+  const GRAM_CH = {
+    'g-sentence': ['句子的基本結構', 'Sentence patterns'], 'g-question': ['疑問句與附加問句', 'Questions and question tags'], 'g-noun': ['名詞、冠詞與數量詞', 'Nouns, articles and quantifiers'],
+    'g-pronoun': ['代名詞', 'Pronouns'], 'g-preposition': ['介系詞', 'Prepositions'], 'g-agree': ['主詞與動詞一致', 'Subject–verb agreement'],
+    'g-present': ['現在簡單式與現在進行式', 'Present simple and present continuous'], 'g-past': ['過去簡單式與過去進行式', 'Past simple and past continuous'], 'g-future': ['未來式', 'Talking about the future'],
+    'g-perfect': ['完成式', 'Perfect tenses'], 'g-modal': ['助動詞', 'Modal verbs'], 'g-passive': ['被動語態', 'The passive voice'], 'g-causative': ['使役動詞與感官動詞', 'Causative and sense verbs'],
+    'g-infinitive': ['不定詞 to V', 'Infinitives'], 'g-gerund': ['動名詞與不定詞的選擇', 'Gerunds vs infinitives'], 'g-participle': ['分詞當形容詞', 'Participles as adjectives'],
+    'g-participle-clause': ['分詞構句', 'Participle clauses'], 'g-adj-adv': ['形容詞與副詞', 'Adjectives and adverbs'], 'g-compare': ['比較級與最高級', 'Comparatives and superlatives'],
+    'g-conj': ['連接詞', 'Conjunctions'], 'g-relative': ['關係代名詞', 'Relative pronouns'], 'g-relative-adv': ['關係副詞與複合關係詞', 'Relative adverbs and what / -ever'],
+    'g-noun-clause': ['名詞子句與間接問句', 'Noun clauses and indirect questions'], 'g-conditional': ['條件句與假設語氣', 'Conditionals and the subjunctive'], 'g-inversion': ['倒裝句', 'Inversion'],
+    'g-emphasis': ['強調句與常用句型', 'Cleft sentences and useful patterns'],
+  };
+  const GRAM_FIND = [
+    [/conditional|wish|subjunctive|as if|were to|lest|but for|if only|it's time|假設|條件句/i, 'g-conditional'],
+    [/inver|no sooner|hardly|not until|nowhere|rarely|fronting|ellipsis|倒裝/i, 'g-inversion'],
+    [/cleft|強調|分裂句/i, 'g-emphasis'],
+    [/question tag|附加問句|疑問句/i, 'g-question'],
+    [/agreement|there is|一致/i, 'g-agree'],
+    [/participle clause|participial (construction|clause)|absolute|with \+ o|dangling|negative participle|perfect passive participle|分詞構句/i, 'g-participle-clause'],
+    [/reduced relative|participial adj|participle modifier|-ed\/-ing|分詞/i, 'g-participle'],
+    [/relative adverb|noun clause with what|whatever|關係副詞|複合關係/i, 'g-relative-adv'],
+    [/relative|whom|whose|of which|non-defining|關係|形容詞子句/i, 'g-relative'], // before 名詞子句: 關係代名詞子句 contains it
+    [/noun clause|whether|indirect question|名詞子句|同位語|間接問句/i, 'g-noun-clause'],
+    [/causative|passive of make|let \+ o|使役|感官動詞/i, 'g-causative'],
+    [/passive|被動/i, 'g-passive'],
+    [/perfect|完成/i, 'g-perfect'],
+    [/modal|must|\bcan\b(?!'t)|had better|would rather|used to|could have|needn't|may as well|have p\.p|助動詞/i, 'g-modal'],
+    [/gerund|v-ing|avoid|can't help|difficulty|spend|no use|forget to|decide \+ to|prefer a to b|動名詞/i, 'g-gerund'],
+    [/infinitive|too\.\.\.to|不定詞/i, 'g-infinitive'],
+    [/compar|superlative|as\.\.\.as|twice|multiples|比較|最高級/i, 'g-compare'],
+    [/present continuous|present simple|現在簡單|現在進行/i, 'g-present'],
+    [/past simple|simple past|past continuous|過去簡單|過去進行/i, 'g-past'],
+    [/future|going to|time clauses|未來/i, 'g-future'],
+    [/conjunction|although|despite|unless|so\.\.\.that|such\.\.\.that|so that|in case|as long as|concession|連接詞|副詞子句/i, 'g-conj'],
+    [/preposition|different from|介系詞/i, 'g-preposition'],
+    [/pronoun|one\.\.\.the other|reciprocal|dummy|代名詞/i, 'g-pronoun'],
+    [/quantifier|determiner|some \/ any|how many|article|冠詞|數量|可數/i, 'g-noun'],
+    [/adjective|adverb|enough|形容詞|副詞/i, 'g-adj-adv'],
+  ];
+  // every key the news grammar detector (GRAMMAR, below) can find, in its order
+  const GRAM_KEY = { passive: 'g-passive', perfect: 'g-perfect', relative: 'g-relative', compare: 'g-compare', modal: 'g-modal', future: 'g-future', ifClause: 'g-conditional', whTo: 'g-infinitive', thereBe: 'g-agree', gerund: 'g-gerund', question: 'g-question' };
+  const gramChapter = text => { const hit = GRAM_FIND.find(([re]) => re.test(String(text || ''))); return hit ? hit[1] : ''; };
+  const gramLink = id => GRAM_CH[id] ? `<p class="small gram-ch">📐 <a href="grammar.html#ch/${id}">${esc(tf('grammarReview', { t: GRAM_CH[id][ui.lang === 'en' ? 1 : 0] }))}</a></p>` : '';
+
   /* ---------------- Bookmarks ---------------- */
   const bm = () => { const p = state.progress; if (!p.bookmarks) p.bookmarks = { vocab: [], articles: [] }; return p.bookmarks; };
   const isBm = (kind, id) => bm()[kind].includes(id);
@@ -1112,7 +1160,7 @@
         <div class="row" style="justify-content:center"><button class="btn accent" data-action="mcStart">${t('trAgain')}</button>${wrongs.length ? `<button class="btn" data-action="mcRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="mcExit">${t('back')}</button></div></div>
       ${wrongs.length ? `<h3 class="section-title">❌ ${t('mcWrongReview')}</h3>${wrongs.map(u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
         <div class="small">${t('studentChose')}：<span class="chip bad en">${s.answers[u.id] != null ? L4[s.answers[u.id]] + '. ' + esc(u.options[s.answers[u.id]]) : '—'}</span> → ${t('correctIs')}：<span class="chip ok en">${L4[u.answer]}. ${esc(u.options[u.answer])}</span></div>
-        <div class="explain">${esc(u.explain || '')}</div></div>`).join('')}` : ''}`;
+        <div class="explain">${esc(u.explain || '')}</div>${u.type === 'grammar' ? gramLink(gramChapter(u.topic)) : ''}</div>`).join('')}` : ''}`;
   }
   function mcFinish() {
     const s = view.mc, units = mcSessionUnits(s);
@@ -1486,7 +1534,7 @@
         <div class="lesson-grid">
           <section class="lesson-box lb-words"><h4>🔤 ${t('lessonVocab')}</h4><ul>${(les.vocab || []).map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(full, v.word))}</li>`).join('')}</ul></section>
           <section class="lesson-box lb-phrases"><h4>🧩 ${t('lessonPhrases')}</h4><ul>${(les.phrases || []).map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
-          <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${g.focus ? markTerms(g.example, [{ re: new RegExp(escRe(g.focus.trim()).replace(/\s+/g, '\\s+'), 'gi'), cls: 'gram-focus' }]) : esc(g.example)}”</p></div>`).join('')}</section>
+          <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${g.focus ? markTerms(g.example, [{ re: new RegExp(escRe(g.focus.trim()).replace(/\s+/g, '\\s+'), 'gi'), cls: 'gram-focus' }]) : esc(g.example)}”</p>${gramLink(gramChapter(g.point))}</div>`).join('')}</section>
         </div>
       </article>
       <div class="row reader-nav" style="margin:12px auto 0"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>`;
@@ -1505,7 +1553,7 @@
     return `<div class="study-panel">
       ${a.words.length ? `<div class="study-sec"><b>🔤 ${t('lessonVocab')}</b><ul>${a.words.map(({ v, form }) => `<li><span class="lw-word en">${esc(v.word)}</span>${form.toLowerCase() !== v.word ? ` <span class="small muted en">(${esc(form)})</span>` : ''} <span class="small muted">${esc(v.pos || '')} · ${esc(v.cefr || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, text)}</li>`).join('')}</ul></div>` : ''}
       ${a.phrases.length ? `<div class="study-sec"><b>🧩 ${t('lessonPhrases')}</b><ul>${a.phrases.map(p => `<li><span class="lp-word en">${esc(p.v.word)}</span> <span class="lw-zh">${esc(p.v.zh)}</span></li>`).join('')}</ul></div>` : ''}
-      ${a.grammar.length ? `<div class="study-sec"><b>📐 ${t('lessonGrammar')}</b>${a.grammar.map(g => { const w = clipAround(g.sentence, g.s, g.e); return `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${w.pre}${esc(g.sentence.slice(w.a, g.s))}<mark>${esc(g.sentence.slice(g.s, g.e))}</mark>${esc(g.sentence.slice(g.e, w.b))}${w.post}”</p></div>`; }).join('')}</div>` : ''}
+      ${a.grammar.length ? `<div class="study-sec"><b>📐 ${t('lessonGrammar')}</b>${a.grammar.map(g => { const w = clipAround(g.sentence, g.s, g.e); return `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${w.pre}${esc(g.sentence.slice(w.a, g.s))}<mark>${esc(g.sentence.slice(g.s, g.e))}</mark>${esc(g.sentence.slice(g.e, w.b))}${w.post}”</p>${gramLink(GRAM_KEY[g.k])}</div>`; }).join('')}</div>` : ''}
       ${none ? `<p class="small muted">${t('studyNone')}</p>` : ''}
       <p class="small muted study-foot">${t('studyAuto')}</p>
     </div>`;
@@ -2439,9 +2487,9 @@
   $('#askNo').addEventListener('click', () => closeAsk(false));
   askEl.addEventListener('click', e => { if (e.target === askEl) closeAsk(false); });
   async function endSessionAsk(n, body) { return n ? askConfirm({ title: t('endAskTitle'), body, ok: t('endAndSee'), cancel: t('keepGoing') }) : true; }
-  // 🌱 字根字首 is a page of its own: going there ends a practice still open here, so ask first (a new tab is fine)
+  // 🌱 字根字首 and 📐 文法 are pages of their own: going there ends a practice still open here, so ask first (a new tab is fine)
   document.addEventListener('click', async e => {
-    const a = e.target.closest && e.target.closest('a[href="roots.html"]');
+    const a = e.target.closest && e.target.closest('a[href="roots.html"], a[href^="grammar.html"]');
     if (!a || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || (!inSessionNow() && !sessionPages().length)) return;
     e.preventDefault();
     if (await askConfirm({ title: t('leaveAskTitle'), body: t('leaveAskBody'), ok: t('leaveAskOk'), cancel: t('keepGoing') })) location.href = a.href;
@@ -3021,7 +3069,7 @@
     const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
-      <div class="more-tiles">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}<a class="more-tile" href="roots.html"><span class="mt-ico" aria-hidden="true">🌱</span><span class="mt-txt">${t('rootsNav')}<small>${t('rootsNavSub')}</small></span></a>
+      <div class="more-tiles">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}<a class="more-tile" href="roots.html"><span class="mt-ico" aria-hidden="true">🌱</span><span class="mt-txt">${t('rootsNav')}<small>${t('rootsNavSub')}</small></span></a><a class="more-tile" href="grammar.html"><span class="mt-ico" aria-hidden="true">📐</span><span class="mt-txt">${t('grammarNav')}<small>${t('grammarNavSub')}</small></span></a>
         ${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : t('account'))}</div>
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
