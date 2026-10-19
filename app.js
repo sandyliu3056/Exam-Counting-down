@@ -220,7 +220,7 @@
     if (!g) return '';
     // 單字 also leads to the 字根字首字尾 page and 題目 to the 文法 page (roots.html, grammar.html: pages of their own in the same look)
     const more = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>`
-      : g.includes('mcq') ? `<a class="subtab" href="grammar.html"><span aria-hidden="true">📐</span> ${t('grammarNav')}</a>` : '';
+      : g.includes('mcq') && g !== PRACTICE_PAIR ? `<a class="subtab" href="grammar.html"><span aria-hidden="true">📐</span> ${t('grammarNav')}</a>` : '';
     const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length + (more ? 1 : 0) < 2) return '';
     return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}${more}</nav>`;
   }
@@ -3067,17 +3067,23 @@
     const cur = groupOf(view.page) === 'more' ? view.page : '';
     const tile = (key, ico, label, sub) => `<button type="button" class="more-tile" data-more="${key}"${cur === key ? ' aria-current="page"' : ''}><span class="mt-ico" aria-hidden="true">${ico}</span><span class="mt-txt">${label}${sub ? `<small>${sub}</small>` : ''}</span></button>`;
     const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
+    // 學習: every block (閱讀 · 單字 · 題目 · 翻譯 · 紀錄) with its pages, the 字根字首 and 文法 pages under their blocks; then 設定與帳號, then 外觀
+    const pg = p => `<button type="button" class="more-pg" data-more-page="${p}"${view.page === p ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`;
+    const ext = (href, ico, label) => `<a class="more-pg" href="${href}"><span aria-hidden="true">${ico}</span> ${label}</a>`;
+    const block = (gid, ico, links) => `<div class="more-block"><span class="more-bh"><span aria-hidden="true">${ico}</span> ${t('grp' + gid)}</span><div class="more-pgs">${links}</div></div>`;
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
-      <div class="more-tiles">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}<a class="more-tile" href="roots.html"><span class="mt-ico" aria-hidden="true">🌱</span><span class="mt-txt">${t('rootsNav')}<small>${t('rootsNavSub')}</small></span></a><a class="more-tile" href="grammar.html"><span class="mt-ico" aria-hidden="true">📐</span><span class="mt-txt">${t('grammarNav')}<small>${t('grammarNavSub')}</small></span></a>
-        ${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : t('account'))}</div>
+      <h3 class="sheet-sec sheet-sec-first">📚 ${t('moreLearn')}</h3>
+      <div class="more-blocks">${block('Read', '📖', pg('reading') + pg('news'))}${block('Words', '🃏', pg('flashcards') + pg('vocab') + pg('phrases') + ext('roots.html', '🌱', t('rootsNav')))}${block('Practice', '📝', pg('mcq') + ext('grammar.html', '📐', t('grammarNav')))}${block('Translate', '✍️', pg('translate'))}${block('Record', '📈', pg('progress') + (ui.teacher ? pg('students') : ''))}</div>
+      <h3 class="sheet-sec">⚙️ ${t('moreAccount')}</h3>
+      <div class="more-tiles three">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : '')}</div>
       <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
       <div class="ap-row"><span class="ap-lbl">${t('fontLabel')}</span>${seg('font', ui.font, [['hand', t('fontHand')], ['clean', t('fontClean')]], t('fontLabel'))}</div>
       <div class="ap-row"><span class="ap-lbl">${t('voiceShort')}</span>${sysVoice && !voiceKnown() ? `<span class="small muted">${t('voiceAndroidShort')}</span>` : seg('voice', ui.voice === 'f' ? 'f' : 'm', [['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]], t('voiceTitle'))}</div>
       <div class="swatches" role="group" aria-label="${t('swatchLabel')}">${THEMES.map(([id, c, ac]) => `<button type="button" class="swatch" data-more-theme="${id}" aria-pressed="${ui.theme === id}" style="--sw:${c};--sw-a:${ac}"><i aria-hidden="true"></i><span>${t('theme' + id[0].toUpperCase() + id.slice(1))}</span></button>`).join('')}</div>`;
   }
-  function openMore() { moreOpener = document.activeElement; renderMore(); moreEl.classList.remove('hidden'); setTimeout(() => { const b = $('.more-tile', moreEl); if (b) b.focus({ preventScroll: true }); }, 30); }
+  function openMore() { moreOpener = document.activeElement; renderMore(); moreEl.classList.remove('hidden'); setTimeout(() => { const b = $('.more-pg', moreEl); if (b) b.focus({ preventScroll: true }); }, 30); }
   function closeMore() { if (moreEl.classList.contains('hidden')) return; moreEl.classList.add('hidden'); if (moreOpener && document.contains(moreOpener)) moreOpener.focus({ preventScroll: true }); }
   moreEl.addEventListener('click', async e => {
     if (e.target === moreEl) { closeMore(); return; }
@@ -3086,6 +3092,7 @@
     else if (d.more === 'account') { closeMore(); if (ui.user) logoutFlow(); else openAuth('login'); }
     else if (d.more === 'tour') { closeMore(); startTour(); }
     else if (d.more) { moreEl.classList.add('hidden'); nav(d.more); }
+    else if (d.morePage) { moreEl.classList.add('hidden'); view.pillsFor = sessionOf(d.morePage) || null; actions.nav({ dataset: { page: d.morePage } }); }
     else if (d.moreVoice) { ui.voice = d.moreVoice === 'f' ? 'f' : 'm'; saveUi(); refreshVoiceCard(); renderMore(); const same = $(`[data-more-voice="${ui.voice}"]`, moreEl); if (same) same.focus({ preventScroll: true }); speak(t('voiceSample')); }
     else if (d.moreLang || d.moreFont || d.moreTheme) {
       if (d.moreLang) ui.lang = d.moreLang; if (d.moreFont) ui.font = d.moreFont; if (d.moreTheme) ui.theme = d.moreTheme;
