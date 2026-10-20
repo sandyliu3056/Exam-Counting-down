@@ -15,7 +15,8 @@ window.TVESpeech = (() => {
   const isIOS = isIPad || /iP(hone|od)/.test(navigator.userAgent);
   // what the page supplies: the chosen kind ('m' / 'f'), a way to show a message, its wording, and what to redraw
   // when the voice list loads or a voice turns out to be silent
-  const cfg = { kind: () => 'm', toast: () => { }, text: k => k, changed: () => { } };
+  // rate: reading speed (0.75 / 0.9 / 1); voice: a voiceURI picked in 設定 ('' = choose by kind); state(on): reading started / stopped
+  const cfg = { kind: () => 'm', toast: () => { }, text: k => k, changed: () => { }, rate: () => 0.9, voice: () => '', state: () => { } };
   let voicesSeen = false; // the voice list has (re)loaded at least once
   const badVoices = new Set(); // voices that said nothing during this visit (an iPhone can list a voice that is not installed)
   const vkey = v => v.voiceURI || v.name;
@@ -28,6 +29,9 @@ window.TVESpeech = (() => {
   // local: only voices on the device (Edge's Online (Natural) voices need the internet)
   function voiceFor(lang, strict, local) {
     if (!hasTTS()) return null;
+    // a voice picked by name in 設定 (an English one, still working, and on the device when offline) comes first
+    const want = !strict && cfg.voice();
+    if (want) { const v = speechSynthesis.getVoices().find(x => vkey(x) === want); if (v && /^en/i.test(v.lang || '') && !badVoices.has(want) && !((local || navigator.onLine === false) && v.localService === false)) return v; }
     const L = normLang(lang), base = L.split('-')[0];
     const [kind, other] = cfg.kind() === 'f' ? [VOICE_F, VOICE_M] : [VOICE_M, VOICE_F];
     let best = null, top = -1;
@@ -42,14 +46,15 @@ window.TVESpeech = (() => {
     return best;
   }
   let starts = 0; // utterances that began to speak (say() checks that one did)
-  function utter(text, lang, strict, local, plain) {
+  function utter(text, lang, strict, local, plain, seq) {
     const u = new SpeechSynthesisUtterance(text), v = plain ? null : voiceFor(lang, strict, local), all = speechSynthesis.getVoices();
     // no voice picked: the device's default for this accent, or American English when it has none (not its own language)
     if (v) { u.voice = v; u.lang = v.lang; } else u.lang = !all.length || all.some(x => !badVoices.has(vkey(x)) && normLang(x.lang) === normLang(lang)) ? lang : 'en-US';
-    u.rate = 0.9;
+    u.rate = Math.min(1.1, Math.max(0.6, +cfg.rate() || 0.9)); u.pitch = 1; // natural pitch
     u.onstart = () => { starts++; };
     // a cloud voice that fails (no internet, the service down) says it again with a voice on the device
-    if (v && v.localService === false && !local) u.onerror = e => { if (!/interrupted|canceled/.test((e && e.error) || '')) speechSynthesis.speak(utter(text, lang, strict, true)); };
+    // (only while this is still the latest request: a late error must not start speech after 停止)
+    if (v && v.localService === false && !local) u.onerror = e => { if (seq === speakSeq && !/interrupted|canceled/.test((e && e.error) || '')) speechSynthesis.speak(utter(text, lang, strict, true, false, seq)); };
     return u;
   }
   if (hasTTS()) {
@@ -81,8 +86,8 @@ window.TVESpeech = (() => {
     clearInterval(bridgeTimer); bridgeTimer = 0;
     try { if (bridge && !bridge.paused) bridge.pause(); if (isIOS && navigator.audioSession && navigator.audioSession.type === 'playback') navigator.audioSession.type = 'auto'; } catch (e) { }
   }
-  // an iPhone leaving the page: stop reading (whatever played on afterwards would be muted again)
-  document.addEventListener('visibilitychange', () => { if (document.hidden && isIOS) stop(); });
+  // leaving the page or switching tabs stops reading (on an iPhone it would be muted anyway)
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   // …and a reminder about Silent mode, once a day on an iPhone or iPad (and on every 試聽)
   const LS_HINT = 'tve_exam_mutehint_v1';
   let hintDay = (() => { try { return localStorage.getItem(LS_HINT); } catch (e) { return null; } })();
@@ -114,7 +119,7 @@ window.TVESpeech = (() => {
     if (ss.paused) ss.resume();
     const run = tries => {
       if (my !== speakSeq) return;
-      const us = lines.map(text => utter(text, lang, strict, false, tries >= 2)), v = us[0].voice, s0 = starts, t0 = performance.now();
+      const us = lines.map(text => utter(text, lang, strict, false, tries >= 2, my)), v = us[0].voice, s0 = starts, t0 = performance.now();
       let gone = false, timer = 0, ended = false;
       const heard = () => ended || starts > s0;
       if (v) { const os = us[0].onstart; us[0].onstart = e => { os(e); silentMs.delete(vkey(v)); }; } // heard: its silent time starts again from 0
@@ -123,12 +128,14 @@ window.TVESpeech = (() => {
         if (gone || my !== speakSeq || heard()) return; gone = true; clearTimeout(timer);
         if (v) { badVoices.add(vkey(v)); cfg.changed(); }
         ss.cancel();
-        if (tries >= 2 || (!v && tries >= 1)) { bridgeOff(); last = null; cfg.toast(cfg.text(voicesSeen && !ss.getVoices().length ? 'voiceNone' : isIOS ? 'voiceStuckIOS' : 'voiceStuck'), 7000); return; }
+        if (tries >= 2 || (!v && tries >= 1)) { bridgeOff(); last = null; cfg.state(false); cfg.toast(cfg.text(voicesSeen && !ss.getVoices().length ? 'voiceNone' : isIOS ? 'voiceStuckIOS' : 'voiceStuck'), 7000); return; }
         bridgeOn(); setTimeout(() => run(tries + 1), 150);
       };
       if (!us[0].onerror) us[0].onerror = e => { if (!/interrupted|canceled/.test((e && e.error) || '')) fail(); }; // a cloud voice retries on the device first
       // a browser that never says "start": a line that ends normally, not at once, counts as heard
       let prev = t0; us.forEach(u => { u.onend = () => { const n = performance.now(); if (n - prev > 400) ended = true; prev = n; }; });
+      const lastU = us[us.length - 1], oe = lastU.onend; lastU.onend = e => { oe(e); if (my === speakSeq) cfg.state(false); };
+      cfg.state(true);
       us.forEach(u => ss.speak(u));
       timer = setTimeout(fail, v && v.localService === false ? 6000 : 4000);
     };
@@ -136,10 +143,13 @@ window.TVESpeech = (() => {
   }
   // a long text (a whole article) goes sentence by sentence: Chrome's online Google voices stop after about 15 seconds
   const speechChunks = text => { const out = []; let cur = ''; (String(text).match(/[^.!?]+[.!?]+["'”’)\]]*\s*|[^.!?]+$/g) || [String(text)]).forEach(s => { if (cur && (cur + s).length > 200) { out.push(cur); cur = ''; } cur += s; }); if (cur.trim()) out.push(cur); return out; };
-  function speak(text, test) { say(String(text).length > 200 ? speechChunks(text) : [String(text)], 'en-US', false, test); }
-  function stop() { speakSeq++; last = null; bridgeOff(); if (hasTTS() && (speechSynthesis.speaking || speechSynthesis.pending)) speechSynthesis.cancel(); }
+  // English only: any Chinese in the text (a teacher's own example, a note) is left out, never read with the English voice
+  function speak(text, test) { const en = String(text).replace(/[\u2E80-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF\u3000-\u303F]+/g, ' ').replace(/\s{2,}/g, ' ').trim(); if (!/[A-Za-z]/.test(en)) return; say(en.length > 200 ? speechChunks(en) : [en], 'en-US', false, test); }
+  function stop() { speakSeq++; last = null; bridgeOff(); if (hasTTS() && (speechSynthesis.speaking || speechSynthesis.pending)) speechSynthesis.cancel(); cfg.state(false); }
+  // the English voices this device offers, for the 設定 list
+  const englishVoices = () => hasTTS() ? speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang || '') && !VOICE_ODD.test(`${v.name || ''} ${v.voiceURI || ''}`)) : [];
   return {
     setup: o => Object.assign(cfg, o), hasTTS, sysVoice, isIOS, voicesSeen: () => voicesSeen,
-    voiceFor, voiceKnown, say, speak, stop,
+    voiceFor, voiceKnown, say, speak, stop, englishVoices, vkey,
   };
 })();

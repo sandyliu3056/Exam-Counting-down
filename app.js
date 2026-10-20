@@ -177,7 +177,7 @@
   let ui = Object.assign({ lang: 'zh', font: 'clean', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
   // tour: once the invitation is answered in any tab it stays answered (another open tab must not write it back)
-  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 3, tour: ui.tour ? 1 : 0, voice: ui.voice === 'f' ? 'f' : 'm' })); } catch (e) { } };
+  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 3, tour: ui.tour ? 1 : 0, voice: ui.voice === 'f' ? 'f' : 'm', rate: [0.75, 0.9, 1].includes(ui.rate) ? ui.rate : 0.9, voiceURI: typeof ui.voiceURI === 'string' ? ui.voiceURI.slice(0, 200) : '' })); } catch (e) { } };
   // the old site saved English as its default on every device; switch those to Chinese once (a later English choice sticks)
   if (ui.uiv !== 2 && ui.uiv !== 3) { if (ui.lang === 'en') ui.lang = 'zh'; }
   // 2026-10: the standard typeface is the default for everyone once; 手寫風 stays a choice (a later pick sticks)
@@ -286,6 +286,10 @@
   }
   function dueCards() { const td = todayStr(); return VOCAB.filter(v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= td; }); }
   function newCards() { return VOCAB.filter(v => !state.progress.cards[v.id] || state.progress.cards[v.id].seen === 0); }
+  // a word's state in three steps, read from its card (no second record): 未學 (never shown) · 待複習 (seen, not yet at the
+  // top box) · 已熟悉 (top box); a card that is due today says so
+  const wordState = c => !c || !c.seen ? 'new' : c.box >= 3 ? 'known' : 'review';
+  const stateChip = c => { const s = wordState(c); return `<span class="chip ws-${s} ${s === 'known' ? 'ok' : s === 'review' ? 'warn' : ''}">${t('ws_' + s)}${s === 'review' && c.due <= todayStr() ? ' · ' + t('wsDue') : ''}</span>`; };
   function masteredCount() { return VOCAB.filter(v => (state.progress.cards[v.id] || {}).box === 3).length; }
   function streak(progress = state.progress) {
     let n = 0, d = todayStr();
@@ -823,7 +827,9 @@
 
   /* ---------------- Speech: speech.js, shared with roots.html ---------------- */
   const SP = window.TVESpeech;
-  SP.setup({ kind: () => ui.voice, toast, text: k => t(k), changed: () => refreshVoiceCard() });
+  SP.setup({ kind: () => ui.voice, toast, text: k => t(k), changed: () => refreshVoiceCard(), rate: () => ui.rate || 0.9, voice: () => ui.voiceURI || '', state: on => ttsState(on) });
+  // while something is being read, a 停止朗讀 button stays on screen (every 🔊 can be stopped from anywhere)
+  function ttsState(on) { const b = document.getElementById('ttsStop'); if (b) b.hidden = !on; }
   const { hasTTS, sysVoice, isIOS, voiceFor, voiceKnown, say, speak } = SP, speakStop = SP.stop;
 
   /* ---------------- Pages ---------------- */
@@ -1968,10 +1974,16 @@
     return { words: words.slice(0, 8), phrases: ph.slice(0, 5), grammar };
   }
   function vocabEntry(word) { for (const x of lemmas(word)) { const v = VOCAB.find(e => e.word.toLowerCase() === x); if (v) return v; } return null; }
-  function saveWordBtn(word, pos, zh, ex) {
+  // src: where the word was met { k: 'read' | 'news' | 'city', ref, p } — kept with the sentence when the word is saved
+  function saveWordBtn(word, pos, zh, ex, src) {
+    src = src || (view.page === 'news' && view.newsArticle ? { k: 'news', ref: view.newsArticle } : null);
     const v = vocabEntry(word), on = v && isBm('vocab', v.id);
-    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-id="${v ? esc(v.id) : ''}" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}" title="${t(on ? 'removeBookmark' : 'addBookmark')}" aria-pressed="${!!on}">${on ? '★' : '☆'}</button>`;
+    return `<button class="btn sm save-word ${on ? 'on' : ''}" data-action="saveNewsWord" data-id="${v ? esc(v.id) : ''}" data-word="${esc(v ? v.word : word)}" data-pos="${esc(pos || '')}" data-zh="${esc(zh || '')}" data-ex="${esc(ex || '')}"${src ? ` data-src-k="${src.k}" data-src-ref="${esc(src.ref)}"${src.p != null ? ` data-src-p="${src.p}"` : ''}` : ''} title="${t(on ? 'removeBookmark' : 'addBookmark')}" aria-pressed="${!!on}">${on ? '★' : '☆'}</button>`;
   }
+  const wordSrcOf = id => { const l = (state.progress.wordSrc || {})[id]; return l && l.length ? l[l.length - 1] : null; };
+  const srcPlace = x => x.k === 'read' ? (articleById(x.ref) ? `〈${articleById(x.ref).title}〉` : t('grpRead')) : x.k === 'city' ? t('srcCity') : t('tabNews');
+  const srcLine = (id, word) => { const x = wordSrcOf(id); if (!x) return ''; const re = noteRe(word);
+    return `<div class="src-line"><span class="small muted">${t('srcFrom')} ${esc(srcPlace(x))}</span><span class="en">${esc(x.s).replace(new RegExp(re.source, re.flags.replace('g', '')), m => `<b>${m}</b>`)}</span></div>`; };
   const sentenceWith = (text, word) => splitSentences(text).find(s => { const re = noteRe(word); return re.test(s); }) || '';
   // Lessons saved before translations existed have one "passage" string instead of paragraphs
   const lessonParas = les => les.paragraphs || String(les.passage || '').split(/\n\s*\n/).filter(Boolean).map(en => ({ en, zh: '' }));
@@ -2133,6 +2145,7 @@
     const b = !a.edited && (window.READING_ZH || {})[a.id];
     return b && b.paragraphs.length === en.length ? { title: b.title_zh || '', en, zh: b.paragraphs } : null;
   }
+  const READ_TTS_SAMPLE = new Set(['a14', 'a15', 'a16']); // paragraph read-aloud, sample only
   function articleView() {
     const a = articleById(view.articleId);
     if (!a) { view.articleId = null; return pageReading(); }
@@ -2147,8 +2160,10 @@
       const sc = a.questions.filter((q, i) => view.answers[i] === q.answer).length;
       scoreHtml = `<div class="score-banner"><div>${t('yourScore')}</div><div class="big">${sc} / ${n}</div><div>${Math.round(sc / n * 100)}%</div>${view.readSecs != null ? `<div class="pace ${view.readSecs <= 600 ? 'ok' : 'slow'}">${tf('paceLine', { t: fmtDur(view.readSecs), p: '10:00' })}</div>` : ''}<div class="row" style="margin-top:10px;justify-content:center"><button class="btn accent" data-action="retry">${t('retry')}</button><button class="btn ghost" data-action="backList">${t('back')}</button></div></div>`;
     }
-    // real paragraphs; single line breaks (letters, notices) are kept
-    const paras = String(a.passage || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`).join('');
+    // real paragraphs; single line breaks (letters, notices) are kept. A small sample of passages has 🔊 per paragraph
+    // (new read-aloud is tried on a few passages first, to be confirmed before it is added everywhere)
+    const say = READ_TTS_SAMPLE.has(a.id) && hasTTS(), sayBtn = (p, i) => say ? `<button type="button" class="icon-btn ra-say" data-action="speak" data-word="${esc(p)}" aria-label="${esc(tf('sayPara', { n: i + 1 }))}">🔊</button>` : '';
+    const paras = String(a.passage || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map((p, i) => `<p>${esc(p).replace(/\n/g, '<br>')}${sayBtn(p, i)}</p>`).join('');
     const top = view.submitted ? `<div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" data-action="backList">${t('back')}</button></div>`
       : sessionTop('endRead', t('sessionRead'), tf('readAnswered', { k, n }), k, n,
         `<div class="st-jump" role="group"><button type="button" data-action="jump" data-to="passage">${t('jumpPassage')}</button><button type="button" data-action="jump" data-to="q">${t('jumpQs')}</button></div>`);
@@ -2156,17 +2171,47 @@
       <article class="card art-card">
         <div class="art-head"><h1 tabindex="-1">${esc(a.title)}</h1>${bmBtn('articles', a.id)}</div>
         ${showZh && Z.title ? `<div class="reader-title-zh" style="margin:-2px 0 6px">${esc(Z.title)}</div>` : ''}
-        <div class="muted small" style="margin-bottom:12px">${esc(unitLabel(a.level || ''))} ${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}</div>
+        ${say ? `<p class="small muted tts-sample">${t('ttsSample')}</p>` : ''}
+        <div class="art-meta"><span class="chip info">${esc(levelShort(a))}</span>${(a.tags || []).map(x => `<span class="chip">${esc(unitLabel(x))}</span>`).join('')}<span class="small muted">${tf('artWords', { n: wordCount(a) })} · ${tf('artMin', { n: readMinutes(a) })}</span></div>
         ${Z ? `<div class="reader-tools" style="margin-bottom:10px"><div class="seg" role="group" aria-label="${t('newsTransLabel')}" style="margin-left:0"><button class="seg-btn ${showZh ? 'on' : ''}" data-action="readZh" data-v="1" aria-pressed="${showZh}">${t('newsBoth')}</button><button class="seg-btn ${!showZh ? 'on' : ''}" data-action="readZh" data-v="0" aria-pressed="${!showZh}">${t('newsEnOnly')}</button></div>${!view.submitted && !showZh ? `<span class="small muted">${t('readZhHint')}</span>` : ''}</div>` : ''}
         <div class="article-layout">
-          <div class="art-left">${showZh ? `<div class="passage passage-zh${practicalText(a) ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
-            : `<div class="passage${practicalText(a) ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${paras}</div>`}</div>
+          <div class="art-left">${showZh ? `<div class="passage passage-zh${practicalText(a) ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${Z.en.map((p, i) => `<div class="rp"><p class="rp-en en">${esc(p)}${sayBtn(p, i)}</p>${Z.zh[i] ? `<p class="rp-zh">${esc(Z.zh[i])}</p>` : ''}</div>`).join('')}</div>`
+            : `<div class="passage${practicalText(a) ? '' : ' numbered'}${ui.font === 'clean' ? ' clean' : ''}" id="passage" tabindex="0">${paras}</div>`}
+            ${readNotesBox(a)}</div>
           <div class="art-right" id="artQs">${qs}
             ${view.submitted ? scoreHtml : `<div class="action-bar"><button class="btn accent" data-action="submitQuiz">${t('submit')}（${k}/${n}）</button></div>`}</div>
         </div>
       </article>`;
   }
 
+  /* ---- 學習筆記 under a passage, opened on demand: 段落重點 · 關鍵字 (☆ saves the word with its sentence) · 句子解析 ----
+     reading-notes.js (window.READING_NOTES, about 400 KB) is loaded the first time a student opens the notes */
+  const RN = { status: window.READING_NOTES ? 'ready' : 'idle' };
+  function loadReadNotes() {
+    if (RN.status !== 'idle') return;
+    RN.status = 'loading';
+    loadScript('reading-notes.js').then(() => { RN.status = window.READING_NOTES ? 'ready' : 'failed'; }, () => { RN.status = 'failed'; })
+      .then(() => { const box = $('#readNotes'); if (box && view.page === 'reading' && view.articleId) { const a = articleById(view.articleId); if (a) { box.outerHTML = readNotesBox(a, true); } } });
+  }
+  function readNotesBox(a, open) {
+    const isOpen = open || view.readNotesOpen === a.id;
+    return `<details class="read-notes" id="readNotes"${isOpen ? ' open' : ''}><summary data-action="readNotes" data-id="${esc(a.id)}">${t('rnTitle')}</summary>${isOpen ? readNotesBody(a) : ''}</details>`;
+  }
+  function readNotesBody(a) {
+    if (RN.status === 'idle') loadReadNotes();
+    if (RN.status === 'loading') return `<p class="small muted">${t('rnLoading')}</p>`;
+    const N = (window.READING_NOTES || {})[a.id], paras = String(a.passage || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    const save = (w, zh, p) => saveWordBtn(w, '', zh, sentenceWith(paras[p] || '', w) || paras[p] || '', { k: 'read', ref: a.id, p });
+    if (!N || a.edited) { // a teacher's passage: words picked from the 7000-word list, said so
+      const words = analyzeStory({ title: '', summary: paras.join('\n') }).words.slice(0, 8);
+      return `${RN.status === 'failed' ? `<p class="small muted">${t('rnLoadFail')}</p>` : ''}<p class="small muted">${t('rnAuto')}</p><ul class="rn-words">${words.map(({ v, form }) => `<li><span class="en"><b>${esc(form)}</b></span> <span>${esc(v.zh)}</span>${save(form, v.zh, Math.max(0, paras.findIndex(p => noteRe(form).test(p))))}</li>`).join('')}</ul>`;
+    }
+    return `<p class="small muted">${t('rnHow')}</p>
+      <h3 class="gr-k">${t('rnPoints')}</h3><ol class="rn-points">${N.points.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+      <h3 class="gr-k">${t('rnWords')}</h3><p class="small muted">${t('rnWordsHint')}</p>
+      <ul class="rn-words">${N.words.map(x => `<li><span class="en"><b>${esc(x.w)}</b></span> <span>${esc(x.zh)}</span>${save(x.w, x.zh, x.p)}</li>`).join('')}</ul>
+      <h3 class="gr-k">${t('rnSents')}</h3>${N.sents.map(x => `<div class="rn-sent">${grParse({ en: x.en, zh: x.zh, parts: x.parts })}<p>${esc(x.why)}${x.ch && grById.has(x.ch) ? ` <a class="fb-ch" href="#/grammar/${x.ch}">${esc(tf('fbChapter', { t: grById.get(x.ch).title }))}</a>` : ''}</p></div>`).join('')}`;
+  }
   function articleEditor() {
     const a = view.editing;
     const qHtml = a.questions.map((q, i) => `<div class="q-editor" data-qi="${i}">
@@ -2317,11 +2362,11 @@
       <div class="flash-stage">
       <div class="flash-card ${f.flipped ? 'flipped' : ''}" data-action="flip">
         <div class="flash-inner">
-          <div class="flash-face flash-front" aria-hidden="${!!f.flipped}"><span class="ribbon ribbon-l ribbon-${['new', 'info', 'warn', 'ok'][c.box]}" title="${t('box')}" aria-hidden="true">${['🌱', '📘', '⭐', '🏆'][c.box]}</span><button class="icon-btn flash-bm ${onBm ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${onBm}" aria-label="${esc(t('bookmark') + ' ' + v.word)}">${onBm ? '★' : '☆'}</button>
+          <div class="flash-face flash-front" aria-hidden="${!!f.flipped}"><span class="flash-state">${stateChip(c)}</span><button class="icon-btn flash-bm ${onBm ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${onBm}" aria-label="${esc(t('bookmark') + ' ' + v.word)}">${onBm ? '★' : '☆'}</button>
             <div class="flash-word en">${wordBreaks(v.word)}</div><div class="flash-pos">${esc(v.pos || '')}</div>
             <button class="btn sm ghost" data-action="speak" data-word="${esc(v.word)}" style="margin-top:14px">${t('speak')}</button>
             <button type="button" class="flash-hint" data-action="flip" aria-expanded="${!!f.flipped}">${t('tapToFlip')}</button></div>
-          <div class="flash-face flash-back" aria-hidden="${!f.flipped}"><div class="flash-zh">${esc(v.zh)}</div><div class="flash-pos" style="color:#fff;opacity:.85">${wordBreaks(v.word)} ${esc(v.pos || '')}${v.cefr ? ` · ${esc(v.cefr)}` : ''}</div>${v.syn ? `<div class="flash-syn">≈ ${esc(v.syn)}</div>` : ''}${ex ? `<div class="flash-example">${ex}</div>` : ''}</div>
+          <div class="flash-face flash-back" aria-hidden="${!f.flipped}"><div class="flash-zh">${esc(v.zh)}</div><div class="flash-pos" style="color:#fff;opacity:.85">${wordBreaks(v.word)} ${esc(v.pos || '')}${v.cefr ? ` · ${esc(v.cefr)}` : ''}</div>${v.syn ? `<div class="flash-syn">≈ ${esc(v.syn)}</div>` : ''}${wordSrcOf(v.id) ? `<div class="flash-example flash-src">${srcLine(v.id, v.word)}</div>` : ex ? `<div class="flash-example">${ex}</div>` : ''}</div>
         </div>
       </div>
       <p class="small muted kbd-hint" style="margin:0">${t('flashKbd')}</p>
@@ -2410,9 +2455,9 @@
       return `<tr><td class="bm-cell"><button class="icon-btn bm-star ${on ? 'on' : ''}" data-action="toggleBm" data-kind="vocab" data-id="${esc(v.id)}" aria-pressed="${on}" aria-label="${esc(t('bookmark') + '：' + v.word)}">${on ? '★' : '☆'}</button></td>
         <td class="word"><span class="wb-w">${esc(v.word)}</span> <button class="icon-btn wb-say" data-action="speak" data-word="${esc(v.word)}" aria-label="${esc(t('listen') + ' ' + v.word)}">🔊</button>${sub ? `<div class="wb-sub">${sub}</div>` : ''}</td>
         <td class="zh">${esc(v.zh)}${v.syn ? `<div class="wb-syn en"><span aria-hidden="true">≈ </span><span class="sr-only">${t('synonyms')}：</span>${esc(v.syn)}</div>` : ''}</td>
-        <td class="example">${esc(v.example || '')}</td>
+        <td class="example">${wordSrcOf(v.id) ? srcLine(v.id, v.word) : esc(v.example || '')}</td>
         <td class="unit">${esc(unitLabel(v.unit))}</td>
-        <td class="box"><span class="chip ${['', 'info', 'warn', 'ok'][c.box]}">${c.seen ? t('level' + c.box) : t('level0')}</span></td>
+        <td class="box">${stateChip(state.progress.cards[v.id])}</td>
         ${T ? `<td class="acts"><button class="btn sm ghost" data-action="editVocab" data-id="${esc(v.id)}" aria-label="${esc(t('edit') + '：' + v.word)}">${t('edit')}</button><button class="btn sm danger" data-action="deleteVocab" data-id="${esc(v.id)}" aria-label="${esc(t('del') + '：' + v.word)}">${t('del')}</button></td>` : ''}</tr>`;
     };
     return `${subtabs('vocab')}${pageHead('vocab', t('vocabSub'))}
@@ -2449,10 +2494,10 @@
 
   /* ---- Progress (student) ---- */
   function masteryBars(progress, vocab) {
-    const counts = [0, 0, 0, 0];
-    vocab.forEach(v => { const c = progress.cards[v.id]; counts[c && c.seen ? c.box : 0]++; });
-    const colors = ['#c9d2e3', '#6f9cff', '#f2b84b', '#2e9e5b'];
-    return [0, 1, 2, 3].map(i => `<div class="bar-row"><div class="lbl">${t('level' + i)}</div><div class="bar"><div style="width:${vocab.length ? counts[i] / vocab.length * 100 : 0}%;background:${colors[i]}"></div></div><div class="num">${counts[i]}</div></div>`).join('');
+    const K = ['new', 'review', 'known'], counts = [0, 0, 0];
+    vocab.forEach(v => { counts[K.indexOf(wordState(progress.cards[v.id]))]++; });
+    const colors = ['#c9d2e3', '#f2b84b', '#2e9e5b'];
+    return [0, 1, 2].map(i => `<div class="bar-row"><div class="lbl">${t('ws_' + K[i])}</div><div class="bar"><div style="width:${vocab.length ? counts[i] / vocab.length * 100 : 0}%;background:${colors[i]}"></div></div><div class="num">${counts[i]}</div></div>`).join('');
   }
   function heatmap(progress) {
     let s = '';
@@ -2701,7 +2746,7 @@
       </div>
       <div class="card"><h3 style="margin-top:0">${t('weakWords')}</h3>
         ${A.weakList.length ? `<ul class="weak-list">${A.weakList.map(w => `<li><div class="wl-word"><b class="en">${esc(w.word)}</b><span class="wl-zh">${esc(w.zh)}</span></div>
-          <div class="wl-info">${w.missed ? `<span class="chip bad">${t('flashRound')} · ${tf('missedTimes', { n: w.missed })}</span>` : ''}${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}<span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('box')}：${t('level' + (w.box || 0))}</span>${w.typed.length ? `<span class="small muted">${t('typed')} <span class="en">${w.typed.map(esc).join(', ')}</span></span>` : ''}</div></li>`).join('')}</ul>` : `<p class="muted">${t('noWeak')}</p>`}
+          <div class="wl-info">${w.missed ? `<span class="chip bad">${t('flashRound')} · ${tf('missedTimes', { n: w.missed })}</span>` : ''}${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}${stateChip({ seen: 1, box: w.box || 0, due: '9999' })}${w.typed.length ? `<span class="small muted">${t('typed')} <span class="en">${w.typed.map(esc).join(', ')}</span></span>` : ''}</div></li>`).join('')}</ul>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
       ${(() => { const M = mcStats(rep.progress); return M.done ? `<div class="card"><h3 style="margin-top:0">${t('tabMcq')} <span class="small muted">${M.right} / ${M.done}</span></h3>
         <div class="row">${MC_TYPES.map(([k, l, ic]) => { const b = M.byType[k]; return b.done ? `<span class="chip ${b.right / b.done >= .8 ? 'ok' : b.right / b.done >= .6 ? 'warn' : 'bad'}">${ic} ${t(l)} ${b.right}/${b.done}</span>` : ''; }).join('')}</div>
@@ -2732,6 +2777,8 @@
     return `<div class="card voice-set"><h3 style="margin-top:0">${t('voiceTitle')}</h3><p class="small muted">${t('voiceSub')}</p>
       <div class="voice-row">${phoneOnly ? '' : `<div class="px-chips" role="group" aria-label="${t('voiceTitle')}">${[['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]].map(([k, l]) => `<button type="button" class="px-chip ${(ui.voice === 'f' ? 'f' : 'm') === k ? 'on' : ''}" data-action="setVoice" data-v="${k}" aria-pressed="${(ui.voice === 'f' ? 'f' : 'm') === k}">${l}</button>`).join('')}</div>`}
         <button type="button" class="btn sm ghost" data-action="voiceTest" ${has ? '' : 'disabled'}>▶ ${t('voiceTest')}</button></div>
+      ${has ? `<div class="voice-row"><span class="px-lbl" id="vRate">${t('voiceRate')}</span><div class="px-chips" role="group" aria-labelledby="vRate">${[[0.75, t('rateSlow')], [0.9, t('rateNormal')], [1, t('rateFast')]].map(([r, l]) => `<button type="button" class="px-chip ${(ui.rate || 0.9) === r ? 'on' : ''}" data-action="setRate" data-v="${r}" aria-pressed="${(ui.rate || 0.9) === r}">${l}</button>`).join('')}</div></div>` : ''}
+      ${has && !sysVoice && SP.englishVoices().length > 1 ? `<div class="voice-row"><label class="px-lbl" for="voicePick">${t('voicePick')}</label><select id="voicePick" class="input voice-pick"><option value="">${t('voicePickAuto')}</option>${SP.englishVoices().map(x => `<option value="${esc(SP.vkey(x))}"${ui.voiceURI === SP.vkey(x) ? ' selected' : ''}>${esc(x.name)} (${esc(x.lang)})${x.localService === false ? ' · ' + esc(t('voiceOnline')) : ''}</option>`).join('')}</select></div>` : ''}
       ${note ? `<p class="small muted voice-note">${note}</p>` : ''}${isIOS && has ? `<p class="small muted voice-note voice-ios">${t('voiceIOSNote')}</p>` : ''}</div>`;
   }
   function refreshVoiceCard(focusV) {
@@ -3047,6 +3094,7 @@
     setVoice(el) { ui.voice = el.dataset.v === 'f' ? 'f' : 'm'; saveUi(); refreshVoiceCard(ui.voice); speak(t('voiceSample')); },
     // 試聽 says so when the device cannot read at all (a normal cancel or a second click is not an error)
     voiceTest() { speak(t('voiceSample'), true); },
+    setRate(el) { const r = +el.dataset.v; ui.rate = [0.75, 0.9, 1].includes(r) ? r : 0.9; saveUi(); refreshVoiceCard(String(ui.rate)); speak(t('voiceSample')); },
     tourNo() { ui.tour = 1; saveUi(); render(); toast(t('tourLater')); jumpTo(0); const h = $('#app h1'); if (h) h.focus({ preventScroll: true }); },
     tourYes() { invEl.classList.add('hidden'); document.body.classList.remove('tour-invited'); startTour(); },
     setLevel(el) {
@@ -3134,9 +3182,15 @@
     saveNewsWord(el) {
       // Words not in the word bank go to the student's own list (progress), not to the teacher's shared content
       const d = el.dataset; let id = d.id && VMAP[d.id] ? d.id : null;
-      if (!id) { const p = state.progress; p.myWords = p.myWords || []; id = uid('v'); p.myWords.push({ id, word: d.word, pos: d.pos, zh: d.zh, syn: '', example: d.ex, unit: 'news' }); rebuildVocab(); }
+      if (!id) { const p = state.progress; p.myWords = p.myWords || []; id = uid('v'); p.myWords.push({ id, word: d.word, pos: d.pos, zh: d.zh, syn: '', example: d.ex, unit: d.srcK === 'read' ? 'read' : 'news' }); rebuildVocab(); }
+      const adding = !isBm('vocab', id);
+      // the sentence it came from goes with it (also for a word already in the word bank), at most 3 places per word
+      if (adding && d.ex && srcRef(d.srcRef)) { const P = state.progress, m = P.wordSrc || (P.wordSrc = {}), x = { k: ['read', 'news', 'city'].includes(d.srcK) ? d.srcK : 'read', ref: d.srcRef, p: d.srcP != null && d.srcP !== '' ? +d.srcP : null, s: String(d.ex).slice(0, 300), at: new Date().toISOString() };
+        m[id] = (m[id] || []).filter(y => !(y.k === x.k && y.ref === x.ref && y.s === x.s)).concat([x]).slice(-3); }
       toggleBm('vocab', id); render();
     },
+    // 學習筆記 open/close: the summary toggles the <details>; the body is drawn when it opens
+    readNotes(el) { const d = el.closest('details'); if (!d) return; const open = !d.open; view.readNotesOpen = open ? el.dataset.id : null; const a = articleById(el.dataset.id); if (a) { d.outerHTML = readNotesBox(a); const s = $('#readNotes summary'); if (s) s.focus({ preventScroll: true }); } },
     readTopic(el) { view.readFilter.topic = el.dataset.v; render(); },
     readStatus(el) { view.readFilter.status = el.dataset.v; render(); },
     readMore(el) { view.readFilter.more[el.dataset.v] = true; render(); },
@@ -3476,6 +3530,7 @@
   $('#app').addEventListener('change', e => {
     if (!SEARCH_IDS.test(e.target.id)) flushSearch();
     const id = e.target.id;
+    if (id === 'voicePick') { ui.voiceURI = e.target.value; saveUi(); refreshVoiceCard(); const v = $('#voicePick'); if (v) v.focus({ preventScroll: true }); speak(t('voiceSample')); return; }
     if (id === 'fsUnit' || id === 'fsUnitSet') view.flashSetup.unit = e.target.value, render();
     else if (id === 'fsLimit') view.flashSetup.limit = +e.target.value, render();
     else if (id === 'trGroupSel') Object.assign(view.trf, { group: +e.target.value, page: 0 }), render();
@@ -3875,6 +3930,7 @@
   tourEl.addEventListener('mousedown', e => { if (!e.target.closest('button')) e.preventDefault(); });
 
   /* ---- back to top ---- */
+  $('#ttsStop').addEventListener('click', () => speakStop());
   const toTopBtn = $('#toTop');
   function updateToTop() { if (toTopBtn) toTopBtn.hidden = window.scrollY < window.innerHeight * 1.5; }
   window.addEventListener('scroll', updateToTop, { passive: true });
