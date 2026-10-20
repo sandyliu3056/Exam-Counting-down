@@ -2902,7 +2902,7 @@
           <button class="btn" data-action="exportAll">${t('exportAll')}</button>
           <button class="btn" data-action="exportContent">${t('exportContent')}</button>
           <label class="btn ghost"><span>${t('importData')}</span><input type="file" id="importFile" accept="application/json" style="display:none"></label>
-          <span class="small">${t('importMode')}</span><select class="input" id="importMode" style="width:auto"><option value="merge">${t('importMerge')}</option><option value="replace">${t('importReplace')}</option></select>
+          <span class="small">${t('importMode')}</span><select class="input" id="importMode" style="width:auto" aria-label="${esc(t('importMode'))}"><option value="merge">${t('importMerge')}</option><option value="replace">${t('importReplace')}</option></select>
         </div>
         ${ui.teacher ? `<div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>` : ''}
       </div>

@@ -1748,3 +1748,6 @@ input[type=text], input[type=email], input[type=search], input[type=url], input[
 .net-bar[hidden] { display: none; }
 .net-bar.off { background: #eef1f5; color: var(--ink); border-bottom-color: var(--border); }
 body.in-session .net-bar { position: relative; }
+/* contrast (WCAG AA): white text on red buttons, the calendar month, wrong-sentence text */
+.btn.danger { background: #b42318; box-shadow: var(--depth-1); }
+.mini-cal b { background: #c8324f; }

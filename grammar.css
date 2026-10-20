@@ -94,7 +94,7 @@
 .gr-mis li { padding: 10px 0; border-top: 2px dashed var(--bg-soft); }
 .gr-mis li:first-child { border-top: 0; padding-top: 0; }
 .gr-wrong, .gr-right { margin: 0; font-family: var(--font-en); font-size: 17px; line-height: 1.5; }
-.gr-wrong { color: var(--bad); }
+.gr-wrong { color: #b42318; }
 .gr-wrong s { text-decoration-thickness: 1.5px; }
 .gr-right { color: #13502c; }
 .gr-mk { display: inline-block; width: 22px; font-weight: 800; }
