@@ -214,10 +214,10 @@
   const smooth = () => reduceMotion() ? 'auto' : 'smooth';
   const flashEl = el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200); };
   const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'], grammar: ['📐', 'tabGrammar'],
-    mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
+    mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], wrong: ['📕', 'tabWrong'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
   // phone bottom bar: 首頁 · 學習 · 練習 · 紀錄 · 更多 (更多 opens the sheet with 設定, the tour, the account and 外觀)
   const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'learn', pages: ['reading', 'news', 'flashcards', 'vocab', 'phrases', 'grammar'] },
-    { id: 'practice', pages: ['mcq', 'translate'] }, { id: 'record', pages: ['progress', 'students'] }, { id: 'more', pages: ['settings'] }];
+    { id: 'practice', pages: ['mcq', 'translate'] }, { id: 'record', pages: ['progress', 'wrong', 'students'] }, { id: 'more', pages: ['settings'] }];
   // 學習 and 練習 have three categories each; 克漏字 is the 選擇題 page with cloze passages
   const CATS = [{ id: 'read', grp: 'learn', key: 'grpRead', pages: ['reading', 'news'] }, { id: 'words', grp: 'learn', key: 'grpWords', pages: ['flashcards', 'vocab', 'phrases'] },
     { id: 'grammar', grp: 'learn', key: 'grpGrammar', pages: ['grammar'] }, { id: 'mcq', grp: 'practice', key: 'tabMcq', pages: ['mcq'] },
@@ -230,7 +230,7 @@
   const pagesOf = (gid, list) => ((list.find(g => g.id === gid) || list[0]).pages).filter(p => p !== 'students' || ui.teacher);
   // the page a group opens on the first time: 紀錄 opens 學生狀況 for a teacher
   const firstOf = (gid, list) => { const p = pagesOf(gid, list); return ui.teacher && p.includes('students') ? 'students' : p[0]; };
-  const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['progress', 'students']];
+  const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['progress', 'wrong', 'students']];
   // the rows above a page: on phones the group's three categories (閱讀 · 單字 · 文法), then the category's pages as pills
   // (閱讀測驗 · 每日新聞 …); on desktops the categories are the tabs, so only the pills show
   function subtabs(page) {
@@ -933,6 +933,8 @@
     if (due) out.push(`<button type="button" class="rv-item" data-action="goFlash" data-mode="dueOnly"><b>${due}</b> ${t('homeDueWords')}</button>`);
     const weak = GR_CH.filter(c => { const r = grStatus(c); return r && r.best < GR_PASS; });
     if (weak.length) out.push(`<a class="rv-item" href="#/grammar/${weak[0].id}"><b>${weak.length}</b> ${t('homeWeakGrammar')}</a>`);
+    const wb = wrongBook().length;
+    if (wb) out.unshift(`<a class="rv-item" href="#/wrong"><b>${wb}</b> ${t('homeWrong')}</a>`);
     const bm = state.progress.bookmarks.vocab.filter(id => VMAP[id]).length;
     if (bm) out.push(`<button type="button" class="rv-item" data-action="goFlash" data-mode="bookmark"><b>${bm}</b> ${t('homeBmWords')}</button>`);
     return out;
@@ -1189,8 +1191,14 @@
   // every answerable unit: single items, and each blank of a cloze passage ("C01-2")
   function mcUnits() {
     const u = mcItems().map(it => ({ id: it.id, type: it.type, level: it.level, q: it.q, options: it.options, answer: it.answer, explain: it.explain }));
-    clozeSets().forEach(c => c.blanks.forEach((b, k) => u.push({ id: `${c.id}-${k + 1}`, type: 'cloze', level: c.level, q: `${c.title} (${k + 1})`, options: b.options, answer: b.answer, explain: b.explain })));
+    clozeSets().forEach(c => c.blanks.forEach((b, k) => u.push({ id: `${c.id}-${k + 1}`, type: 'cloze', level: c.level, set: c.id, title: c.title, q: clozeLine(c, k + 1), options: b.options, answer: b.answer, explain: b.explain })));
     return u;
+  }
+  // the sentence around a cloze blank, with that blank as ______ and the other blanks filled in with their answers
+  function clozeLine(c, n) {
+    const text = c.passage.replace(/__(\d)__/g, (m, k) => +k === n ? '______' : c.blanks[k - 1] ? c.blanks[k - 1].options[c.blanks[k - 1].answer] : m);
+    const sents = text.replace(/\s*\n\s*/g, ' ').split(/(?<=[.!?]["']?)\s+/), j = sents.findIndex(x => x.includes('______'));
+    return j < 0 ? `${c.title} (${n})` : sents[j];
   }
   function mcStats(progress) {
     const rec = progress.mcq || {}, units = mcUnits(), byType = {};
@@ -1217,6 +1225,20 @@
   }
   // the explanation starts with the verdict and, when wrong, the right letter
   const explainHTML = (chosen, answer, options, explain) => `<div class="explain"><span class="explain-head">${chosen === answer ? t('explainRight') : esc(tf('explainWrong', { L: L4[answer], w: options[answer] }))}</span>${explain ? esc(explain) : ''}</div>`;
+  // feedback with the reviewed notes of practice-notes.js (window.PRACTICE_NOTES: { M101: { p: 考點, c: kind, ch: chapter, w: why, x: { B: why (B) is wrong … } } }):
+  // the verdict and the right answer, 考點 (with its grammar chapter), why, then one line per other option (the student's pick first).
+  // An item without a note shows its full explanation as before.
+  const NOTES = window.PRACTICE_NOTES || {};
+  function fbHTML(id, chosen, answer, options, explain, fallbackCh) {
+    const n = NOTES[id], head = `<span class="explain-head">${chosen === answer ? t('explainRight') : esc(tf('explainWrong', { L: L4[answer], w: options[answer] }))}</span>`;
+    const ch = n ? n.ch : fallbackCh, link = ch && grById.has(ch) ? ` <a class="fb-ch" href="#/grammar/${ch}">${esc(tf('fbChapter', { t: grById.get(ch).title }))}</a>` : '';
+    if (!n) return `<div class="explain">${head}${explain ? esc(explain) : ''}${link ? `<p class="fb-point">${link}</p>` : ''}</div>`;
+    const others = Object.entries(n.x || {}).map(([L, r]) => [L4.indexOf(L), r]).filter(([i]) => i >= 0 && i !== answer && i < options.length).sort((a, b) => (b[0] === chosen) - (a[0] === chosen) || a[0] - b[0]);
+    return `<div class="explain fb">${head}
+      <p class="fb-point"><b>${t('fbPoint')}</b> ${esc(n.p)}${link}</p>
+      <p class="fb-why"><b>${t('fbWhy')}</b> ${esc(n.w)}</p>
+      ${others.length ? `<p class="fb-oh"><b>${t('fbOthers')}</b></p><ul class="fb-opts">${others.map(([i, r]) => `<li${i === chosen ? ' class="mine"' : ''}><span class="en">(${L4[i]}) ${esc(options[i])}</span>${i === chosen ? `<span class="fb-mine">${t('fbYourPick')}</span>` : ''}<span class="fb-r">${esc(r)}</span></li>`).join('')}</ul>` : ''}</div>`;
+  }
   /* ---- 選擇題 / 翻譯: one tidy setup card — a line of stats, one labelled row per choice, then the hint and 開始 ---- */
   const PX_LEVELS = () => [['', t('newsAll')], ['A2', 'A2'], ['B1', 'B1'], ['B2', 'B2'], ['C1', 'C1'], ['C2', 'C2']];
   const pxStats = list => `<div class="px-stats">${list.map(([k, v, s]) => `<span class="px-stat"><span class="k">${k}</span> <span class="v"><b>${v}</b>${s ? ` <small>${s}</small>` : ''}</span></span>`).join('')}</div>`;
@@ -1228,7 +1250,7 @@
     if (!mcItems().length && !clozeSets().length) return `${subtabs('mcq')}${pageHead('mcq', t('mcTitle'))}<div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
     if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
     const f = mcfOf();
-    f.status = ''; f.mode = 'practice'; // the setup is just 題型 · 程度 · 題數: every question, practice mode (each answer explained)
+    f.status = ''; if (f.mode !== 'test') f.mode = 'practice'; // 題型 · 程度 · 題數 · 模式: 練習 explains each answer, 測驗 is timed and explains everything at the end
     const S = mcStats(state.progress);
     const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
     // 選擇題 and 克漏字 are two categories of 練習: each shows its own numbers
@@ -1242,8 +1264,9 @@
           ${cloze ? '' : pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.filter(([k]) => k !== 'cloze').map(([k, l, ic]) => [k, `${ic} ${t(l)}`, S.byType[k].total + (S.byType[k].done ? ` · ${Math.round(S.byType[k].right / S.byType[k].done * 100)}%` : '')])), 2))}
           ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'mcLevel', f.level, PX_LEVELS()))}
           ${pxRow('pxCount', t(cloze ? 'pxCountP' : 'pxCount'), pxChips('pxCount', 'mcCount', f.count, (cloze ? [1, 2, 4] : [10, 20, 30]).map(n => [n, tf(cloze ? 'mcNPassages' : 'mcNQ', { n })])))}
+          ${pxRow('pxMode', t('pxMode'), pxChips('pxMode', 'mcMode', f.mode, [['practice', t('modeLearn')], ['test', t('modeTest')]]))}
         </div>
-        <div class="px-go"><p class="small muted">${t('mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
+        <div class="px-go"><p class="small muted">${t(f.mode === 'test' ? 'mcTestHint' : 'mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
           <button class="btn accent block-cta" data-action="mcStart" ${count ? '' : 'disabled'}>▶ ${t('mcStart')}</button></div>
       </div>
       ${(state.progress.mcqTests || []).some(r => (r.type === 'cloze') === cloze) ? `<div class="card"><h3 style="margin-top:0">${t('mcRecent')}</h3><div class="list">${state.progress.mcqTests.filter(r => (r.type === 'cloze') === cloze).slice(-8).reverse().map(r => `<div class="list-item"><span class="small muted">${fmtDate(r.date)}</span><span>${esc(r.type ? t((MC_TYPES.find(x => x[0] === r.type) || [0, 'mcMixed'])[1]) : t('mcMixed'))} · ${t(r.mode === 'test' ? 'mcTest' : 'mcPractice')}</span><span class="spacer"></span><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span>${r.secs != null ? `<span class="small muted">${fmtDur(r.secs)}</span>` : ''}</div>`).join('')}</div></div>` : ''}`;
@@ -1269,7 +1292,7 @@
         <div class="news-meta"><span class="chip">${(MC_TYPES.find(x => x[0] === it.type) || [])[2] || ''} ${esc(t((MC_TYPES.find(x => x[0] === it.type) || [0, 'mcMixed'])[1]))}</span><span class="chip">${esc(it.level || '')}</span><span class="small muted">${esc(it.id)}</span></div>
         <div class="mc-q en">${mcQ(it.q)}</div>
         <div class="mc-opts">${it.options.map((o, oi) => optionHTML({ action: 'mcChoose', data: { o: oi }, i: oi, text: o, chosen, answer: it.answer, reveal: revealed })).join('')}</div>
-        ${revealed ? explainHTML(chosen, it.answer, it.options, it.explain) : ''}
+        ${revealed ? fbHTML(it.id, chosen, it.answer, it.options, it.explain, it.type === 'grammar' ? gramChapter(it.topic) : '') : ''}
       </div>
       <div class="action-bar">${s.i > 0 && s.mode === 'test' ? `<button class="btn ghost" data-action="mcPrev">‹ ${t('pgPrev')}</button>` : ''}
         <button class="btn accent" data-action="mcNext" ${chosen == null ? 'disabled' : ''}>${s.i < s.ids.length - 1 ? t('next') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button></div>`;
@@ -1289,7 +1312,7 @@
         <div class="passage cz-passage${ui.font === 'clean' ? ' clean' : ''}">${passage}</div>
         ${c.blanks.map((b, k) => { const id = `${c.id}-${k + 1}`, a = s.answers[id]; return `<div class="question" id="czq-${k + 1}"><div class="q">${k + 1}. <button type="button" class="cz-back" data-action="czBack" data-n="${k + 1}">${tf('backToBlank', { n: k + 1 })}</button></div>
           <div class="mc-opts row-opts">${b.options.map((o, oi) => optionHTML({ action: 'czChoose', data: { id, o: oi }, i: oi, text: o, chosen: a, answer: b.answer, reveal: !!checked })).join('')}</div>
-          ${checked ? explainHTML(a, b.answer, b.options, b.explain) : ''}</div>`; }).join('')}
+          ${checked ? fbHTML(id, a, b.answer, b.options, b.explain) : ''}</div>`; }).join('')}
         ${checked && c.passage_zh ? `<details class="cz-zh"><summary>${t('mcShowZh')}</summary><p>${esc(c.passage_zh).replace(/\n\s*\n/g, '<br><br>')}</p></details>` : ''}
       </div>
       <div class="action-bar">${!checked && s.mode === 'practice' ? `<button class="btn accent" data-action="czCheck">${t('mcCheck')} (${filled}/${c.blanks.length})</button>` : `<button class="btn accent" data-action="czNext">${s.i < s.ids.length - 1 ? t('mcNextPassage') + ' ›' : t(s.mode === 'test' ? 'mcSubmit' : 'mcFinish')}</button>`}</div>`;
@@ -1297,7 +1320,7 @@
   // what a session is scored on: each item, or each blank of its cloze passages; a session ended early (✕) counts only what was answered
   function mcSessionUnits(s) {
     const all = s.kind === 'cloze'
-      ? s.ids.flatMap(cid => { const c = clozeSets().find(x => x.id === cid); return c.blanks.map((b, k) => ({ id: `${cid}-${k + 1}`, q: `${c.title} (${k + 1})`, options: b.options, answer: b.answer, explain: b.explain })); })
+      ? s.ids.flatMap(cid => { const c = clozeSets().find(x => x.id === cid); return c.blanks.map((b, k) => ({ id: `${cid}-${k + 1}`, type: 'cloze', q: clozeLine(c, k + 1), options: b.options, answer: b.answer, explain: b.explain })); })
       : s.ids.map(id => mcItems().find(x => x.id === id));
     return s.early ? all.filter(u => s.answers[u.id] != null) : all;
   }
@@ -1305,13 +1328,15 @@
     const s = view.mc;
     const units = mcSessionUnits(s);
     const right = units.filter(u => s.answers[u.id] === u.answer).length;
-    const wrongs = units.filter(u => s.answers[u.id] !== u.answer);
-    return `${subtabs('mcq')}<div class="card center mc-card"><div class="big-icon">${right / units.length >= .8 ? '🎉' : '💪'}</div><h2>${t('mcResult')}</h2><p class="big">${right} / ${units.length}</p>
+    const wrongs = units.filter(u => s.answers[u.id] !== u.answer), rights = units.filter(u => s.answers[u.id] === u.answer);
+    const review = u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
+        <div class="small">${t('studentChose')}：<span class="chip ${s.answers[u.id] === u.answer ? 'ok' : 'bad'} en">${s.answers[u.id] != null ? L4[s.answers[u.id]] + '. ' + esc(u.options[s.answers[u.id]]) : '—'}</span>${s.answers[u.id] === u.answer ? '' : ` → ${t('correctIs')}：<span class="chip ok en">${L4[u.answer]}. ${esc(u.options[u.answer])}</span>`}</div>
+        ${fbHTML(u.id, s.answers[u.id], u.answer, u.options, u.explain || '', u.type === 'grammar' ? gramChapter(u.topic) : '')}</div>`;
+    return `${subtabs('mcq')}<div class="card center mc-card"><h2>${t('mcResult')}</h2><p class="big">${right} / ${units.length}</p>
         ${s.secs != null ? `<p class="muted">⏱️ ${fmtDur(s.secs)}</p>` : ''}
-        <div class="row" style="justify-content:center"><button class="btn accent" data-action="mcStart">${t('trAgain')}</button>${wrongs.length ? `<button class="btn" data-action="mcRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="mcExit">${t('back')}</button></div></div>
-      ${wrongs.length ? `<h3 class="section-title">${t('mcWrongReview')}</h3>${wrongs.map(u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
-        <div class="small">${t('studentChose')}：<span class="chip bad en">${s.answers[u.id] != null ? L4[s.answers[u.id]] + '. ' + esc(u.options[s.answers[u.id]]) : '—'}</span> → ${t('correctIs')}：<span class="chip ok en">${L4[u.answer]}. ${esc(u.options[u.answer])}</span></div>
-        <div class="explain">${esc(u.explain || '')}</div>${u.type === 'grammar' ? gramLink(gramChapter(u.topic)) : ''}</div>`).join('')}` : ''}`;
+        <div class="row" style="justify-content:center">${s.redo ? `<a class="btn accent" href="#/wrong" data-action="mcLeave">${t('wbBack')}</a>` : `<button class="btn accent" data-action="mcStart">${t('trAgain')}</button>`}${wrongs.length ? `<button class="btn" data-action="mcRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="mcExit">${t('back')}</button></div></div>
+      ${wrongs.length ? `<h3 class="section-title">${t('mcWrongReview')}</h3>${wrongs.map(review).join('')}<p class="small muted">${t('wbSavedNote')} <a href="#/wrong">${t('tabWrong')}</a></p>` : ''}
+      ${s.mode === 'test' && rights.length ? `<details class="mc-all"><summary>${tf('mcRightReview', { n: rights.length })}</summary>${rights.map(review).join('')}</details>` : ''}`;
   }
   function mcFinish() {
     const s = view.mc, units = mcSessionUnits(s);
@@ -1322,6 +1347,90 @@
     else if (s.kind === 'cloze') units.forEach(u => { if (!s.checked[u.id.replace(/-\d+$/, '')] && s.answers[u.id] != null) mcRecord(u.id, s.answers[u.id], u.answer); });
     const p = state.progress; p.mcqTests = (p.mcqTests || []).concat([{ date: new Date().toISOString(), type: s.type, mode: s.mode, score: units.filter(u => s.answers[u.id] === u.answer).length, total: units.length, secs: s.secs }]).slice(-50);
     s.done = true; bumpDay(); save(); render(); jumpTo(0);
+  }
+
+  /* ---- 錯題本: every question whose last answer was wrong, straight from the records (nothing extra is stored) ----
+     選擇題 and 克漏字 (progress.mcq), 翻譯 marked wrong (progress.translate), 文法 (progress.gq), 閱讀 (the latest try of each passage).
+     A question answered right again leaves the list. */
+  const WB_SRC = [['mcq', 'tabMcq'], ['cloze', 'tabCloze'], ['tr', 'tabTranslate'], ['gram', 'grpGrammar'], ['read', 'grpRead']];
+  // reading questions by what they ask (judged from the wording of the question)
+  const READ_TYPES = [['main', /main(ly)? (idea|about|purpose|point)|best title|purpose of (the|this) (passage|article|text|notice|email|letter|message)|why (did|does) the (writer|author) (write|post)|what is the (passage|article|notice|email|letter|text) (mainly )?about/i],
+    ['word', /closest in meaning|meaning of the (word|phrase)|the (word|phrase) "|underlined|"[^"]+" (means|is|are|refers)|this means that/i], ['ref', /refers? to/i],
+    ['infer', /infer|impl(y|ied)|suggests?|most likely|probably|can be concluded|would (the writer|the author)|agree with/i], ['tone', /tone|attitude|feels? about|opinion/i],
+    ['not', /\bNOT\b|EXCEPT|\btrue\b|\bfalse\b/], ['detail', /./]];
+  const readType = q => READ_TYPES.find(x => x[1].test(q))[0];
+  const grQ = x => { const c = grById.get(x.id); return !c ? null : x.s != null ? ((c.sections[x.s] || {}).practice || [])[x.p] : c.quiz[x.i]; };
+  const grQid = x => x.s != null ? `${x.id}:s${x.s}.${x.p}` : `${x.id}:q${x.i}`;
+  const grRef = id => { const m = /^(g-[a-z-]+):(?:q(\d+)|s(\d+)\.(\d+))$/.exec(id); return !m ? null : m[2] != null ? { id: m[1], i: +m[2] } : { id: m[1], s: +m[3], p: +m[4] }; };
+  // a grammar answer: one record per question; h = the question's text, so an edited question starts fresh
+  function gqRecord(x, chosen) {
+    const q = grQ(x); if (!q) return;
+    const p = state.progress; p.gq = p.gq || {};
+    const id = grQid(x), h = hash36(q.q), r0 = p.gq[id], r = r0 && r0.h === h ? r0 : { tries: 0, ok: 0 }, ok = chosen === q.answer;
+    p.gq[id] = { tries: r.tries + 1, ok: r.ok + (ok ? 1 : 0), lastOk: ok, chosen, last: new Date().toISOString(), h };
+    bumpDay(); save();
+  }
+  function wrongBook(P = state.progress) {
+    const out = [], MC = new Map(mcItems().map(x => [x.id, x])), CZ = new Map(clozeSets().map(c => [c.id, c])), TR = new Map(trItems().map(x => [x.id, x]));
+    const base = (id, r) => ({ id, tries: r.tries, wrong: Math.max(1, r.tries - r.ok), last: r.last || '' });
+    Object.entries(P.mcq || {}).forEach(([id, r]) => {
+      if (r.lastOk) return;
+      const it = MC.get(id), m = /^(C\d+)-(\d+)$/.exec(id);
+      if (it) { const n = NOTES[id]; out.push(Object.assign(base(id, r), { src: 'mcq', q: it.q, mine: r.chosen != null ? it.options[r.chosen] : '', right: it.options[it.answer], point: n ? n.p : t(MC_TYPES.find(x => x[0] === it.type)[1]), ch: n ? n.ch : it.type === 'grammar' ? gramChapter(it.topic) : '' })); return; }
+      const c = m && CZ.get(m[1]), b = c && c.blanks[+m[2] - 1];
+      if (b) { const n = NOTES[id]; out.push(Object.assign(base(id, r), { src: 'cloze', set: c.id, q: clozeLine(c, +m[2]), title: c.title, mine: r.chosen != null ? b.options[r.chosen] : '', right: b.options[b.answer], point: n ? n.p : t('tabCloze'), ch: n ? n.ch : '' })); }
+    });
+    Object.entries(P.translate || {}).forEach(([id, r]) => { const it = TR.get(id); if (!it || r.lastOk) return; const ch = gramChapter(it.point || '');
+      out.push(Object.assign(base(id, r), { src: 'tr', q: it.zh, mine: r.answer || '', right: it.en, point: ch ? grById.get(ch).title : t('tabTranslate'), ch })); });
+    Object.entries(P.gq || {}).forEach(([id, r]) => { const x = grRef(id), q = x && grQ(x); if (!q || r.lastOk || (r.h && r.h !== hash36(q.q))) return;
+      const c = grById.get(x.id); out.push(Object.assign(base(id, r), { src: 'gram', ref: x, q: q.q, mine: r.chosen != null ? q.options[r.chosen] : '', right: q.options[q.answer], point: c.title + (x.s != null ? ' · ' + grPlainH(c.sections[x.s].h) : ''), ch: c.id })); });
+    // reading: the latest try of each passage; a question missed there, with how many tries missed it
+    const byArt = {}; (P.readingQuizzes || []).forEach(r => { (byArt[r.articleId] = byArt[r.articleId] || []).push(r); });
+    Object.entries(byArt).forEach(([aid, list]) => { const a = articleById(aid); if (!a) return; const last = list[list.length - 1];
+      (last.answers || []).forEach(x => { if (x.chosen === x.correct) return; const q = (a.questions || [])[x.qi]; if (!q) return;
+        out.push({ src: 'read', id: `${aid}#${x.qi}`, art: aid, title: a.title, q: q.q, mine: x.chosenText || '', right: x.correctText || q.options[q.answer], point: t('rt_' + readType(q.q)), ch: '', tries: list.length, wrong: list.filter(r => (r.answers || []).some(y => y.qi === x.qi && y.chosen !== y.correct)).length, last: last.date || '' }); }); });
+    return out.sort((a, b) => String(b.last).localeCompare(String(a.last)));
+  }
+  const grPlainH = h => String(h || '').replace(/\*\*|\[\[|\]\]/g, '');
+  function pageWrong() {
+    const all = wrongBook(), f = view.wbf || (view.wbf = { src: '' });
+    if (f.src && !all.some(x => x.src === f.src)) f.src = ''; // that source is all done: back to 全部
+    const list = all.filter(x => !f.src || x.src === f.src);
+    const count = k => all.filter(x => x.src === k).length;
+    const chips = [['', t('newsAll'), all.length]].concat(WB_SRC.map(([k, l]) => [k, t(l), count(k)]).filter(x => x[2]));
+    const redo = f.src && list.length ? `<button type="button" class="btn accent" data-action="wbRedo" data-src="${f.src}">${tf(f.src === 'read' ? 'wbRedoRead' : 'wbRedoN', { n: f.src === 'read' ? new Set(list.map(x => x.art)).size : f.src === 'cloze' ? new Set(list.map(x => x.set)).size : Math.min(list.length, 20) })}</button>` : '';
+    const card = x => `<li class="wb-item"><div class="wb-top"><span class="chip">${t(WB_SRC.find(y => y[0] === x.src)[1])}</span><span class="wb-point">${esc(x.point)}</span><span class="small muted wb-n">${tf('wbTimes', { w: x.wrong, n: x.tries })}${x.last ? ' · ' + fmtDate(x.last) : ''}</span></div>
+      ${x.title ? `<div class="small muted en">${esc(x.title)}</div>` : ''}
+      <div class="wb-q${x.src === 'tr' ? '' : ' en'}">${x.src === 'tr' ? esc(x.q) : mcQ(x.q)}</div>
+      <div class="small wb-ans">${x.mine ? `${t('wbMine')}：<span class="chip bad en">${esc(x.mine)}</span> ` : ''}${t('correctIs')}：<span class="chip ok en">${esc(x.right)}</span></div>
+      <div class="wb-acts"><button type="button" class="btn sm" data-action="wbRedoOne" data-src="${x.src}" data-id="${esc(x.id)}">${t('wbRedo')}</button>${wbBack(x)}</div></li>`;
+    return `${subtabs('wrong')}${pageHead('wrong', t('wbSub'))}
+      ${all.length ? `<div class="card wb-bar"><div class="px-chips" role="group" aria-label="${esc(t('wbFilter'))}">${chips.map(([k, l, n]) => `<button type="button" class="px-chip ${f.src === k ? 'on' : ''}" data-action="wbSrc" data-v="${k}" aria-pressed="${f.src === k}">${l} <span class="px-n">${n}</span></button>`).join('')}</div>
+        <div class="wb-go">${redo || `<p class="small muted">${t('wbPickToRedo')}</p>`}</div>${f.src === 'read' ? `<p class="small muted">${t('wbReadNote')}</p>` : ''}</div>
+        <ol class="wb-list">${list.slice(0, view.wbMore ? 400 : 40).map(card).join('')}</ol>${list.length > 40 && !view.wbMore ? `<button type="button" class="btn ghost" data-action="wbMore">${tf('wbShowAll', { n: list.length })}</button>` : ''}`
+      : `<div class="card"><p>${t('wbEmpty')}</p><p class="small muted">${t('wbEmptyHow')}</p></div>`}`;
+  }
+  // back to the material: the grammar chapter, the passage, the cloze passage (a new round), or the word in the word bank
+  function wbBack(x) {
+    if (x.ch && grById.has(x.ch)) return `<a class="btn sm ghost" href="#/grammar/${x.ch}">${esc(tf('fbChapter', { t: grById.get(x.ch).title }))}</a>`;
+    if (x.src === 'read') return `<a class="btn sm ghost" href="#/reading/${encodeURIComponent(x.art)}">${t('wbBackRead')}</a>`;
+    if (x.src === 'mcq') { const it = mcItems().find(y => y.id === x.id); if (it && it.type === 'vocab' && findWord(x.right)) return `<button type="button" class="btn sm ghost" data-action="wbWord" data-w="${esc(x.right)}">${t('wbBackWord')}</button>`; }
+    return '';
+  }
+  // a redo round from the 錯題本 (a round already open is finished or ended first)
+  function wbStart(src, items) {
+    if (!items.length) return;
+    const busy = src === 'tr' ? view.tr && view.tr.i < view.tr.ids.length : (src === 'mcq' || src === 'cloze') && view.mc && !view.mc.done;
+    if (busy) { toast(t('wbBusy')); return actions.resume({ dataset: { page: src === 'tr' ? 'translate' : 'mcq', kind: view.mc ? view.mc.kind : '' } }); }
+    if (src === 'mcq' || src === 'cloze') {
+      mcKind(src === 'cloze' ? 'cloze' : 'items');
+      const ids = src === 'cloze' ? [...new Set(items.map(x => x.set))].slice(0, 4) : items.slice(0, 20).map(x => x.id);
+      view.mc = { kind: src === 'cloze' ? 'cloze' : 'items', type: src === 'cloze' ? 'cloze' : '', ids, i: 0, answers: {}, checked: {}, mode: 'practice', start: Date.now(), redo: true };
+      view.page = 'mcq'; jumpTo(0); return render({ focusHeading: true });
+    }
+    if (src === 'tr') { view.tr = { ids: items.slice(0, 20).map(x => x.id), i: 0, right: 0, wrong: [] }; view.page = 'translate'; jumpTo(0); return render({ focusHeading: true }); }
+    if (src === 'gram') { const g = view.gr; g.mix = { range: '', qs: items.slice(0, 20).map(x => x.ref), i: 0, chosen: null, right: 0, wrong: [], redo: true }; g.sub = 'quiz'; g.id = ''; view.page = 'grammar'; jumpTo(0); return render({ focusHeading: true }); }
+    if (src === 'read') openArticleId(items[0].art);
   }
 
   /* ---- Translation practice (中譯英): window.TRANSLATION_ITEMS from translate.js ---- */
@@ -1375,11 +1484,11 @@
       ${s.checked ? '' : `<div class="tr-hint">${s.hint ? `💡 ${(it.keys || []).map(k => `<span class="chip"><span class="en">${esc(k.en)}</span> ${esc(k.zh)}</span>`).join(' ')}` : `<button class="btn sm ghost" data-action="trHint">💡 ${t('trShowHint')}</button>`}</div>`}
       <textarea id="trInput" class="tr-input en" rows="2" aria-labelledby="trQ" placeholder="${t('trPlaceholder')}" ${s.checked ? 'readonly' : ''} autocapitalize="sentences" autocorrect="off" spellcheck="false" enterkeyhint="done">${esc(s.answer || '')}</textarea>
       ${s.checked ? `<div class="tr-result">
-          <div class="tr-keys">${hits.map(h => `<span class="chip ${h.hit ? 'ok' : 'bad'}">${h.hit ? '✓' : '✗'} <span class="en">${esc(h.k.en)}</span> ${esc(h.k.zh)}</span>`).join(' ')}<span class="small muted">${tf('trKeysHit', { n: hits.filter(h => h.hit).length, t: hits.length })}</span></div>
+          <div class="tr-keys"><p class="small muted tr-keys-note">${t('trKeysNote')}</p>${hits.map(h => `<span class="chip ${h.hit ? 'ok' : 'info'}">${h.hit ? t('trKeyFound') : t('trKeyNotFound')}：<span class="en">${esc(h.k.en)}</span> ${esc(h.k.zh)}</span>`).join(' ')}</div>
           <div class="tr-model"><b>${t('trModel')}</b><p class="en">${esc(it.en)} <button class="icon-btn" data-action="speak" data-word="${esc(it.en)}" aria-label="${t('speak')}">🔊</button></p>
             ${(it.alt || []).length ? `<b>${t('trAlso')}</b>${it.alt.map(a => `<p class="en">${esc(a)}</p>`).join('')}` : ''}</div>
-          ${it.point ? `<div class="tr-point">📐 ${esc(it.point)}</div>` : ''}
-          <p class="small muted" style="margin:4px 0 0">${t('trSelfCheck')}</p>
+          ${it.point ? `<div class="tr-point"><b>${t('fbPoint')}</b> ${esc(it.point)}${gramChapter(it.point) ? ` <a class="fb-ch" href="#/grammar/${gramChapter(it.point)}">${esc(tf('fbChapter', { t: grById.get(gramChapter(it.point)).title }))}</a>` : ''}</div>` : ''}
+          <div class="tr-self"><b>${t('trSelfTitle')}</b><ul>${['trChk1', 'trChk2', 'trChk3', 'trChk4'].map(k => `<li>${t(k)}</li>`).join('')}</ul><p class="small muted">${t('trSelfCheck')}</p></div>
         </div>` : `<p class="small muted kbd-hint" style="margin:0">${t('trCtrlEnter')}</p>`}
     </div>
     <div class="action-bar">${s.checked ? `<button class="btn accent" data-action="trMark" data-ok="1">✅ ${t('trSelfRight')}</button><button class="btn" data-action="trMark" data-ok="0">❌ ${t('trSelfWrong')}</button>`
@@ -1388,7 +1497,8 @@
   function trSummary() {
     const s = view.tr;
     return `${subtabs('translate')}<div class="card center tr-card"><div class="big-icon">🎉</div><h2>${t('trDone')}</h2><p class="big">${s.right} / ${s.ids.length}</p>
-      <div class="row" style="justify-content:center"><button class="btn accent" data-action="trStart">${t('trAgain')}</button>${s.right < s.ids.length ? `<button class="btn" data-action="trRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="trExit">${t('back')}</button></div></div>`;
+      <div class="row" style="justify-content:center"><button class="btn accent" data-action="trStart">${t('trAgain')}</button>${s.right < s.ids.length ? `<button class="btn" data-action="trRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="trExit">${t('back')}</button></div></div>
+      ${s.wrong.length ? `<h3 class="section-title">${t('trMarkedWrong')}</h3><div class="list">${s.wrong.map(id => trItems().find(x => x.id === id)).filter(Boolean).map(it => `<div class="list-item"><div class="grow"><div>${esc(it.zh)}</div><div class="small en">${t('trModel')}：${esc(it.en)}</div>${it.point ? `<div class="small muted">${esc(it.point)}</div>` : ''}</div></div>`).join('')}</div><p class="small muted">${t('wbSavedNote')} <a href="#/wrong">${t('tabWrong')}</a></p>` : ''}`;
   }
 
   /* ---- Phrases tab: the 3,000+ built-in phrases by category (library.js keeps each category A1 → C2) ---- */
@@ -1601,12 +1711,12 @@
     if (s.i >= n) {
       const wrongCh = [...new Set(s.wrong)].map(id => grById.get(id));
       return `<section class="card gr-result" aria-labelledby="rTitle"><div class="big-icon" aria-hidden="true">${s.right / n >= .8 ? '🎉' : '💪'}</div>
-        <h2 id="rTitle" tabindex="-1">綜合測驗完成</h2><p class="gr-rscore">${s.right} / ${n}</p>
+        <h2 id="rTitle" tabindex="-1">${s.redo ? '錯題重做完成' : '綜合測驗完成'}</h2><p class="gr-rscore">${s.right} / ${n}</p>
         <p class="muted">${s.right === n ? '全對！太厲害了。' : s.right / n >= .7 ? '很不錯！把答錯的章節再看一次。' : '回到答錯的章節讀一讀，再挑戰一次！'}</p>
         ${wrongCh.length ? `<div class="gr-review"><h3>要再看的章節</h3><ul>${wrongCh.map(c => `<li><a href="#/grammar/${c.id}">${grCode(c)}　${esc(c.title)}</a></li>`).join('')}</ul></div>` : ''}
-        <div class="row" style="justify-content:center;margin-top:16px"><button type="button" class="btn accent" data-action="grStart" data-v="again">再測一次</button><button type="button" class="btn ghost" data-action="grSetup">換範圍</button></div></section>`;
+        <div class="row" style="justify-content:center;margin-top:16px">${s.redo ? `<a class="btn accent" href="#/wrong">回錯題本</a><button type="button" class="btn ghost" data-action="grSetup">綜合測驗</button>` : `<button type="button" class="btn accent" data-action="grStart" data-v="again">再測一次</button><button type="button" class="btn ghost" data-action="grSetup">換範圍</button>`}</div></section>`;
     }
-    const x = s.qs[s.i], c = grById.get(x.id), q = c.quiz[x.i], done = s.chosen != null;
+    const x = s.qs[s.i], c = grById.get(x.id), q = grQ(x), done = s.chosen != null;
     return `<section class="card gr-mq" aria-labelledby="qTitle">
       <div class="gr-mq-top"><span>第 ${s.i + 1} / ${n} 題</span><span class="gr-bar" aria-hidden="true"><i style="width:${Math.round((s.i + (done ? 1 : 0)) / n * 100)}%"></i></span><span>✓ ${s.right}</span></div>
       <h2 id="qTitle" tabindex="-1" lang="en">${grBlank(q.q, done ? q.options[q.answer] : null)}</h2>
@@ -1625,7 +1735,7 @@
   function grAnswer(i, n) {
     const g = view.gr, c = grById.get(g.id); if (!c || !c.quiz[i]) return;
     const picks = g.picks[c.id] || (g.picks[c.id] = []); if (picks[i] != null) return;
-    picks[i] = n;
+    picks[i] = n; gqRecord({ id: c.id, i }, n);
     if (c.quiz.every((_, k) => picks[k] != null)) {
       const right = picks.filter((x, k) => x === c.quiz[k].answer).length, r = grStore.ch[c.id] || {};
       grStore.ch[c.id] = { best: Math.max(r.best || 0, right), at: todayStr() }; grSave();
@@ -2632,7 +2742,7 @@
   }
 
   /* ---------------- Render ---------------- */
-  const PAGES = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, grammar: pageGrammar, news: pageNews, progress: pageProgress, students: pageStudents, settings: pageSettings };
+  const PAGES = { home: pageHome, reading: pageReading, flashcards: pageFlash, vocab: pageVocab, phrases: pagePhrases, translate: pageTranslate, mcq: pageMcq, grammar: pageGrammar, news: pageNews, progress: pageProgress, wrong: pageWrong, students: pageStudents, settings: pageSettings };
   // a practice session is on screen: on phones the header, tabs and bottom bar step aside (focus mode)
   function inSessionNow() {
     const p = view.page;
@@ -2970,14 +3080,14 @@
     },
     grMixAnswer(el) {
       const s = view.gr.mix; if (!s || s.chosen != null || s.i >= s.qs.length) return;
-      const x = s.qs[s.i], q = grById.get(x.id).quiz[x.i]; s.chosen = +el.dataset.o;
+      const x = s.qs[s.i], q = grQ(x); s.chosen = +el.dataset.o; gqRecord(x, s.chosen);
       if (s.chosen === q.answer) s.right++; else s.wrong.push(x.id);
       grMixGo('#app [data-action=grNext]');
     },
     grNext() {
       const s = view.gr.mix; if (!s || s.chosen == null) return;
       s.i++; s.chosen = null;
-      if (s.i >= s.qs.length) { const k = s.range || 'all'; grStore.mix[k] = Math.max(grStore.mix[k] || 0, s.right); grSave(); }
+      if (s.i >= s.qs.length && !s.redo) { const k = s.range || 'all'; grStore.mix[k] = Math.max(grStore.mix[k] || 0, s.right); grSave(); }
       grMixGo(s.i < s.qs.length ? '#qTitle' : '#rTitle');
     },
     grSetup() { view.gr.mix = null; jumpTo(0); grMixGo('#qsTitle'); },
@@ -3004,6 +3114,15 @@
     mcType(el) { view.mcf.type = el.dataset.v; view.mcf.count = el.dataset.v === 'cloze' ? 1 : (view.mcf.count > 4 ? view.mcf.count : 10); render(); },
     mcLevel(el) { view.mcf.level = el.dataset.v; render(); },
     mcCount(el) { view.mcf.count = +el.dataset.v; render(); },
+    // 錯題本
+    wbSrc(el) { view.wbf = { src: el.dataset.v || '' }; view.wbMore = false; render(); },
+    wbMore() { view.wbMore = true; render(); },
+    wbRedo(el) { const src = el.dataset.src; wbStart(src, wrongBook().filter(x => x.src === src)); },
+    wbRedoOne(el) { const x = wrongBook().find(y => y.src === el.dataset.src && y.id === el.dataset.id); if (x) wbStart(x.src, [x]); },
+    wbWord(el) { view.vocabSearch = el.dataset.w; view.vocabUnit = ''; view.vocabBm = false; nav('vocab'); },
+    // 回錯題本 after a redo round: the finished round is put away, then the link goes on to #/wrong
+    mcLeave() { if (view.mc && view.mc.done) view.mc = null; location.hash = '#/wrong'; },
+    mcMode(el) { view.mcf.mode = el.dataset.v === 'test' ? 'test' : 'practice'; render(); },
     mcStart() {
       const f = view.mcf, cloze = f.type === 'cloze';
       const ids = shuffleArr((cloze ? mcClozeFiltered() : mcFiltered()).map(x => x.id)).slice(0, f.count || (cloze ? 1 : 10));

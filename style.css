@@ -1666,3 +1666,33 @@ input[type=text], input[type=email], input[type=search], input[type=url], input[
   .ht-side .exam-path { margin-top: 0; }
   .ht-side .home-daily .daily-card { margin-top: 14px; }
 }
+/* ---------- feedback after an answer: 考點, why, the other options ---------- */
+.explain.fb p { margin: 6px 0 0; }
+.fb-point b, .fb-why b, .fb-oh b, .tr-point b { display: inline-block; min-width: 3.2em; margin-right: 6px; color: var(--ink-soft); font-size: var(--fs-sm); }
+.fb-ch { margin-left: 6px; font-size: var(--fs-sm); white-space: nowrap; }
+.fb-opts { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.fb-opts li { display: flex; flex-wrap: wrap; gap: 2px 8px; padding: 6px 10px; border-radius: 8px; background: color-mix(in srgb, var(--card) 70%, transparent); }
+.fb-opts li.mine { box-shadow: inset 3px 0 0 var(--bad); }
+.fb-opts .en { font-weight: 700; }
+.fb-mine { font-size: var(--fs-xs); color: var(--bad); font-weight: 700; align-self: center; }
+.fb-r { flex: 1 1 100%; color: var(--ink); }
+.mc-all { margin-top: 14px; }
+.mc-all summary { cursor: pointer; font-weight: 700; padding: 8px 0; }
+/* ---------- 錯題本 ---------- */
+.wb-bar .px-chips { margin-bottom: 10px; }
+.wb-go { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.wb-go p { margin: 0; }
+.wb-list { list-style: none; margin: 14px 0; padding: 0; display: grid; gap: 10px; }
+.wb-item { padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); box-shadow: var(--sticker); }
+.wb-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.wb-point { font-weight: 700; }
+.wb-n { margin-left: auto; }
+.wb-q { margin: 8px 0 6px; font-size: var(--fs-md); line-height: 1.6; overflow-wrap: anywhere; }
+.wb-ans { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.wb-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.wb-ans .chip { white-space: normal; }
+/* ---------- translation: honest key-word hints and a self-check ---------- */
+.tr-keys-note { margin: 0 0 6px; }
+.tr-self { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); }
+.tr-self ul { margin: 6px 0; padding-left: 1.3em; }
+.tr-self p { margin: 0; }
