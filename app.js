@@ -182,7 +182,10 @@
   if (ui.uiv !== 2 && ui.uiv !== 3) { if (ui.lang === 'en') ui.lang = 'zh'; }
   // 2026-10: the standard typeface is the default for everyone once; 手寫風 stays a choice (a later pick sticks)
   if (ui.uiv !== 3) { if (ui.font !== 'clean') ui.font = 'clean'; ui.uiv = 3; saveUi(); }
-  Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
+  // 老師: a cloud account counts as a teacher only once the server has said so in this visit (profiles.role, decided by the
+  // database); a role cached on the device or edited in localStorage never opens the teacher pages by itself
+  const cloudCfg = () => !!(window.SUPABASE_CONFIG && window.SUPABASE_CONFIG.url);
+  Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher' && (!ui.user.cloud || !cloudCfg() || (cloud.roleOk && cloud.roleFor === ui.user.id))) });
 
   // volatile view state
   const view = { page: 'home', articleId: null, answers: {}, submitted: false, editing: null, flash: null, flashSetup: { mode: 'due', unit: '', shuffle: true, limit: 30 } /* cards are always shuffled (no 洗牌 option) */, quiz: null, quizSetup: { type: 'choice', count: 10, unit: '' }, vocabSearch: '', vocabUnit: '', vocabEdit: null, bulkOpen: false, studentSource: 'local', cloudStudents: [], authMode: 'login', vocabBm: false, lastIn: {}, readPos: {} };
@@ -436,11 +439,24 @@
     let nu = null; try { nu = (JSON.parse(e.newValue || '{}') || {}).user || null; } catch (x) { }
     if ((nu && nu.id) !== (ui.user && ui.user.id)) accountChangedElsewhere();
   });
+  async function refreshRole() {
+    if (!cloud.sb || !cloud.enabled || cloud.busy || !ui.user || !ui.user.cloud || Date.now() - (cloud.roleAt || 0) < 5 * 60 * 1000) return;
+    const id = ui.user.id; cloud.roleAt = Date.now();
+    try {
+      const prof = sbCheck(await cloud.sb.from('profiles').select('role').eq('id', id).maybeSingle()) || {};
+      if (!ui.user || ui.user.id !== id) return;
+      const role = prof.role === 'teacher' ? 'teacher' : 'student';
+      cloud.roleOk = true; cloud.roleFor = id;
+      if (role !== ui.user.role) { ui.user.role = role; saveUi(); applyUi(); if (view.page === 'students' && role !== 'teacher') view.page = 'progress'; render(); }
+    } catch (e) { }
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshRole(); });
   async function cloudAfterLogin(u, ep) {
     cloud.busy++;
     try {
       const prof = sbCheck(await cloud.sb.from('profiles').select('name, role').eq('id', u.id).maybeSingle()) || {};
       const user = { id: u.id, email: u.email, name: prof.name || u.email, role: prof.role === 'teacher' ? 'teacher' : 'student', cloud: true };
+      cloud.roleOk = true; cloud.roleFor = u.id; cloud.roleAt = Date.now();
       const teacherCode = user.role === 'teacher' ? sbCheck(await cloud.sb.rpc('get_teacher_code')) || '' : '';
       const row = sbCheck(await cloud.sb.from('progress').select('data, updated_at').eq('user_id', u.id).maybeSingle());
       if (ep !== cloud.epoch) return false; // someone logged in or out meanwhile
@@ -587,8 +603,27 @@
       cloud.lastPush = Date.now();
       // the flag is cleared only when the record really reached the cloud
       if (okP && seq === cloud.seq) { cloud.dirty = false; if (localStorage.getItem(LS_UNSYNCED) === id) localStorage.removeItem(LS_UNSYNCED); }
+      if (okP) { cloud.st = { s: 'ok', at: Date.now() }; updateSync(); }
     });
   }
+  // where the record is and whether the last upload worked (shown on 學習紀錄 and in 設定; a failure keeps everything on this device)
+  function syncState() {
+    if (!ui.user) return { k: 'device' };
+    if (!ui.user.cloud || !cloud.configured) return { k: 'local' };
+    if (navigator.onLine === false) return { k: 'offline' };
+    if (cloud.st && cloud.st.s === 'saving') return { k: 'saving' };
+    if (cloud.st && cloud.st.s === 'error') return { k: 'error' };
+    if (cloud.dirty || !cloud.enabled) return { k: 'pending' };
+    return { k: 'ok', at: cloud.st && cloud.st.at };
+  }
+  function syncBox() {
+    const st = syncState(), tm = st.at ? new Date(st.at).toLocaleTimeString(ui.lang === 'en' ? 'en-US' : 'zh-TW', { hour: '2-digit', minute: '2-digit' }) : '';
+    return `<div class="sync-box sync-${st.k}" role="status"><span class="sync-dot" aria-hidden="true"></span><span>${esc(tf('sync_' + st.k, { t: tm }))}</span>${st.k === 'error' ? `<button type="button" class="btn sm" data-action="syncRetry">${t('syncRetry')}</button>` : ''}</div>`;
+  }
+  function updateSync() { $$('.sync-box').forEach(e => { e.outerHTML = syncBox(); }); }
+  window.addEventListener('online', () => { updateSync(); if (cloud.dirty) scheduleSync(); });
+  window.addEventListener('offline', updateSync);
+  function syncFailed(e) { cloud.st = { s: 'error', err: e && e.message, at: Date.now() }; updateSync(); toast('☁️ ' + t('syncFailToast'), 6000); }
   function scheduleSync() {
     if (!ui.user || !ui.user.cloud) return;
     // remembered even offline or while the account is still loading, so the practice is uploaded later
@@ -597,7 +632,8 @@
     if (!cloud.enabled || cloud.busy) return;
     clearTimeout(cloud.syncTimer);
     // the database refuses large records rewritten within 3 seconds, so uploads are spaced out
-    cloud.syncTimer = setTimeout(() => { syncNow().catch(e => toast('☁️ ' + e.message)); }, Math.max(1500, 3300 - (Date.now() - cloud.lastPush)));
+    cloud.syncTimer = setTimeout(() => { syncNow().catch(syncFailed); }, Math.max(1500, 3300 - (Date.now() - cloud.lastPush)));
+    updateSync();
   }
   // the list holds names only; a student's record is downloaded when the teacher opens it
   async function loadCloudStudents() {
@@ -1759,6 +1795,7 @@
   function pageGrammar() {
     const g = view.gr, c = g.sub === 'ch' ? grById.get(g.id) : null;
     if (c && grStore.last !== c.id) { grStore.last = c.id; grSave(); }
+    if (c) markOpened('g:' + c.id);
     if (c) return subtabs('grammar') + grKinds() + grChapter(c);
     return `${subtabs('grammar')}${pageHead('grammar', g.sub === 'quiz' ? '' : t('grammarSub'))}${grKinds()}${g.sub === 'quiz' ? grMix() : grList()}`;
   }
@@ -2134,7 +2171,7 @@
         <div class="read-jump"><span class="chip ok">✓ ${totalDone} / ${ARTICLES.length}</span><span>${t('jumpTo')}</span>${RG.filter(g => ARTICLES.some(a => a.level === g[0])).map(g => `<button type="button" data-action="jumpGroup" data-target="grp-${g[1]}">${g[2]} ${esc(g[3])}</button>`).join('')}</div>
       </div>`;
     return `${subtabs('reading')}${pageHead('reading', t('readingSub'))}
-      <div class="teacher-only block" style="margin-bottom:12px"><button class="btn accent" data-action="newArticle">${t('newArticle')}</button></div>
+      ${ui.teacher ? `<div class="teacher-only block" style="margin-bottom:12px"><button class="btn accent" data-action="newArticle">${t('newArticle')}</button></div>` : ''}
       ${ARTICLES.length ? toc + groups : `<p class="muted">${t('noArticles')}</p>`}`;
   }
 
@@ -2473,7 +2510,7 @@
           ${T ? `<span class="wb-teach"><button class="btn accent sm" data-action="addVocab">${t('addVocab')}</button><button class="btn sm" data-action="toggleBulk">${t('bulkImport')}</button></span>` : ''}
         </div>
       </div>
-      ${view.bulkOpen ? `<div class="card teacher-only block" style="margin-bottom:12px"><b>${t('bulkTitle')}</b><p class="small muted">${t('bulkHint')}</p>
+      ${view.bulkOpen && ui.teacher ? `<div class="card teacher-only block" style="margin-bottom:12px"><b>${t('bulkTitle')}</b><p class="small muted">${t('bulkHint')}</p>
         <div class="grid-2"><div class="field"><label>${t('unit')}</label><input type="text" id="bulkUnit" placeholder="Unit 5 ..." value="${esc(String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit)}"></div></div>
         <textarea id="bulkText" placeholder="adventure, n., 冒險, Life is an adventure.&#10;brave | adj. | 勇敢的"></textarea>
         <div class="row" style="margin-top:8px"><span class="spacer"></span><button class="btn ghost" data-action="toggleBulk">${t('cancel')}</button><button class="btn accent" data-action="bulkImport">${t('importBtn')}</button></div></div>` : ''}
@@ -2514,10 +2551,61 @@
     return `<h3>${t('quizHistory')}</h3>${rq.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('article')}</th><th>${t('score')}</th></tr></thead><tbody>${rq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(r.title)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noData')}</p>`}
       <h3>${t('vocabQuizHistory')}</h3>${vq.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('date')}</th><th>${t('vocabQuiz')}</th><th>${t('score')}</th></tr></thead><tbody>${vq.map(r => `<tr><td class="small">${fmtDate(r.date)}</td><td>${esc(typeName[r.type] || r.type)}</td><td><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noData')}</p>`}`;
   }
+  /* ---- 學習紀錄: what was opened (已瀏覽), practised (已練習) and mastered (已掌握), accuracy by 考點, mistakes and what is due ---- */
+  function studyOverview(P) {
+    const op = P.opened || {}, rq = P.readingQuizzes || [], best = {};
+    rq.forEach(r => { best[r.articleId] = Math.max(best[r.articleId] || 0, r.total ? r.score / r.total : 0); });
+    const arts = ARTICLES.filter(a => !(state.hiddenArticles || []).includes(a.id));
+    const readDone = arts.filter(a => best[a.id] != null), readSeen = arts.filter(a => op['r:' + a.id] || best[a.id] != null);
+    const gqCh = new Set(Object.keys(P.gq || {}).map(k => k.split(':')[0])), gPract = GR_CH.filter(c => gqCh.has(c.id) || grStatus(c));
+    const cards = Object.values(P.cards).filter(c => c.seen > 0), MC = new Set(mcItems().map(x => x.id)), mcq = P.mcq || {}, tr = P.translate || {};
+    const mcIds = Object.keys(mcq).filter(id => MC.has(id)), czIds = Object.keys(mcq).filter(id => /^C\d+-\d+$/.test(id));
+    return [
+      [t('grpRead'), readSeen.length, readDone.length, readDone.filter(a => best[a.id] >= .8).length, arts.length, '#/reading'],
+      [t('grpGrammar'), GR_CH.filter(c => op['g:' + c.id] || gqCh.has(c.id) || grStatus(c)).length, gPract.length, GR_CH.filter(c => ((grStatus(c) || {}).best || 0) >= GR_PASS).length, GR_CH.length, '#/grammar'],
+      [t('grpWords'), null, cards.length, cards.filter(c => c.box >= 3).length, VOCAB.length, '#/flashcards'],
+      [t('tabMcq'), null, mcIds.length, mcIds.filter(id => mcq[id].lastOk).length, mcItems().length, '#/mcq'],
+      [t('tabCloze'), null, czIds.length, czIds.filter(id => mcq[id].lastOk).length, clozeSets().reduce((a, c) => a + c.blanks.length, 0), '#/cloze'],
+      [t('tabTranslate'), null, Object.keys(tr).length, Object.values(tr).filter(r => r.lastOk).length, trItems().length, '#/translate']];
+  }
+  // accuracy by 考點: the reviewed notes say what each 選擇題 / 克漏字 item tests; grammar answers by chapter; reading by question type
+  function pointStats(P) {
+    const cats = {}, chs = {}, add = (m, k, label, n, ok) => { const c = m[k] || (m[k] = { label, n: 0, ok: 0, k }); c.n += n; c.ok += ok; };
+    const MCT = new Map(mcItems().map(x => [x.id, x.type]));
+    Object.entries(P.mcq || {}).forEach(([id, r]) => {
+      const n = NOTES[id], c = n ? n.c : MCT.get(id) === 'dialogue' ? 'dialogue' : MCT.get(id) === 'grammar' ? 'grammar' : 'vocab';
+      add(cats, c, t('pc_' + c), r.tries, r.ok);
+      if (n && n.ch && grById.has(n.ch)) add(chs, n.ch, grById.get(n.ch).title, r.tries, r.ok);
+    });
+    Object.entries(P.gq || {}).forEach(([id, r]) => { const x = grRef(id); if (!x || !grById.has(x.id)) return; add(cats, 'grammar', t('pc_grammar'), r.tries, r.ok); add(chs, x.id, grById.get(x.id).title, r.tries, r.ok); });
+    Object.values(P.translate || {}).forEach(r => add(cats, 'translate', t('pc_translate'), r.tries, r.ok));
+    (P.readingQuizzes || []).forEach(q => (q.answers || []).forEach(a => { const art = articleById(q.articleId), qq = art && art.questions[a.qi]; if (!qq) return; const k = 'rt_' + readType(qq.q); add(cats, k, t(k), 1, a.chosen === a.correct ? 1 : 0); }));
+    const pct = c => c.n ? Math.round(c.ok / c.n * 100) : 0;
+    return { cats: Object.values(cats).sort((a, b) => b.n - a.n), chs: Object.values(chs).filter(c => c.n >= 2).sort((a, b) => pct(a) - pct(b)), pct };
+  }
+  function recordsTop(P) {
+    const ov = studyOverview(P), ps = pointStats(P), wb = wrongBook(P), due = dueCards().length;
+    const bar = (c, pct) => `<span class="pt-bar" aria-hidden="true"><i class="${pct >= 80 ? 'ok' : pct >= 60 ? 'warn' : 'bad'}" style="width:${pct}%"></i></span>`;
+    const row = c => { const p = ps.pct(c); return `<tr><th scope="row">${esc(c.label)}</th><td>${c.n}</td><td>${bar(c, p)} ${p}%</td></tr>`; };
+    const wbBy = WB_SRC.map(([k, l]) => [t(l), wb.filter(x => x.src === k).length]).filter(x => x[1]);
+    const maxW = Math.max(1, ...wbBy.map(x => x[1]));
+    return `${syncBox()}
+      <div class="card rec-ov"><h2 class="rec-h">${t('recOverview')}</h2>
+        <div class="table-scroll"><table class="rec-table"><thead><tr><th scope="col"></th><th scope="col">${t('recSeen')}</th><th scope="col">${t('recDone')}</th><th scope="col">${t('recMastered')}</th><th scope="col">${t('recTotal')}</th></tr></thead>
+        <tbody>${ov.map(([l, a, b, c, n, href]) => `<tr><th scope="row"><a href="${href}">${esc(l)}</a></th><td>${a == null ? '—' : a}</td><td>${b}</td><td>${c}</td><td class="muted">${n}</td></tr>`).join('')}</tbody></table></div>
+        <p class="small muted">${t('recDefs')}</p></div>
+      <div class="rec-grid">
+        <div class="card"><h2 class="rec-h">${t('recByPoint')}</h2>${ps.cats.length ? `<table class="rec-table pt"><thead><tr><th scope="col">${t('fbPoint')}</th><th scope="col">${t('recAnswers')}</th><th scope="col">${t('accShort')}</th></tr></thead><tbody>${ps.cats.map(row).join('')}</tbody></table>
+          ${ps.chs.length ? `<h3 class="gr-k">${t('recWeakCh')}</h3><table class="rec-table pt"><tbody>${ps.chs.slice(0, 6).map(c => { const p = ps.pct(c); return `<tr><th scope="row"><a href="#/grammar/${c.k}">${esc(c.label)}</a></th><td>${c.n}</td><td>${bar(c, p)} ${p}%</td></tr>`; }).join('')}</tbody></table>` : ''}` : `<p class="muted">${t('recNoAnswers')}</p>`}</div>
+        <div class="card"><h2 class="rec-h">${t('recMistakes')}</h2>${wbBy.length ? `<div class="wb-dist">${wbBy.map(([l, n]) => `<div class="bar-row"><div class="lbl">${esc(l)}</div><div class="bar"><div style="width:${n / maxW * 100}%;background:var(--bad)"></div></div><div class="num">${n}</div></div>`).join('')}</div><p><a class="btn sm" href="#/wrong">${t('tabWrong')} →</a></p>` : `<p class="muted">${t('wbEmpty')}</p>`}
+          <h2 class="rec-h">${t('homeReview')}</h2><ul class="rec-due"><li>${tf('recDueWords', { n: due })}${due ? ` <button type="button" class="btn sm ghost" data-action="goFlash" data-mode="dueOnly">${t('startPractice')}</button>` : ''}</li><li>${tf('recDueWrong', { n: wb.length })}</li><li>${tf('recDueGram', { n: GR_CH.filter(c => { const r = grStatus(c); return r && r.best < GR_PASS; }).length })}</li></ul></div>
+      </div>`;
+  }
   function pageProgress() {
     const p = state.progress;
     const total = Object.values(p.days).reduce((a, b) => a + b, 0);
     return `${subtabs('progress')}${pageHead('progress', t('progressSub'))}
+      ${recordsTop(p)}
       <div class="card"><div class="row"><div><b>🔥 ${t('streak')}</b> ${streak()} ${t('streakDays')}</div><div><b>${t('totalActivity')}</b> ${total}</div><span class="spacer"></span>
         <button class="btn accent" data-action="sendTeacher" ${view.reportBusy ? 'disabled' : ''}>${t('sendToTeacher')}</button></div><p class="small muted" style="margin:6px 0 0">${t('sendHint')}</p></div>
       ${reportCard()}
@@ -2715,6 +2803,8 @@
     return { wrongs, weakList, avg, last, total, notStudied, timeline, rq };
   }
   function pageGate() {
+    // a teacher account whose role the server has not confirmed yet in this visit (offline, or still loading)
+    if (ui.user && ui.user.role === 'teacher') return `${pageHead('students')}<div class="card gate"><h2>${t('teacherChecking')}</h2><p class="muted">${t('teacherCheckingSub')}</p></div>`;
     return `${pageHead('students')}<div class="card gate"><div class="big-icon">🔒</div><h2>${t('teacherOnly')}</h2><p class="muted">${t('teacherOnlySub')}</p><button class="btn accent" data-action="openAuth" style="font-size:18px;padding:12px 30px">${t('loginNow')}</button></div>`;
   }
   function pageStudents() {
@@ -2790,7 +2880,7 @@
   function pageSettings() {
     const s = state.settings, T = ui.teacher, me = (ui.user && ui.user.email) || '';
     // the exam name is the teacher's to set; students still choose their exam date
-    return `${pageHead('settings', t(T ? 'settingsSubT' : 'settingsSub'))}
+    return `${pageHead('settings', t(T ? 'settingsSubT' : 'settingsSub'))}${syncBox()}
       <div class="card level-set"><h3 style="margin-top:0">${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
       ${voiceCard()}
       <div class="card tour-again"><div><h3 style="margin:0">${t('tourAgain')}</h3><p class="small muted" style="margin:4px 0 0">${t('tourAgainSub')}</p></div><button type="button" class="btn" data-action="tourStart">${t('tourStart')}</button></div>
@@ -2804,7 +2894,7 @@
           <div class="field"><label for="stTeacherEmail">${t('teacherEmail')}</label><input type="email" id="stTeacherEmail" value="${esc(s.teacherEmail || '')}" placeholder="teacher@example.com" inputmode="email"></div>`}
         </div>
         ${T ? '' : `<p class="small muted" style="margin:0 0 12px">🔒 ${t('teacherSetsNote')}</p>`}
-        <div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(cloud.configured ? cloud.teacherCode : (s.teacherCode || ''))}" autocomplete="off"${cloud.configured ? ` placeholder="${t('inviteCodeCloudPh')}"` : ''}></div>
+        ${T ? `<div class="field teacher-only block"><label>${t('inviteCodeLbl')}</label><input type="text" id="stCode" value="${esc(cloud.configured ? cloud.teacherCode : (s.teacherCode || ''))}" autocomplete="off"${cloud.configured ? ` placeholder="${t('inviteCodeCloudPh')}"` : ''}></div>` : ''}
         <div class="row">${T ? '' : `<span class="muted small">${t('teacherHint')}</span>`}<span class="spacer"></span><button class="btn accent" data-action="saveSettings">${t('save')}</button></div>
       </div>
       <div class="card"><h3 style="margin-top:0">${t('dataTitle')}</h3><p class="small muted">${t('dataSub')}</p>
@@ -2814,7 +2904,7 @@
           <label class="btn ghost"><span>${t('importData')}</span><input type="file" id="importFile" accept="application/json" style="display:none"></label>
           <span class="small">${t('importMode')}</span><select class="input" id="importMode" style="width:auto"><option value="merge">${t('importMerge')}</option><option value="replace">${t('importReplace')}</option></select>
         </div>
-        <div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>
+        ${ui.teacher ? `<div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>` : ''}
       </div>
       ${ui.teacher && cloud.configured ? cloudAccountsCard() : ''}
       ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
@@ -2939,6 +3029,7 @@
     // a paused session reopened from the menu or the back swipe keeps its group's pills on phones (focus mode hides them otherwise)
     document.body.classList.toggle('pills-on', inSession && !!view.pillsFor && view.pillsFor === sessionOf(view.page));
     document.body.dataset.page = view.page;
+    document.body.classList.toggle('teacher', ui.teacher); // the server-confirmed role (see ui.teacher)
     syncTourInvite();
     // the page last used in each bottom-bar group and each desktop tab (a category is a desktop tab)
     view.lastIn[groupOf(view.page)] = view.page; view.lastIn['d:' + groupOf(view.page, DESK_GROUPS)] = view.page;
@@ -2987,8 +3078,10 @@
   function enterArticle(id) {
     if (view.articleId === id) return;
     if (!(view.lastArticle === id && !view.submitted && Object.keys(view.answers).length)) { view.answers = {}; view.submitted = false; view.readZh = null; view.readAcc = 0; view.readOn = false; }
-    view.articleId = id; view.lastArticle = id;
+    view.articleId = id; view.lastArticle = id; markOpened('r:' + id);
   }
+  // 已瀏覽: a passage or grammar chapter opened (once a day is enough)
+  function markOpened(k) { const P = state.progress, m = P.opened || (P.opened = {}), td = todayStr(); if (m[k] === td || !SAFE_ID.test(k)) return; m[k] = td; save(); }
   // reading time counts only while the passage is on screen: leaving it (another page, a back swipe) pauses the clock
   function readClock() {
     const on = view.page === 'reading' && !!view.articleId && !view.submitted && !view.editing;
@@ -3055,7 +3148,9 @@
     if (obj.type === 'student-report') { addReport(obj); return 'report'; }
     if (!Array.isArray(obj.articles) && !Array.isArray(obj.vocab) && !obj.settings) throw new Error('bad');
     if (mode === 'replace') {
-      state = { settings: Object.assign(clone(SEED_DATA.settings), cleanSettings(obj.settings)), articles: cleanItems(obj.articles, 'article'), vocab: cleanItems(obj.vocab, 'vocab'), hiddenVocab: cleanIds(obj.hiddenVocab), hiddenArticles: cleanIds(obj.hiddenArticles), seedArticles: state.seedArticles, progress: cleanProgress(obj.progress), progressOwner: state.progressOwner || null, progressBase: state.progressBase || null, studentReports: cleanReports(obj.studentReports), accounts: Array.isArray(obj.accounts) ? cleanAccounts(obj.accounts) : state.accounts };
+      const keepCode = state.settings.teacherCode;
+      state = { settings: Object.assign(clone(SEED_DATA.settings), cleanSettings(obj.settings)), articles: cleanItems(obj.articles, 'article'), vocab: cleanItems(obj.vocab, 'vocab'), hiddenVocab: cleanIds(obj.hiddenVocab), hiddenArticles: cleanIds(obj.hiddenArticles), seedArticles: state.seedArticles, progress: cleanProgress(obj.progress), progressOwner: state.progressOwner || null, progressBase: state.progressBase || null, studentReports: cleanReports(obj.studentReports), accounts: Array.isArray(obj.accounts) && ui.teacher && !(ui.user && ui.user.cloud) ? cleanAccounts(obj.accounts) : state.accounts };
+      if (!ui.teacher) state.settings.teacherCode = keepCode; // a file never sets the local invite code for a student
     } else {
       if (obj.settings) { const ns = cleanSettings(obj.settings); delete ns.teacherCode; delete ns.teacherEmail; delete ns.studentName; Object.assign(state.settings, ns); }
       cleanItems(obj.articles, 'article').forEach(a => { const i = state.articles.findIndex(x => x.id === a.id); if (i >= 0) state.articles[i] = a; else state.articles.push(a); });
@@ -3210,6 +3305,8 @@
     wbWord(el) { view.vocabSearch = el.dataset.w; view.vocabUnit = ''; view.vocabBm = false; nav('vocab'); },
     // 回錯題本 after a redo round: the finished round is put away, then the link goes on to #/wrong
     mcLeave() { if (view.mc && view.mc.done) view.mc = null; location.hash = '#/wrong'; },
+    // 同步失敗 → 重試: the record never left this device, so a retry just uploads it again
+    syncRetry() { cloud.st = { s: 'saving' }; updateSync(); syncNow().then(() => { if (cloud.st && cloud.st.s === 'saving') { cloud.st = null; } updateSync(); }).catch(syncFailed); },
     mcMode(el) { view.mcf.mode = el.dataset.v === 'test' ? 'test' : 'practice'; render(); },
     mcStart() {
       const f = view.mcf, cloze = f.type === 'cloze';
@@ -3311,11 +3408,11 @@
       setTimeout(() => { const s = $('.score-banner'); if (s) s.scrollIntoView({ behavior: smooth(), block: 'center' }); }, 50);
     },
     retry() { view.answers = {}; view.submitted = false; view.readZh = null; view.readAcc = 0; view.readOn = false; jumpTo(0); render({ focusHeading: true }); },
-    newArticle() { view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
+    newArticle() { if (!ui.teacher) return; view.editing = { id: uid('a'), title: '', level: 'Reading · B1', tags: [], passage: '', questions: [{ q: '', options: ['', '', '', ''], answer: 0, explain: '' }] }; render(); },
     cancelEdit() { view.editing = null; render(); },
     addQ() { collectEditor(); view.editing.questions.push({ q: '', options: ['', '', '', ''], answer: 0, explain: '' }); render(); },
     removeQ(el) { collectEditor(); view.editing.questions.splice(+el.dataset.qi, 1); render(); },
-    saveArticle() {
+    saveArticle() { if (!ui.teacher) return;
       collectEditor(); const a = view.editing;
       if (!a.title || !a.passage.trim()) { toast(t('needTitle')); return; }
       if (!a.questions.length || a.questions.some(q => !q.q || q.options.some(o => !o))) { toast(t('needQ')); return; }
@@ -3386,10 +3483,10 @@
       view.quiz = null; render({ focusHeading: true });
     },
     // vocab
-    addVocab() { view.vocabEdit = { id: '', word: '', pos: '', zh: '', example: '', unit: String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit }; render(); setTimeout(() => $('#veWord') && $('#veWord').focus(), 30); },
-    editVocab(el) { view.vocabEdit = clone(VOCAB.find(x => x.id === el.dataset.id)); render(); },
+    addVocab() { if (!ui.teacher) return; view.vocabEdit = { id: '', word: '', pos: '', zh: '', example: '', unit: String(view.vocabUnit).startsWith('@') ? '' : view.vocabUnit }; render(); setTimeout(() => $('#veWord') && $('#veWord').focus(), 30); },
+    editVocab(el) { if (!ui.teacher) return; view.vocabEdit = clone(VOCAB.find(x => x.id === el.dataset.id)); render(); },
     cancelVocab() { view.vocabEdit = null; render(); },
-    saveVocab() {
+    saveVocab() { if (!ui.teacher) return;
       const v = { word: $('#veWord').value.trim(), pos: $('#vePos').value.trim(), zh: $('#veZh').value.trim(), example: $('#veEx').value.trim(), unit: $('#veUnit').value.trim() };
       if (!v.word || !v.zh) { toast(t('needTitle')); return; }
       v.syn = ($('#veSyn') ? $('#veSyn').value : view.vocabEdit.syn || '').trim();
@@ -3400,7 +3497,7 @@
       } else state.vocab.push(Object.assign({ id: uid('v') }, v));
       view.vocabEdit = null; save(); toast(t('saved')); render();
     },
-    deleteVocab(el) {
+    deleteVocab(el) { if (!ui.teacher) return;
       if (!confirm(t('confirmDel'))) return;
       const id = el.dataset.id;
       if (state.vocab.some(x => x.id === id)) state.vocab = state.vocab.filter(x => x.id !== id);
@@ -3409,7 +3506,7 @@
       save(); render();
     },
     toggleBulk() { view.bulkOpen = !view.bulkOpen; render(); },
-    bulkImport() {
+    bulkImport() { if (!ui.teacher) return;
       const unit = $('#bulkUnit').value.trim(); let n = 0;
       $('#bulkText').value.split(/\n/).map(l => l.trim()).filter(Boolean).forEach(line => {
         const p = line.split(/\s*[|,，]\s*/); if (p.length < 2) return;
@@ -3499,8 +3596,8 @@
     },
     exportAll() { download(`tve-exam-all-${todayStr()}.json`, state); },
     exportContent() { shareOrDownload(`tve-exam-material-${todayStr()}.json`, { settings: { examName: state.settings.examName, examNameEn: state.settings.examNameEn, examDate: state.settings.examDate, motto: state.settings.motto }, articles: state.articles, vocab: state.vocab, hiddenVocab: state.hiddenVocab || [], hiddenArticles: state.hiddenArticles || [] }, t('exportContent')); },
-    resetAll() { if (!confirm(t('confirmResetAll'))) return; const p = state.progress, code = state.settings.teacherCode; state = { settings: Object.assign(clone(SEED_DATA.settings), { teacherCode: code }), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), hiddenVocab: [], hiddenArticles: [], seedArticles: state.seedArticles, progress: p, progressOwner: state.progressOwner || null, progressBase: state.progressBase || null, studentReports: state.studentReports, accounts: state.accounts }; save(); render(); },
-    deleteAccount(el) { if (!confirm(t('confirmDel'))) return; state.accounts = state.accounts.filter(a => a.id !== el.dataset.id); save(); render(); },
+    resetAll() { if (!ui.teacher) return; if (!confirm(t('confirmResetAll'))) return; const p = state.progress, code = state.settings.teacherCode; state = { settings: Object.assign(clone(SEED_DATA.settings), { teacherCode: code }), articles: clone(SEED_DATA.articles), vocab: clone(SEED_DATA.vocab), hiddenVocab: [], hiddenArticles: [], seedArticles: state.seedArticles, progress: p, progressOwner: state.progressOwner || null, progressBase: state.progressBase || null, studentReports: state.studentReports, accounts: state.accounts }; save(); render(); },
+    deleteAccount(el) { if (!ui.teacher) return; if (!confirm(t('confirmDel'))) return; state.accounts = state.accounts.filter(a => a.id !== el.dataset.id); save(); render(); },
     openAuth() { openAuth('login'); },
     openCity(el) { openCity(el.dataset.id, el); },
     closeCity() { closeCity(); },
@@ -3517,8 +3614,8 @@
     citySaveWord(el) { actions.saveNewsWord(el); renderCity(); },
     cityRead(el) { closeCity(true); actions.openArticleHome(el); },
     cityNews(el) { closeCity(true); view.newsArticle = el.dataset.link; nav('news'); },
-    async loadAccounts() { try { await loadCloudAccounts(); render(); } catch (e) { toast('☁️ ' + e.message); } },
-    async loadCloud() { try { await loadCloudStudents(); toast(tf('cloudLoaded', { n: view.cloudStudents.length })); if (view.cloudStudents.length && view.studentSource === 'local') view.studentSource = view.cloudStudents[0].id; render(); } catch (e) { toast('☁️ ' + e.message); } }
+    async loadAccounts() { if (!ui.teacher) return; try { await loadCloudAccounts(); render(); } catch (e) { toast('☁️ ' + e.message); } },
+    async loadCloud() { if (!ui.teacher) return; try { await loadCloudStudents(); toast(tf('cloudLoaded', { n: view.cloudStudents.length })); if (view.cloudStudents.length && view.studentSource === 'local') view.studentSource = view.cloudStudents[0].id; render(); } catch (e) { toast('☁️ ' + e.message); } }
   };
 
   /* ---------------- Events ---------------- */
@@ -3931,6 +4028,16 @@
 
   /* ---- back to top ---- */
   $('#ttsStop').addEventListener('click', () => speakStop());
+  // offline / a new version: one quiet line at the top (the practice stays on this device either way)
+  const netBar = $('#netBar');
+  function netState() {
+    const upd = !!window.__swUpdated, off = navigator.onLine === false;
+    netBar.hidden = !upd && !off; netBar.className = 'net-bar' + (upd ? ' upd' : off ? ' off' : '');
+    netBar.innerHTML = upd ? `<span>${t('netUpdated')}</span><button type="button" class="btn sm accent" id="netReload">${t('netReload')}</button>` : off ? `<span>${t('netOffline')}</span>` : '';
+    const b = $('#netReload'); if (b) b.addEventListener('click', () => { if (inSessionNow() || sessionPages().length) { if (!confirm(t('netReloadAsk'))) return; } location.reload(); });
+  }
+  window.addEventListener('online', netState); window.addEventListener('offline', netState); window.addEventListener('sw-updated', netState);
+  netState();
   const toTopBtn = $('#toTop');
   function updateToTop() { if (toTopBtn) toTopBtn.hidden = window.scrollY < window.innerHeight * 1.5; }
   window.addEventListener('scroll', updateToTop, { passive: true });

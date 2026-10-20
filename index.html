@@ -25,6 +25,7 @@
   <a class="skip-link" href="#app" data-i18n="skipToMain">跳到主要內容</a>
 
   <!-- ===== Header ===== -->
+  <div class="net-bar" id="netBar" role="status" hidden></div>
   <header class="site-header">
     <div class="brand">
       <p class="brand-title"><span class="bt-long" data-i18n="brandTitle">英語學習站</span><span class="bt-short" data-i18n="brandShort">英語學習站</span></p>
@@ -167,7 +168,11 @@
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+      // a new version taking over a page that was already running: say so (app.js shows 重新整理), so the open page never
+      // goes on with old code next to new files. The cache update only touches Cache Storage, never the saved practice.
+      var hadSW = !!navigator.serviceWorker.controller;
+      navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadSW) { window.__swUpdated = true; window.dispatchEvent(new Event('sw-updated')); } hadSW = true; });
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(r => { r.update && setInterval(() => r.update().catch(() => {}), 30 * 60 * 1000); }).catch(() => {}));
     }
   </script>
 </body>
