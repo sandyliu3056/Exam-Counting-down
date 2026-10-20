@@ -998,9 +998,14 @@ a.subtab, a.more-tile { text-decoration: none; }
 @media (max-width: 400px) { .subtab { padding: 6px 12px; gap: 4px; } }
 @media (max-width: 340px) { .subtabs { gap: 6px; } .subtab { padding: 6px 10px; } }
 
-/* ---------- Desktop folder tabs: one per group ---------- */
+/* ---------- Desktop folder tabs: 首頁 · 學習 (閱讀 單字 文法) · 練習 (選擇題 克漏字 翻譯) · 紀錄 · 設定 ---------- */
 .tab { position: relative; font: inherit; font-weight: 600; }
 .tab-settings { margin-left: auto; }
+.tab-grp { display: flex; align-items: flex-end; gap: 6px; margin-left: 6px; padding-left: 12px; border-left: 1px solid rgba(255,255,255,.28); }
+.tab-cap { align-self: center; margin: 6px 2px 0 0; color: rgba(255,255,255,.82); font-size: 13px; font-weight: 700; letter-spacing: .5px; white-space: nowrap; }
+@media (max-width: 1000px) { .tab-grp { margin-left: 2px; padding-left: 8px; gap: 4px; } .tab-cap { font-size: 12px; } }
+/* the phone's category row under 學習 and 練習 (on desktops the categories are the tabs) */
+.cat-seg { display: none; }
 .tab.has-session::after, .bnav-btn.has-session::after { content: ''; position: absolute; top: 5px; right: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--header-dark); }
 
 /* ---------- Phone: one-row header + bottom bar (≤760px) ---------- */
@@ -1023,18 +1028,25 @@ a.subtab, a.more-tile { text-decoration: none; }
   #tabs { display: none; }
   .banner-img { height: 128px; }
 
-  .bnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 2px; padding: 6px max(5px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)) max(5px, env(safe-area-inset-right)); background: var(--header); border-top: 4px solid var(--header-dark); }
-  .bnav-btn { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 2px 0; border: 0; border-radius: 14px; background: none; color: #fff; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .bnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px; padding: 6px max(5px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)) max(5px, env(safe-area-inset-right)); background: var(--header); border-top: 4px solid var(--header-dark); }
+  .bnav-btn { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 2px 0; border: 0; border-radius: 14px; background: none; color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
   .bnav-btn[aria-current="page"] { background: var(--accent); color: var(--accent-ink); box-shadow: 0 0 0 2px var(--header-dark), 2px 2px 0 2px var(--header-dark); }
-  .bnav-ico { font-size: 22px; line-height: 1; }
+  .bnav-ico { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .cat-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin: 0 0 10px; padding: 4px; border: 1px solid var(--bg-soft); border-radius: 14px; background: var(--bg-soft); }
+  .cat-btn { position: relative; min-height: 44px; padding: 4px 6px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
+  .cat-btn[aria-current="page"] { background: var(--header); color: #fff; }
+  a.cat-btn { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+  .cat-btn.has-session::after { content: ''; position: absolute; top: 6px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); border: 2px solid var(--header-dark); }
   .bnav-badge { position: absolute; top: 1px; right: max(0px, calc(50% - 28px)); min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--bad); color: #fff; font-size: 11px; font-weight: 800; line-height: 17px; border: 1.5px solid #fff; }
   .bnav-btn.has-session::after { right: auto; left: max(5px, calc(50% - 24px)); top: 3px; }
   body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
   .toast { bottom: calc(84px + env(safe-area-inset-bottom)); }
 
   /* focus mode while practising: only the session bar, the question and the action bar */
-  body.in-session .site-header, body.in-session #tabs, body.in-session .bnav, body.in-session .site-footer, body.in-session .subtabs { display: none; }
+  body.in-session .site-header, body.in-session #tabs, body.in-session .bnav, body.in-session .site-footer, body.in-session .subtabs, body.in-session .cat-seg { display: none; }
   body.in-session.pills-on .subtabs { display: flex; margin-top: calc(8px + env(safe-area-inset-top)); }
+  body.in-session.pills-on .cat-seg { display: grid; margin-top: calc(8px + env(safe-area-inset-top)); }
+  body.in-session.pills-on .cat-seg + .subtabs { margin-top: 0; }
   body.in-session { padding-bottom: 0; }
   body.in-session .page-wrap { padding-top: 0; }
   body.in-session .toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
@@ -1357,7 +1369,7 @@ button.cz-blank { font: inherit; color: inherit; background: none; border: 0; bo
 @media (max-width: 340px) { .brand-now { font-size: 12px; } }
 /* seven bottom-bar buttons: long labels (English) shrink instead of spilling over */
 .bnav-btn > span:not(.bnav-ico) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-@media (max-width: 360px) { .bnav-btn { font-size: 11px; } .bnav-ico { font-size: 20px; } }
+@media (max-width: 360px) { .bnav-btn { font-size: 12px; } .bnav-ico { width: 22px; height: 22px; } }
 @media (max-width: 380px) { .bnav-badge { min-width: 18px; height: 18px; padding: 0 4px; font-size: 10px; line-height: 15px; } }
 .fs-help { margin: 6px 2px 0; line-height: 1.5; }
 
@@ -1387,9 +1399,7 @@ button.cz-blank { font: inherit; color: inherit; background: none; border: 0; bo
 /* seven folder tabs between phone and wide desktop: tighter, so 設定 / Settings stays on the row (English is the longest) */
 @media (min-width: 761px) and (max-width: 1000px) { .tabs { gap: 4px; padding: 0 10px; } .tab { padding: 8px 9px 6px; gap: 5px; font-size: 15px; } }
 /* seven bottom-bar buttons in English on phones: "Translate" fits (10px is the size of a phone's own tab-bar labels) */
-@media (max-width: 430px) { html[lang="en"] .bnav-btn { font-size: 11px; letter-spacing: -.2px; } }
-@media (max-width: 380px) { html[lang="en"] .bnav-btn { font-size: 10.5px; letter-spacing: -.3px; } }
-@media (max-width: 340px) { html[lang="en"] .bnav-btn { font-size: 10px; letter-spacing: -.4px; } }
+@media (max-width: 340px) { html[lang="en"] .bnav-btn { font-size: 12px; } }
 
 /* ---------- 我的程度: the 🎯 tab on the left edge and the drawer it pulls out ---------- */
 .lv-handle { position: fixed; left: 0; top: 46%; z-index: 35; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 3px 9px 2px; border: 2px solid var(--line); border-left: 0; border-radius: 0 14px 14px 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-size: 13px; font-weight: 800; line-height: 1.1; cursor: grab; box-shadow: 2px 2px 0 var(--line); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
@@ -1522,7 +1532,7 @@ label.px-lbl { min-height: 40px; }
 .px-chip.on { background: var(--header); color: #fff; }
 @media (pointer: coarse) { .px-chip, .px-lbl { min-height: 44px; } }
 /* tablets: 題型's five choices as 3 + 2 instead of 4 + 1 with 克漏字 alone */
-@media (min-width: 561px) and (max-width: 900px) { .px-chips[aria-labelledby="pxType"] { display: grid; grid-template-columns: repeat(3, minmax(0, max-content)); } }
+@media (min-width: 561px) and (max-width: 900px) { .px-chips[aria-labelledby="pxType"] { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); } }
 .px-chip .px-n { font-size: 12px; opacity: .72; font-variant-numeric: tabular-nums; }
 .px-chip.on .px-n { opacity: 1; }
 .px-sel { width: 100%; max-width: 340px; margin: 0; }

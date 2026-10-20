@@ -176,7 +176,7 @@
 }
 
 @media print {
-  .site-header, .rt-kinds, .rt-tools, .site-footer, .to-top, .rt-say, .subtabs { display: none !important; }
+  .site-header, .rt-kinds, .rt-tools, .site-footer, .to-top, .rt-say, .subtabs, .cat-seg { display: none !important; }
   .rt-card { break-inside: avoid; box-shadow: none; }
 }
 

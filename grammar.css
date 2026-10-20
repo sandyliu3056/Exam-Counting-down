@@ -163,6 +163,6 @@
 }
 
 @media print {
-  .site-header, .gr-kinds, .gr-tools, .gr-toc, .site-footer, .to-top, .gr-say, .subtabs, .gr-quiz, .gr-pn { display: none !important; }
+  .site-header, .gr-kinds, .gr-tools, .gr-toc, .site-footer, .to-top, .gr-say, .subtabs, .cat-seg, .gr-quiz, .gr-pn { display: none !important; }
   .gr-sec, .gr-mis, .gr-tips { break-inside: avoid; box-shadow: none; }
 }

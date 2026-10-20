@@ -173,8 +173,10 @@
   function headHTML() {
     const going = state.quiz && state.quiz.i < state.quiz.qs.length && state.view !== 'quiz'; // a quiz waiting to be finished
     const tab = (v, label, sub, dot) => `<a class="rt-kind${v === 'quiz' && going ? ' has-session' : ''}" data-kind="${v}" href="#${v}"${state.view === v ? ' aria-current="page"' : ''}><span>${dot ? '<i class="rt-dot" aria-hidden="true"></i>' : ''}${label}</span><small>${sub}${v === 'quiz' && going ? '<span class="sr-only">（還沒做完）</span>' : ''}</small></a>`;
-    return `<nav class="subtabs" aria-label="單字">
-        <a class="subtab" href="./#/flashcards"><span aria-hidden="true">🃏</span> 單字卡</a><a class="subtab" href="./#/vocab"><span aria-hidden="true">📚</span> 單字庫</a><a class="subtab" href="./#/phrases"><span aria-hidden="true">🧩</span> 片語</a><a class="subtab" href="roots.html" aria-current="page"><span aria-hidden="true">🌱</span> 字根字首</a>
+    // the same rows as the site's 學習 pages: 閱讀 · 單字 · 文法 (phones), then the 單字 pills
+    return `<div class="cat-seg" role="group" aria-label="學習"><a class="cat-btn" href="./#/reading">閱讀</a><a class="cat-btn" href="./#/flashcards" aria-current="page">單字</a><a class="cat-btn" href="./#/grammar">文法</a></div>
+      <nav class="subtabs" aria-label="單字">
+        <a class="subtab" href="./#/flashcards">單字卡</a><a class="subtab" href="./#/vocab">單字庫</a><a class="subtab" href="./#/phrases">片語</a><a class="subtab" href="roots.html" aria-current="page">字根字首</a>
       </nav>
       <header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">🌱</span> 字根字首字尾</h1></header>
       <nav class="rt-kinds" aria-label="字首、字根、字尾、測驗">${KINDS.map(([k, zh, en]) => tab(k, zh, `${en} · ${DATA[k].length}`, true)).join('')}${tab('quiz', '🎯 測驗', 'Quiz')}</nav>`;

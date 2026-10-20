@@ -200,27 +200,33 @@
   const flashEl = el => { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1200); };
   const PAGE_META = { home: ['🏠', 'tabHome'], reading: ['📖', 'tabReading'], news: ['📰', 'tabNews'], flashcards: ['🃏', 'tabFlash'], vocab: ['📚', 'tabVocab'], phrases: ['🧩', 'tabPhrases'], grammar: ['📐', 'tabGrammar'],
     mcq: ['📝', 'tabMcq'], translate: ['✍️', 'tabTranslate'], progress: ['📈', 'tabProgress'], students: ['🧑‍🏫', 'tabStudents'], settings: ['⚙️', 'tabSettings'] };
-  // phone bottom bar: seven groups (紀錄 has its own button, like the desktop tab); 更多 holds 設定, the tour, the account and 外觀
-  const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'read', pages: ['reading', 'news'] }, { id: 'words', pages: ['flashcards', 'vocab', 'phrases'] },
-    { id: 'grammar', pages: ['grammar'] }, { id: 'practice', pages: ['mcq'] }, { id: 'translate', pages: ['translate'] }, { id: 'record', pages: ['progress', 'students'] }, { id: 'more', pages: ['settings'] }];
-  // desktop folder tabs: the same groups, with 設定 as its own tab
-  const DESK_GROUPS = GROUPS.slice(0, 7).concat([{ id: 'settings', pages: ['settings'] }]);
-  const groupOf = (page, list = GROUPS) => (list.find(g => g.pages.includes(page)) || list[0]).id;
+  // phone bottom bar: 首頁 · 學習 · 練習 · 紀錄 · 更多 (更多 opens the sheet with 設定, the tour, the account and 外觀)
+  const GROUPS = [{ id: 'home', pages: ['home'] }, { id: 'learn', pages: ['reading', 'news', 'flashcards', 'vocab', 'phrases', 'grammar'] },
+    { id: 'practice', pages: ['mcq', 'translate'] }, { id: 'record', pages: ['progress', 'students'] }, { id: 'more', pages: ['settings'] }];
+  // 學習 and 練習 have three categories each; 克漏字 is the 選擇題 page with cloze passages
+  const CATS = [{ id: 'read', grp: 'learn', key: 'grpRead', pages: ['reading', 'news'] }, { id: 'words', grp: 'learn', key: 'grpWords', pages: ['flashcards', 'vocab', 'phrases'] },
+    { id: 'grammar', grp: 'learn', key: 'grpGrammar', pages: ['grammar'] }, { id: 'mcq', grp: 'practice', key: 'tabMcq', pages: ['mcq'] },
+    { id: 'cloze', grp: 'practice', key: 'tabCloze', pages: ['mcq'] }, { id: 'translate', grp: 'practice', key: 'grpTranslate', pages: ['translate'] }];
+  // desktop folder tabs: 首頁, the six categories (under the captions 學習 and 練習), 紀錄 and 設定
+  const DESK_GROUPS = [GROUPS[0]].concat(CATS, [GROUPS[3], { id: 'settings', pages: ['settings'] }]);
+  const clozeOn = () => view.mc ? view.mc.kind === 'cloze' : !!view.mcf && view.mcf.type === 'cloze';
+  const catOf = page => page === 'mcq' ? (clozeOn() ? 'cloze' : 'mcq') : ((CATS.find(c => c.pages.includes(page)) || {}).id || '');
+  const groupOf = (page, list = GROUPS) => (list === DESK_GROUPS && catOf(page)) || (list.find(g => g.pages.includes(page)) || list[0]).id;
   const pagesOf = (gid, list) => ((list.find(g => g.id === gid) || list[0]).pages).filter(p => p !== 'students' || ui.teacher);
   // the page a group opens on the first time: 紀錄 opens 學生狀況 for a teacher
   const firstOf = (gid, list) => { const p = pagesOf(gid, list); return ui.teacher && p.includes('students') ? 'students' : p[0]; };
   const SUB_GROUPS = [['reading', 'news'], ['flashcards', 'vocab', 'phrases'], ['progress', 'students']];
-  // pill row for the pages that share a group (閱讀測驗 | 每日新聞 …)
-  const PRACTICE_PAIR = ['mcq', 'translate'];
+  // the rows above a page: on phones the group's three categories (閱讀 · 單字 · 文法), then the category's pages as pills
+  // (閱讀測驗 · 每日新聞 …); on desktops the categories are the tabs, so only the pills show
   function subtabs(page) {
-    let g = SUB_GROUPS.find(x => x.includes(page));
-    // 選擇題 and 翻譯 are separate tabs; a paused session reopened from the menu (focus mode hides the bottom bar) still gets both pills
-    if (!g && PRACTICE_PAIR.includes(page) && inSessionNow() && view.pillsFor && view.pillsFor === sessionOf(page)) g = PRACTICE_PAIR;
-    if (!g) return '';
+    const cat = catOf(page), c = CATS.find(x => x.id === cat), live = liveCats();
+    const seg = c ? `<div class="cat-seg" role="group" aria-label="${esc(t(c.grp === 'learn' ? 'grpLearn' : 'grpPractice'))}">${CATS.filter(x => x.grp === c.grp).map(x => `<button type="button" class="cat-btn${x.id !== cat && live.includes(x.id) ? ' has-session' : ''}" data-action="goCat" data-to="${x.id}"${x.id === cat ? ' aria-current="page"' : ''}>${t(x.key)}</button>`).join('')}</div>` : '';
+    const g = SUB_GROUPS.find(x => x.includes(page));
     // 單字 also leads to the 字根字首字尾 page (roots.html, a page of its own in the same look)
-    const more = g.includes('vocab') ? `<a class="subtab" href="roots.html"><span aria-hidden="true">🌱</span> ${t('rootsNav')}</a>` : '';
-    const pages = g.filter(p => p !== 'students' || ui.teacher); if (pages.length + (more ? 1 : 0) < 2) return '';
-    return `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${PAGE_META[p][0]}</span> ${t(PAGE_META[p][1])}</button>`).join('')}${more}</nav>`;
+    const more = g && g.includes('vocab') ? `<a class="subtab" href="roots.html">${t('rootsNav')}</a>` : '';
+    const pages = g ? g.filter(p => p !== 'students' || ui.teacher) : [];
+    const pills = pages.length + (more ? 1 : 0) < 2 ? '' : `<nav class="subtabs" aria-label="${esc(t('subNavLabel'))}">${pages.map(p => `<button class="subtab" data-action="nav" data-page="${p}"${p === page ? ' aria-current="page"' : ''}>${t(PAGE_META[p][1])}</button>`).join('')}${more}</nav>`;
+    return seg + pills;
   }
   // one page title per page: the tab's emoji and name, with the longer description underneath
   function pageHead(page, sub) {
@@ -1078,24 +1084,28 @@
   function pageMcq() {
     if (!mcItems().length && !clozeSets().length) return `${subtabs('mcq')}${pageHead('mcq', t('mcTitle'))}<div class="card"><p class="muted" style="margin:0">${t('mcNoItems')}</p></div>`;
     if (view.mc) return view.mc.done ? mcResults() : (view.mc.kind === 'cloze' ? mcClozeStage() : mcStage());
-    const f = view.mcf || (view.mcf = { type: '', level: myLevel(), status: '', mode: 'practice', count: 10 });
+    const f = mcfOf();
     f.status = ''; f.mode = 'practice'; // the setup is just 題型 · 程度 · 題數: every question, practice mode (each answer explained)
     const S = mcStats(state.progress);
     const count = f.type === 'cloze' ? mcClozeFiltered().length : mcFiltered().length;
-    const cloze = f.type === 'cloze', pct = S.done ? Math.round(S.right / S.done * 100) + '%' : '—';
-    return `${subtabs('mcq')}${pageHead('mcq', tf('mcSub', { n: mcItems().length, c: clozeSets().length }))}
+    // 選擇題 and 克漏字 are two categories of 練習: each shows its own numbers
+    const cloze = f.type === 'cloze', kinds = MC_TYPES.filter(([k]) => cloze ? k === 'cloze' : k !== 'cloze').map(([k]) => S.byType[k]);
+    const sum = key => kinds.reduce((a, b) => a + b[key], 0), done = sum('done'), right = sum('right');
+    const wrongN = S.wrong.filter(u => (u.type === 'cloze') === cloze).length, pct = done ? Math.round(right / done * 100) + '%' : '—';
+    return `${subtabs('mcq')}${cloze ? `<header class="page-head"><h1 tabindex="-1">${t('tabCloze')}</h1><p>${tf('clozeSub', { c: clozeSets().length })}</p></header>` : pageHead('mcq', tf('mcSubItems', { n: mcItems().length }))}
       <div class="card px-card">
-        ${pxStats([[t('mcAnswered'), S.done, `/ ${S.total}`], [t('accShort'), pct, S.done ? `${S.right} / ${S.done}` : ''], [t('trToReview'), S.wrong.length]])}
+        ${pxStats([[t('mcAnswered'), done, `/ ${sum('total')}`], [t('accShort'), pct, done ? `${right} / ${done}` : ''], [t('trToReview'), wrongN]])}
         <div class="px-rows">
-          ${pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.map(([k, l, ic]) => [k, `${ic} ${t(k === 'cloze' ? 'pxCloze' : l)}`, (k === 'cloze' ? tf('mcClozeCount', { n: clozeSets().length }) : S.byType[k].total) + (S.byType[k].done ? ` · ${Math.round(S.byType[k].right / S.byType[k].done * 100)}%` : '')])), 2))}
+          ${cloze ? '' : pxRow('pxType', t('pxType'), pxChips('pxType', 'mcType', f.type, [['', '🎯 ' + t('mcMixed'), mcItems().length]].concat(MC_TYPES.filter(([k]) => k !== 'cloze').map(([k, l, ic]) => [k, `${ic} ${t(l)}`, S.byType[k].total + (S.byType[k].done ? ` · ${Math.round(S.byType[k].right / S.byType[k].done * 100)}%` : '')])), 2))}
           ${pxRow('pxLevel', t('pxLevel'), pxChips('pxLevel', 'mcLevel', f.level, PX_LEVELS()))}
           ${pxRow('pxCount', t(cloze ? 'pxCountP' : 'pxCount'), pxChips('pxCount', 'mcCount', f.count, (cloze ? [1, 2, 4] : [10, 20, 30]).map(n => [n, tf(cloze ? 'mcNPassages' : 'mcNQ', { n })])))}
         </div>
         <div class="px-go"><p class="small muted">${t('mcPracticeHint')} · ${tf('mcAvailable', { n: count })}</p>
           <button class="btn accent block-cta" data-action="mcStart" ${count ? '' : 'disabled'}>▶ ${t('mcStart')}</button></div>
       </div>
-      ${(state.progress.mcqTests || []).length ? `<div class="card"><h3 style="margin-top:0">${t('mcRecent')}</h3><div class="list">${state.progress.mcqTests.slice(-8).reverse().map(r => `<div class="list-item"><span class="small muted">${fmtDate(r.date)}</span><span>${esc(r.type ? t((MC_TYPES.find(x => x[0] === r.type) || [0, 'mcMixed'])[1]) : t('mcMixed'))} · ${t(r.mode === 'test' ? 'mcTest' : 'mcPractice')}</span><span class="spacer"></span><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span>${r.secs != null ? `<span class="small muted">${fmtDur(r.secs)}</span>` : ''}</div>`).join('')}</div></div>` : ''}`;
+      ${(state.progress.mcqTests || []).some(r => (r.type === 'cloze') === cloze) ? `<div class="card"><h3 style="margin-top:0">${t('mcRecent')}</h3><div class="list">${state.progress.mcqTests.filter(r => (r.type === 'cloze') === cloze).slice(-8).reverse().map(r => `<div class="list-item"><span class="small muted">${fmtDate(r.date)}</span><span>${esc(r.type ? t((MC_TYPES.find(x => x[0] === r.type) || [0, 'mcMixed'])[1]) : t('mcMixed'))} · ${t(r.mode === 'test' ? 'mcTest' : 'mcPractice')}</span><span class="spacer"></span><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span>${r.secs != null ? `<span class="small muted">${fmtDur(r.secs)}</span>` : ''}</div>`).join('')}</div></div>` : ''}`;
   }
+  const mcfOf = () => view.mcf || (view.mcf = { type: '', level: myLevel(), status: '', mode: 'practice', count: 10 });
   function mcFiltered() {
     const f = view.mcf;
     return mcItems().filter(it => (!f.type || it.type === f.type) && (!f.level || it.level === f.level)
@@ -1464,8 +1474,8 @@
   function pageGrammar() {
     const g = view.gr, c = g.sub === 'ch' ? grById.get(g.id) : null;
     if (c && grStore.last !== c.id) { grStore.last = c.id; grSave(); }
-    if (c) return grKinds() + grChapter(c);
-    return `${pageHead('grammar', g.sub === 'quiz' ? '' : t('grammarSub'))}${grKinds()}${g.sub === 'quiz' ? grMix() : grList()}`;
+    if (c) return subtabs('grammar') + grKinds() + grChapter(c);
+    return `${subtabs('grammar')}${pageHead('grammar', g.sub === 'quiz' ? '' : t('grammarSub'))}${grKinds()}${g.sub === 'quiz' ? grMix() : grList()}`;
   }
   // a chapter's question answered: redraw only that question and the count (the page stays where it is); the 8th saves the score
   function grAnswer(i, n) {
@@ -2485,24 +2495,37 @@
       || (p === 'translate' && !!view.tr && view.tr.i < view.tr.ids.length)
       || (p === 'reading' && !!view.articleId && !view.submitted && !view.editing);
   }
-  // pages that hold an unfinished session the student has stepped away from (they get a dot on their tab)
-  function sessionPages() {
-    const out = [];
-    if (view.mc && !view.mc.done) out.push('mcq');
-    if (view.tr && view.tr.i < view.tr.ids.length) out.push('translate');
-    if ((view.flash && view.flash.idx < view.flash.queue.length) || (view.quiz && view.quiz.idx < view.quiz.qs.length)) out.push('flashcards');
-    if (readOpen()) out.push('reading');
-    return out.filter(p => p !== view.page);
+  // [page, category] of each unfinished session the student has stepped away from (its tab and category get a dot);
+  // 選擇題 and 克漏字 share a page, so the round of the one not on screen waits in view.mcPark
+  function livePlaces() {
+    const out = [], un = s => !!s && !s.done, park = view.mcPark || {};
+    if (un(view.mc)) out.push(['mcq', view.mc.kind === 'cloze' ? 'cloze' : 'mcq']);
+    if (un(park.items)) out.push(['mcq', 'mcq']);
+    if (un(park.cloze)) out.push(['mcq', 'cloze']);
+    if (view.tr && view.tr.i < view.tr.ids.length) out.push(['translate', 'translate']);
+    if ((view.flash && view.flash.idx < view.flash.queue.length) || (view.quiz && view.quiz.idx < view.quiz.qs.length)) out.push(['flashcards', 'words']);
+    if (readOpen()) out.push(['reading', 'read']);
+    const here = catOf(view.page);
+    return out.filter(([p, c]) => p !== view.page || c !== here);
+  }
+  const sessionPages = () => [...new Set(livePlaces().map(x => x[0]))];
+  const liveCats = () => livePlaces().map(x => x[1]);
+  // 選擇題 ⇄ 克漏字: park the round of the one being left, bring back the other's
+  function mcKind(kind) {
+    const f = mcfOf(), cur = view.mc ? view.mc.kind : f.type === 'cloze' ? 'cloze' : 'items';
+    if (cur !== kind) { const park = view.mcPark || (view.mcPark = {}); if (view.mc) park[view.mc.kind] = view.mc; view.mc = park[kind] || null; delete park[kind]; }
+    if (kind === 'cloze') { if (f.type !== 'cloze') { f.type = 'cloze'; f.count = 1; } }
+    else if (f.type === 'cloze') { f.type = ''; f.count = 10; }
   }
   // the open session of a page (a new round is a new object)
   const sessionOf = p => p === 'flashcards' ? (view.flash || view.quiz) : p === 'mcq' ? view.mc : p === 'translate' ? view.tr : p === 'reading' ? view.articleId : null;
   function syncNav() {
-    const live = sessionPages();
+    const live = livePlaces();
     const mark = (sel, list) => $$(sel).forEach(b => {
-      const g = b.dataset.group, on = g === groupOf(view.page, list);
+      const g = b.dataset.group, on = g === groupOf(view.page, list), isCat = list === DESK_GROUPS && CATS.some(c => c.id === g);
       b.classList.toggle('active', on);
       if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
-      b.classList.toggle('has-session', !on && pagesOf(g, list).some(p => live.includes(p)));
+      b.classList.toggle('has-session', !on && live.some(([p, c]) => isCat ? c === g : pagesOf(g, list).includes(p)));
     });
     mark('#tabs .tab', DESK_GROUPS); mark('#bnav .bnav-btn', GROUPS);
     const due = dueCards().length, badge = $('#bnavBadge');
@@ -2528,6 +2551,7 @@
     if (view.page === 'reading' && view.articleId && !view.editing) return '#/reading/' + encodeURIComponent(view.articleId);
     if (view.page === 'news' && view.newsArticle) return '#/news/' + encodeURIComponent(view.newsArticle);
     if (view.page === 'grammar' && view.gr.sub !== 'list') return '#/grammar/' + (view.gr.sub === 'quiz' ? 'quiz' : encodeURIComponent(view.gr.id));
+    if (view.page === 'mcq' && clozeOn()) return '#/cloze';
     return '#/' + view.page;
   }
   let routeReady = false;
@@ -2544,7 +2568,10 @@
     routeReady = true;
   }
   function applyRoute(h) {
-    const m = /^#\/([a-z]+)(?:\/(.+))?$/.exec(h || ''); if (!m || !Object.prototype.hasOwnProperty.call(PAGES, m[1])) return false;
+    const m = /^#\/([a-z]+)(?:\/(.+))?$/.exec(h || ''); if (!m) return false;
+    // #/cloze is the 選擇題 page with cloze passages
+    if (m[1] === 'cloze') { mcKind('cloze'); view.page = 'mcq'; return true; }
+    if (!Object.prototype.hasOwnProperty.call(PAGES, m[1])) return false;
     let rest = null; try { rest = m[2] ? decodeURIComponent(m[2]) : null; } catch (e) { rest = null; }
     const page = m[1];
     if (page === 'reading') {
@@ -2553,6 +2580,7 @@
       view.editing = null;
     }
     if (page === 'news') view.newsArticle = rest || null;
+    if (page === 'mcq') mcKind('items');
     if (page === 'grammar') { const g = view.gr; g.sub = rest === 'quiz' ? 'quiz' : rest && grById.has(rest) ? 'ch' : 'list'; g.id = g.sub === 'ch' ? rest : ''; }
     view.page = page;
     return true;
@@ -2576,13 +2604,14 @@
     document.body.classList.toggle('pills-on', inSession && !!view.pillsFor && view.pillsFor === sessionOf(view.page));
     document.body.dataset.page = view.page;
     syncTourInvite();
+    // the page last used in each bottom-bar group and each desktop tab (a category is a desktop tab)
     view.lastIn[groupOf(view.page)] = view.page; view.lastIn['d:' + groupOf(view.page, DESK_GROUPS)] = view.page;
     syncNav();
     // English text is read with an English voice; Chinese with a Chinese one when the interface is English
     $$('#app .en:not([lang])').forEach(e => { e.lang = 'en'; });
     if (ui.lang === 'en') $$('#app .rp-zh, #app .daily-zh, #app .flash-zh, #app td.zh, #app .tr-zh, #app .tr-q').forEach(e => { e.lang = 'zh-Hant'; });
     const grCh = view.page === 'grammar' && view.gr.sub === 'ch' && grById.get(view.gr.id);
-    document.title = `${grCh ? grCh.title + ' · ' : ''}${t(PAGE_META[view.page] ? PAGE_META[view.page][1] : 'tabHome')} · ${t('siteName')}`;
+    document.title = `${grCh ? grCh.title + ' · ' : ''}${t(view.page === 'mcq' && clozeOn() ? 'tabCloze' : PAGE_META[view.page] ? PAGE_META[view.page][1] : 'tabHome')} · ${t('siteName')}`;
     syncRoute();
     if (opts.focusHeading) { const h = $('#app .st-label, #app h1'); if (h) { if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
     else if (fkey) { const same = $$('#app [data-action]').find(el => el.tabIndex >= 0 && focusKeyOf(el) === fkey); if (same && !same.disabled) same.focus({ preventScroll: true }); }
@@ -2592,10 +2621,11 @@
     updateToTop();
   }
   function nav(page) { speakStop(); if (page === 'news' && view.page === 'news') view.newsArticle = null; view.page = page; jumpTo(0); render({ focusHeading: true }); }
-  // a tab or bottom-bar button: back to the page last used in that group
+  // a tab, bottom-bar button or category: back to the page last used there
   function goGroup(gid, list, pfx) {
     const pages = pagesOf(gid, list); let target = view.lastIn[pfx + gid];
     if (!pages.includes(target)) target = firstOf(gid, list);
+    if (list === DESK_GROUPS && (gid === 'mcq' || gid === 'cloze')) mcKind(gid === 'cloze' ? 'cloze' : 'items');
     // an article with answers in progress is kept (or reopened after a back swipe to the list); otherwise the group opens on the list
     if (target === 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) { view.articleId = null; view.editing = null; }
     else if (target === 'reading' && !view.articleId && view.page !== 'reading' && readOpen()) view.articleId = view.lastArticle;
@@ -2747,6 +2777,7 @@
       if (grid) { grid.outerHTML = levelOptions(); renderLvHandle(); const b = $(`.level-set .level-opt[data-v="${v}"]`); if (b) b.focus({ preventScroll: true }); return; }
       render();
     },
+    goCat(el) { goGroup(el.dataset.to, DESK_GROUPS, 'd:'); },
     nav(el) { if (el.dataset.page === 'reading' && view.page !== 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) view.articleId = null; nav(el.dataset.page); },
     // home: 開始 starts the practice itself (a running session is resumed, never wiped)
     goFlash(el) { startPlanFlash(el.dataset.mode); },
@@ -3245,6 +3276,7 @@
   if (document.fonts) { document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', fitWords); if (document.fonts.ready) document.fonts.ready.then(fitWords); }
   window.addEventListener('scroll', () => { if (cal.open) placeCal(); }, { passive: true });
   $('#tabs').addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) goGroup(b.dataset.group, DESK_GROUPS, 'd:'); });
+  // the phone's category row (閱讀 · 單字 · 文法 / 選擇題 · 克漏字 · 翻譯) works like the desktop tabs
   $('#bnav').addEventListener('click', e => { const b = e.target.closest('.bnav-btn'); if (!b) return; if (b.dataset.group === 'more') openMore(); else goGroup(b.dataset.group, GROUPS, ''); });
   // the iPhone back swipe (and the browser back button) moves between pages; sessions stay open and can be resumed
   window.addEventListener('popstate', () => {
@@ -3269,7 +3301,7 @@
     const cur = groupOf(view.page) === 'more' ? view.page : '';
     const tile = (key, ico, label, sub) => `<button type="button" class="more-tile" data-more="${key}"${cur === key ? ' aria-current="page"' : ''}><span class="mt-ico" aria-hidden="true">${ico}</span><span class="mt-txt">${label}${sub ? `<small>${sub}</small>` : ''}</span></button>`;
     const seg = (kind, val, opts, label) => `<div class="seg" role="group" aria-label="${label}">${opts.map(([v, l]) => `<button type="button" class="seg-btn ${val === v ? 'on' : ''}" data-more-${kind}="${v}" aria-pressed="${val === v}">${l}</button>`).join('')}</div>`;
-    // only settings: the study pages are the bottom bar's blocks and their pills (字根字首 under 單字, 文法 under 題目)
+    // only settings: the study pages are under 學習 and 練習 (字根字首 is a pill of 單字)
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
       <h3 class="sheet-sec sheet-sec-first">⚙️ ${t('moreAccount')}</h3>
