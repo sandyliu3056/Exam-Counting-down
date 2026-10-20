@@ -1611,3 +1611,58 @@ input[type=text], input[type=email], input[type=search], input[type=url], input[
 .wl-word b { font-size: 18px; }
 .wl-zh { color: var(--ink-soft); }
 .wl-info { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+/* ---------- 首頁: 今日任務 (one main button), 待複習, 統測備考路徑 ---------- */
+.home-count { margin: 4px 0 10px; color: var(--ink-soft); font-size: var(--fs-sm); }
+.home-plan { margin-top: 0; }
+.home-plan h2 { margin: 0; font-size: var(--fs-xl); }
+.hp-resume { margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); }
+.hp-resume a { font-weight: 700; }
+.hp-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 12px; }
+.hp-goal { margin-left: auto; padding: 4px 12px; min-height: 36px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--card); color: var(--ink); font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; }
+.plan-steps { display: grid; gap: 8px; margin-bottom: 14px; }
+.plan-step { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.plan-step:hover { border-color: var(--border-strong); background: var(--bg); }
+.ps-n { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--bg-soft); color: var(--header); font-weight: 800; }
+.plan-step.done .ps-n { background: var(--ok-strong); color: #fff; }
+.ps-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ps-txt b { font-size: var(--fs-md); }
+.ps-txt span { color: var(--ink-soft); font-size: var(--fs-sm); overflow-wrap: anywhere; }
+.ps-min { flex: none; color: var(--ink-soft); font-size: var(--fs-sm); white-space: nowrap; }
+.plan-step.done .ps-min { color: var(--ok-strong); font-weight: 700; }
+.hp-done { margin: 0 0 10px; font-weight: 700; color: var(--ok-strong); }
+.home-plan .block-cta { width: 100%; justify-content: center; min-height: 50px; font-size: 18px; }
+.hp-review { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.hp-review h3 { margin: 0 0 8px; font-size: var(--fs-md); }
+.rv-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.rv-item { display: inline-flex; align-items: baseline; gap: 6px; min-height: 40px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--card); color: var(--ink); font: inherit; font-size: var(--fs-sm); text-decoration: none; cursor: pointer; }
+.rv-item b { font-size: var(--fs-md); color: var(--header); }
+.home-start ol { margin: 10px 0 16px; padding-left: 1.4em; line-height: 1.8; }
+.hp-last { margin: 12px 0 0; }
+.exam-path { margin-top: 14px; }
+.exam-path h2 { margin: 0; font-size: var(--fs-lg); }
+.exam-path > p { margin: 4px 0 10px; }
+.ep-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: ep; }
+.ep-steps li { display: grid; grid-template-columns: minmax(0, 1fr) 30% auto; align-items: center; gap: 10px; counter-increment: ep; font-size: var(--fs-sm); }
+.ep-l::before { content: counter(ep) ". "; color: var(--ink-soft); }
+.ep-bar { height: 8px; border-radius: 4px; background: var(--bg-soft); overflow: hidden; }
+.ep-bar i { display: block; height: 100%; background: var(--header); border-radius: 4px; }
+.ep-n { color: var(--ink-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.banner-slim { margin-top: 14px; }
+.banner-slim .banner-img { max-height: 150px; object-fit: cover; object-position: 50% 100%; }
+@media (max-width: 760px) { .banner-slim { display: none; } .ep-steps li { grid-template-columns: minmax(0, 1fr) auto; } .ep-bar { grid-column: 1 / -1; grid-row: 2; } }
+/* the 🎯 drawer: 目標 under the levels */
+.lv-goal-h { margin: 18px 0 8px; font-size: var(--fs-md); }
+.goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.goal-opt { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.goal-opt span { color: var(--ink-soft); font-size: var(--fs-sm); }
+.goal-opt.on { border-color: var(--header); box-shadow: inset 0 0 0 1px var(--header); background: var(--bg-soft); }
+@media (max-width: 420px) { .goal-grid { grid-template-columns: 1fr; } }
+/* the countdown stays in the header, quieter */
+.exam-chip-days { background: transparent; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); }
+.ep-steps li { grid-template-columns: minmax(0, 1fr) 30% 5.5em; }
+.ep-n { text-align: right; }
+@media (min-width: 1000px) {
+  .home-top { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .ht-side .exam-path { margin-top: 0; }
+  .ht-side .home-daily .daily-card { margin-top: 14px; }
+}

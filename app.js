@@ -859,13 +859,136 @@
     const id = view.articleId || view.lastArticle;
     return id && !view.submitted && Object.keys(view.answers).length && articleById(id) ? id : null;
   }
+  /* ---- 首頁: 繼續上次學習 · 今日任務（單字 → 閱讀 → 文法，約 15–20 分鐘）· 待複習, with one main button ---- */
+  const LS_LAST = 'tve_exam_last_v1'; // this device: the last place studied { r: '#/reading/a14', at }
+  const goalOf = () => (state.progress.goal && state.progress.goal.v) || 'exam';
+  const dayOf = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? '' : todayStr(d); };
+  // remember where the student was (called by render)
+  function noteLast() {
+    const r = routeOf();
+    if (!/^#\/(reading\/.|news\/.|grammar\/g-|flashcards$|vocab$|phrases$|mcq$|cloze$|translate$)/.test(r)) return;
+    try { localStorage.setItem(LS_LAST, JSON.stringify({ r, at: new Date().toISOString() })); } catch (e) { }
+  }
+  function lastPlace() {
+    let o = null; try { o = JSON.parse(localStorage.getItem(LS_LAST) || 'null'); } catch (e) { }
+    if (!o || typeof o.r !== 'string' || !isRouteHash(o.r)) return null;
+    const m = /^#\/([a-z]+)(?:\/(.+))?$/.exec(o.r); if (!m) return null;
+    let rest = ''; try { rest = m[2] ? decodeURIComponent(m[2]) : ''; } catch (e) { return null; }
+    const lbl = { flashcards: 'tabFlash', vocab: 'tabVocab', phrases: 'tabPhrases', mcq: 'tabMcq', cloze: 'tabCloze', translate: 'tabTranslate', news: 'tabNews' };
+    let what = '';
+    if (m[1] === 'reading') { const a = articleById(rest); if (!a) return null; what = `${t('grpRead')}〈${a.title}〉`; }
+    else if (m[1] === 'grammar') { const c = grById.get(rest); if (!c) return null; what = `${t('grpGrammar')}〈${c.title}〉`; }
+    else if (lbl[m[1]]) what = t(lbl[m[1]]);
+    else return null;
+    return { r: o.r, what, at: o.at };
+  }
+  // an unfinished round still open in this tab (it has the exact place)
+  function liveResume() {
+    const s = view.mc && !view.mc.done ? view.mc : null;
+    if (s) { const n = s.kind === 'cloze' ? s.ids.length * 5 : s.ids.length, k = Object.keys(s.answers).length; return { page: 'mcq', kind: s.kind, what: `${t(s.kind === 'cloze' ? 'tabCloze' : 'tabMcq')} · ${tf('homeAnswered', { k, n })}` }; }
+    if (view.tr && view.tr.i < view.tr.ids.length) return { page: 'translate', what: `${t('tabTranslate')} · ${tf('homeAnswered', { k: view.tr.i, n: view.tr.ids.length })}` };
+    const f = view.flash && view.flash.idx < view.flash.queue.length ? view.flash : null;
+    if (f) return { page: 'flashcards', what: `${t('tabFlash')} · ${tf('homeAnswered', { k: f.idx, n: f.queue.length })}` };
+    const r = readOpen(); if (r) return { page: 'reading', what: `${t('grpRead')}〈${articleById(r).title}〉 · ${tf('homeAnswered', { k: Object.keys(view.answers).length, n: articleById(r).questions.length })}` };
+    return null;
+  }
+  const PLAN_CARDS = 20;   // cards in today's 單字 step
+  const wordCount = a => String(a.passage || '').split(/\s+/).filter(Boolean).length;
+  const readMinutes = a => Math.max(5, Math.round(wordCount(a) / 100) + 4); // a learner reads about 100 words a minute, plus about 4 minutes for 5 questions
+  // new words for today's round: 統測 = the most frequent words first; 自主學習 = words of the level
+  function planNewPool() {
+    const unseen = v => { const c = state.progress.cards[v.id]; return !c || !c.seen; };
+    if (goalOf() === 'exam') return VOCAB.filter(v => HF_RANK[v.id] != null && unseen(v)).sort((a, b) => HF_RANK[a.id] - HF_RANK[b.id]);
+    return VOCAB.filter(v => inUnit(v, LV_PRESET[myLevel()] || '') && unseen(v));
+  }
+  const GR_BAND = { A2: ['A1', 'A2'], B1: ['A1', 'A2', 'B1'] }; // grammar chapters at or below the level (B2 and up: all)
+  const grFits = c => { const b = GR_BAND[myLevel()]; return !b || b.includes(c.level); };
+  function todayPlan() {
+    const lv = myLevel(); if (!lv) return null;
+    const td = todayStr(), P = state.progress, goal = goalOf();
+    // 1 單字: the cards due today, then new words (at most GOAL.new a day), at most PLAN_CARDS
+    const due = dueCards().length, fresh = Math.min(Math.max(0, GOAL.new - newToday()), planNewPool().length);
+    const left = Math.min(PLAN_CARDS, due + fresh), doneW = Object.values(P.cards).filter(c => dayOf(c.last) === td).length;
+    const words = { k: 'words', min: Math.max(4, Math.ceil(Math.max(left, 10) * 20 / 60)), due, fresh, doneW, done: doneW >= PLAN_CARDS || (doneW > 0 && !left) };
+    // 2 閱讀: the passage handed in today, else the next unread one of the level (統測: an 應用文 every other day)
+    const today = P.readingQuizzes.filter(r => dayOf(r.date) === td).pop();
+    let art = today ? articleById(today.articleId) : null;
+    if (!art) {
+      const read = new Set(P.readingQuizzes.map(r => r.articleId)), pool = ARTICLES.filter(a => !read.has(a.id));
+      const prac = goal === 'exam' && new Date().getDate() % 2 === 0 ? pool.find(a => a.level === 'Reading · Practical') : null;
+      art = prac || pool.find(a => a.level === 'Reading · ' + lv) || null;
+    }
+    const reading = { k: 'read', art, score: today, done: !!today, min: art ? readMinutes(art) : 0 };
+    // 3 文法: the chapter last opened if not passed yet, else the first chapter (teaching order) at or below the level not passed
+    const passed = c => ((grStatus(c) || {}).best || 0) >= GR_PASS;
+    let ch = grById.get(grStore.last); if (!ch || passed(ch) || !grFits(ch)) ch = GR_CH.find(c => grFits(c) && !passed(c)) || null;
+    const gToday = Object.entries(P.gq || {}).filter(([id, r]) => dayOf(r.last) === td).length + Object.values(P.grammar || {}).filter(r => r.at === td).length;
+    const grammar = { k: 'gram', ch, done: gToday > 0, min: 6 };
+    const steps = [words, reading, grammar];
+    return { lv, goal, steps, min: steps.reduce((a, x) => a + x.min, 0), next: steps.find(x => !x.done && (x.k !== 'read' || x.art)) || null };
+  }
+  // what is waiting for review (each count comes straight from the records)
+  function reviewItems() {
+    const out = [], due = dueCards().length;
+    if (due) out.push(`<button type="button" class="rv-item" data-action="goFlash" data-mode="dueOnly"><b>${due}</b> ${t('homeDueWords')}</button>`);
+    const weak = GR_CH.filter(c => { const r = grStatus(c); return r && r.best < GR_PASS; });
+    if (weak.length) out.push(`<a class="rv-item" href="#/grammar/${weak[0].id}"><b>${weak.length}</b> ${t('homeWeakGrammar')}</a>`);
+    const bm = state.progress.bookmarks.vocab.filter(id => VMAP[id]).length;
+    if (bm) out.push(`<button type="button" class="rv-item" data-action="goFlash" data-mode="bookmark"><b>${bm}</b> ${t('homeBmWords')}</button>`);
+    return out;
+  }
+  function homeStart() {
+    const P = todayPlan(), live = liveResume(), last = live ? null : lastPlace();
+    if (!P) // 怎麼開始: no level yet
+      return `<section class="card home-plan home-start" aria-labelledby="hpTitle"><h2 id="hpTitle">${t('homeStartTitle')}</h2>
+        <ol class="start-steps"><li>${t('homeStart1')}</li><li>${t('homeStart2')}</li><li>${t('homeStart3')}</li></ol>
+        <button type="button" class="btn accent block-cta" data-action="openLevel">${t('homePickLevel')}</button>
+        ${last ? `<p class="small muted hp-last">${t('homeLast')}：<a href="${esc(last.r)}">${esc(last.what)}</a></p>` : ''}</section>`;
+    const step = (x, i) => {
+      let title = '', sub = '', act = '';
+      if (x.k === 'words') { title = t('homeStepWords'); sub = x.done ? tf('homeWordsDone', { n: x.doneW }) : tf('homeWordsSub', { d: x.due, n: x.fresh }) + (x.doneW ? ' · ' + tf('homeWordsSoFar', { n: x.doneW }) : ''); act = `data-action="planWords"`; }
+      else if (x.k === 'read') { title = t('homeStepRead'); sub = !x.art ? t('homeReadAll') : `〈${esc(x.art.title)}〉 ${esc(levelShort(x.art))} · ${tf('homeWords', { n: wordCount(x.art) })}` + (x.done ? ` · ${x.score.score} / ${x.score.total}` : ''); act = x.art ? `data-action="openArticle" data-id="${esc(x.art.id)}"` : `data-action="nav" data-page="reading"`; }
+      else { title = t('homeStepGram'); sub = x.ch ? `〈${esc(x.ch.title)}〉 ${x.ch.level}` : t('homeGramAll'); }
+      const inner = `<span class="ps-n" aria-hidden="true">${x.done ? '✓' : i + 1}</span><span class="ps-txt"><b>${title}</b><span>${sub}</span></span><span class="ps-min">${x.done ? t('homeDone') : tf('homeMin', { n: x.min })}</span>`;
+      return x.k === 'gram' ? `<a class="plan-step${x.done ? ' done' : ''}" href="${x.ch ? '#/grammar/' + x.ch.id : '#/grammar/quiz'}">${inner}</a>` : `<button type="button" class="plan-step${x.done ? ' done' : ''}" ${act}>${inner}</button>`;
+    };
+    const n = P.next, rv = reviewItems();
+    const cta = live ? `<button type="button" class="btn accent block-cta" data-action="resume" data-page="${live.page}"${live.kind ? ` data-kind="${live.kind}"` : ''}>${t('homeContinue')}</button>`
+      : !n ? `<button type="button" class="btn accent block-cta" data-action="nav" data-page="progress">${t('homeSeeRecords')}</button>`
+      : n.k === 'gram' ? `<a class="btn accent block-cta" href="${n.ch ? '#/grammar/' + n.ch.id : '#/grammar/quiz'}">${P.steps.some(x => x.done) ? t('homeNextStep') : t('homeStartPlan')}</a>`
+      : `<button type="button" class="btn accent block-cta" ${n.k === 'words' ? 'data-action="planWords"' : `data-action="openArticle" data-id="${esc(n.art.id)}"`}>${P.steps.some(x => x.done) ? t('homeNextStep') : t('homeStartPlan')}</button>`;
+    return `<section class="card home-plan" aria-labelledby="hpTitle">
+      ${live ? `<p class="hp-resume"><span class="small muted">${t('homeUnfinished')}</span> <b>${esc(live.what)}</b></p>` : last ? `<p class="hp-resume"><span class="small muted">${t('homeLast')}</span> <a href="${esc(last.r)}">${esc(last.what)}</a></p>` : ''}
+      <div class="hp-head"><h2 id="hpTitle">${t('homeToday')}</h2><span class="small muted">${tf('homeAbout', { n: P.min })}</span>
+        <button type="button" class="hp-goal" data-action="openLevel">${P.lv} · ${t(P.goal === 'exam' ? 'goalExam' : 'goalGeneral')} <span aria-hidden="true">›</span><span class="sr-only">${t('homeChange')}</span></button></div>
+      <div class="plan-steps">${P.steps.map(step).join('')}</div>
+      ${!n && !live ? `<p class="hp-done">${t('homeAllDone')}</p>` : ''}
+      ${cta}
+      <div class="hp-review"><h3>${t('homeReview')}</h3>${rv.length ? `<div class="rv-list">${rv.join('')}</div>` : `<p class="small muted">${t('homeNoReview')}</p>`}</div>
+    </section>`;
+  }
+  const levelShort = a => String(a.level || '').replace('Reading · ', '').replace('Practical', t('practicalShort'));
+  // the 統測 path: four stages, each with real counts from the records
+  function examPath() {
+    if (goalOf() !== 'exam' || !myLevel()) return '';
+    const P = state.progress, read = new Set(P.readingQuizzes.map(r => r.articleId));
+    const hf = window.HIGH_FREQ || [], hfKnown = hf.filter(id => (P.cards[id] || {}).box >= 2).length;
+    const coreCh = GR_CH.filter(c => ['A1', 'A2', 'B1'].includes(c.level)), corePassed = coreCh.filter(c => ((grStatus(c) || {}).best || 0) >= GR_PASS).length;
+    const b1 = ARTICLES.filter(a => /B1|Practical/.test(a.level)), b1Done = b1.filter(a => read.has(a.id)).length;
+    const M = mcStats(P);
+    const st = [[t('pathWords'), hfKnown, hf.length], [t('pathGrammar'), corePassed, coreCh.length], [t('pathReading'), b1Done, b1.length], [t('pathPractice'), M.done, M.total]];
+    return `<section class="card exam-path" aria-labelledby="epTitle"><h2 id="epTitle">${t('pathTitle')}</h2><p class="small muted">${t('pathSub')}</p>
+      <ol class="ep-steps">${st.map(([l, a, b]) => `<li><span class="ep-l">${l}</span><span class="ep-bar" aria-hidden="true"><i style="width:${b ? Math.round(a / b * 100) : 0}%"></i></span><span class="ep-n">${a} / ${b}</span></li>`).join('')}</ol></section>`;
+  }
   function pageHome() {
     const dl = daysLeft();
     const recent = state.progress.readingQuizzes.slice(-5).reverse();
     return `
       <h1 class="sr-only" tabindex="-1">${t('tabHome')}</h1>
-      <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
-      <div class="home-daily">${dailyCard()}</div>
+      <p class="home-count">${dl > 0 ? tf('homeCount', { n: dl, d: state.settings.examDate.replace(/-/g, '/') }) : dl === 0 ? t('today') : t('examChipPassed')}</p>
+      <div class="home-top"><div class="ht-main">${homeStart()}</div>
+        <div class="ht-side">${examPath()}<div class="home-daily">${dailyCard()}</div></div></div>
+      <div class="banner banner-slim"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
       <h2 class="section-title">${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
       <h2 class="section-title">${t('bookmarks')}</h2>
@@ -1374,7 +1497,8 @@
   const LS_GR = 'tve_grammar_v1';
   const grStore = (() => { try { const o = JSON.parse(localStorage.getItem(LS_GR) || '{}') || {}; return { ch: o.ch && typeof o.ch === 'object' ? o.ch : {}, mix: o.mix && typeof o.mix === 'object' ? o.mix : {}, last: o.last || '' }; } catch (e) { return { ch: {}, mix: {}, last: '' }; } })();
   const grSave = () => { try { localStorage.setItem(LS_GR, JSON.stringify(grStore)); } catch (e) { } };
-  const grStatus = c => { const r = grStore.ch[c.id]; return r && r.best != null ? r : null; };
+  // a chapter's best 小測驗 score: the synced record (progress.grammar), or this device's older one (tve_grammar_v1)
+  const grStatus = c => { const a = (state.progress.grammar || {})[c.id], b = grStore.ch[c.id], r = !a ? b : !b || a.best >= (b.best || 0) ? a : b; return r && r.best != null ? r : null; };
   const grDone = list => list.filter(c => (grStatus(c) || {}).best >= GR_PASS).length;
   view.gr = { sub: 'list', id: '', q: '', unit: '', band: '', picks: {}, mix: null, range: '' };
   const GR_HAY = new Map(GR_CH.map(c => [c.id, [c.title, c.en, c.lead,
@@ -1505,6 +1629,7 @@
     if (c.quiz.every((_, k) => picks[k] != null)) {
       const right = picks.filter((x, k) => x === c.quiz[k].answer).length, r = grStore.ch[c.id] || {};
       grStore.ch[c.id] = { best: Math.max(r.best || 0, right), at: todayStr() }; grSave();
+      const P = state.progress, o = (P.grammar || (P.grammar = {}))[c.id] || {}; P.grammar[c.id] = { best: Math.max(o.best || 0, r.best || 0, right), at: todayStr() }; save();
       const k = $('#app .gr-kinds'); if (k) k.outerHTML = grKinds(); // the 完成 count on the 📖 章節 tab
     }
     const li = $(`#gq-${i}`); if (li) li.outerHTML = grQItem(c, i);
@@ -2627,7 +2752,7 @@
     syncTourInvite();
     // the page last used in each bottom-bar group and each desktop tab (a category is a desktop tab)
     view.lastIn[groupOf(view.page)] = view.page; view.lastIn['d:' + groupOf(view.page, DESK_GROUPS)] = view.page;
-    syncNav();
+    syncNav(); noteLast();
     // English text is read with an English voice; Chinese with a Chinese one when the interface is English
     $$('#app .en:not([lang])').forEach(e => { e.lang = 'en'; });
     if (ui.lang === 'en') $$('#app .rp-zh, #app .daily-zh, #app .flash-zh, #app td.zh, #app .tr-zh, #app .tr-q').forEach(e => { e.lang = 'zh-Hant'; });
@@ -2799,6 +2924,16 @@
       render();
     },
     goCat(el) { goGroup(el.dataset.to, DESK_GROUPS, 'd:'); },
+    // 首頁: today's 單字 round, back to an unfinished round, the 🎯 level and goal drawer
+    planWords() { startPlanFlash('plan'); },
+    resume(el) {
+      const p = el.dataset.page;
+      if (p === 'reading' && !view.articleId && readOpen()) view.articleId = view.lastArticle;
+      if (p === 'mcq') mcKind(el.dataset.kind === 'cloze' ? 'cloze' : 'items');
+      view.pillsFor = sessionOf(p) || null; nav(p);
+    },
+    openLevel() { openLvDrawer(); },
+    setGoal(el) { const v = el.dataset.v; if (!GOALS.includes(v)) return; state.progress.goal = { v, at: new Date().toISOString() }; save(); toast(t(v === 'exam' ? 'goalExam' : 'goalGeneral') + ' ✓'); if (el.closest('#lvDrawer')) renderLvDrawer(); render(); },
     nav(el) { if (el.dataset.page === 'reading' && view.page !== 'reading' && view.articleId && (view.submitted || !Object.keys(view.answers).length)) view.articleId = null; nav(el.dataset.page); },
     // home: 開始 starts the practice itself (a running session is resumed, never wiped)
     goFlash(el) { startPlanFlash(el.dataset.mode); },
@@ -2989,6 +3124,10 @@
         const cap = fromPlan ? Math.max(0, GOAL.new - newToday()) : (fs.limit || pool.length);
         if (fromPlan && !cap) { toast(t('newDoneToday')); return; }
         pool = pool.slice(0, cap); if (fs.shuffle) pool = shuffleArr(pool);
+      } else if (fs.mode === 'plan') { // 首頁 今日任務: the cards due today, then today's new words (統測: most frequent first), at most PLAN_CARDS
+        const td = todayStr(), due = shuffleArr(VOCAB.filter(v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= td; }));
+        const fresh = planNewPool().slice(0, Math.max(0, GOAL.new - newToday()));
+        pool = due.concat(goalOf() === 'exam' ? fresh : shuffleArr(fresh)).slice(0, PLAN_CARDS);
       } else if (fs.mode === 'due') { // due (reviewed before) first, then new words
         const td = todayStr();
         let due = pool.filter(v => { const c = state.progress.cards[v.id]; return c && c.seen > 0 && c.due <= td; }), fresh = pool.filter(v => !due.includes(v));
@@ -2996,7 +3135,7 @@
         pool = due.concat(fresh);
       } else if (fs.shuffle) pool = shuffleArr(pool);
       pool = pool.map(v => v.id);
-      if (fs.limit && fs.mode !== 'newHF') pool = pool.slice(0, fs.limit);
+      if (fs.limit && fs.mode !== 'newHF' && fs.mode !== 'plan') pool = pool.slice(0, fs.limit);
       if (!pool.length) { toast(t('noCards')); return; }
       view.flash = { queue: pool, idx: 0, flipped: false, known: [], missed: [], requeued: [], mode: fs.mode }; view.quiz = null; view.page = 'flashcards'; render({ focusHeading: true });
     },
@@ -3365,6 +3504,8 @@
   function renderLvDrawer() {
     lvCard.innerHTML = `<div class="sheet-head"><h2 id="lvDrawerTitle">${t(levelAsked() ? 'lvMine' : 'lvPickTitle')}</h2><button type="button" class="modal-close" data-lv="close" aria-label="${t('close')}">✕</button></div>
       <p class="small muted lv-sub">${t('lvPickSub')}</p>${levelOptions()}
+      <h3 class="lv-goal-h">${t('goalTitle')}</h3>
+      <div class="goal-grid" role="group" aria-label="${esc(t('goalTitle'))}">${GOALS.map(g => `<button type="button" class="goal-opt${goalOf() === g ? ' on' : ''}" data-action="setGoal" data-v="${g}" aria-pressed="${goalOf() === g}"><b>${t(g === 'exam' ? 'goalExam' : 'goalGeneral')}</b><span>${t(g === 'exam' ? 'goalExamDesc' : 'goalGeneralDesc')}</span></button>`).join('')}</div>
       <div class="lv-foot"><p class="small muted">${t('lvLaterNote')}</p>${levelAsked() ? '' : `<button type="button" class="btn sm ghost" data-action="setLevel" data-v="">${t('lvSkip')}</button>`}</div>`;
   }
   function openLvDrawer(dragging) {
@@ -3418,6 +3559,7 @@
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.lv === 'close') closeLvDrawer();
     else if (b.dataset.action === 'setLevel') actions.setLevel(b);
+    else if (b.dataset.action === 'setGoal') { actions.setGoal(b); const same = $(`[data-action=setGoal][data-v="${b.dataset.v}"]`, lvDrawer); if (same) same.focus({ preventScroll: true }); }
   });
 
   /* ---- First visit: a big see-through card floats in the middle of the home page and offers the tour ---- */
