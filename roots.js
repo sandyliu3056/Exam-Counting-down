@@ -20,11 +20,12 @@
   let ui = readJSON(LS_UI);
   function applyLook() {
     document.body.dataset.theme = THEMES.includes(ui.theme) ? ui.theme : 'navy';
-    document.body.dataset.font = ui.font === 'clean' ? 'clean' : 'hand';
+    // the standard typeface unless 手寫風 was picked after the 2026-10 switch (uiv 3)
+    document.body.dataset.font = ui.font === 'hand' && ui.uiv === 3 ? 'hand' : 'clean';
     $('#themeSelect').value = document.body.dataset.theme; $('#fontSelect').value = document.body.dataset.font;
   }
   // only these two change; the main site's other settings (language, account, tour …) stay as they are
-  function saveLook(k, v) { const cur = readJSON(LS_UI); cur[k] = v; ui[k] = v; try { localStorage.setItem(LS_UI, JSON.stringify(cur)); } catch (e) { } applyLook(); }
+  function saveLook(k, v) { const cur = readJSON(LS_UI); cur[k] = v; ui[k] = v; if (k === 'font' && cur.uiv !== 3) { cur.uiv = 3; ui.uiv = 3; } try { localStorage.setItem(LS_UI, JSON.stringify(cur)); } catch (e) { } applyLook(); }
   $('#themeSelect').addEventListener('change', e => saveLook('theme', e.target.value));
   $('#fontSelect').addEventListener('change', e => saveLook('font', e.target.value));
   window.addEventListener('storage', e => { if (e.key === LS_UI) { ui = readJSON(LS_UI); applyLook(); } });

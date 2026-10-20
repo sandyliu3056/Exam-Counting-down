@@ -24,6 +24,8 @@
   /* ---------------- State ---------------- */
   // the five levels a student can pick on the home page; B1 and B2 are the 統測 range
   const LEVELS = ['A2', 'B1', 'B2', 'C1', 'C2'];
+  // what the student studies for: the 統測 path (default) or their own pace through a level
+  const GOALS = ['exam', 'general'];
   const emptyProgress = () => ({ cards: {}, readingQuizzes: [], vocabQuizzes: [], days: {}, bookmarks: { vocab: [], articles: [] } });
   // Records from other devices (cloud sync, imported files) are shown on the teacher's pages. Keep their shape and
   // force every number and date to be one, so nothing inside a record can turn into HTML.
@@ -40,7 +42,8 @@
     out.readingQuizzes = arr(out.readingQuizzes).map(r => Object.assign({}, r, { id: sv(r.id), articleId: sv(r.articleId), title: sv(r.title), date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs),
       answers: arr(r.answers).map(a => Object.assign({}, a, { qi: num(a.qi), chosen: idx(a.chosen), correct: num(a.correct), q: sv(a.q), chosenText: sv(a.chosenText), correctText: sv(a.correctText) })) }));
     out.vocabQuizzes = arr(out.vocabQuizzes).map(r => Object.assign({}, r, { id: sv(r.id), type: ['choice', 'choiceRev', 'spell'].includes(r.type) ? r.type : 'choice', date: when(r.date), score: num(r.score), total: num(r.total) || 1, wrong: arr(r.wrong).map(w => Object.assign({}, w, { vocabId: str(w.vocabId), word: sv(w.word), zh: sv(w.zh), given: sv(w.given) })).filter(w => okKey(w.vocabId)) }));
-    ['mcq', 'translate'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).filter(([id]) => okKey(id)).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok), lastOk: !!r.lastOk, last: when(r.last) || null }, k === 'mcq' ? { chosen: idx(r.chosen) } : { answer: sv(r.answer) }); }); out[k] = m; });
+    // one record per question: 選擇題 and 克漏字 blanks (mcq), 翻譯 (translate), 文法 questions (gq: "g-passive:q3", "g-passive:s0.1")
+    ['mcq', 'translate', 'gq'].forEach(k => { if (out[k] === undefined) return; const m = {}; Object.entries(obj(out[k])).filter(([id]) => okKey(id)).forEach(([id, r]) => { r = obj(r); m[id] = Object.assign({}, r, { tries: num(r.tries), ok: num(r.ok), lastOk: !!r.lastOk, last: when(r.last) || null }, k === 'translate' ? { answer: sv(r.answer) } : { chosen: idx(r.chosen) }, k === 'gq' ? { h: sv(r.h) } : {}); }); out[k] = m; });
     if (out.myWords !== undefined) out.myWords = cleanItems(out.myWords, 'vocab');
     if (out.cities !== undefined) { const m = {}; Object.entries(obj(out.cities)).filter(([id]) => okKey(id) && SAFE_ID.test(id)).forEach(([id, r]) => { r = obj(r); m[id] = { visited: isDay(r.visited) ? r.visited : null, best: Math.min(3, Math.max(0, Math.round(num(r.best)))) }; }); out.cities = m; }
     if (out.mcqTests !== undefined) out.mcqTests = arr(out.mcqTests).map(r => Object.assign({}, r, { type: typeof r.type === 'string' && SAFE_ID.test(r.type) ? r.type : '', mode: r.mode === 'test' ? 'test' : 'practice', date: when(r.date), score: num(r.score), total: num(r.total) || 1, secs: r.secs == null ? null : num(r.secs) }));
@@ -48,9 +51,19 @@
     if (out.resetAt !== undefined) { if (when(out.resetAt)) out.resetAt = when(out.resetAt); else delete out.resetAt; }
     // { v: 'B2', at: time chosen }; v '' = the student skipped the question
     if (out.level !== undefined) { const l = obj(out.level); if (when(l.at) && (l.v === '' || LEVELS.includes(l.v))) out.level = { v: l.v, at: when(l.at) }; else delete out.level; }
+    // { v: 'exam' | 'general', at }
+    if (out.goal !== undefined) { const g = obj(out.goal); if (when(g.at) && GOALS.includes(g.v)) out.goal = { v: g.v, at: when(g.at) }; else delete out.goal; }
+    // a grammar chapter's best 小測驗 score and the day: { 'g-passive': { best: 7, at: '2026-10-20' } }
+    if (out.grammar !== undefined) { const m = {}; Object.entries(obj(out.grammar)).filter(([id]) => okKey(id) && SAFE_ID.test(id)).forEach(([id, r]) => { r = obj(r); m[id] = { best: Math.min(99, Math.max(0, Math.round(num(r.best)))), at: isDay(r.at) ? r.at : null }; }); out.grammar = m; }
+    // what was opened and when (已瀏覽): 'r:a14' a passage, 'g:g-passive' a grammar chapter
+    if (out.opened !== undefined) { const m = {}; Object.entries(obj(out.opened)).filter(([k, d]) => okKey(k) && SAFE_ID.test(k) && isDay(d)).forEach(([k, d]) => { m[k] = d; }); out.opened = m; }
+    // where a saved word was met (at most 3): { L123: [{ k: 'read'|'news'|'city', ref: 'a14' | link | city, p: paragraph, s: sentence, at }] }
+    if (out.wordSrc !== undefined) { const m = {}; Object.entries(obj(out.wordSrc)).filter(([id]) => okKey(id) && SAFE_ID.test(id)).forEach(([id, list]) => { const l = arr(list).map(x => ({ k: ['read', 'news', 'city'].includes(x.k) ? x.k : 'read', ref: srcRef(x.ref), p: x.p == null || x.p === '' ? null : Math.max(0, Math.round(num(x.p))), s: str(x.s == null ? '' : x.s).slice(0, 300), at: when(x.at) })).filter(x => x.ref && x.s).slice(-3); if (l.length) m[id] = l; }); out.wordSrc = m; }
     return out;
   }
   const arr0 = x => Array.isArray(x) ? x.filter(y => typeof y === 'string') : [];
+  // a word source points at a passage or city id, or a news link
+  const srcRef = r => typeof r === 'string' && (SAFE_ID.test(r) || /^https?:\/\/\S{1,500}$/.test(r)) ? r : '';
   // Ids end up in HTML attributes and lookups, so anything from outside this device (files, the cloud) is checked.
   const SAFE_ID = /^[A-Za-z0-9_.:-]{1,80}$/;
   const isObj = x => !!x && typeof x === 'object' && !Array.isArray(x);
@@ -161,12 +174,14 @@
   rebuildVocab();
   rebuildArticles();
   const pickRandom = (arr, n, excludeId) => { const out = [], used = new Set(); let guard = 0; while (out.length < n && guard++ < n * 20 && used.size < arr.length) { const i = Math.floor(Math.random() * arr.length); if (used.has(i)) continue; used.add(i); const x = arr[i]; if (x.id === excludeId) continue; out.push(x); } return out; };
-  let ui = Object.assign({ lang: 'zh', font: 'hand', theme: 'navy', user: null },
+  let ui = Object.assign({ lang: 'zh', font: 'clean', theme: 'navy', user: null },
     (() => { try { return JSON.parse(localStorage.getItem(LS_UI) || '{}'); } catch (e) { return {}; } })());
   // tour: once the invitation is answered in any tab it stays answered (another open tab must not write it back)
-  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 2, tour: ui.tour ? 1 : 0, voice: ui.voice === 'f' ? 'f' : 'm' })); } catch (e) { } };
+  const saveUi = () => { try { if (!ui.tour && (JSON.parse(localStorage.getItem(LS_UI) || '{}') || {}).tour) ui.tour = 1; localStorage.setItem(LS_UI, JSON.stringify({ lang: ui.lang, font: ui.font, theme: ui.theme, user: ui.user, uiv: 3, tour: ui.tour ? 1 : 0, voice: ui.voice === 'f' ? 'f' : 'm' })); } catch (e) { } };
   // the old site saved English as its default on every device; switch those to Chinese once (a later English choice sticks)
-  if (ui.uiv !== 2) { if (ui.lang === 'en') ui.lang = 'zh'; ui.uiv = 2; saveUi(); }
+  if (ui.uiv !== 2 && ui.uiv !== 3) { if (ui.lang === 'en') ui.lang = 'zh'; }
+  // 2026-10: the standard typeface is the default for everyone once; 手寫風 stays a choice (a later pick sticks)
+  if (ui.uiv !== 3) { if (ui.font !== 'clean') ui.font = 'clean'; ui.uiv = 3; saveUi(); }
   Object.defineProperty(ui, 'teacher', { get: () => !!(ui.user && ui.user.role === 'teacher') });
 
   // volatile view state
@@ -230,8 +245,8 @@
   }
   // one page title per page: the tab's emoji and name, with the longer description underneath
   function pageHead(page, sub) {
-    const [ic, key] = PAGE_META[page];
-    return `<header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">${ic}</span> ${t(key)}</h1>${sub ? `<p>${sub}</p>` : ''}</header>`;
+    const key = PAGE_META[page][1];
+    return `<header class="page-head"><h1 tabindex="-1">${t(key)}</h1>${sub ? `<p>${sub}</p>` : ''}</header>`;
   }
   // a practice session's top bar: ✕ end · what and how far · timer or score
   // (kind = 選擇題, count = 第 1 / 10 題; on narrow phones only the count is shown, so the progress never gets cut off)
@@ -315,7 +330,7 @@
   const sbCheck = ({ data, error }) => { if (error) throw error; return data; };
 
   // does a record hold any practice at all? (an empty record must never replace real practice)
-  const hasPractice = p => isObj(p) && ['cards', 'days', 'mcq', 'translate', 'cities'].some(k => isObj(p[k]) && Object.keys(p[k]).length) || isObj(p) && ['readingQuizzes', 'vocabQuizzes', 'mcqTests', 'myWords'].some(k => Array.isArray(p[k]) && p[k].length) || isObj(p) && isObj(p.bookmarks) && ['vocab', 'articles'].some(k => Array.isArray(p.bookmarks[k]) && p.bookmarks[k].length) || isObj(p) && isObj(p.level);
+  const hasPractice = p => isObj(p) && ['cards', 'days', 'mcq', 'translate', 'cities', 'gq', 'grammar', 'opened', 'wordSrc'].some(k => isObj(p[k]) && Object.keys(p[k]).length) || isObj(p) && ['readingQuizzes', 'vocabQuizzes', 'mcqTests', 'myWords'].some(k => Array.isArray(p[k]) && p[k].length) || isObj(p) && isObj(p.bookmarks) && ['vocab', 'articles'].some(k => Array.isArray(p.bookmarks[k]) && p.bookmarks[k].length) || isObj(p) && (isObj(p.level) || isObj(p.goal));
   const hash36 = x => { const t = JSON.stringify(x) || ''; let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
   // what this device last saw in the cloud, for the lists where removing something must stick (bookmarks, own words)
   const progressSnap = p => ({ bv: p.bookmarks.vocab.slice(), ba: p.bookmarks.articles.slice(), mw: (p.myWords || []).map(w => w.id) });
@@ -332,7 +347,7 @@
       Object.keys(x.cards).forEach(id => { if (String(x.cards[id].last || '') < cut) delete x.cards[id]; });
       Object.keys(x.days).forEach(d => { if (d < cut.slice(0, 10)) delete x.days[d]; });
       ['readingQuizzes', 'vocabQuizzes', 'mcqTests'].forEach(k => { if (x[k]) x[k] = x[k].filter(r => String(r.date || '') >= cut); });
-      ['mcq', 'translate', 'cities'].forEach(k => { if (x[k]) x[k] = {}; });
+      ['mcq', 'translate', 'cities', 'gq', 'grammar', 'opened', 'wordSrc'].forEach(k => { if (x[k]) x[k] = {}; });
       x.bookmarks = { vocab: [], articles: [] }; if (x.myWords) x.myWords = []; });
     const out = Object.assign({}, b, a);
     if (cut) out.resetAt = cut;
@@ -344,11 +359,16 @@
     out.readingQuizzes = union(a.readingQuizzes, b.readingQuizzes, quizKey);
     out.vocabQuizzes = union(a.vocabQuizzes, b.vocabQuizzes, quizKey);
     if (a.mcqTests || b.mcqTests) out.mcqTests = union(a.mcqTests, b.mcqTests, r => [r.date, r.type, r.mode, r.score, r.total].join('|')).slice(-50);
-    ['mcq', 'translate'].forEach(k => { if (!a[k] && !b[k]) return; const m = Object.assign({}, b[k]); Object.entries(a[k] || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o || r.tries > o.tries || (r.tries === o.tries && String(r.last || '') >= String(o.last || '')) ? r : o; }); out[k] = m; });
+    ['mcq', 'translate', 'gq'].forEach(k => { if (!a[k] && !b[k]) return; const m = Object.assign({}, b[k]); Object.entries(a[k] || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o || r.tries > o.tries || (r.tries === o.tries && String(r.last || '') >= String(o.last || '')) ? r : o; }); out[k] = m; });
     if (a.cities || b.cities) { const m = Object.assign({}, b.cities); Object.entries(a.cities || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o ? r : { visited: String(r.visited || '') > String(o.visited || '') ? r.visited : o.visited, best: Math.max(r.best, o.best) }; }); out.cities = m; }
     // the level chosen last, on whichever device; a real choice always beats "skip for now"
     const lvRank = l => !l ? 0 : l.v ? 2 : 1;
     if (a.level || b.level) out.level = lvRank(a.level) !== lvRank(b.level) ? (lvRank(a.level) > lvRank(b.level) ? a.level : b.level) : String(a.level.at) >= String(b.level.at) ? a.level : b.level;
+    if (a.goal || b.goal) out.goal = !a.goal ? b.goal : !b.goal ? a.goal : String(a.goal.at) >= String(b.goal.at) ? a.goal : b.goal;
+    if (a.grammar || b.grammar) { const m = Object.assign({}, b.grammar); Object.entries(a.grammar || {}).forEach(([id, r]) => { const o = m[id]; m[id] = !o ? r : { best: Math.max(r.best, o.best), at: String(r.at || '') > String(o.at || '') ? r.at : o.at }; }); out.grammar = m; }
+    if (a.opened || b.opened) { const m = Object.assign({}, b.opened); Object.entries(a.opened || {}).forEach(([k, d]) => { if (!m[k] || d > m[k]) m[k] = d; }); out.opened = m; }
+    if (a.wordSrc || b.wordSrc) { const m = {}; new Set(Object.keys(a.wordSrc || {}).concat(Object.keys(b.wordSrc || {}))).forEach(id => { const seen = new Set();
+      m[id] = ((b.wordSrc || {})[id] || []).concat((a.wordSrc || {})[id] || []).filter(x => { const k = x.k + '|' + x.ref + '|' + x.s; return !seen.has(k) && seen.add(k); }).sort((x, y) => String(x.at).localeCompare(String(y.at))).slice(-3); }); out.wordSrc = m; }
     const sn = cut ? null : snap;
     out.bookmarks = { vocab: merge3(a.bookmarks.vocab, b.bookmarks.vocab, sn && sn.bv), articles: merge3(a.bookmarks.articles, b.bookmarks.articles, sn && sn.ba) };
     if (a.myWords || b.myWords) { const all = new Map((b.myWords || []).concat(a.myWords || []).map(w => [w.id, w])), keep = new Set(merge3((a.myWords || []).map(w => w.id), (b.myWords || []).map(w => w.id), sn && sn.mw)); out.myWords = Array.from(all.values()).filter(w => keep.has(w.id)); }
@@ -717,18 +737,18 @@
   function guideHTML() {
     const I = t('examInfo'), zh = ui.lang === 'zh', colon = zh ? '：' : ': ', dot = zh ? '・' : ' · ';
     const [cCount, cMarks] = I.cols.slice(1, 3).map(c => c.replace(/\s*[（(].*?[）)]/, '')); // 題數（近年） → 題數
-    return `<div class="guide-head"><h2 id="guideTitle">📄 ${t('guideTitle')}</h2><button type="button" class="modal-close" data-guide="close" aria-label="${t('close')}">✕</button></div>
+    return `<div class="guide-head"><h2 id="guideTitle">${t('guideTitle')}</h2><button type="button" class="modal-close" data-guide="close" aria-label="${t('close')}">✕</button></div>
       <div class="guide-body">
-        <h3>📋 ${t('structureTitle')}</h3>
+        <h3>${t('structureTitle')}</h3>
         <div class="gd-parts">${I.rows.map(r => `<div class="gd-part"><b>${esc(r[0])}</b><div class="gd-meta">${esc(cCount)}${colon}${esc(r[1])}${dot}${esc(cMarks)}${colon}${esc(r[2])}</div><div>${esc(r[3])}</div></div>`).join('')}</div>
-        <h3>🧮 ${t('guideSplitTitle')}</h3>
+        <h3>${t('guideSplitTitle')}</h3>
         <div class="gd-split">${I.split.map(([n, x]) => `<div class="gd-num"><b>${esc(n)}</b><span>${esc(x)}</span></div>`).join('')}</div>
-        <h3>⏱️ ${t('timePlanTitle')}</h3>
+        <h3>${t('timePlanTitle')}</h3>
         ${timePlanBar()}
         <ul class="gd-tips">${TIME_PLAN.map(([k, m, c]) => `<li><i style="background:${c}" aria-hidden="true"></i><span><b>${esc(t(k))} ${m}′</b>　${esc(t('tip' + k.slice(3)))}</span></li>`).join('')}</ul>
-        <h3>📈 ${t('trendTitle')}</h3>
+        <h3>${t('trendTitle')}</h3>
         <div class="list">${I.trends.map((x, i) => `<div class="list-item"><span class="gd-no">0${i + 1}</span><div class="grow"><div class="title">${esc(x[0])}</div><div class="meta">${esc(x[1])}</div></div></div>`).join('')}</div>
-        <h3>✅ ${t('rulesTitle')}</h3>
+        <h3>${t('rulesTitle')}</h3>
         <div class="list">${I.rules.map(x => `<div class="list-item"><span aria-hidden="true">${x[0]}</span><div class="grow"><div class="title">${esc(x[1])}</div><div class="meta">${esc(x[2])}</div></div></div>`).join('')}</div>
         <p class="gd-line">「${t('oneLine')}」</p>
         <p class="gd-src">${t('guideSrc')}</p>
@@ -847,10 +867,10 @@
       <div class="banner"><picture><source srcset="img/banner-static.svg" media="(prefers-reduced-motion: reduce)"><img src="img/banner.svg" alt="" class="banner-img" width="1400" height="220"></picture></div>
       <div class="home-daily">${dailyCard()}</div>
       <div style="margin-top:24px">${worldMapCard(dl)}</div>
-      <h2 class="section-title">⏱️ ${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
-      <h2 class="section-title">🔖 ${t('bookmarks')}</h2>
+      <h2 class="section-title">${t('timePlanTitle')}</h2><p class="section-sub">${t('timePlanSub')}</p>${timePlanCard()}
+      <h2 class="section-title">${t('bookmarks')}</h2>
       ${homeBookmarks()}
-      <h2 class="section-title">🏅 ${t('recentQuiz')}</h2>
+      <h2 class="section-title">${t('recentQuiz')}</h2>
       ${recent.length ? `<div class="list">${recent.map(r => `<div class="list-item"><div class="grow"><div class="title">${esc(r.title)}</div><div class="meta">${fmtDate(r.date)}</div></div><span class="chip ${r.score / r.total >= .8 ? 'ok' : r.score / r.total >= .6 ? 'warn' : 'bad'}">${r.score} / ${r.total}</span></div>`).join('')}</div>` : `<p class="muted">${t('noQuiz')}</p>`}
     `;
   }
@@ -897,7 +917,7 @@
     const mid = (() => { const m = /^M([\d.-]+),([\d.-]+) Q([\d.-]+),([\d.-]+) ([\d.-]+),([\d.-]+)$/.exec(arc); if (!m) return { x: tx, y: ty, a: 0 }; const [x0, y0, cx, cy, x2, y2] = m.slice(1).map(Number);
       return { x: .25 * x0 + .5 * cx + .25 * x2, y: .25 * y0 + .5 * cy + .25 * y2, a: Math.atan2(y2 - y0, x2 - x0) * 180 / Math.PI }; })();
     return `<div class="map-card"><span class="map-count"><span aria-hidden="true">📅</span> ${state.settings.examDate.replace(/-/g, '/')} · ${dl > 0 ? tf('daysLeftShort', { n: dl }) : dl === 0 ? t('today') : t('examChipPassed')}</span>
-      <h3>🌍 ${t('mapTitle')}</h3><p>${t('mapSub')}</p>
+      <h3>${t('mapTitle')}</h3><p>${t('mapSub')}</p>
       <svg viewBox="0 0 ${cols * step} ${rows * step}" data-full="0 0 ${cols * step} ${rows * step}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">${dots}
         <path d="${arc}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
         <path d="M0,${ly - 60} Q${lx / 2},${ly - 160} ${lx},${ly}" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="10 10" opacity=".85"/>
@@ -981,20 +1001,20 @@
       <div class="city-body">
         <div class="row city-tools"><div class="seg"><button class="seg-btn ${zh ? '' : 'on'}" data-action="cityZh" data-v="0" aria-pressed="${!zh}">English</button><button class="seg-btn ${zh ? 'on' : ''}" data-action="cityZh" data-v="1" aria-pressed="${zh}">${t('withChinese')}</button></div></div>
         <p class="en city-intro">${esc(c.intro)} ${sp(c.intro)}</p>${zh ? `<p class="city-zh">${esc(c.intro_zh)}</p>` : ''}
-        <h3>🗣️ ${t('cityPhrases')}</h3>
+        <h3>${t('cityPhrases')}</h3>
         <div class="city-phrases">${c.phrases.map(ph => `<div class="city-phrase"><span class="scene" title="${esc(ph.scene)}">${SCENE_ICON[ph.scene] || '💬'}</span><div class="grow"><div class="en">${esc(ph.en)}</div><div class="city-zh">${esc(ph.zh)}</div>${ph.tip ? `<div class="small muted">💡 ${esc(ph.tip)}</div>` : ''}</div>${sp(ph.en)}</div>`).join('')}</div>
-        <h3>💬 ${esc(c.dialogue.title)} <span class="small muted">${esc(c.dialogue.title_zh)}</span> <button class="btn sm" data-action="cityPlay">▶ ${t('playAll')}</button></h3>
+        <h3>${esc(c.dialogue.title)} <span class="small muted">${esc(c.dialogue.title_zh)}</span> <button class="btn sm" data-action="cityPlay">▶ ${t('playAll')}</button></h3>
         <div class="city-dialogue">${c.dialogue.lines.map((l, i) => `<div class="city-line ${l.who === 'You' ? 'me' : ''}" data-line="${i}"><b>${esc(l.who === 'You' ? t('cityYou') : l.who)}</b><div class="grow"><div class="en">${esc(l.en)}</div>${zh ? `<div class="city-zh">${esc(l.zh)}</div>` : ''}</div>${sp(l.en)}</div>`).join('')}</div>
-        <h3>🪧 ${t('citySign')}</h3>
+        <h3>${t('citySign')}</h3>
         <div class="city-signbox"><div class="city-sign sign-${esc(c.sign.style)}">${signLines.map((x, i) => `<div class="${i ? 'sub' : 'main'}">${esc(x)}</div>`).join('')}</div>
           <div class="grow"><div class="city-zh"><b>${esc(c.sign.zh)}</b></div><div class="small">${esc(c.sign.note)}</div>${sp(signLines.join('. '))}</div></div>
-        <h3>🔤 ${t('cityWords')}</h3>
+        <h3>${t('cityWords')}</h3>
         <div class="city-words">${c.words.map(w => `<div class="city-word"><div class="row"><b class="en">${esc(w.word)}</b><span class="small muted">${esc(w.pos)}</span>${sp(w.word)}<span class="spacer"></span>${vocabBtn(w)}</div><div>${esc(w.zh)}${w.us ? ` <span class="chip info">${t('cityUS')} ${esc(w.us)}</span>` : ''}</div><div class="small en muted">${esc(w.example)}</div></div>`).join('')}</div>
         <div class="city-note"><b>💡 ${t('cityNote')}</b><p class="en">${esc(c.english_note.en)}</p><p class="city-zh">${esc(c.english_note.zh)}</p></div>
-        <h3>📝 ${t('cityQuiz')} ${answered === c.quiz.length ? `<span class="chip ${score === c.quiz.length ? 'ok' : score ? 'warn' : 'bad'}">${score} / ${c.quiz.length}</span>` : ''}</h3>
+        <h3>${t('cityQuiz')} ${answered === c.quiz.length ? `<span class="chip ${score === c.quiz.length ? 'ok' : score ? 'warn' : 'bad'}">${score} / ${c.quiz.length}</span>` : ''}</h3>
         ${c.quiz.map((x, i) => `<div class="city-q"><div class="en"><b>${i + 1}.</b> ${esc(x.q)}</div><div class="city-opts">${x.options.map((o, oi) => { const picked = q[i] === oi, done = q[i] != null;
           return `<button class="city-opt en ${done && oi === x.answer ? 'right' : ''} ${picked && oi !== x.answer ? 'wrong' : ''}" data-action="cityAnswer" data-q="${i}" data-o="${oi}" ${done ? 'disabled' : ''}>(${'ABCD'[oi]}) ${esc(o)}</button>`; }).join('')}</div>${q[i] != null ? `<div class="small city-explain">${esc(x.explain)}</div>` : ''}</div>`).join('')}
-        ${reads.length || todays.length ? `<h3>📖 ${t('cityMore')}</h3><div class="list">${reads.map(a => `<button class="list-item city-link" data-action="cityRead" data-id="${esc(a.id)}"><span>📖</span><div class="grow"><div class="title en">${esc(a.title)}</div>${a.title_zh ? `<div class="meta">${esc(a.title_zh)}</div>` : ''}</div></button>`).join('')}${todays.map(it => `<button class="list-item city-link" data-action="cityNews" data-link="${esc(it.link)}"><span>📰</span><div class="grow"><div class="title en">${esc(it.title)}</div><div class="meta">${esc(it.source || '')} · ${t('todayNews')}</div></div></button>`).join('')}</div>` : ''}
+        ${reads.length || todays.length ? `<h3>${t('cityMore')}</h3><div class="list">${reads.map(a => `<button class="list-item city-link" data-action="cityRead" data-id="${esc(a.id)}"><span>📖</span><div class="grow"><div class="title en">${esc(a.title)}</div>${a.title_zh ? `<div class="meta">${esc(a.title_zh)}</div>` : ''}</div></button>`).join('')}${todays.map(it => `<button class="list-item city-link" data-action="cityNews" data-link="${esc(it.link)}"><span>📰</span><div class="grow"><div class="title en">${esc(it.title)}</div><div class="meta">${esc(it.source || '')} · ${t('todayNews')}</div></div></button>`).join('')}</div>` : ''}
         <button type="button" class="btn ghost city-back" data-action="closeCity">🗺️ ${t('backToMap')}</button>
       </div>`;
   }
@@ -1166,7 +1186,7 @@
     return `${subtabs('mcq')}<div class="card center mc-card"><div class="big-icon">${right / units.length >= .8 ? '🎉' : '💪'}</div><h2>${t('mcResult')}</h2><p class="big">${right} / ${units.length}</p>
         ${s.secs != null ? `<p class="muted">⏱️ ${fmtDur(s.secs)}</p>` : ''}
         <div class="row" style="justify-content:center"><button class="btn accent" data-action="mcStart">${t('trAgain')}</button>${wrongs.length ? `<button class="btn" data-action="mcRedo">${t('trRedoWrong')}</button>` : ''}<button class="btn ghost" data-action="mcExit">${t('back')}</button></div></div>
-      ${wrongs.length ? `<h3 class="section-title">❌ ${t('mcWrongReview')}</h3>${wrongs.map(u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
+      ${wrongs.length ? `<h3 class="section-title">${t('mcWrongReview')}</h3>${wrongs.map(u => `<div class="card mc-review"><div class="mc-q en">${mcQ(u.q)}</div>
         <div class="small">${t('studentChose')}：<span class="chip bad en">${s.answers[u.id] != null ? L4[s.answers[u.id]] + '. ' + esc(u.options[s.answers[u.id]]) : '—'}</span> → ${t('correctIs')}：<span class="chip ok en">${L4[u.answer]}. ${esc(u.options[u.answer])}</span></div>
         <div class="explain">${esc(u.explain || '')}</div>${u.type === 'grammar' ? gramLink(gramChapter(u.topic)) : ''}</div>`).join('')}` : ''}`;
   }
@@ -1431,10 +1451,10 @@
       <p class="gr-lead">💡 ${grRich(c.lead)}</p>
       <nav class="gr-toc" aria-label="本章內容">${toc.map(([id, h]) => `<button type="button" class="gr-toc-b" data-action="grJump" data-to="${id}">${grNoLinks(grRich(h))}</button>`).join('')}</nav>
       ${c.sections.map(grSection).join('')}
-      <section class="card gr-mis" id="gs-mis" tabindex="-1" aria-labelledby="gsh-mis"><h2 id="gsh-mis">⚠️ 常見錯誤</h2>
+      <section class="card gr-mis" id="gs-mis" tabindex="-1" aria-labelledby="gsh-mis"><h2 id="gsh-mis">常見錯誤</h2>
         <ul>${c.mistakes.map(m => `<li><p class="gr-wrong" lang="en"><span class="gr-mk" aria-hidden="true">✘</span><span class="sr-only" lang="zh-Hant-TW">錯誤：</span><s>${esc(m.wrong)}</s></p><p class="gr-right" lang="en"><span class="gr-mk" aria-hidden="true">✔</span><span class="sr-only" lang="zh-Hant-TW">正確：</span>${grRich(m.right)}</p><p class="gr-why">${grRich(m.why)}</p></li>`).join('')}</ul></section>
-      <section class="card gr-tips" id="gs-tips" tabindex="-1" aria-labelledby="gsh-tips"><h2 id="gsh-tips">🎯 統測重點</h2><ul>${c.tips.map(x => `<li>${grRich(x)}</li>`).join('')}</ul></section>
-      <section class="card gr-quiz" id="gs-quiz" tabindex="-1" aria-labelledby="gsh-quiz"><h2 id="gsh-quiz">📝 小測驗</h2>
+      <section class="card gr-tips" id="gs-tips" tabindex="-1" aria-labelledby="gsh-tips"><h2 id="gsh-tips">統測重點</h2><ul>${c.tips.map(x => `<li>${grRich(x)}</li>`).join('')}</ul></section>
+      <section class="card gr-quiz" id="gs-quiz" tabindex="-1" aria-labelledby="gsh-quiz"><h2 id="gsh-quiz">小測驗</h2>
         <ol class="gr-qs">${c.quiz.map((_, i) => grQItem(c, i)).join('')}</ol>
         <div id="grQsum" role="status">${grQSum(c)}</div></section>
       <nav class="gr-pn" aria-label="上一章、下一章">${prev ? `<a class="btn ghost" href="#/grammar/${prev.id}">← ${grCode(prev)} ${esc(prev.title)}</a>` : '<span></span>'}${next ? `<a class="btn accent" href="#/grammar/${next.id}">${grCode(next)} ${esc(next.title)} →</a>` : `<a class="btn accent" href="#/grammar/quiz">🎯 綜合測驗 →</a>`}</nav>`;
@@ -1446,7 +1466,7 @@
     const g = view.gr, s = g.mix;
     if (!s) {
       const best = grStore.mix[g.range || 'all'], pick = (r, l) => `<button type="button" class="gr-pick" data-action="grRange" data-v="${r}" aria-pressed="${g.range === r}">${esc(l)}</button>`;
-      return `<section class="card gr-mix-set" aria-labelledby="qsTitle"><h2 id="qsTitle" style="margin-top:0">🎯 綜合測驗</h2>
+      return `<section class="card gr-mix-set" aria-labelledby="qsTitle"><h2 id="qsTitle" style="margin-top:0">綜合測驗</h2>
         <p class="muted">從各章的題目隨機抽 ${GR_MIXN} 題，答完看解析，答錯可以直接回到那一章。</p>
         <h3 class="small gr-rh" id="grRu">依單元</h3><div class="gr-ranges units" role="group" aria-labelledby="grRu">${pick('', '全部')}${GR_UNITS.map(u => pick('u:' + u.id, `${u.icon} ${u.short}`)).join('')}</div>
         <h3 class="small gr-rh" id="grRb">依程度</h3><div class="gr-ranges" role="group" aria-labelledby="grRb">${GR_BANDS.slice(1).map(([b, l]) => pick(b, l)).join('')}</div>
@@ -1711,9 +1731,9 @@
         </div>`).join('')}</div>
         <p class="small muted reader-note">✍️ ${tf('newsRetold', { s: esc(les.source) })} <a href="${esc(les.link)}" target="_blank" rel="noopener noreferrer">${tf('newsRead', { s: esc(les.source) })} ↗</a></p>
         <div class="lesson-grid">
-          <section class="lesson-box lb-words"><h4>🔤 ${t('lessonVocab')}</h4><ul>${(les.vocab || []).map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(full, v.word))}</li>`).join('')}</ul></section>
-          <section class="lesson-box lb-phrases"><h4>🧩 ${t('lessonPhrases')}</h4><ul>${(les.phrases || []).map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
-          <section class="lesson-box lb-grammar"><h4>📐 ${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${g.focus ? markTerms(g.example, [{ re: new RegExp(escRe(g.focus.trim()).replace(/\s+/g, '\\s+'), 'gi'), cls: 'gram-focus' }]) : esc(g.example)}”</p>${gramLink(gramChapter(g.point))}</div>`).join('')}</section>
+          <section class="lesson-box lb-words"><h4>${t('lessonVocab')}</h4><ul>${(les.vocab || []).map(v => `<li><span class="lw-word en">${esc(v.word)}</span> <span class="small muted">${esc(v.pos || '')}</span> <span class="lw-zh">${esc(v.zh)}</span>${saveWordBtn(v.word, v.pos, v.zh, sentenceWith(full, v.word))}</li>`).join('')}</ul></section>
+          <section class="lesson-box lb-phrases"><h4>${t('lessonPhrases')}</h4><ul>${(les.phrases || []).map(p => `<li><span class="lp-word en">${esc(p.phrase)}</span> <span class="lw-zh">${esc(p.zh)}</span></li>`).join('')}</ul></section>
+          <section class="lesson-box lb-grammar"><h4>${t('lessonGrammar')}</h4>${(les.grammar || []).map(g => `<div class="gram-item"><b>${esc(g.point)}</b><p class="small">${esc(g.explain)}</p><p class="gram-ex en">“${g.focus ? markTerms(g.example, [{ re: new RegExp(escRe(g.focus.trim()).replace(/\s+/g, '\\s+'), 'gi'), cls: 'gram-focus' }]) : esc(g.example)}”</p>${gramLink(gramChapter(g.point))}</div>`).join('')}</section>
         </div>
       </article>
       <div class="row reader-nav" style="margin:12px auto 0"><button class="btn sm ghost" data-action="closeNewsArticle">← ${t('newsBack')}</button></div>`;
@@ -1779,7 +1799,7 @@
     ];
     return `${subtabs('news')}${pageHead('news', t('newsSub'))}
       ${body}
-      <h2 class="section-title">🎧 ${t('newsSources')}</h2>
+      <h2 class="section-title">${t('newsSources')}</h2>
       <div class="cur-grid">${CUR.map(([n, u, k]) => `<a class="cur-card" href="${u}" target="_blank" rel="noopener noreferrer"><b>${n} ↗</b><span>${t(k)}</span></a>`).join('')}</div>`;
   }
 
@@ -2016,7 +2036,7 @@
   function flashStage() {
     const f = view.flash;
     if (f.idx >= f.queue.length) {
-      return `${subtabs('flashcards')}<div class="card center"><h2 tabindex="-1">🎉 ${t('roundDone')}</h2><p style="font-size:20px">${tf('roundStats', { k: f.known.length, d: f.missed.length })}</p>
+      return `${subtabs('flashcards')}<div class="card center"><h2 tabindex="-1">${t('roundDone')}</h2><p style="font-size:20px">${tf('roundStats', { k: f.known.length, d: f.missed.length })}</p>
         <div class="row" style="justify-content:center"><button class="btn accent" data-action="flashAgain">${t('again')}</button>${f.missed.length ? `<button class="btn" data-action="flashMissed">${t('practiceUnknown')}</button>` : ''}<button class="btn ghost" data-action="flashExit">${t('back')}</button></div></div>`;
     }
     const v = VOCAB.find(x => x.id === f.queue[f.idx]);
@@ -2064,7 +2084,7 @@
     const q = view.quiz;
     const byId = id => VOCAB.find(x => x.id === id);
     if (q.idx >= q.qs.length) {
-      return `${subtabs('flashcards')}<div class="card center"><h2 tabindex="-1">📝 ${t('quizDone')}</h2><div class="score-banner"><div class="big">${tf('quizResult', { c: q.correct, t: q.qs.length })}</div></div>
+      return `${subtabs('flashcards')}<div class="card center"><h2 tabindex="-1">${t('quizDone')}</h2><div class="score-banner"><div class="big">${tf('quizResult', { c: q.correct, t: q.qs.length })}</div></div>
         ${q.wrong.length ? `<div class="list" style="margin-top:14px;text-align:left">${q.wrong.map(w => `<div class="list-item"><div class="grow"><div class="title en">${esc(w.word)}</div><div class="meta">${esc(w.zh)}${w.given ? ` · ${t('typed')}「${esc(w.given)}」` : ''}</div></div></div>`).join('')}</div>` : ''}
         <div class="row" style="justify-content:center;margin-top:14px"><button class="btn accent" data-action="quizAgain">${t('again')}</button><button class="btn ghost" data-action="quizExit">${t('back')}</button></div></div>`;
     }
@@ -2235,20 +2255,20 @@
         ${stat(t('statMastered'), `${mastered}`, `/ ${VOCAB.length}`)}
         ${stat(t('reportTranslate'), T.done ? `${T.right} / ${T.done}` : '—', T.total ? tf('trDoneOf', { n: T.done, t: T.total }) : '')}
       </div>
-      <h2>📅 ${t('reportActivity')}</h2>
+      <h2>${t('reportActivity')}</h2>
       <div class="pr-bars">${days.map(([d, n]) => `<div class="pr-bar"><div class="pr-fill" style="height:${Math.round(n / maxDay * 60)}px"></div><div class="pr-n">${n || ''}</div><div class="pr-d">${d}</div></div>`).join('')}</div>
-      <h2>📖 ${t('reportReading')}</h2>
+      <h2>${t('reportReading')}</h2>
       ${rq.length ? `<table class="pr-table"><tr><th>${t('reportWhen')}</th><th>${t('title')}</th><th>${t('reportScore')}</th><th>${t('reportTime')}</th></tr>${rq.map(r => `<tr><td>${fmtDate(r.date)}</td><td class="en">${esc(r.title)}</td><td>${r.score} / ${r.total}</td><td>${r.secs != null ? fmtDur(r.secs) : '—'}</td></tr>`).join('')}</table>` : `<p class="pr-none">${t('noData')}</p>`}
-      <h2>❌ ${t('wrongAnalysis')}</h2>
+      <h2>${t('wrongAnalysis')}</h2>
       ${A.wrongs.length ? A.wrongs.slice(0, 10).map(w => `<div class="pr-item"><div class="pr-meta en">${esc(w.title)}</div><div class="en">${esc(w.q)}</div><div>${t('studentChose')}：<span class="pr-bad">${w.chosen.map(esc).join('、')}</span> → ${t('correctIs')}：<span class="pr-ok">${esc(w.correct)}</span>（${tf('wrongTimes', { n: w.n })}）</div></div>`).join('') : `<p class="pr-none">${t('noWrong')}</p>`}
-      <h2>🃏 ${t('reportWords')}</h2>
+      <h2>${t('reportWords')}</h2>
       ${W.seen || W.quizzes.length ? `<div class="pr-words"><span><b>${t('reportCardsSeen')}</b> ${W.seen}</span><span><b>${t('reportCardsKnown')}</b> ${W.known}</span><span><b>${t('reportCardsLearning')}</b> ${W.learning}</span></div>
         ${W.quizzes.length ? `<table class="pr-table"><tr><th>${t('reportWhen')}</th><th>${t('reportQuizzes')}</th><th>${t('reportScore')}</th></tr>${W.quizzes.map(r => `<tr><td>${fmtDate(r.date)}</td><td>${t(QUIZ_NAME[r.type] || 'quizChoice')}</td><td>${r.score} / ${r.total}</td></tr>`).join('')}</table>` : ''}` : `<p class="pr-none">${t('noData')}</p>`}
-      <h2>🧠 ${t('weakWords')}</h2>
+      <h2>${t('weakWords')}</h2>
       ${A.weakList.length ? `<div class="pr-words">${A.weakList.slice(0, 24).map(w => `<span><b class="en">${esc(w.word)}</b> ${esc(w.zh)}</span>`).join('')}</div>` : `<p class="pr-none">${t('noWeak')}</p>`}
-      ${(() => { const M = mcStats(progress); return `<h2>📝 ${t('tabMcq')}</h2>${M.done ? `<div class="pr-words">${MC_TYPES.map(([k, l]) => { const b = M.byType[k]; return `<span><b>${t(l)}</b> ${b.done ? `${b.right} / ${b.done}（${Math.round(b.right / b.done * 100)}%）` : '—'}</span>`; }).join('')}</div>
+      ${(() => { const M = mcStats(progress); return `<h2>${t('tabMcq')}</h2>${M.done ? `<div class="pr-words">${MC_TYPES.map(([k, l]) => { const b = M.byType[k]; return `<span><b>${t(l)}</b> ${b.done ? `${b.right} / ${b.done}（${Math.round(b.right / b.done * 100)}%）` : '—'}</span>`; }).join('')}</div>
         ${M.wrong.slice(0, 8).map(u => `<div class="pr-item"><div class="en">${esc(u.q).replace(/\n/g, ' / ')}</div><div class="en">${t('studentChose')}：<span class="pr-bad">${u.chosenIdx != null ? esc(u.options[u.chosenIdx]) : '—'}</span> → ${t('correctIs')}：<span class="pr-ok">${esc(u.options[u.answer])}</span></div></div>`).join('')}` : `<p class="pr-none">${t('noData')}</p>`}`; })()}
-      <h2>✍️ ${t('reportTranslate')}</h2>
+      <h2>${t('reportTranslate')}</h2>
       ${T.wrong.length ? T.wrong.slice(0, 10).map(x => `<div class="pr-item"><div>${esc(x.zh)}</div><div class="en">${t('trYours')}：<span class="pr-bad">${esc(x.answer || '—')}</span></div><div class="en">${t('trModel')}：<span class="pr-ok">${esc(x.en)}</span></div></div>`).join('') : `<p class="pr-none">${T.done ? t('trAllRight') : t('noData')}</p>`}
       <div class="pr-foot">${t('reportFoot')}</div>
     </div>`;
@@ -2306,7 +2326,7 @@
     const r = view.report; if (!r) return '';
     const share = canShareFiles();
     const direct = cloud.configured, inBox = direct && ui.user && ui.user.cloud; // logged in: both emails sit in the 直接寄給老師 box
-    return `<div class="card report-card" id="reportCard"><h3 style="margin-top:0">📄 ${t('pdfReady')}</h3>
+    return `<div class="card report-card" id="reportCard"><h3 style="margin-top:0">${t('pdfReady')}</h3>
       ${inBox ? '' : teacherEmailField()}
       ${direct ? mailBoxHTML() : ''}
       ${direct ? `<p class="small muted mail-other">${t('mailOther')}</p>` : ''}
@@ -2326,7 +2346,7 @@
     if (!ui.user || !ui.user.cloud) return `<div class="mail-box" id="mailBox"><p class="small" style="margin:0">📨 ${t('mailLoginFirst')}</p>
       <button type="button" class="btn sm accent" data-action="openAuth">👤 ${t('login')}</button></div>`;
     const status = m.sending ? `⏳ ${t('mailSending')}` : m.sentTo ? tf('mailSent', { e: esc(m.sentTo) }) : m.err ? `⚠️ ${tf('mailErr_' + (MAIL_ERRS.includes(m.err) ? m.err : 'other'), { n: m.limit || 5 })}` : '';
-    return `<div class="mail-box" id="mailBox"><h4>📨 ${t('mailDirectTitle')}</h4>
+    return `<div class="mail-box" id="mailBox"><h4>${t('mailDirectTitle')}</h4>
       ${teacherEmailField(view.mailTo)}
       <div class="field"><label for="myEmailInput">${t('mailMyEmail')}</label><input type="email" id="myEmailInput" value="${esc(view.mailFrom != null ? view.mailFrom : (ui.user.email || ''))}" autocomplete="email" inputmode="email"></div>
       <div class="field"><label for="mailMsg">${t('mailMsgLbl')}</label><textarea id="mailMsg" rows="2" maxlength="500">${esc(view.mailMsg || '')}</textarea></div>
@@ -2407,17 +2427,18 @@
         <div class="stat-card"><div class="k">${t('avgReading')}</div><div class="v">${A.avg === null ? '—' : A.avg + '%'}</div><div class="s">${t('readingDone')} ${A.rq.length}</div></div>
         <div class="stat-card"><div class="k">${t('statMastered')}</div><div class="v">${mastered} <span class="small muted">/ ${VOCAB.length}</span></div><div class="s">${t('notYetStudied')} ${A.notStudied.length}</div></div>
       </div>
-      <div class="card" style="margin-top:14px"><h3 style="margin-top:0">❌ ${t('wrongAnalysis')}</h3>
+      <div class="card" style="margin-top:14px"><h3 style="margin-top:0">${t('wrongAnalysis')}</h3>
         ${A.wrongs.length ? `<div class="list">${A.wrongs.map(w => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="meta">${esc(w.title)}</div><div class="title" style="font-size:16px">${esc(w.q)}</div>
           <div class="small">${t('studentChose')}：<span class="chip bad">${w.chosen.map(esc).join('</span> <span class="chip bad">')}</span> → ${t('correctIs')}：<span class="chip ok">${esc(w.correct)}</span></div>${w.explain ? `<div class="small muted">${esc(w.explain)}</div>` : ''}</div><span class="chip bad">${tf('wrongTimes', { n: w.n })}</span></div>`).join('')}</div>` : `<p class="muted">${t('noWrong')}</p>`}
       </div>
-      <div class="card"><h3 style="margin-top:0">🧠 ${t('weakWords')}</h3>
-        ${A.weakList.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('word')}</th><th>${t('meaning')}</th><th>${t('flashRound')}</th><th>${t('vocabQuizLbl')}</th><th>${t('typed')}</th><th>${t('box')}</th></tr></thead><tbody>${A.weakList.map(w => `<tr><td class="word">${esc(w.word)}</td><td>${esc(w.zh)}</td><td>${w.missed ? `<span class="chip bad">${tf('missedTimes', { n: w.missed })}</span>` : ''}</td><td>${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}</td><td class="small muted en">${w.typed.map(esc).join(', ')}</td><td><span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('level' + (w.box || 0))}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noWeak')}</p>`}
+      <div class="card"><h3 style="margin-top:0">${t('weakWords')}</h3>
+        ${A.weakList.length ? `<ul class="weak-list">${A.weakList.map(w => `<li><div class="wl-word"><b class="en">${esc(w.word)}</b><span class="wl-zh">${esc(w.zh)}</span></div>
+          <div class="wl-info">${w.missed ? `<span class="chip bad">${t('flashRound')} · ${tf('missedTimes', { n: w.missed })}</span>` : ''}${w.quiz ? `<span class="chip warn">${tf('quizWrongTimes', { n: w.quiz })}</span>` : ''}<span class="chip ${['', 'info', 'warn', 'ok'][w.box || 0]}">${t('box')}：${t('level' + (w.box || 0))}</span>${w.typed.length ? `<span class="small muted">${t('typed')} <span class="en">${w.typed.map(esc).join(', ')}</span></span>` : ''}</div></li>`).join('')}</ul>` : `<p class="muted">${t('noWeak')}</p>`}
       </div>
-      ${(() => { const M = mcStats(rep.progress); return M.done ? `<div class="card"><h3 style="margin-top:0">📝 ${t('tabMcq')} <span class="small muted">${M.right} / ${M.done}</span></h3>
+      ${(() => { const M = mcStats(rep.progress); return M.done ? `<div class="card"><h3 style="margin-top:0">${t('tabMcq')} <span class="small muted">${M.right} / ${M.done}</span></h3>
         <div class="row">${MC_TYPES.map(([k, l, ic]) => { const b = M.byType[k]; return b.done ? `<span class="chip ${b.right / b.done >= .8 ? 'ok' : b.right / b.done >= .6 ? 'warn' : 'bad'}">${ic} ${t(l)} ${b.right}/${b.done}</span>` : ''; }).join('')}</div>
         ${M.wrong.length ? `<div class="list" style="margin-top:10px">${M.wrong.slice(0, 20).map(u => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title en" style="font-size:15px">${mcQ(u.q)}</div><div class="small">${t('studentChose')}：<span class="chip bad en">${u.chosenIdx != null ? esc(u.options[u.chosenIdx]) : '—'}</span> → ${t('correctIs')}：<span class="chip ok en">${esc(u.options[u.answer])}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: u.wrongTimes })}</span></div>`).join('')}</div>` : ''}</div>` : ''; })()}
-      ${(() => { const T = trStats(rep.progress); return T.done ? `<div class="card"><h3 style="margin-top:0">✍️ ${t('reportTranslate')} <span class="small muted">${T.right} / ${T.done} · ${tf('trDoneOf', { n: T.done, t: T.total })}</span></h3>${T.wrong.length ? `<div class="list">${T.wrong.slice(0, 20).map(x => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title" style="font-size:16px">${esc(x.zh)}</div><div class="small en">${t('trYours')}：<span class="chip bad">${esc(x.answer || '—')}</span></div><div class="small en">${t('trModel')}：<span class="chip ok">${esc(x.en)}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: x.tries - x.ok })}</span></div>`).join('')}</div>` : `<p class="muted">${t('trAllRight')}</p>`}</div>` : ''; })()}
+      ${(() => { const T = trStats(rep.progress); return T.done ? `<div class="card"><h3 style="margin-top:0">${t('reportTranslate')} <span class="small muted">${T.right} / ${T.done} · ${tf('trDoneOf', { n: T.done, t: T.total })}</span></h3>${T.wrong.length ? `<div class="list">${T.wrong.slice(0, 20).map(x => `<div class="list-item" style="border-left-color:var(--bad)"><div class="grow"><div class="title" style="font-size:16px">${esc(x.zh)}</div><div class="small en">${t('trYours')}：<span class="chip bad">${esc(x.answer || '—')}</span></div><div class="small en">${t('trModel')}：<span class="chip ok">${esc(x.en)}</span></div></div><span class="chip bad">${tf('wrongTimes', { n: x.tries - x.ok })}</span></div>`).join('')}</div>` : `<p class="muted">${t('trAllRight')}</p>`}</div>` : ''; })()}
       ${(() => { const b = rep.progress.bookmarks || { vocab: [], articles: [] }; const ws = b.vocab.map(id => VOCAB.find(v => v.id === id)).filter(Boolean); const as = b.articles.map(articleById).filter(Boolean); return (ws.length || as.length) ? `<div class="card bookmark-card"><span class="ribbon">🔖</span><h3 style="margin-top:0">${t('bookmarks')}</h3>${as.length ? `<div class="bm-group"><b>📖 ${t('bookmarkedArticles')}</b><div class="bm-list">${as.map(a => `<span class="bm-tag">${esc(a.title)}</span>`).join('')}</div></div>` : ''}${ws.length ? `<div class="bm-group"><b>🔤 ${t('bookmarkedWords')}</b><div class="bm-list">${ws.map(v => `<span class="bm-tag word en">${esc(v.word)}<small>${esc(v.zh)}</small></span>`).join('')}</div></div>` : ''}</div>` : ''; })()}
       <div class="card"><h3 style="margin-top:0">${t('mastery')}</h3>${masteryBars(rep.progress, VOCAB)}<h3>${t('activity')}</h3>${heatmap(rep.progress)}
         <h3>${t('timeline')}</h3>${A.timeline.length ? `<div class="list">${A.timeline.map(x => `<div class="list-item"><span class="small muted">${fmtDate(x.date)}</span><span>${esc(x.text)}</span></div>`).join('')}</div>` : `<p class="muted">${t('noData')}</p>`}</div>`;
@@ -2425,7 +2446,7 @@
 
   function cloudAccountsCard() {
     const list = view.cloudAccounts;
-    const head = `<h3 style="margin-top:0">👥 ${t('accountsAll')} <span class="cloud-badge">☁️ Supabase</span></h3>`;
+    const head = `<h3 style="margin-top:0">${t('accountsAll')} <span class="cloud-badge">☁️ Supabase</span></h3>`;
     if (!list) return `<div class="card">${head}<p class="small muted">${t('accountsAllSub')}</p><button class="btn" data-action="loadAccounts">${t('loadAccounts')}</button></div>`;
     const nT = list.filter(a => a.role === 'teacher').length;
     return `<div class="card">${head}<div class="row"><span class="small">${tf('accountsCount', { n: list.length, s: list.length - nT, t: nT })}</span><span class="spacer"></span><button class="btn sm" data-action="loadAccounts">🔄</button></div>
@@ -2440,7 +2461,7 @@
     const known = voiceKnown(), phoneOnly = sysVoice && !known; // Android: the phone decides, so no 男聲/女聲 buttons
     const note = !has ? t('voiceNone') : v ? tf('voiceUsing', { v: esc(v.name.replace(/\s+-\s+.*$/, '') || v.name), l: esc(v.lang) })
       : sysVoice ? t('voiceAndroid') : !en.length ? t(SP.voicesSeen() ? 'voiceNone' : 'voiceDefault') : !known ? t('voiceUnknown') : t(ui.voice === 'f' ? 'voiceNoF' : 'voiceNoM');
-    return `<div class="card voice-set"><h3 style="margin-top:0">🔊 ${t('voiceTitle')}</h3><p class="small muted">${t('voiceSub')}</p>
+    return `<div class="card voice-set"><h3 style="margin-top:0">${t('voiceTitle')}</h3><p class="small muted">${t('voiceSub')}</p>
       <div class="voice-row">${phoneOnly ? '' : `<div class="px-chips" role="group" aria-label="${t('voiceTitle')}">${[['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]].map(([k, l]) => `<button type="button" class="px-chip ${(ui.voice === 'f' ? 'f' : 'm') === k ? 'on' : ''}" data-action="setVoice" data-v="${k}" aria-pressed="${(ui.voice === 'f' ? 'f' : 'm') === k}">${l}</button>`).join('')}</div>`}
         <button type="button" class="btn sm ghost" data-action="voiceTest" ${has ? '' : 'disabled'}>▶ ${t('voiceTest')}</button></div>
       ${note ? `<p class="small muted voice-note">${note}</p>` : ''}${isIOS && has ? `<p class="small muted voice-note voice-ios">${t('voiceIOSNote')}</p>` : ''}</div>`;
@@ -2455,9 +2476,9 @@
     const s = state.settings, T = ui.teacher, me = (ui.user && ui.user.email) || '';
     // the exam name is the teacher's to set; students still choose their exam date
     return `${pageHead('settings', t(T ? 'settingsSubT' : 'settingsSub'))}
-      <div class="card level-set"><h3 style="margin-top:0">🎯 ${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
+      <div class="card level-set"><h3 style="margin-top:0">${t('lvMine')}</h3><p class="small muted">${t('lvPickSub')}</p>${levelOptions()}</div>
       ${voiceCard()}
-      <div class="card tour-again"><div><h3 style="margin:0">🧭 ${t('tourAgain')}</h3><p class="small muted" style="margin:4px 0 0">${t('tourAgainSub')}</p></div><button type="button" class="btn" data-action="tourStart">${t('tourStart')}</button></div>
+      <div class="card tour-again"><div><h3 style="margin:0">${t('tourAgain')}</h3><p class="small muted" style="margin:4px 0 0">${t('tourAgainSub')}</p></div><button type="button" class="btn" data-action="tourStart">${t('tourStart')}</button></div>
       <div class="card">
         <div class="grid-2">
           ${T ? `<div class="field"><label for="stExamName">${t('examName')}</label><input type="text" id="stExamName" value="${esc(s.examName)}"></div>
@@ -2481,7 +2502,7 @@
         <div class="row teacher-only flex" style="margin-top:12px"><button class="btn danger sm" data-action="resetAll">${t('resetAll')}</button></div>
       </div>
       ${ui.teacher && cloud.configured ? cloudAccountsCard() : ''}
-      ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">👥 ${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
+      ${ui.teacher && !cloud.configured ? `<div class="card"><h3 style="margin-top:0">${t('accountsTitle')} <span class="cloud-badge">${t('localOnly')}</span></h3>
         ${state.accounts.length ? `<div class="table-scroll"><table class="vocab-table"><thead><tr><th>${t('email')}</th><th>${t('displayName')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>${state.accounts.map(a => `<tr><td>${esc(a.email)}</td><td>${esc(a.name)}</td><td><span class="chip ${a.role === 'teacher' ? 'warn' : 'info'}">${a.role === 'teacher' ? t('roleTeacher') : t('roleStudent')}</span></td><td>${ui.user && ui.user.id === a.id ? '' : `<button class="btn sm danger" data-action="deleteAccount" data-id="${esc(a.id)}">${t('deleteAccount')}</button>`}</td></tr>`).join('')}</tbody></table></div>` : `<p class="muted">${t('noAccounts')}</p>`}</div>` : ''}`;
   }
 
@@ -3304,11 +3325,11 @@
     // only settings: the study pages are under 學習 and 練習 (字根字首 is a pill of 單字)
     $('.modal-card', moreEl).innerHTML = `<div class="sheet-grab" aria-hidden="true"></div>
       <div class="sheet-head"><h2 id="moreTitle">${t('grpMore')}</h2><button type="button" class="modal-close" data-more="close" aria-label="${t('close')}">✕</button></div>
-      <h3 class="sheet-sec sheet-sec-first">⚙️ ${t('moreAccount')}</h3>
+      <h3 class="sheet-sec sheet-sec-first">${t('moreAccount')}</h3>
       <div class="more-tiles three">${tile('settings', '⚙️', t('tabSettings'))}${tile('tour', '🧭', t('tourAgain'))}${tile('account', ui.user ? (ui.teacher ? '🧑‍🏫' : '🎓') : '👤', ui.user ? esc(ui.user.name) : `${t('login')} / ${t('register')}`, ui.user ? t('logout') : '')}</div>
-      <h3 class="sheet-sec">🎨 ${t('appearance')}</h3>
+      <h3 class="sheet-sec">${t('appearance')}</h3>
       <div class="ap-row"><span class="ap-lbl">${t('langLabel')}</span>${seg('lang', ui.lang, [['zh', '中文'], ['en', 'English']], t('langLabel'))}</div>
-      <div class="ap-row"><span class="ap-lbl">${t('fontLabel')}</span>${seg('font', ui.font, [['hand', t('fontHand')], ['clean', t('fontClean')]], t('fontLabel'))}</div>
+      <div class="ap-row"><span class="ap-lbl">${t('fontLabel')}</span>${seg('font', ui.font, [['clean', t('fontClean')], ['hand', t('fontHand')]], t('fontLabel'))}</div>
       <div class="ap-row"><span class="ap-lbl">${t('voiceShort')}</span>${sysVoice && !voiceKnown() ? `<span class="small muted">${t('voiceAndroidShort')}</span>` : seg('voice', ui.voice === 'f' ? 'f' : 'm', [['m', '👨 ' + t('voiceMale')], ['f', '👩 ' + t('voiceFemale')]], t('voiceTitle'))}</div>
       <div class="swatches" role="group" aria-label="${t('swatchLabel')}">${THEMES.map(([id, c, ac]) => `<button type="button" class="swatch" data-more-theme="${id}" aria-pressed="${ui.theme === id}" style="--sw:${c};--sw-a:${ac}"><i aria-hidden="true"></i><span>${t('theme' + id[0].toUpperCase() + id.slice(1))}</span></button>`).join('')}</div>`;
   }
@@ -3342,7 +3363,7 @@
     lvHandle.classList.toggle('ask', !levelAsked());
   }
   function renderLvDrawer() {
-    lvCard.innerHTML = `<div class="sheet-head"><h2 id="lvDrawerTitle">🎯 ${t(levelAsked() ? 'lvMine' : 'lvPickTitle')}</h2><button type="button" class="modal-close" data-lv="close" aria-label="${t('close')}">✕</button></div>
+    lvCard.innerHTML = `<div class="sheet-head"><h2 id="lvDrawerTitle">${t(levelAsked() ? 'lvMine' : 'lvPickTitle')}</h2><button type="button" class="modal-close" data-lv="close" aria-label="${t('close')}">✕</button></div>
       <p class="small muted lv-sub">${t('lvPickSub')}</p>${levelOptions()}
       <div class="lv-foot"><p class="small muted">${t('lvLaterNote')}</p>${levelAsked() ? '' : `<button type="button" class="btn sm ghost" data-action="setLevel" data-v="">${t('lvSkip')}</button>`}</div>`;
   }

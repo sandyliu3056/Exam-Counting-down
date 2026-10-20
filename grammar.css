@@ -3,7 +3,7 @@
    ===================================================== */
 /* ---------- 章節 · 綜合測驗 tabs ---------- */
 .gr-kinds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 4px 0 16px; }
-.gr-kind { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; padding: 8px 6px; border: 3px solid var(--line); border-radius: 18px; background: var(--card); color: var(--ink); font-size: 18px; font-weight: 800; text-decoration: none; box-shadow: var(--depth-2); }
+.gr-kind { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 60px; padding: 8px 6px; border: 1px solid var(--border); border-radius: 18px; background: var(--card); color: var(--ink); font-size: 18px; font-weight: 800; text-decoration: none; box-shadow: var(--depth-2); }
 .gr-kind small { font-size: 13px; font-weight: 600; color: var(--ink-soft); font-family: var(--font-en); }
 .gr-kind:hover { background: var(--bg-soft); }
 .gr-kind.has-session::after { content: ''; position: absolute; top: 7px; right: 9px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: 2px solid var(--header-dark); } /* a 綜合測驗 waiting to be finished */
@@ -38,7 +38,7 @@
 /* ---------- units and chapter cards ---------- */
 .gr-unit { margin-top: 26px; }
 .gr-unit-h { display: flex; align-items: center; gap: 12px; margin: 0; font-size: 22px; line-height: 1.25; }
-.gr-unit-ic { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 26px; background: var(--card); border: 3px solid var(--line); box-shadow: var(--depth-1); }
+.gr-unit-ic { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 26px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--depth-1); }
 .gr-unit-t { display: flex; flex-direction: column; min-width: 0; }
 .gr-unit-t small { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
 .gr-unit-n { margin-left: auto; flex: none; font-size: 13px; font-weight: 700; color: var(--ink-soft); background: var(--bg-soft); border-radius: 999px; padding: 3px 10px; }
@@ -76,7 +76,7 @@
 .gr-sn { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font-family: var(--font-en); font-size: 16px; font-weight: 800; }
 .gr-sec p { margin: 0 0 8px; line-height: 1.7; font-size: 16.5px; }
 .gr-sec b, .gr-why b, .gr-tips b { color: var(--header); }
-.gr-formula { display: inline-block; margin: 2px 0 10px !important; padding: 6px 14px; border-radius: 12px; border: 2px dashed var(--header); background: var(--card); font-family: var(--font-en); font-weight: 700; color: var(--header); }
+.gr-formula { display: inline-block; margin: 2px 0 10px !important; padding: 6px 14px; border-radius: 12px; border: 1px dashed var(--border-strong); background: var(--card); font-family: var(--font-en); font-weight: 700; color: var(--header); }
 .gr-hl { background: #fff0a8; color: inherit; padding: 0 2px; border-radius: 4px; box-shadow: inset 0 -2px 0 #e0b300; }
 .gr-table-wrap { overflow-x: auto; margin: 4px 0 12px; border-radius: 12px; border: 2px solid var(--bg-soft); }
 .gr-table-wrap:focus-visible { outline: 3px solid var(--accent); }
@@ -111,7 +111,7 @@
 .gr-blank { display: inline-block; min-width: 72px; border-bottom: 2.5px solid var(--ink); margin: 0 2px; text-align: center; }
 .gr-blank.filled { min-width: 0; padding: 0 6px; border-bottom-color: var(--ok-strong); color: #13502c; font-weight: 700; background: #d9f3e3; border-radius: 4px 4px 0 0; }
 .gr-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.gr-opt { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; border: 2.5px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-family: var(--font-en); font-size: 17px; text-align: left; box-shadow: var(--depth-1); cursor: pointer; }
+.gr-opt { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 14px; background: var(--card); color: var(--ink); font-family: var(--font-en); font-size: 17px; text-align: left; box-shadow: var(--depth-1); cursor: pointer; }
 .gr-opt .gr-l { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-soft); font-size: 14px; font-weight: 800; }
 .gr-opt:hover:not(:disabled) { background: var(--bg-soft); }
 .gr-opt:disabled { cursor: default; }
@@ -133,7 +133,7 @@
 .gr-mix-set .gr-ranges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 8px 0 16px; }
 .gr-mix-set .gr-ranges.units { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .gr-rh { margin: 14px 0 0; }
-.gr-pick { min-height: 48px; padding: 6px 8px; border: 2px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font: inherit; font-weight: 700; box-shadow: var(--depth-1); cursor: pointer; }
+.gr-pick { min-height: 48px; padding: 6px 8px; border: 1px solid var(--border-strong); border-radius: 14px; background: var(--card); color: var(--ink); font: inherit; font-weight: 700; box-shadow: var(--depth-1); cursor: pointer; }
 .gr-pick[aria-pressed="true"] { background: var(--header); color: #fff; border-color: var(--header-dark); }
 .gr-best { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; }
 .gr-go { min-height: 48px; font-size: 18px; padding: 8px 26px; }
