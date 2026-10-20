@@ -166,3 +166,35 @@
   .site-header, .gr-kinds, .gr-tools, .gr-toc, .site-footer, .to-top, .gr-say, .subtabs, .cat-seg, .gr-quiz, .gr-pn { display: none !important; }
   .gr-sec, .gr-mis, .gr-tips { break-inside: avoid; box-shadow: none; }
 }
+/* ---------- v2: each section = 核心規則 → 結構圖解 → 例句 → 常見錯誤 → 小練習 ---------- */
+.gr-about { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 4px 24px; padding: 14px 18px; }
+.gr-about h2.gr-k { margin: 6px 0 4px; }
+.gr-about ul { margin: 0; padding-left: 1.2em; }
+.gr-about p { margin: 0 0 6px; }
+.gr-k { margin: 18px 0 6px; font-size: 15px; font-weight: 800; letter-spacing: .5px; color: var(--ink-soft); }
+.gr-part:first-of-type .gr-k, .gr-sec h2 + .gr-part .gr-k { margin-top: 6px; }
+.gr-adv { margin: 8px 0 0; padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); }
+.gr-adv summary { cursor: pointer; font-weight: 700; color: var(--header); }
+.gr-adv p { margin: 8px 0 0; }
+.gr-pending { margin: 6px 0 0; font-size: 14px; color: var(--ink-soft); }
+.gr-pending .chip { margin-right: 6px; }
+/* 結構圖解: fixed colours for S V O C, always with the text label; modifiers and linking words grey */
+.gr-parse { margin: 8px 0 4px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+.gp-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.gp-chunk { display: inline-flex; flex-direction: column; align-items: stretch; min-width: 0; border-radius: 8px; overflow: hidden; border: 1px solid; }
+.gp-txt { padding: 6px 10px; font-size: 17px; font-family: var(--font-en); background: var(--card); }
+.gp-tag { padding: 2px 10px 4px; font-size: 13px; font-weight: 800; line-height: 1.3; }
+.gp-tag small { display: block; font-weight: 600; font-size: 12px; }
+.r-S { border-color: var(--role-s); } .r-S .gp-tag { background: var(--role-s-bg); color: var(--role-s); }
+.r-V { border-color: var(--role-v); } .r-V .gp-tag { background: var(--role-v-bg); color: var(--role-v); }
+.r-O { border-color: var(--role-o); } .r-O .gp-tag { background: var(--role-o-bg); color: var(--role-o); }
+.r-C { border-color: var(--role-c); } .r-C .gp-tag { background: var(--role-c-bg); color: var(--role-c); }
+.r-M, .r-J { border-color: #b8c0cc; } .r-M .gp-tag, .r-J .gp-tag { background: var(--role-m-bg); color: var(--role-m); }
+.r-M .gp-txt, .r-J .gp-txt { color: var(--role-m); }
+.r-J { border-style: dashed; }
+.gr-parse figcaption { margin-top: 8px; color: var(--ink-soft); font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.gr-mis-in ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.gr-mis-in li { padding: 8px 12px; border-radius: 10px; background: var(--bg); }
+.gr-mis-in p { margin: 2px 0; }
+.gr-prac .gr-qs { margin: 0; }
+@media print { .gr-prac, .gr-adv summary { display: none !important; } .gr-adv[open], .gr-adv { display: block; } }
