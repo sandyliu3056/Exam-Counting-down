@@ -1571,7 +1571,7 @@
         <div class="gr-frow"><span class="gr-flbl" id="grBandsLbl">程度</span><nav class="subtabs gr-pills gr-bands" aria-labelledby="grBandsLbl">${GR_BANDS.map(([b, n]) => bpill(b, n)).join('')}</nav></div>
         ${last ? `<p class="gr-last">📌 上次看到：<a href="#/grammar/${last.id}">${grCode(last)}　${esc(last.title)} →</a></p>` : ''}
       </div><p class="gr-count" role="status">${esc(count)}</p>
-      ${list.length ? body : `<div class="card gr-empty"><p>${q ? '試試輸入中文或英文，例如：被動、現在完成、which、if。' : '換一個程度或分類看看。'}</p></div>`}`;
+      ${list.length ? body : `<div class="card gr-empty"><p>${q ? '請輸入中文或英文關鍵字，例如：被動、現在完成、which、if。' : '請更換程度或分類。'}</p></div>`}`;
   }
   // 結構圖解: the sentence split into its parts, each with a fixed colour AND a text label (S 主詞 …); modifiers and linking words grey
   const GR_ROLE = { S: '主詞', V: '動詞', O: '受詞', C: '補語', M: '修飾', J: '連接' };
@@ -1607,7 +1607,7 @@
     const done = picked != null, cls = !done ? '' : n === q.answer ? ' is-right' : n === picked ? ' is-wrong' : '';
     return `<button type="button" class="gr-opt${big ? ' big' : ''}${cls}" ${attrs}${done ? ' disabled' : ''} lang="en"><span class="gr-l" aria-hidden="true">${L4[n]}</span><span>${esc(q.options[n])}</span>${done && n === q.answer ? '<span class="sr-only" lang="zh-Hant-TW">（正確答案）</span>' : done && n === picked ? '<span class="sr-only" lang="zh-Hant-TW">（你的答案）</span>' : ''}</button>`;
   }
-  const grVerdict = (q, picked, id) => `<p class="gr-verdict" id="${id}" tabindex="-1">${picked === q.answer ? '✔ 答對了！' : `✘ 正確答案：(${L4[q.answer]}) <span lang="en">${esc(q.options[q.answer])}</span>`}</p><p>${esc(q.explain)}</p>`;
+  const grVerdict = (q, picked, id) => `<p class="gr-verdict" id="${id}" tabindex="-1">${picked === q.answer ? '✔ 答對' : `✘ 正確答案：(${L4[q.answer]}) <span lang="en">${esc(q.options[q.answer])}</span>`}</p><p>${esc(q.explain)}</p>`;
   function grQItem(c, i) {
     const q = c.quiz[i], pick = (view.gr.picks[c.id] || [])[i], done = pick != null;
     return `<li class="gr-qi" id="gq-${i}"><p class="gr-qq" lang="en"><span class="gr-qn">${i + 1}.</span> ${grBlank(q.q, done ? q.options[q.answer] : null)}</p>
@@ -1617,7 +1617,7 @@
   function grQSum(c) {
     const picks = view.gr.picks[c.id] || [], n = picks.filter(x => x != null).length, right = picks.filter((x, i) => x === c.quiz[i].answer).length, r = grStatus(c);
     if (n < c.quiz.length) return `<p class="gr-qsum">已答 ${n} / ${c.quiz.length} 題・答對 ${right} 題${r ? `・最佳成績 ${r.best} / ${GR_QN}` : ''}</p>`;
-    return `<div class="gr-qdone"><p class="gr-score"><b>${right} / ${c.quiz.length}</b> ${right === c.quiz.length ? '全對！🎉' : right >= GR_PASS ? '很不錯！把答錯的解析再看一次。' : '再讀一次上面的說明，然後重做一次！'}</p>
+    return `<div class="gr-qdone"><p class="gr-score"><b>${right} / ${c.quiz.length}</b> ${right === c.quiz.length ? '全部答對 🎉' : right >= GR_PASS ? '表現良好，請再檢視答錯題目的解析。' : '請重新閱讀上方說明後再做一次。'}</p>
       <p class="small muted">最佳成績：${r ? r.best : right} / ${GR_QN}</p><button type="button" class="btn" data-action="grRedo">↻ 再做一次</button></div>`;
   }
   function grChapter(c) {
@@ -1628,7 +1628,7 @@
       <header class="page-head gr-head"><h1 tabindex="-1">${esc(c.title)}</h1><p><span lang="en">${esc(c.en)}</span><span class="chip">${esc(c.level)}</span></p></header>
       <p class="gr-lead">💡 ${grRich(c.lead)}</p>${grPending(c, 'lead')}
       <div class="card gr-about">${(c.goals || []).length ? `<div><h2 class="gr-k">學習目標</h2><ul>${c.goals.map(g => `<li>${grRich(g)}</li>`).join('')}</ul></div>` : ''}
-        <div><h2 class="gr-k">先備章節</h2>${pre.length ? `<p>${pre.map(x => `<a href="#/grammar/${x.id}">${grCode(x)} ${esc(x.title)}</a>`).join('、')}</p>` : '<p class="muted">不需要，可以直接開始。</p>'}
+        <div><h2 class="gr-k">先備章節</h2>${pre.length ? `<p>${pre.map(x => `<a href="#/grammar/${x.id}">${grCode(x)} ${esc(x.title)}</a>`).join('、')}</p>` : '<p class="muted">無需先備章節，可直接開始。</p>'}
           <h2 class="gr-k">難度</h2><p>${esc(c.level)}（${esc(GR_LEVEL_NAME[c.level] || '')}）</p></div></div>
       <nav class="gr-toc" aria-label="本章內容">${toc.map(([id, h]) => `<button type="button" class="gr-toc-b" data-action="grJump" data-to="${id}">${grNoLinks(grRich(h))}</button>`).join('')}</nav>
       ${c.sections.map((s, i) => grSection(s, i, c)).join('')}
@@ -1648,7 +1648,7 @@
     if (!s) {
       const best = grStore.mix[g.range || 'all'], pick = (r, l) => `<button type="button" class="gr-pick" data-action="grRange" data-v="${r}" aria-pressed="${g.range === r}">${esc(l)}</button>`;
       return `<section class="card gr-mix-set" aria-labelledby="qsTitle"><h2 id="qsTitle" style="margin-top:0">🎯 綜合測驗</h2>
-        <p class="muted">從各章的題目隨機抽 ${GR_MIXN} 題，答完看解析，答錯可以直接回到那一章。</p>
+        <p class="muted">從各章的題目隨機抽 ${GR_MIXN} 題，答完後可看解析，答錯可直接回到該章複習。</p>
         <h3 class="small gr-rh" id="grRu">依單元</h3><div class="gr-ranges units" role="group" aria-labelledby="grRu">${pick('', '全部')}${GR_UNITS.map(u => pick('u:' + u.id, `${u.icon} ${u.short}`)).join('')}</div>
         <h3 class="small gr-rh" id="grRb">依程度</h3><div class="gr-ranges" role="group" aria-labelledby="grRb">${GR_BANDS.slice(1).map(([b, l]) => pick(b, l)).join('')}</div>
         <p class="gr-best">${best != null ? `「${esc(grRangeName(g.range))}」的最佳成績：${best} / ${GR_MIXN}` : `「${esc(grRangeName(g.range))}」還沒有成績。`}</p>
@@ -1659,7 +1659,7 @@
       const wrongCh = [...new Set(s.wrong)].map(id => grById.get(id));
       return `<section class="card gr-result" aria-labelledby="rTitle"><div class="big-icon" aria-hidden="true">${s.right / n >= .8 ? '🎉' : '💪'}</div>
         <h2 id="rTitle" tabindex="-1">${s.redo ? '錯題重做完成' : '綜合測驗完成'}</h2><p class="gr-rscore">${s.right} / ${n}</p>
-        <p class="muted">${s.right === n ? '全對！太厲害了。' : s.right / n >= .7 ? '很不錯！把答錯的章節再看一次。' : '回到答錯的章節讀一讀，再挑戰一次！'}</p>
+        <p class="muted">${s.right === n ? '全部答對，表現優異。' : s.right / n >= .7 ? '表現良好，請再複習答錯的章節。' : '請回到答錯的章節複習後再挑戰一次。'}</p>
         ${wrongCh.length ? `<div class="gr-review"><h3>要再看的章節</h3><ul>${wrongCh.map(c => `<li><a href="#/grammar/${c.id}">${grCode(c)}　${esc(c.title)}</a></li>`).join('')}</ul></div>` : ''}
         <div class="row" style="justify-content:center;margin-top:16px">${s.redo ? `<a class="btn accent" href="#/wrong">${t('wbBack')}</a><button type="button" class="btn ghost" data-action="grSetup">綜合測驗</button>` : `<button type="button" class="btn accent" data-action="grStart" data-v="again">再測一次</button><button type="button" class="btn ghost" data-action="grSetup">換範圍</button>`}</div></section>`;
     }
