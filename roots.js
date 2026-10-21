@@ -20,12 +20,12 @@
   let ui = readJSON(LS_UI);
   function applyLook() {
     document.body.dataset.theme = THEMES.includes(ui.theme) ? ui.theme : 'navy';
-    // the standard typeface unless 手寫風 was picked after the 2026-10 switch (uiv 3)
-    document.body.dataset.font = ui.font === 'hand' && ui.uiv === 3 ? 'hand' : 'clean';
+    // 手寫風 unless 標準字體 was picked (the 2026-10-20 switch to 標準字體, uiv 3, is undone as on the main site)
+    document.body.dataset.font = ui.font === 'clean' && ui.uiv !== 3 ? 'clean' : 'hand';
     $('#themeSelect').value = document.body.dataset.theme; $('#fontSelect').value = document.body.dataset.font;
   }
   // only these two change; the main site's other settings (language, account, tour …) stay as they are
-  function saveLook(k, v) { const cur = readJSON(LS_UI); cur[k] = v; ui[k] = v; if (k === 'font' && cur.uiv !== 3) { cur.uiv = 3; ui.uiv = 3; } try { localStorage.setItem(LS_UI, JSON.stringify(cur)); } catch (e) { } applyLook(); }
+  function saveLook(k, v) { const cur = readJSON(LS_UI); cur[k] = v; ui[k] = v; if (k === 'font' && cur.uiv !== 4) { cur.uiv = 4; ui.uiv = 4; } try { localStorage.setItem(LS_UI, JSON.stringify(cur)); } catch (e) { } applyLook(); }
   $('#themeSelect').addEventListener('change', e => saveLook('theme', e.target.value));
   $('#fontSelect').addEventListener('change', e => saveLook('font', e.target.value));
   window.addEventListener('storage', e => { if (e.key === LS_UI) { ui = readJSON(LS_UI); applyLook(); } });
@@ -177,7 +177,7 @@
     // the same rows as the site's 學習 pages: 閱讀 · 單字 · 文法 (phones), then the 單字 pills
     return `<div class="cat-seg" role="group" aria-label="學習"><a class="cat-btn" href="./#/reading">閱讀</a><a class="cat-btn" href="./#/flashcards" aria-current="page">單字</a><a class="cat-btn" href="./#/grammar">文法</a></div>
       <nav class="subtabs" aria-label="單字">
-        <a class="subtab" href="./#/flashcards">單字卡</a><a class="subtab" href="./#/vocab">單字庫</a><a class="subtab" href="./#/phrases">片語</a><a class="subtab" href="roots.html" aria-current="page">字根字首</a>
+        <a class="subtab" href="./#/flashcards"><span aria-hidden="true">🃏</span> 單字卡</a><a class="subtab" href="./#/vocab"><span aria-hidden="true">📚</span> 單字庫</a><a class="subtab" href="./#/phrases"><span aria-hidden="true">🧩</span> 片語</a><a class="subtab" href="roots.html" aria-current="page"><span aria-hidden="true">🌱</span> 字根字首</a>
       </nav>
       <header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">🌱</span> 字根字首字尾</h1></header>
       <nav class="rt-kinds" aria-label="字首、字根、字尾、測驗">${KINDS.map(([k, zh, en]) => tab(k, zh, `${en} · ${DATA[k].length}`, true)).join('')}${tab('quiz', '🎯 測驗', 'Quiz')}</nav>`;
