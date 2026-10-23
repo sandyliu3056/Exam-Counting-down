@@ -1585,7 +1585,8 @@ label.px-lbl { min-height: 40px; }
    2026-10 refresh: one type scale, quieter headings, a slimmer header and tabs,
    reading width limited, the standard typeface by default (手寫風 stays a choice)
    ===================================================== */
-.site-header { background-image: none; padding: 10px 28px; }
+.site-header { background-image: none; }
+@media (min-width: 761px) { .site-header { padding: 10px 28px; } } /* desktops only: phones keep their 12 px edge so the title fits */
 .brand-title { font-size: 24px; letter-spacing: 1px; }
 .brand-sub { display: none; }
 .tabs { border-bottom: 1px solid var(--header-dark); padding: 0 20px; }
@@ -1601,6 +1602,7 @@ label.px-lbl { min-height: 40px; }
 input[type=text], input[type=email], input[type=search], input[type=url], input[type=tel], input[type=date], input[type=number], input[type=password], textarea, select.input { border: 1px solid var(--border-strong); border-radius: 10px; }
 .passage, .gr-sec, .gr-mis, .gr-tips, .daily-en { max-width: var(--measure); }
 @media (max-width: 760px) { .site-header { padding-top: 8px; padding-bottom: 8px; } .brand-title { font-size: 19px; } .page-head h1 { font-size: 24px; } }
+@media (max-width: 760px) { html[lang="en"] .brand-title { letter-spacing: 0; } } /* English Hub fits next to the controls down to 320 px */
 @media (max-width: 1000px) { .tab { padding: 8px 9px; font-size: 15px; } }
 /* less decoration: no dotted patterns behind headers, cards and the flashcard; a thin edge under the session bar */
 .session-top, .flash-front, .daily-card { background-image: none; }
