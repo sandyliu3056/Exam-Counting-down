@@ -1001,10 +1001,12 @@ body[data-font="clean"] .tab, body[data-font="clean"] .btn { font-weight: 600; }
 a.subtab, a.more-tile { text-decoration: none; }
 .subtab:hover:not([aria-current]) { background: var(--bg-soft); }
 @media (max-width: 760px) {
-  .subtabs, .phr-cats { padding-right: 16px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); }
+  .phr-cats { padding-right: 16px; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 16px), transparent); }
+  /* phones: every pill in view (單字卡 · 單字庫 · 片語 · 🌱 字根字首 …), on a second line when they do not fit, never cut off at the edge */
+  .subtabs { flex-wrap: wrap; overflow: visible; gap: 6px; padding-right: 2px; }
 }
-@media (max-width: 400px) { .subtab { padding: 6px 12px; gap: 4px; } }
-@media (max-width: 340px) { .subtabs { gap: 6px; } .subtab { padding: 6px 10px; } }
+@media (max-width: 420px) { .subtab { padding: 6px 8px; gap: 3px; font-size: 15px; } }
+@media (max-width: 340px) { .subtab { padding: 6px 7px; } }
 
 /* ---------- Desktop folder tabs: 首頁 · 學習 (閱讀 單字 文法) · 練習 (選擇題 克漏字 翻譯) · 紀錄 · 設定 ---------- */
 .tab { position: relative; font: inherit; font-weight: 600; }
@@ -1043,7 +1045,7 @@ a.subtab, a.more-tile { text-decoration: none; }
   .cat-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin: 0 0 10px; padding: 4px; border: 1px solid var(--bg-soft); border-radius: 14px; background: var(--bg-soft); }
   .cat-btn { position: relative; min-height: 44px; padding: 4px 6px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
   .cat-btn[aria-current="page"] { background: var(--header); color: #fff; }
-  a.cat-btn { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+  a.cat-btn { display: flex; align-items: center; justify-content: center; gap: 4px; text-decoration: none; } /* the 字根字首 page's links: the same space after the emoji as the buttons */
   .cat-btn.has-session::after { content: ''; position: absolute; top: 6px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); border: 2px solid var(--header-dark); }
   .bnav-badge { position: absolute; top: 1px; right: max(0px, calc(50% - 28px)); min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--bad); color: #fff; font-size: 11px; font-weight: 800; line-height: 17px; border: 1.5px solid #fff; }
   .bnav-btn.has-session::after { right: auto; left: max(5px, calc(50% - 24px)); top: 3px; }

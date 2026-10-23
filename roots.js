@@ -230,7 +230,6 @@
       const c = document.getElementById(id);
       if (c) { jumpTo(c); c.classList.add('rt-flash'); setTimeout(() => c.classList.remove('rt-flash'), 2400); }
     } else if (opts.top) jumpTo(null);
-    const cur = $('.subtabs [aria-current="page"]', app); if (cur) cur.parentNode.scrollLeft = cur.offsetLeft - cur.parentNode.offsetLeft - 8; // 字根字首 is the 4th pill
     if (opts.focus) { const f = $(opts.focus, app); if (f) f.focus({ preventScroll: !!id }); }
   }
   function refreshList() {
