@@ -11,6 +11,7 @@
 .rt-brand { color: inherit; text-decoration: none; }
 .rt-brand:hover { text-decoration: underline; text-underline-offset: 4px; }
 .rt-home { white-space: nowrap; }
+.roots-page .rt-lang { display: block; } /* 中文 / EN: on every screen (the main site's phone-only pill style on phones) */
 @media (max-width: 760px) {
   body.roots-page { padding-bottom: 0; }
   .roots-page .toast { bottom: calc(24px + env(safe-area-inset-bottom)); }

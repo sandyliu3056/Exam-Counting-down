@@ -28,6 +28,12 @@
       <p class="brand-title"><a class="rt-brand" href="./">英語學習站</a></p>
     </div>
     <div class="header-controls">
+      <label class="ctrl lang-mini rt-lang">
+        <select id="langSelect" aria-label="語言">
+          <option value="zh">中文</option>
+          <option value="en">EN</option>
+        </select>
+      </label>
       <label class="ctrl ctrl-sel">
         <select id="fontSelect" aria-label="字體">
           <option value="hand">手寫風</option>
@@ -53,7 +59,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>例字大多選自大考中心 7000 單字，A1–C2 程度標示與網站的單字庫相同。<br><a href="./">← 回英語學習站</a></p>
+    <p><span id="rtFootNote">例字大多選自大考中心 7000 單字，A1–C2 程度標示與網站的單字庫相同。</span><br><a href="./" id="rtFootBack">← 回英語學習站</a></p>
   </footer>
 
   <button type="button" class="to-top" id="toTop" aria-label="回到頂端" hidden>↑</button>
