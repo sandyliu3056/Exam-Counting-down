@@ -61,9 +61,9 @@
   };
   const GROUP_NAME = Object.fromEntries(Object.values(GROUPS).flat());
   /* UI-TEXT: what 字首 / 字根 / 字尾 are, how to split a word, and a line (with an emoji) for each category */
-  const INTRO = {"prefix":{"title":"字首是什麼？","lines":["字首放在單字最前面，主要用來改變意思：不、再、之前、向外……","大部分字首不改變詞性：happy 和 unhappy 都是形容詞；少數像 en-、be- 會把字變成動詞（large → enlarge）。","同一個字首常跟著後面的字母改變拼法，念起來比較順：in- → impossible、illegal、irregular。"]},"root":{"title":"字根是什麼？","lines":["字根是單字的核心意思：看、寫、走、帶……，大多來自拉丁文或希臘文。","多數字根不能單獨當一個字，要和字首、字尾一起出現：inspect、spectator。","同一個字根常有幾種拼法，例如 spect、spec、spic 都是「看」。"]},"suffix":{"title":"字尾是什麼？","lines":["字尾放在單字最後，常決定詞性：-tion 多半是名詞、-ful 是形容詞、-ize 是動詞、-ly 多半是副詞。","看到字尾就能先判斷詞性，做統測的字彙題和克漏字很好用。","加字尾時拼字常會變：drive → driver（去 e）、happy → happiness（y 變 i）、run → runner（重複字母）。"]}};
-  const HOWTO = {"title":"怎麼拆字？三個步驟","steps":["先看字尾，判斷詞性：名詞、形容詞、動詞還是副詞。","再看字首，意思有沒有被改變：不、再、之前、向外……","中間剩下的是字根或原本的單字。把幾塊的意思接起來，再想想實際的意思。"],"example":"unbelievable = un（不）＋ believ（相信）＋ able（可…的）→ 字面「不能相信的」→ 難以置信的","caution":"拆字是幫助猜意思、記單字的方法，不是每個字都能這樣拆；猜到的意思一定要放回句子裡確認。"};
-  const GROUP_INFO = {"neg":["🚫","表示「不、非、相反、錯誤」，或把東西去除。"],"num":["🔢","表示數量：一、二、三、多、一半、全部，還有千、千分之一等單位。"],"degree":["📏","表示程度和大小：過度、不足、超級、極大、微小。"],"time":["⏰","表示時間和先後：之前、之後、中間、再一次、往前或往回。"],"place":["🧭","表示位置和方向：向內、向外、在下、穿過、之間、一起、周圍。"],"other":["✨","其他意思：自己（auto-）、使成為（en-、be-）、好（bene-）。"],"sense":["👀","跟感官和語言有關：看、聽、說、寫、讀、喊叫、教導。"],"move":["🏃","各種動作：帶、送、投、走、拉、推、放、轉、跑、流。"],"make":["🛠️","做與建造、手腳和身體，以及大小、輕重、新舊、強弱等性質。"],"life":["🌿","生命與大自然：出生、活著、死亡、土地、水、光、太陽、星星、時間。"],"mind":["🧠","心裡的活動：相信、知道、記得、感覺、愛、信任、判斷、選擇。"],"society":["🏛️","社會生活：人民、城市、國家、家庭、名字、工作、交易、數字。"],"person":["🧑","表示「…的人」，加上去整個字變成名詞：teacher、artist、employee。"],"noun":["📦","把動詞或形容詞變成名詞，表示動作、結果、性質、狀態或學科。"],"adj":["🎨","把字變成形容詞：可以…的、充滿…的、沒有…的、與…有關的。"],"verb":["⚡","把名詞或形容詞變成動詞，表示「使…、使變成…」。"],"adv":["➡️","把字變成副詞，表示方式或方向：…地、向…。"]};
+  const INTRO = {"prefix":{"title":"認識字首","lines":["字首位於單字開頭，主要用於改變字義，例如表示「不」「再」「之前」「向外」。","多數字首不改變詞性：happy 與 unhappy 均為形容詞；少數字首如 en-、be- 可構成動詞（large → enlarge）。","同一字首常隨後接字母改變拼法，以便發音：in- → impossible、illegal、irregular。"]},"root":{"title":"認識字根","lines":["字根承載單字的核心意義，例如「看」「寫」「走」「帶」，多源自拉丁文或希臘文。","多數字根無法單獨成字，須與字首、字尾結合，例如 inspect、spectator。","同一字根常有數種拼法，例如 spect、spec、spic 均表示「看」。"]},"suffix":{"title":"認識字尾","lines":["字尾位於單字末端，常決定詞性：-tion 多為名詞、-ful 為形容詞、-ize 為動詞、-ly 多為副詞。","依字尾可先判斷詞性，有助於作答統測的字彙題與克漏字。","加上字尾時拼字常有變化：drive → driver（去 e）、happy → happiness（y 改為 i）、run → runner（重複字尾子音）。"]}};
+  const HOWTO = {"title":"拆字方法：三個步驟","steps":["辨識字尾，判斷詞性：名詞、形容詞、動詞或副詞。","辨識字首，判斷字義是否改變，例如「不」「再」「之前」「向外」。","其餘部分為字根或原有單字；將各部分的意義組合，再推敲實際字義。"],"example":"unbelievable = un（不）＋ believ（相信）＋ able（可…的）→ 字面「不能相信的」→ 難以置信的","caution":"拆字有助於推測字義與記憶單字，但並非所有單字皆可拆解；推測所得的字義仍須依上下文確認。"};
+  const GROUP_INFO = {"neg":["🚫","表示「不、非、相反、錯誤」，或表示去除。"],"num":["🔢","表示數量，例如一、二、三、多、一半、全部，以及千、千分之一等單位。"],"degree":["📏","表示程度與大小：過度、不足、超越、極大、微小。"],"time":["⏰","表示時間與先後：之前、之後、中間、再次、向前或向後。"],"place":["🧭","表示位置與方向：向內、向外、在下、穿越、之間、共同、周圍。"],"other":["✨","其他意義：自己（auto-）、使成為（en-、be-）、好（bene-）。"],"sense":["👀","與感官及語言相關：看、聽、說、寫、讀、呼喊、教導。"],"move":["🏃","表示各類動作：帶、送、投、走、拉、推、放、轉、跑、流。"],"make":["🛠️","與製作、建造、手腳及身體相關，也包括大小、輕重、新舊、強弱等性質。"],"life":["🌿","與生命及自然相關：出生、生存、死亡、土地、水、光、太陽、星星、時間。"],"mind":["🧠","與心智活動相關：相信、知道、記得、感覺、愛、信任、判斷、選擇。"],"society":["🏛️","與社會生活相關：人民、城市、國家、家庭、名字、工作、交易、數字。"],"person":["🧑","表示「…的人」，加上後整個字成為名詞，例如 teacher、artist、employee。"],"noun":["📦","將動詞或形容詞轉為名詞，表示動作、結果、性質、狀態或學科。"],"adj":["🎨","將單字轉為形容詞，表示「可以…的」「充滿…的」「沒有…的」「與…有關的」。"],"verb":["⚡","將名詞或形容詞轉為動詞，表示「使…」「使成為…」。"],"adv":["➡️","將單字轉為副詞，表示方式或方向，例如「…地」「向…」。"]};
   /* /UI-TEXT */
   const POS_NAME = { 'n.': '名詞', 'v.': '動詞', 'adj.': '形容詞', 'adv.': '副詞' };
   const CEFR = { 1: 'A1', 2: 'A2', 3: 'B1', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B2+', 8: 'C1', 9: 'C2' }; // the same as the 單字庫
@@ -104,7 +104,7 @@
       <div class="rt-meta"><span class="chip rt-gchip k-${CODE[e.kind]}"><span aria-hidden="true">${(GROUP_INFO[e.group] || [''])[0]}</span> ${KIND_NAME[e.kind]}・${esc(GROUP_NAME[e.group] || '')}</span>${e.makes ? `<span class="chip info">變成${POS_NAME[e.makes] || esc(e.makes)}</span>` : ''}<span class="chip">${esc(e.origin)}</span></div>
       <p class="rt-tip">💡 ${esc(e.tip)}</p>
       ${e.more ? `<div class="rt-more"><h3 class="rt-sub">📖 詳細說明</h3>${e.more.map(s => `<p>${esc(s)}</p>`).join('')}</div>` : ''}
-      ${e.trap ? `<p class="rt-trap"><b>⚠️ 小心</b> ${esc(e.trap)}</p>` : ''}
+      ${e.trap ? `<p class="rt-trap"><b>⚠️ 注意</b> ${esc(e.trap)}</p>` : ''}
       ${e.rel && e.rel.length ? `<div class="rt-rel"><b>🔗 相關</b>${e.rel.map(relLink).join('')}</div>` : ''}
       <h3 class="rt-sub rt-sub-ex">🧩 例字${e.examples.some(x => x.sent) ? '與例句' : ''}</h3>
       <ul class="rt-ex">${e.examples.map(x => row(e, x, hits)).join('')}</ul>
@@ -187,7 +187,7 @@
     const k = state.view, c = CODE[k];
     const tile = (g, ico, name, n, sample) => `<button type="button" class="rt-cat k-${c}" data-group="${g}" aria-pressed="${state.group === g}"><span class="rt-cat-ico" aria-hidden="true">${ico}</span><span class="rt-cat-txt"><b>${name}</b><small>${n} 個${sample ? `<span lang="en">・${esc(sample)}</span>` : ''}</small></span></button>`;
     const sample = list => list.slice(0, 3).map(e => e.form.split(' / ')[0]).join(' ');
-    return `<div class="rt-cats"><p class="rt-cats-h" id="rtCatsH">分類<small>點一下只看這一類</small></p><div class="rt-cat-grid" role="group" aria-labelledby="rtCatsH">${tile('', '📚', '全部', DATA[k].length, '')}${GROUPS[k].map(([g, name]) => { const list = DATA[k].filter(e => e.group === g); return tile(g, (GROUP_INFO[g] || [''])[0], name, list.length, sample(list)); }).join('')}</div></div>`;
+    return `<div class="rt-cats"><p class="rt-cats-h" id="rtCatsH">分類<small>點選可只顯示該類</small></p><div class="rt-cat-grid" role="group" aria-labelledby="rtCatsH">${tile('', '📚', '全部', DATA[k].length, '')}${GROUPS[k].map(([g, name]) => { const list = DATA[k].filter(e => e.group === g); return tile(g, (GROUP_INFO[g] || [''])[0], name, list.length, sample(list)); }).join('')}</div></div>`;
   }
 
   /* ---------------- Page ---------------- */
@@ -205,7 +205,7 @@
   function introHTML() {
     const k = state.view, I = INTRO[k]; if (!I) return '';
     // the top stays short: one folded line until it is opened (and it stays open once a student opens it)
-    return `<details class="card rt-intro k-${CODE[k]}"${store.intro === 1 ? ' open' : ''}><summary><span aria-hidden="true">📘</span> ${esc(I.title)}<small>怎麼拆字？點開看</small></summary>
+    return `<details class="card rt-intro k-${CODE[k]}"${store.intro === 1 ? ' open' : ''}><summary><span aria-hidden="true">📘</span> ${esc(I.title)}<small>含拆字方法，點選展開</small></summary>
       <ul class="rt-intro-list">${I.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
       <div class="rt-howto"><p class="rt-howto-h"><span aria-hidden="true">🔍</span> ${esc(HOWTO.title)}</p><ol>${HOWTO.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
       <p class="rt-howto-ex" lang="zh-Hant">${esc(HOWTO.example)}</p><p class="rt-howto-note">${esc(HOWTO.caution)}</p></div>
