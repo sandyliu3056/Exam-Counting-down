@@ -60,6 +60,11 @@
     suffix: [['person', '人'], ['noun', '名詞'], ['adj', '形容詞'], ['verb', '動詞'], ['adv', '副詞']],
   };
   const GROUP_NAME = Object.fromEntries(Object.values(GROUPS).flat());
+  /* UI-TEXT: what 字首 / 字根 / 字尾 are, how to split a word, and a line (with an emoji) for each category */
+  const INTRO = {"prefix":{"title":"字首是什麼？","lines":["字首放在單字最前面，主要用來改變意思：不、再、之前、向外……","大部分字首不改變詞性：happy 和 unhappy 都是形容詞；少數像 en-、be- 會把字變成動詞（large → enlarge）。","同一個字首常跟著後面的字母改變拼法，念起來比較順：in- → impossible、illegal、irregular。"]},"root":{"title":"字根是什麼？","lines":["字根是單字的核心意思：看、寫、走、帶……，大多來自拉丁文或希臘文。","多數字根不能單獨當一個字，要和字首、字尾一起出現：inspect、spectator。","同一個字根常有幾種拼法，例如 spect、spec、spic 都是「看」。"]},"suffix":{"title":"字尾是什麼？","lines":["字尾放在單字最後，常決定詞性：-tion 多半是名詞、-ful 是形容詞、-ize 是動詞、-ly 多半是副詞。","看到字尾就能先判斷詞性，做統測的字彙題和克漏字很好用。","加字尾時拼字常會變：drive → driver（去 e）、happy → happiness（y 變 i）、run → runner（重複字母）。"]}};
+  const HOWTO = {"title":"怎麼拆字？三個步驟","steps":["先看字尾，判斷詞性：名詞、形容詞、動詞還是副詞。","再看字首，意思有沒有被改變：不、再、之前、向外……","中間剩下的是字根或原本的單字。把幾塊的意思接起來，再想想實際的意思。"],"example":"unbelievable = un（不）＋ believ（相信）＋ able（可…的）→ 字面「不能相信的」→ 難以置信的","caution":"拆字是幫助猜意思、記單字的方法，不是每個字都能這樣拆；猜到的意思一定要放回句子裡確認。"};
+  const GROUP_INFO = {"neg":["🚫","表示「不、非、相反、錯誤」，或把東西去除。"],"num":["🔢","表示數量：一、二、三、多、一半、全部，還有千、千分之一等單位。"],"degree":["📏","表示程度和大小：過度、不足、超級、極大、微小。"],"time":["⏰","表示時間和先後：之前、之後、中間、再一次、往前或往回。"],"place":["🧭","表示位置和方向：向內、向外、在下、穿過、之間、一起、周圍。"],"other":["✨","其他意思：自己（auto-）、使成為（en-、be-）、好（bene-）。"],"sense":["👀","跟感官和語言有關：看、聽、說、寫、讀、喊叫、教導。"],"move":["🏃","各種動作：帶、送、投、走、拉、推、放、轉、跑、流。"],"make":["🛠️","做與建造、手腳和身體，以及大小、輕重、新舊、強弱等性質。"],"life":["🌿","生命與大自然：出生、活著、死亡、土地、水、光、太陽、星星、時間。"],"mind":["🧠","心裡的活動：相信、知道、記得、感覺、愛、信任、判斷、選擇。"],"society":["🏛️","社會生活：人民、城市、國家、家庭、名字、工作、交易、數字。"],"person":["🧑","表示「…的人」，加上去整個字變成名詞：teacher、artist、employee。"],"noun":["📦","把動詞或形容詞變成名詞，表示動作、結果、性質、狀態或學科。"],"adj":["🎨","把字變成形容詞：可以…的、充滿…的、沒有…的、與…有關的。"],"verb":["⚡","把名詞或形容詞變成動詞，表示「使…、使變成…」。"],"adv":["➡️","把字變成副詞，表示方式或方向：…地、向…。"]};
+  /* /UI-TEXT */
   const POS_NAME = { 'n.': '名詞', 'v.': '動詞', 'adj.': '形容詞', 'adv.': '副詞' };
   const CEFR = { 1: 'A1', 2: 'A2', 3: 'B1', 4: 'B1', 5: 'B2', 6: 'B2', 7: 'B2+', 8: 'C1', 9: 'C2' }; // the same as the 單字庫
   const ALL = [].concat(DATA.prefix, DATA.root, DATA.suffix);
@@ -87,13 +92,21 @@
       <div class="rt-line"><span class="rt-word" lang="en">${esc(x.w)}</span><button type="button" class="icon-btn rt-say" data-say="${esc(x.w)}" aria-label="唸 ${esc(x.w)}">🔊</button><span class="rt-pos" lang="en">${esc(x.pos)}</span><span class="rt-zh">${esc(x.zh)}</span><span class="rt-badges">${x.lv && CEFR[x.lv] ? `<span class="chip" title="程度">${CEFR[x.lv]}</span>` : ''}${x.hf ? '<span class="chip rt-hf">統測高頻</span>' : ''}</span></div>
       <div class="rt-split">${split(x, e)}<span class="rt-lit">→ 字面：${esc(x.lit)}</span></div>
       ${x.note ? `<p class="rt-note">✎ ${esc(x.note)}</p>` : ''}
+      ${x.sent ? `<p class="rt-sent"><span class="rt-sent-en" lang="en">${mark(x.sent.en)}</span><button type="button" class="icon-btn rt-say rt-say-s" data-say="${esc(x.sent.en.replace(/\[\[|\]\]/g, ''))}" aria-label="唸例句">🔊</button><span class="rt-sent-zh">${esc(x.sent.zh)}</span></p>` : ''}
     </li>`;
   }
+  // 例句: the word marked with [[ ]] is shown in bold
+  const mark = s => esc(s).replace(/\[\[(.+?)\]\]/g, '<b>$1</b>');
+  const relLink = r => { const o = byId.get(r.id); return o ? `<a class="rt-rel-a k-${CODE[o.kind]}" href="#${o.kind}/${esc(o.id)}"><b lang="en">${esc(o.form)}</b> ${esc(o.mean)}<small>${esc(r.why)}</small></a>` : ''; };
   function card(e, hits) {
-    return `<article class="card rt-card" id="${esc(e.id)}" tabindex="-1">
+    return `<article class="card rt-card k-${CODE[e.kind]}" id="${esc(e.id)}" tabindex="-1">
       <div class="rt-head"><span class="rt-form k-${CODE[e.kind]}" lang="en">${esc(e.form)}</span><div class="rt-mean"><b>${esc(e.mean)}</b><span class="en" lang="en">${esc(e.meanEn)}</span></div></div>
-      <div class="rt-meta"><span class="chip">${KIND_NAME[e.kind]}・${esc(GROUP_NAME[e.group] || '')}</span>${e.makes ? `<span class="chip info">變成${POS_NAME[e.makes] || esc(e.makes)}</span>` : ''}<span class="chip">${esc(e.origin)}</span></div>
+      <div class="rt-meta"><span class="chip rt-gchip k-${CODE[e.kind]}"><span aria-hidden="true">${(GROUP_INFO[e.group] || [''])[0]}</span> ${KIND_NAME[e.kind]}・${esc(GROUP_NAME[e.group] || '')}</span>${e.makes ? `<span class="chip info">變成${POS_NAME[e.makes] || esc(e.makes)}</span>` : ''}<span class="chip">${esc(e.origin)}</span></div>
       <p class="rt-tip">💡 ${esc(e.tip)}</p>
+      ${e.more ? `<div class="rt-more"><h3 class="rt-sub">📖 詳細說明</h3>${e.more.map(s => `<p>${esc(s)}</p>`).join('')}</div>` : ''}
+      ${e.trap ? `<p class="rt-trap"><b>⚠️ 小心</b> ${esc(e.trap)}</p>` : ''}
+      ${e.rel && e.rel.length ? `<div class="rt-rel"><b>🔗 相關</b>${e.rel.map(relLink).join('')}</div>` : ''}
+      <h3 class="rt-sub rt-sub-ex">🧩 例字${e.examples.some(x => x.sent) ? '與例句' : ''}</h3>
       <ul class="rt-ex">${e.examples.map(x => row(e, x, hits)).join('')}</ul>
     </article>`;
   }
@@ -124,7 +137,7 @@
     const q = norm(state.q);
     if (q) { const { found, hits } = search(q); return { q, hits, list: KINDS.flatMap(([k]) => found.filter(e => e.kind === k)), head: e => KIND_NAME[e.kind] }; }
     const k = state.view;
-    return { q, hits: null, list: GROUPS[k].flatMap(([g]) => !state.group || state.group === g ? DATA[k].filter(e => e.group === g) : []), head: e => GROUP_NAME[e.group] };
+    return { q, hits: null, list: GROUPS[k].flatMap(([g]) => !state.group || state.group === g ? DATA[k].filter(e => e.group === g) : []), head: e => GROUP_NAME[e.group], byGroup: true };
   }
   const pageOf = (list, id) => Math.max(0, Math.floor(list.findIndex(e => e.id === id) / PER));
   // the main site's pager: ‹ 1 … 4 5 6 … 12 › and a 第 n 頁 list that names the first card of each page
@@ -135,7 +148,7 @@
       <button type="button" class="pg-btn" data-pg="${cur - 1}" data-dir="prev"${cur === 0 ? ' disabled' : ''} aria-label="上一頁">‹</button>
       ${nums.map(n => n === '…' ? '<span class="pg-gap" aria-hidden="true">…</span>' : `<button type="button" class="pg-btn pg-num${n === cur ? ' on' : ''}" data-pg="${n}"${n === cur ? ' aria-current="page"' : ''} aria-label="第 ${n + 1} 頁">${n + 1}</button>`).join('')}
       <button type="button" class="pg-btn" data-pg="${cur + 1}" data-dir="next"${cur >= pages - 1 ? ' disabled' : ''} aria-label="下一頁">›</button>
-      <select class="input pager-sel" data-pgsel aria-label="跳到第幾頁">${Array.from({ length: pages }, (_, i) => `<option value="${i}"${i === cur ? ' selected' : ''}>第 ${i + 1} 頁 · ${esc(list[i * PER].form)}</option>`).join('')}</select>
+      <select class="input pager-sel" data-pgsel aria-label="跳到第幾頁">${Array.from({ length: pages }, (_, i) => `<option value="${i}"${i === cur ? ' selected' : ''}>第 ${i + 1} 頁 · ${list[i * PER].kind === state.view && !norm(state.q) ? `${esc(GROUP_NAME[list[i * PER].group])}：` : ''}${esc(list[i * PER].form)}</option>`).join('')}</select>
     </nav>`;
   }
   // this page's cards under their headings, with the pager above and below; and the line that counts them
@@ -149,7 +162,12 @@
     const pages = Math.max(1, Math.ceil(n / PER)); state.page = Math.min(Math.max(0, state.page), pages - 1);
     const a = state.page * PER, items = s.list.slice(a, a + PER);
     let html = '', head = null, run = [];
-    const flush = () => { if (run.length) html += `<h2 class="section-title rt-sec">${esc(head)}</h2>${grid(run, s.hits)}`; run = []; };
+    const band = first => {
+      if (!s.byGroup) return `<h2 class="rt-band k-${CODE[first.kind]}"><span class="rt-band-name"><i class="rt-dot" aria-hidden="true"></i>${esc(KIND_NAME[first.kind])}</span></h2>`;
+      const g = first.group, info = GROUP_INFO[g] || ['', ''], all = DATA[first.kind].filter(e => e.group === g), cont = all[0] !== first;
+      return `<h2 class="rt-band k-${CODE[first.kind]}"><span class="rt-band-ico" aria-hidden="true">${info[0]}</span><span class="rt-band-name">${esc(GROUP_NAME[g])}${cont ? '<small>（續）</small>' : ''}</span><small class="rt-band-n">${all.length} 個${KIND_NAME[first.kind]}</small></h2>${cont ? '' : `<p class="rt-band-desc">${esc(info[1])}</p>`}`;
+    };
+    const flush = () => { if (run.length) html += band(run[0]) + grid(run, s.hits); run = []; };
     items.forEach(e => { if (s.head(e) !== head) { flush(); head = s.head(e); } run.push(e); }); flush();
     const what = s.q ? `找到 ${n} 個（${KINDS.map(([k, zh]) => `${zh} ${s.list.filter(e => e.kind === k).length}`).join('・')}）` : `共 ${n} 個${KIND_NAME[state.view]}${state.group ? `（${GROUP_NAME[state.group]}）` : ''}`;
     return { count: pages > 1 ? `${what}・第 ${state.page + 1} / ${pages} 頁` : what, html: pager(state.page, pages, s.list) + html + pager(state.page, pages, s.list, true) };
@@ -159,15 +177,17 @@
     const s = shown(); if (!s.list.length) return '';
     let html = '', head = null;
     s.list.forEach(e => {
-      if (s.head(e) !== head) { html += `${head === null ? '' : '</div>'}<h3 class="rt-ix-h">${esc(s.head(e))}</h3><div class="rt-ix-row">`; head = s.head(e); }
+      if (s.head(e) !== head) { html += `${head === null ? '' : '</div>'}<h3 class="rt-ix-h">${s.byGroup ? `<span aria-hidden="true">${(GROUP_INFO[e.group] || [''])[0]}</span> ` : ''}${esc(s.head(e))}</h3><div class="rt-ix-row">`; head = s.head(e); }
       html += `<button type="button" class="rt-ix k-${CODE[e.kind]}" data-jump="${esc(e.id)}"><b lang="en">${esc(e.form)}</b><span>${esc(e.mean)}</span></button>`;
     });
     return `<details class="rt-index"${store.idx === 1 ? ' open' : ''}><summary>📋 目錄</summary>${html}</div></details>`;
   }
   function groupPills() {
     if (norm(state.q)) return '';
-    const k = state.view, pill = (g, name, n) => `<button type="button" class="subtab" data-group="${g}" aria-pressed="${state.group === g}">${name}<b>${n}</b></button>`;
-    return `<nav class="subtabs rt-groups" aria-label="小分類">${pill('', '全部', DATA[k].length)}${GROUPS[k].map(([g, name]) => pill(g, name, DATA[k].filter(e => e.group === g).length)).join('')}</nav>`;
+    const k = state.view, c = CODE[k];
+    const tile = (g, ico, name, n, sample) => `<button type="button" class="rt-cat k-${c}" data-group="${g}" aria-pressed="${state.group === g}"><span class="rt-cat-ico" aria-hidden="true">${ico}</span><span class="rt-cat-txt"><b>${name}</b><small>${n} 個${sample ? `<span lang="en">・${esc(sample)}</span>` : ''}</small></span></button>`;
+    const sample = list => list.slice(0, 3).map(e => e.form.split(' / ')[0]).join(' ');
+    return `<div class="rt-cats"><p class="rt-cats-h" id="rtCatsH">分類<small>點一下只看這一類</small></p><div class="rt-cat-grid" role="group" aria-labelledby="rtCatsH">${tile('', '📚', '全部', DATA[k].length, '')}${GROUPS[k].map(([g, name]) => { const list = DATA[k].filter(e => e.group === g); return tile(g, (GROUP_INFO[g] || [''])[0], name, list.length, sample(list)); }).join('')}</div></div>`;
   }
 
   /* ---------------- Page ---------------- */
@@ -175,12 +195,21 @@
     const going = state.quiz && state.quiz.i < state.quiz.qs.length && state.view !== 'quiz'; // a quiz waiting to be finished
     const tab = (v, label, sub, dot) => `<a class="rt-kind${v === 'quiz' && going ? ' has-session' : ''}" data-kind="${v}" href="#${v}"${state.view === v ? ' aria-current="page"' : ''}><span>${dot ? '<i class="rt-dot" aria-hidden="true"></i>' : ''}${label}</span><small>${sub}${v === 'quiz' && going ? '<span class="sr-only">（還沒做完）</span>' : ''}</small></a>`;
     // the same rows as the site's 學習 pages: 閱讀 · 單字 · 文法 (phones), then the 單字 pills
-    return `<div class="cat-seg" role="group" aria-label="學習"><a class="cat-btn" href="./#/reading">閱讀</a><a class="cat-btn" href="./#/flashcards" aria-current="page">單字</a><a class="cat-btn" href="./#/grammar">文法</a></div>
+    return `<div class="cat-seg" role="group" aria-label="學習"><a class="cat-btn" href="./#/reading"><span aria-hidden="true">📖</span> 閱讀</a><a class="cat-btn" href="./#/flashcards" aria-current="page"><span aria-hidden="true">🃏</span> 單字</a><a class="cat-btn" href="./#/grammar"><span aria-hidden="true">📐</span> 文法</a></div>
       <nav class="subtabs" aria-label="單字">
         <a class="subtab" href="./#/flashcards"><span aria-hidden="true">🃏</span> 單字卡</a><a class="subtab" href="./#/vocab"><span aria-hidden="true">📚</span> 單字庫</a><a class="subtab" href="./#/phrases"><span aria-hidden="true">🧩</span> 片語</a><a class="subtab" href="roots.html" aria-current="page"><span aria-hidden="true">🌱</span> 字根字首</a>
       </nav>
       <header class="page-head"><h1 tabindex="-1"><span aria-hidden="true">🌱</span> 字根字首字尾</h1></header>
       <nav class="rt-kinds" aria-label="字首、字根、字尾、測驗">${KINDS.map(([k, zh, en]) => tab(k, zh, `${en} · ${DATA[k].length}`, true)).join('')}${tab('quiz', '🎯 測驗', 'Quiz')}</nav>`;
+  }
+  function introHTML() {
+    const k = state.view, I = INTRO[k]; if (!I) return '';
+    // the top stays short: one folded line until it is opened (and it stays open once a student opens it)
+    return `<details class="card rt-intro k-${CODE[k]}"${store.intro === 1 ? ' open' : ''}><summary><span aria-hidden="true">📘</span> ${esc(I.title)}<small>怎麼拆字？點開看</small></summary>
+      <ul class="rt-intro-list">${I.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>
+      <div class="rt-howto"><p class="rt-howto-h"><span aria-hidden="true">🔍</span> ${esc(HOWTO.title)}</p><ol>${HOWTO.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+      <p class="rt-howto-ex" lang="zh-Hant">${esc(HOWTO.example)}</p><p class="rt-howto-note">${esc(HOWTO.caution)}</p></div>
+    </details>`;
   }
   function render(opts = {}) {
     const { view, id } = readHash();
@@ -190,7 +219,7 @@
     if (id && view !== 'quiz') { state.q = ''; const e = byId.get(id); if (e && state.group && e.group !== state.group) state.group = ''; state.page = pageOf(shown().list, id); }
     let body;
     if (view === 'quiz') body = state.quiz ? (state.quiz.i < state.quiz.qs.length ? questionHTML() : resultHTML()) : quizSetHTML();
-    else body = `<div class="card rt-tools">
+    else body = introHTML() + `<div class="card rt-tools">
         <div class="rt-search"><input type="search" id="rtQ" value="${esc(state.q)}" placeholder="搜尋：spect、看、inspect…" aria-label="搜尋字首、字根、字尾、單字或中文" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"><button type="button" class="rt-clear" data-act="clear" aria-label="清除搜尋"${state.q ? '' : ' hidden'}>✕</button></div>
         <div class="rt-legend" aria-hidden="true"><span class="rl-p"><i></i>字首</span><span class="rl-r"><i></i>字根</span><span class="rl-s"><i></i>字尾</span><span class="rl-b"><i></i>單字</span></div>
         <div id="rtPills">${groupPills()}</div><div id="rtIdx">${indexHTML()}</div>
@@ -343,6 +372,7 @@
   app.addEventListener('toggle', e => {
     if (!e.target.classList) return;
     if (e.target.classList.contains('rt-index')) { store.idx = e.target.open ? 1 : 0; saveStore(); }
+    if (e.target.classList.contains('rt-intro')) { store.intro = e.target.open ? 1 : 0; saveStore(); }
   }, true);
   // 1–4 picks an answer, Enter goes on
   document.addEventListener('keydown', e => {

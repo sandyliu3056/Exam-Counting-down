@@ -55,12 +55,28 @@
 .rt-search input { padding: 10px 44px 10px 42px; font-size: 17px; border-color: var(--bg-soft); }
 .rt-search::before { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
 .rt-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--bg-soft); color: var(--ink); font-size: 16px; cursor: pointer; }
-.rt-groups { margin: 12px 0 0; }
-.rt-groups .subtab { min-height: 36px; padding: 4px 14px; font-size: 14px; }
-.rt-groups .subtab b { font-family: var(--font-en); font-weight: 600; color: var(--ink-soft); margin-left: 2px; }
-.rt-groups .subtab[aria-pressed="true"] { background: var(--header); color: #fff; border-color: var(--header-dark); }
-.rt-groups .subtab[aria-pressed="true"] b { color: rgba(255, 255, 255, .85); }
-.rt-groups .subtab[aria-pressed="false"]:hover { background: var(--bg-soft); }
+/* 分類: every category as a tile (emoji, name, how many, the first few forms); the chosen one in the kind's colour */
+.rt-cats { margin: 14px 0 0; }
+.rt-cats-h { margin: 0 0 8px; font-size: 17px; font-weight: 700; }
+.rt-cats-h small { margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--ink-soft); }
+.rt-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.rt-cat { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 58px; padding: 8px 12px; border: 2px solid var(--border); border-radius: 14px; background: var(--card); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.rt-cat:hover { background: var(--bg-soft); }
+.rt-cat-ico { flex: none; font-size: 24px; line-height: 1; }
+.rt-cat-txt { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.rt-cat-txt b { font-size: 16px; }
+.rt-cat-txt small { overflow: hidden; font-size: 12.5px; color: var(--ink-soft); text-overflow: ellipsis; white-space: nowrap; }
+.rt-cat[aria-pressed="true"] { box-shadow: inset 0 0 0 1px currentColor; }
+.rt-cat[aria-pressed="true"].k-p { background: var(--kp-bg); border-color: var(--kp); color: var(--kp-ink); }
+.rt-cat[aria-pressed="true"].k-r { background: var(--kr-bg); border-color: var(--kr); color: var(--kr-ink); }
+.rt-cat[aria-pressed="true"].k-s { background: var(--ks-bg); border-color: var(--ks); color: var(--ks-ink); }
+.rt-cat[aria-pressed="true"] .rt-cat-txt small { color: inherit; }
+@media (max-width: 560px) {
+  .rt-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .rt-cat { gap: 6px; min-height: 52px; padding: 6px 8px; }
+  .rt-cat-ico { font-size: 20px; }
+  .rt-cat-txt b { font-size: 15px; }
+}
 .rt-count { margin: 10px 0 0; font-size: 14px; color: var(--ink-soft); scroll-margin-top: 12px; }
 
 /* ---------- 目錄 and pages ---------- */
@@ -101,7 +117,7 @@
 .rt-mean b { display: block; font-size: 19px; line-height: 1.35; }
 .rt-mean .en { display: block; font-size: 15px; color: var(--ink-soft); }
 .rt-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
-.rt-meta .chip { margin: 0; }
+.rt-meta .chip { margin: 0; max-width: 100%; white-space: normal; overflow-wrap: anywhere; } /* a long origin wraps inside the card */
 .rt-tip { margin: 10px 0 0; padding: 8px 12px; border-radius: 12px; background: var(--pastel-2); font-size: 15px; }
 .rt-ex { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 0; }
 .rt-row { padding: 10px 0; border-top: 2px dashed var(--bg-soft); }
@@ -182,3 +198,54 @@
 
 .rt-q .rt-q-split { display: inline-flex; vertical-align: middle; margin: 2px 0; }
 .rt-result .big-icon { font-size: 54px; line-height: 1.1; }
+
+/* ---------- 分類 bands in the list, the kind's colour on each card ---------- */
+.rt-band { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 26px 0 6px; padding: 10px 14px; border-left: 8px solid; border-radius: 14px; font-size: 21px; line-height: 1.3; }
+.rt-band.k-p { background: var(--kp-bg); border-color: var(--kp); color: var(--kp-ink); }
+.rt-band.k-r { background: var(--kr-bg); border-color: var(--kr); color: var(--kr-ink); }
+.rt-band.k-s { background: var(--ks-bg); border-color: var(--ks); color: var(--ks-ink); }
+.rt-band-ico { font-size: 26px; line-height: 1; }
+.rt-band-name small { margin-left: 4px; font-size: 14px; font-weight: 400; }
+.rt-band-n { margin-left: auto; font-size: 14px; font-weight: 600; }
+.rt-band .rt-dot { display: inline-block; width: 12px; height: 12px; margin-right: 8px; border-radius: 50%; background: currentColor; }
+.rt-band-desc { margin: 0 0 12px; padding: 0 4px; font-size: 15px; color: var(--ink-soft); }
+.rt-card.k-p { border-top: 5px solid var(--kp); }
+.rt-card.k-r { border-top: 5px solid var(--kr); }
+.rt-card.k-s { border-top: 5px solid var(--ks); }
+.rt-gchip.k-p { background: var(--kp-bg); border-color: var(--kp); color: var(--kp-ink); }
+.rt-gchip.k-r { background: var(--kr-bg); border-color: var(--kr); color: var(--kr-ink); }
+.rt-gchip.k-s { background: var(--ks-bg); border-color: var(--ks); color: var(--ks-ink); }
+@media (max-width: 560px) { .rt-band { font-size: 19px; padding: 8px 12px; border-left-width: 6px; } .rt-band-ico { font-size: 22px; } }
+
+/* ---------- 詳細說明 · 小心 · 相關 · 例句 ---------- */
+.rt-sub { margin: 14px 0 4px; font-size: 16px; }
+.rt-more p { margin: 4px 0 0; line-height: 1.75; }
+.rt-trap { margin: 10px 0 0; padding: 8px 12px; border-radius: 12px; background: color-mix(in srgb, #ff8a80 20%, var(--card)); font-size: 15px; line-height: 1.6; }
+.rt-rel { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 0; font-size: 15px; }
+.rt-rel > b { margin-right: 2px; }
+.rt-rel-a { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; padding: 3px 10px; border: 1.5px solid var(--border); border-radius: 999px; background: var(--card); color: var(--ink); text-decoration: none; }
+.rt-rel-a:hover { background: var(--bg-soft); }
+.rt-rel-a.k-p { border-color: var(--kp); } .rt-rel-a.k-r { border-color: var(--kr); } .rt-rel-a.k-s { border-color: var(--ks); }
+.rt-rel-a b { font-family: var(--font-en); }
+.rt-rel-a small { font-size: 12px; color: var(--ink-soft); }
+.rt-sub-ex { margin-top: 16px; }
+.rt-sent { margin: 8px 0 0; padding: 6px 10px; border-radius: 10px; background: var(--bg-soft); font-size: 15.5px; line-height: 1.6; }
+.rt-sent-en { font-family: var(--font-en); }
+.rt-sent-en b { color: var(--header); text-decoration: underline 2px var(--accent); text-underline-offset: 3px; }
+.rt-say-s { width: 28px; height: 28px; margin-left: 4px; font-size: 13px; vertical-align: 1px; }
+.rt-sent-zh { display: block; font-size: 14px; color: var(--ink-soft); }
+
+/* ---------- what 字首 / 字根 / 字尾 are, how to split a word ---------- */
+.rt-intro { margin-top: 14px; padding: 12px 18px; border-left: 6px solid var(--border); }
+.rt-intro.k-p { border-left-color: var(--kp); } .rt-intro.k-r { border-left-color: var(--kr); } .rt-intro.k-s { border-left-color: var(--ks); }
+.rt-intro > summary { min-height: 32px; font-size: 18px; font-weight: 700; cursor: pointer; }
+.rt-intro > summary small { margin-left: 10px; font-size: 13px; font-weight: 400; color: var(--ink-soft); }
+.rt-intro[open] > summary small { display: none; }
+.rt-intro:not([open]) { padding-top: 8px; padding-bottom: 8px; }
+.rt-intro-list { margin: 8px 0 0; padding-left: 1.3em; line-height: 1.75; }
+.rt-howto { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--bg-soft); }
+.rt-howto-h { margin: 0 0 4px; font-weight: 700; }
+.rt-howto ol { margin: 0; padding-left: 1.4em; line-height: 1.75; }
+.rt-howto-ex { margin: 8px 0 0; font-weight: 700; overflow-wrap: anywhere; }
+.rt-howto-note { margin: 6px 0 0; font-size: 14px; color: var(--ink-soft); }
+@media print { .rt-intro, .rt-cats { display: none !important; } .rt-say-s { display: none !important; } }
