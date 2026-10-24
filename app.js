@@ -2024,7 +2024,7 @@
       const best = isDone ? Math.max(...hist.map(r => Math.round(r.score / r.total * 100))) : null;
       const on = isBm('articles', a.id), here = view.lastArticle === a.id;
       return `<div class="list-item read-item ${isDone ? 'is-done' : ''}" data-id="${esc(a.id)}" data-action="openArticle">
-        <span class="li-tile" title="${isDone ? t('readDone') : t('readTodo')}" aria-hidden="true">${isDone ? '✓' : (g ? g[2] : '📄')}</span>
+        <span class="li-tile" title="${isDone ? t('readDone') : t('readTodo')}" aria-hidden="true">${isDone ? '✓' : practicalText(a) ? '✉️' : (g ? g[2] : '📄')}</span>
         <button type="button" class="ri-main" data-action="openArticle" data-id="${esc(a.id)}"><span class="sr-only">${isDone ? t('readDoneTag') + '：' : ''}</span><div class="title">${esc(a.title)}</div>${a.title_zh ? `<div class="zh">${esc(a.title_zh)}</div>` : ''}</button>
         <button type="button" class="icon-btn ri-bm" data-action="toggleBm" data-kind="articles" data-id="${esc(a.id)}" aria-pressed="${on}" aria-label="${esc(t('bookmark') + '：' + a.title)}">${on ? '★' : '☆'}</button>
         <div class="ri-meta">${here ? `<span class="chip here">📍 ${t('lastRead')}</span>` : ''}${best !== null ? `<span class="chip ${best >= 80 ? 'ok' : best >= 60 ? 'warn' : 'bad'}">${t('best')} ${best}%</span>` : ''}<span>${a.questions.length} ${t('questions')} · ${tf('wordsCount', { n: (a.passage || '').split(/\s+/).filter(Boolean).length })}</span>${(a.tags || []).map(x => `<span class="chip ri-tag">${esc(unitLabel(x))}</span>`).join('')}</div>
