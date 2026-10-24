@@ -2102,7 +2102,7 @@
   }
 
   /* ---- 學習筆記 under a passage, opened on demand: 段落重點 · 關鍵字 (☆ saves the word with its sentence) · 句子解析 ----
-     reading-notes.js (window.READING_NOTES, about 700 KB) is loaded the first time a student opens the notes */
+     reading-notes.js (window.READING_NOTES, about 1.3 MB) is loaded the first time a student opens the notes */
   const RN = { status: window.READING_NOTES ? 'ready' : 'idle' };
   function loadReadNotes() {
     if (RN.status !== 'idle') return;
