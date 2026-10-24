@@ -1540,12 +1540,12 @@
   // 📖 章節 (how many are done) · 🎯 綜合測驗 (a dot while one waits to be finished)
   function grKinds() {
     const g = view.gr, going = g.mix && g.mix.i < g.mix.qs.length && g.sub !== 'quiz', onQuiz = g.sub === 'quiz';
-    const tab = (quiz, href, label, sub) => `<a class="gr-kind${quiz && going ? ' has-session' : ''}" href="${href}"${onQuiz === quiz ? ' aria-current="page"' : ''}><span>${label}</span><small>${sub}${quiz && going ? '<span class="sr-only">（還沒做完）</span>' : ''}</small></a>`;
+    const tab = (quiz, href, label, sub) => `<a class="gr-kind${quiz && going ? ' has-session' : ''}" href="${href}"${onQuiz === quiz ? ' aria-current="page"' : ''}><span>${label}</span><small>${sub}${quiz && going ? '<span class="sr-only">（尚未完成）</span>' : ''}</small></a>`;
     return `<nav class="gr-kinds" aria-label="章節、綜合測驗">${tab(false, '#/grammar', '📖 章節', `${GR_CH.length} 章 · 完成 ${grDone(GR_CH)}`)}${tab(true, '#/grammar/quiz', '🎯 綜合測驗', 'Quiz')}</nav>`;
   }
   function grCard(c) {
     const r = grStatus(c);
-    const st = !r ? '<span class="gr-st">還沒做小測驗</span>' : r.best >= GR_PASS ? `<span class="gr-st ok">✓ 小測驗 ${r.best} / ${GR_QN}</span>` : `<span class="gr-st">小測驗 ${r.best} / ${GR_QN}</span>`;
+    const st = !r ? '<span class="gr-st">尚未進行小測驗</span>' : r.best >= GR_PASS ? `<span class="gr-st ok">✓ 小測驗 ${r.best} / ${GR_QN}</span>` : `<span class="gr-st">小測驗 ${r.best} / ${GR_QN}</span>`;
     return `<a class="card gr-ch${r && r.best >= GR_PASS ? ' is-done' : ''}" href="#/grammar/${c.id}"><span class="gr-no" aria-hidden="true">${grCode(c)}</span>
       <span class="gr-ch-body"><span class="gr-ch-t"><b>${esc(c.title)}</b><span class="chip">${esc(c.level)}</span></span><span class="gr-ch-en" lang="en">${esc(c.en)}</span>
       <span class="gr-ch-lead">${grNoLinks(grRich(c.lead))}</span>${st}</span></a>`;
@@ -1564,14 +1564,14 @@
         <p class="gr-unit-d">${esc(u.desc)}</p><div class="gr-grid">${run.map(grCard).join('')}</div></section>`;
     });
     // the whole list needs no count line: the 章節 tab already counts it
-    const count = !list.length ? (q ? `找不到「${q}」。` : '這個分類沒有這個程度的章節。') : q || g.band || g.unit ? `${q ? '找到' : '共'} ${list.length} 章` : '';
+    const count = !list.length ? (q ? `查無「${q}」的相關章節。` : '此分類中沒有該程度的章節。') : q || g.band || g.unit ? `${q ? '找到' : '共'} ${list.length} 章` : '';
     return `<div class="card gr-tools">
         <div class="gr-search"><label class="sr-only" for="grQ">搜尋文法章節</label><input type="search" id="grQ" value="${esc(g.q)}" placeholder="搜尋：被動、現在完成、which…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
         <div class="gr-frow"><span class="gr-flbl" id="grUnitsLbl">分類</span><nav class="subtabs gr-pills units" aria-labelledby="grUnitsLbl">${upill('', '全部', GR_CH.length)}${GR_UNITS.map(u => upill(u.id, `${u.icon} ${esc(u.short)}`, GR_CH.filter(c => c.unit === u.id).length)).join('')}</nav></div>
         <div class="gr-frow"><span class="gr-flbl" id="grBandsLbl">程度</span><nav class="subtabs gr-pills gr-bands" aria-labelledby="grBandsLbl">${GR_BANDS.map(([b, n]) => bpill(b, n)).join('')}</nav></div>
-        ${last ? `<p class="gr-last">📌 上次看到：<a href="#/grammar/${last.id}">${grCode(last)}　${esc(last.title)} →</a></p>` : ''}
+        ${last ? `<p class="gr-last">📌 上次閱讀：<a href="#/grammar/${last.id}">${grCode(last)}　${esc(last.title)} →</a></p>` : ''}
       </div><p class="gr-count" role="status">${esc(count)}</p>
-      ${list.length ? body : `<div class="card gr-empty"><p>${q ? '試試輸入中文或英文，例如：被動、現在完成、which、if。' : '換一個程度或分類看看。'}</p></div>`}`;
+      ${list.length ? body : `<div class="card gr-empty"><p>${q ? '請嘗試輸入中文或英文，例如：被動、現在完成、which、if。' : '請嘗試選擇其他程度或分類。'}</p></div>`}`;
   }
   // 結構圖解: the sentence split into its parts, each with a fixed colour AND a text label (S 主詞 …); modifiers and linking words grey
   const GR_ROLE = { S: '主詞', V: '動詞', O: '受詞', C: '補語', M: '修飾', J: '連接' };
@@ -1605,9 +1605,9 @@
   }
   function grOpt(q, n, picked, attrs, big) {
     const done = picked != null, cls = !done ? '' : n === q.answer ? ' is-right' : n === picked ? ' is-wrong' : '';
-    return `<button type="button" class="gr-opt${big ? ' big' : ''}${cls}" ${attrs}${done ? ' disabled' : ''} lang="en"><span class="gr-l" aria-hidden="true">${L4[n]}</span><span>${esc(q.options[n])}</span>${done && n === q.answer ? '<span class="sr-only" lang="zh-Hant-TW">（正確答案）</span>' : done && n === picked ? '<span class="sr-only" lang="zh-Hant-TW">（你的答案）</span>' : ''}</button>`;
+    return `<button type="button" class="gr-opt${big ? ' big' : ''}${cls}" ${attrs}${done ? ' disabled' : ''} lang="en"><span class="gr-l" aria-hidden="true">${L4[n]}</span><span>${esc(q.options[n])}</span>${done && n === q.answer ? '<span class="sr-only" lang="zh-Hant-TW">（正確答案）</span>' : done && n === picked ? '<span class="sr-only" lang="zh-Hant-TW">（所選答案）</span>' : ''}</button>`;
   }
-  const grVerdict = (q, picked, id) => `<p class="gr-verdict" id="${id}" tabindex="-1">${picked === q.answer ? '✔ 答對了！' : `✘ 正確答案：(${L4[q.answer]}) <span lang="en">${esc(q.options[q.answer])}</span>`}</p><p>${esc(q.explain)}</p>`;
+  const grVerdict = (q, picked, id) => `<p class="gr-verdict" id="${id}" tabindex="-1">${picked === q.answer ? '✔ 答案正確' : `✘ 正確答案：(${L4[q.answer]}) <span lang="en">${esc(q.options[q.answer])}</span>`}</p><p>${esc(q.explain)}</p>`;
   function grQItem(c, i) {
     const q = c.quiz[i], pick = (view.gr.picks[c.id] || [])[i], done = pick != null;
     return `<li class="gr-qi" id="gq-${i}"><p class="gr-qq" lang="en"><span class="gr-qn">${i + 1}.</span> ${grBlank(q.q, done ? q.options[q.answer] : null)}</p>
@@ -1617,8 +1617,8 @@
   function grQSum(c) {
     const picks = view.gr.picks[c.id] || [], n = picks.filter(x => x != null).length, right = picks.filter((x, i) => x === c.quiz[i].answer).length, r = grStatus(c);
     if (n < c.quiz.length) return `<p class="gr-qsum">已答 ${n} / ${c.quiz.length} 題・答對 ${right} 題${r ? `・最佳成績 ${r.best} / ${GR_QN}` : ''}</p>`;
-    return `<div class="gr-qdone"><p class="gr-score"><b>${right} / ${c.quiz.length}</b> ${right === c.quiz.length ? '全對！🎉' : right >= GR_PASS ? '很不錯！把答錯的解析再看一次。' : '再讀一次上面的說明，然後重做一次！'}</p>
-      <p class="small muted">最佳成績：${r ? r.best : right} / ${GR_QN}</p><button type="button" class="btn" data-action="grRedo">↻ 再做一次</button></div>`;
+    return `<div class="gr-qdone"><p class="gr-score"><b>${right} / ${c.quiz.length}</b> ${right === c.quiz.length ? '全部答對！🎉' : right >= GR_PASS ? '表現良好！請再複習答錯題目的解析。' : '請先複習上方說明，再重新作答。'}</p>
+      <p class="small muted">最佳成績：${r ? r.best : right} / ${GR_QN}</p><button type="button" class="btn" data-action="grRedo">↻ 重新作答</button></div>`;
   }
   function grChapter(c) {
     const n = GR_CH.indexOf(c), prev = GR_CH[n - 1], next = GR_CH[n + 1], u = GR_UNIT.get(c.unit) || { icon: '', name: '', n: 0 };
@@ -1628,7 +1628,7 @@
       <header class="page-head gr-head"><h1 tabindex="-1">${esc(c.title)}</h1><p><span lang="en">${esc(c.en)}</span><span class="chip">${esc(c.level)}</span></p></header>
       <p class="gr-lead">💡 ${grRich(c.lead)}</p>${grPending(c, 'lead')}
       <div class="card gr-about">${(c.goals || []).length ? `<div><h2 class="gr-k">學習目標</h2><ul>${c.goals.map(g => `<li>${grRich(g)}</li>`).join('')}</ul></div>` : ''}
-        <div><h2 class="gr-k">先備章節</h2>${pre.length ? `<p>${pre.map(x => `<a href="#/grammar/${x.id}">${grCode(x)} ${esc(x.title)}</a>`).join('、')}</p>` : '<p class="muted">不需要，可以直接開始。</p>'}
+        <div><h2 class="gr-k">先備章節</h2>${pre.length ? `<p>${pre.map(x => `<a href="#/grammar/${x.id}">${grCode(x)} ${esc(x.title)}</a>`).join('、')}</p>` : '<p class="muted">無須先修其他章節，可直接開始。</p>'}
           <h2 class="gr-k">難度</h2><p>${esc(c.level)}（${esc(GR_LEVEL_NAME[c.level] || '')}）</p></div></div>
       <nav class="gr-toc" aria-label="本章內容">${toc.map(([id, h]) => `<button type="button" class="gr-toc-b" data-action="grJump" data-to="${id}">${grNoLinks(grRich(h))}</button>`).join('')}</nav>
       ${c.sections.map((s, i) => grSection(s, i, c)).join('')}
@@ -1648,10 +1648,10 @@
     if (!s) {
       const best = grStore.mix[g.range || 'all'], pick = (r, l) => `<button type="button" class="gr-pick" data-action="grRange" data-v="${r}" aria-pressed="${g.range === r}">${esc(l)}</button>`;
       return `<section class="card gr-mix-set" aria-labelledby="qsTitle"><h2 id="qsTitle" style="margin-top:0">🎯 綜合測驗</h2>
-        <p class="muted">從各章的題目隨機抽 ${GR_MIXN} 題，答完看解析，答錯可以直接回到那一章。</p>
+        <p class="muted">從各章題目中隨機抽出 ${GR_MIXN} 題，作答後可查看解析，並可直接回到答錯題目所屬的章節。</p>
         <h3 class="small gr-rh" id="grRu">依單元</h3><div class="gr-ranges units" role="group" aria-labelledby="grRu">${pick('', '全部')}${GR_UNITS.map(u => pick('u:' + u.id, `${u.icon} ${u.short}`)).join('')}</div>
         <h3 class="small gr-rh" id="grRb">依程度</h3><div class="gr-ranges" role="group" aria-labelledby="grRb">${GR_BANDS.slice(1).map(([b, l]) => pick(b, l)).join('')}</div>
-        <p class="gr-best">${best != null ? `「${esc(grRangeName(g.range))}」的最佳成績：${best} / ${GR_MIXN}` : `「${esc(grRangeName(g.range))}」還沒有成績。`}</p>
+        <p class="gr-best">${best != null ? `「${esc(grRangeName(g.range))}」的最佳成績：${best} / ${GR_MIXN}` : `「${esc(grRangeName(g.range))}」尚無成績。`}</p>
         <button type="button" class="btn accent gr-go" data-action="grStart">開始測驗 ▶</button></section>`;
     }
     const n = s.qs.length;
@@ -1659,8 +1659,8 @@
       const wrongCh = [...new Set(s.wrong)].map(id => grById.get(id));
       return `<section class="card gr-result" aria-labelledby="rTitle"><div class="big-icon" aria-hidden="true">${s.right / n >= .8 ? '🎉' : '💪'}</div>
         <h2 id="rTitle" tabindex="-1">${s.redo ? '錯題重做完成' : '綜合測驗完成'}</h2><p class="gr-rscore">${s.right} / ${n}</p>
-        <p class="muted">${s.right === n ? '全對！太厲害了。' : s.right / n >= .7 ? '很不錯！把答錯的章節再看一次。' : '回到答錯的章節讀一讀，再挑戰一次！'}</p>
-        ${wrongCh.length ? `<div class="gr-review"><h3>要再看的章節</h3><ul>${wrongCh.map(c => `<li><a href="#/grammar/${c.id}">${grCode(c)}　${esc(c.title)}</a></li>`).join('')}</ul></div>` : ''}
+        <p class="muted">${s.right === n ? '全部答對，表現優異！' : s.right / n >= .7 ? '表現良好！請再複習答錯的章節。' : '請回到答錯的章節複習後，再挑戰一次！'}</p>
+        ${wrongCh.length ? `<div class="gr-review"><h3>建議複習的章節</h3><ul>${wrongCh.map(c => `<li><a href="#/grammar/${c.id}">${grCode(c)}　${esc(c.title)}</a></li>`).join('')}</ul></div>` : ''}
         <div class="row" style="justify-content:center;margin-top:16px">${s.redo ? `<a class="btn accent" href="#/wrong">${t('wbBack')}</a><button type="button" class="btn ghost" data-action="grSetup">綜合測驗</button>` : `<button type="button" class="btn accent" data-action="grStart" data-v="again">再測一次</button><button type="button" class="btn ghost" data-action="grSetup">換範圍</button>`}</div></section>`;
     }
     const x = s.qs[s.i], c = grById.get(x.id), q = grQ(x), done = s.chosen != null;
@@ -1669,7 +1669,7 @@
       <h2 id="qTitle" tabindex="-1" lang="en">${grBlank(q.q, done ? q.options[q.answer] : null)}</h2>
       <div class="gr-opts two">${q.options.map((_, k) => grOpt(q, k, s.chosen, `data-action="grMixAnswer" data-o="${k}"`, true)).join('')}</div>
       ${done ? `<div class="gr-exp ${s.chosen === q.answer ? 'ok' : 'bad'}">${grVerdict(q, s.chosen, 'grVerdict')}<p class="gr-from">出自 <a href="#/grammar/${c.id}">${grCode(c)}〈${esc(c.title)}〉→</a></p></div>
-        <div class="gr-next"><button type="button" class="btn accent" data-action="grNext" aria-describedby="grVerdict">${s.i + 1 < n ? '下一題 →' : '看成績 🎉'}</button></div>` : ''}
+        <div class="gr-next"><button type="button" class="btn accent" data-action="grNext" aria-describedby="grVerdict">${s.i + 1 < n ? '下一題 →' : '查看成績 🎉'}</button></div>` : ''}
     </section>`;
   }
   function pageGrammar() {
