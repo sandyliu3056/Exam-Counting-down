@@ -1,69 +1,213 @@
 {
- "updated": "2026-10-23T00:08:12Z",
+ "updated": "2026-10-23T23:58:14Z",
  "items": [
   {
-   "title": "School, work canceled as typhoon nears",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/23/2003866461",
+   "title": "Typhoon Champi shuts down Taiwan",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/24/2003866521",
    "summary": "",
    "source": "Taipei Times",
    "topic": "Taiwan",
-   "date": "2026-10-23T00:00:00Z"
+   "date": "2026-10-24T00:00:00Z"
   },
   {
-   "title": "China escalating election interference efforts, NSB says",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/23/2003866462",
+   "title": "CGA urges Beijing not to use typhoons to assert jurisdiction",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/24/2003866523",
    "summary": "",
    "source": "Taipei Times",
    "topic": "Taiwan",
-   "date": "2026-10-23T00:00:00Z"
+   "date": "2026-10-24T00:00:00Z"
   },
   {
-   "title": "Millions of hacking attempts amid rush to patch PHP",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/23/2003866463",
+   "title": "European, Mideast ministers hold talks in Istanbul",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/24/2003866525",
    "summary": "",
    "source": "Taipei Times",
    "topic": "Taiwan",
-   "date": "2026-10-23T00:00:00Z"
+   "date": "2026-10-24T00:00:00Z"
+  },
+  {
+   "title": "The latest in space science: We look back at the Big Bang",
+   "link": "https://www.npr.org/2026/10/23/nx-s1-6008076/the-latest-in-space-science-we-look-back-at-the-big-bang",
+   "summary": "In this edition of Spacing Out, the team from Short Wave shares the latest developments in space science, including the theory on why the universe is made of matter",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-10-23T23:10:35Z"
+  },
+  {
+   "title": "Britain's posh schools are heading to India for students and profits",
+   "link": "https://www.bbc.co.uk/news/articles/c6vgx1ldvz5vo?at_medium=RSS&at_campaign=rss",
+   "summary": "Half a dozen elite British schools are chasing growth in India amid a boom in its wealthy population.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-10-23T23:02:25Z"
+  },
+  {
+   "title": "Blue Planet III features cloudier footage to prove authenticity amid AI boom",
+   "link": "https://www.theguardian.com/media/2026/oct/24/blue-planet-iii-cloudier-footage-prove-authenticity-ai-boom",
+   "summary": "BBC series deliberately uses ‘more organic’ shots to assure viewers animals are not AI-generated, producers say The David Attenborough -narrated series Blue Planet III deliberately includes cloudier, less polished…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-10-23T23:01:16Z"
+  },
+  {
+   "title": "Fired OpenAI researchers say independent safety audits aren't going well",
+   "link": "https://www.npr.org/2026/10/23/nx-s1-6012235/fired-openai-researchers-say-independent-safety-audits-arent-going-well",
+   "summary": "In their first interview since being fired, OpenAI safety researchers Mikita Balesni and Tomek Korbak say they were terminated for prioritizing safety over the short-term interests of the company.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-10-23T21:33:31Z"
+  },
+  {
+   "title": "Storm Austen brings power cuts and travel disruption as more wind and rain forecast",
+   "link": "https://www.bbc.co.uk/news/articles/cxj0l193y0l8o?at_medium=RSS&at_campaign=rss",
+   "summary": "A second storm, Storm Boelo, is expected to hit Scotland, Northern Ireland and northern England on Saturday bringing more wild weather.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-10-23T21:10:47Z"
+  },
+  {
+   "title": "Trains cancelled and roads warnings as Scotland prepares for Storm Boelo",
+   "link": "https://www.bbc.co.uk/news/articles/c60qk5lw1z8wo?at_medium=RSS&at_campaign=rss",
+   "summary": "Heavy rain and strong winds are expected during the second named storm to hit in two days, with gusts of up to 80mph forecast.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-10-23T19:31:02Z"
+  },
+  {
+   "title": "Wales plans to ban steel pylons as government launches consultation",
+   "link": "https://www.bbc.co.uk/news/articles/c9x28dgj2r0go?at_medium=RSS&at_campaign=rss",
+   "summary": "The Welsh government says it is consulting on an \"undergrounding-first approach\" to electricity lines.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-10-23T16:44:13Z"
+  },
+  {
+   "title": "UK government to make unprecedented intervention in setting of water bills",
+   "link": "https://www.theguardian.com/business/2026/oct/23/ministers-water-companies-bills-investment",
+   "summary": "Exclusive: Angela Eagle tells utility bosses next price review ‘must focus on value for money for customers’ Ministers will make an unprecedented intervention in water bills and how companies prioritise investment,…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-10-23T13:51:10Z"
+  },
+  {
+   "title": "Authorities investigating whether first Kenya and Nigeria Ebola cases crossed paths",
+   "link": "https://www.npr.org/2026/10/23/g-s1-149515/africa-ebola-outbreak",
+   "summary": "Nigeria this week recorded its first case of Ebola in the current outbreak, which has spread from the epicenter in Congo to several other African countries.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-10-23T12:41:39Z"
+  },
+  {
+   "title": "What is PHP and why did it spark a global cyber-security scramble?",
+   "link": "https://www.bbc.co.uk/news/articles/c3qjnwye0ep5o?at_medium=RSS&at_campaign=rss",
+   "summary": "AI uncovered long-hidden programming flaws, triggering a rare global cyber-security response.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-10-23T12:24:17Z"
+  },
+  {
+   "title": "The US west has lost nearly 300 glaciers since the 1960s. Climate crisis is drastically shrinking what’s left",
+   "link": "https://www.theguardian.com/environment/ng-interactive/2026/oct/23/glacier-loss-climate-crisis-west",
+   "summary": "At the midpoint of the last century the region had 1,450 glaciers and a new study reveals the extent of losses Continue reading...",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-10-23T12:00:26Z"
+  },
+  {
+   "title": "'It's been relentless' say IT workers on frontline of PHP cyber-security scramble",
+   "link": "https://www.bbc.co.uk/news/articles/cxnv025d8qpmo?at_medium=RSS&at_campaign=rss",
+   "summary": "IT and cyber experts have told the BBC about their struggles in the last 48 hours to update their systems.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-10-23T12:00:25Z"
+  },
+  {
+   "title": "‘The most complicated launch campaign ever’: NASA lays out mad dash to test lunar landers",
+   "link": "https://lite.cnn.com/2026/10/23/science/nasa-artemis-update-spacex-starship-blue-origin",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Science",
+   "date": "2026-10-23T12:00:00Z"
+  },
+  {
+   "title": "Hall of Famer Marshall Faulk says he’s been diagnosed with Parkinson’s",
+   "link": "https://lite.cnn.com/2026/10/23/sport/marshall-faulk-parkinsons",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-10-23T12:00:00Z"
+  },
+  {
+   "title": "Airfares are way up compared to last year. Don’t expect it to change this holiday season",
+   "link": "https://lite.cnn.com/2026/10/23/business/airfare-prices-holiday-season",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-10-23T12:00:00Z"
+  },
+  {
+   "title": "The biggest-ever internet security threat has been known for 22 years. AI made it a crisis in 2 days",
+   "link": "https://lite.cnn.com/2026/10/23/tech/ai-cybersecurity-php2shell-explained",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Tech",
+   "date": "2026-10-23T12:00:00Z"
+  },
+  {
+   "title": "What is Shamonda, the livestock virus found for the first time in a person in France?",
+   "link": "https://lite.cnn.com/2026/10/23/health/shamonda-virus-explainer",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Health",
+   "date": "2026-10-23T12:00:00Z"
+  },
+  {
+   "title": "Hacking attempts rise after flaws found in program affecting 70% of websites",
+   "link": "https://www.npr.org/2026/10/23/g-s1-149503/hacking-php-flaws",
+   "summary": "Governments around the world are rushing to implement safety measures after AI technology found \"severe\" vulnerabilities in a key programming language called PHP.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-10-23T09:37:38Z"
+  },
+  {
+   "title": "Why going on a 'say no' retreat is a gift to your future self",
+   "link": "https://www.npr.org/2026/10/23/nx-s1-6011089/how-to-plan-a-say-no-retreat",
+   "summary": "It's a day to think about all the upcoming appointments and commitments you're dreading — and then decline some of them. Writer Caroline Sylge shares a suggested schedule for the day.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-10-23T09:00:00Z"
+  },
+  {
+   "title": "Tech stocks dropped sharply. What it means for the rest of the economy",
+   "link": "https://www.npr.org/2026/10/23/nx-s1-6012831/tech-stocks-dropped-sharply-what-it-means-for-the-rest-of-the-economy",
+   "summary": "Tech stocks dropped sharply Wednesday, NPR's Leila Fadel asks David Wessel of the Brookings Institution what it means.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-10-23T08:43:57Z"
+  },
+  {
+   "title": "The Indian workers filming their work to train AI",
+   "link": "https://www.bbc.co.uk/news/articles/ckvgyml6pdm9o?at_medium=RSS&at_campaign=rss",
+   "summary": "Indian workers are being paid to film themselves at work and the footage is used to train AI.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-10-23T08:04:17Z"
+  },
+  {
+   "title": "How citizen science is tracking changes in shorelines around the world",
+   "link": "https://www.theguardian.com/news/2026/oct/23/how-citizen-science-is-tracking-changes-in-shorelines-around-the-world",
+   "summary": "An app and a camera phone are all that’s needed at more than 200 spots to help researchers monitor coastal areas The shoreline changes with the weather. Tracking these changes over time is a labour-intensive task, and…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-10-23T05:00:01Z"
   },
   {
    "title": "Australia offers astronaut Katherine Bennell-Pegg for space mission to International Space Station",
    "link": "https://www.theguardian.com/australia-news/2026/oct/23/australian-astronaut-katherine-bennell-pegg-2028-space-mission",
-   "summary": "Australian of the Year would become the first astronaut in space to qualify under the Australian flag if she embarks on the 2028 mission The federal government has sent an offer to the European Space Agency (ESA) to…",
+   "summary": "Australian of the Year would become the first astronaut in space to qualify under the Australian flag if she embarks on the 2028 mission Get our breaking news email , free app or daily news podcast The federal…",
    "source": "The Guardian",
    "topic": "Science",
-   "date": "2026-10-22T23:27:48Z"
-  },
-  {
-   "title": "Grid operator says lights will stay on this winter after concerns",
-   "link": "https://www.bbc.co.uk/news/articles/cmy56q2n1veqo?at_medium=RSS&at_campaign=rss",
-   "summary": "The assurance from the National Energy System Operator comes amid concern from its engineers about their ability to ensure adequate supply.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-10-22T23:04:38Z"
-  },
-  {
-   "title": "Heavy rain warning as Storm Austen sweeps across Scotland",
-   "link": "https://www.bbc.co.uk/news/articles/cwkgjz3dpyj6o?at_medium=RSS&at_campaign=rss",
-   "summary": "The Met Office has issued a yellow warning for rain across most of central and eastern Scotland on Friday.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-10-22T21:59:43Z"
-  },
-  {
-   "title": "Andy Burnham vows UK will hit net zero target despite Jackdaw gasfield approval",
-   "link": "https://www.theguardian.com/environment/2026/oct/22/andy-burnham-vows-uk-will-hit-net-zero-targets-despite-jackdaw-gasfield-approval",
-   "summary": "PM pledges commitment to address climate crisis, saying in Guardian article that his ‘determination is unwavering’ Andy Burnham: We will make the net-zero transition work for Britain Andy Burnham has said he will not…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-10-22T21:34:11Z"
-  },
-  {
-   "title": "Gasps as Prince William makes surprise appearance on Graham Norton Show",
-   "link": "https://www.bbc.co.uk/news/articles/c30rlpkglkwpo?at_medium=RSS&at_campaign=rss",
-   "summary": "The Prince of Wales was marking his Earthshot Prize, to which all of Norton's guests were linked.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-10-22T21:21:22Z"
+   "date": "2026-10-22T23:51:24Z"
   },
   {
    "title": "Should 'bird brain' be a compliment? Here's how crows think fast",
@@ -74,52 +218,12 @@
    "date": "2026-10-22T20:47:25Z"
   },
   {
-   "title": "Zuckerberg wins Meta deal to help him foot bill for possible California billionaire tax",
-   "link": "https://www.bbc.co.uk/news/articles/cky83vwnyglno?at_medium=RSS&at_campaign=rss",
-   "summary": "The Meta boss had said he would exit the state over a wealth tax that has not yet come into force.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-10-22T18:26:56Z"
-  },
-  {
-   "title": "Every Briton should stockpile water and food supplies, government advises",
-   "link": "https://www.theguardian.com/politics/2026/oct/22/britain-prepare-infrastructure-attacks-hostile-states-wes-streeting",
-   "summary": "Be Ready campaign aims to prepare UK for impact of climate crisis, technological dependency and threats by hostile state Every Briton is being urged to stock up to nine litres of bottled water and three days’ worth of…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-10-22T18:10:11Z"
-  },
-  {
-   "title": "Race to update services' computer systems after cyber-security flaw found",
-   "link": "https://www.bbc.co.uk/news/articles/c9j34zgmkxx1o?at_medium=RSS&at_campaign=rss",
-   "summary": "Websites were taken offline after the developers of programming language PHP said \"critical vulnerabilities\" had been discovered.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-10-22T17:12:51Z"
-  },
-  {
-   "title": "We will make the net-zero transition work for Britain – approving the Jackdaw gasfield is part of the plan | Andy Burnham",
-   "link": "https://www.theguardian.com/commentisfree/2026/oct/22/net-zero-transition-britain-jackdaw-gasfield-jobs-energy-security-labour",
-   "summary": "Protecting jobs and strengthening energy security in the short term does not mean wavering on Labour’s deep commitment to a cleaner, greener future Andy Burnham vows UK will hit net zero target despite Jackdaw gasfield…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-10-22T17:00:45Z"
-  },
-  {
    "title": "Have scientists finally found a way to save the banana from disaster?",
    "link": "https://www.theguardian.com/global-development/2026/oct/22/have-scientists-finally-found-a-way-to-save-the-banana-from-disaster",
    "summary": "With the climate crisis and diseases threatening one of the world’s most popular fruits, researchers are hoping a breakthrough in breeding techniques could give the Cavendish banana a certain future Love them or loathe…",
    "source": "The Guardian",
    "topic": "Science",
    "date": "2026-10-22T13:00:05Z"
-  },
-  {
-   "title": "Experimental mRNA vaccine cuts risk melanoma returns by 42%",
-   "link": "https://lite.cnn.com/2026/10/22/health/mnra-cancer-vaccine-moderna",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Health",
-   "date": "2026-10-22T12:00:00Z"
   },
   {
    "title": "Taco Bell sticks with Pepsi as sister chain switches to Coke",
@@ -136,301 +240,203 @@
    "source": "CNN",
    "topic": "Tech",
    "date": "2026-10-22T12:00:00Z"
-  },
-  {
-   "title": "Meet Adri Mehmeti, the 17-year-old future star of American soccer",
-   "link": "https://lite.cnn.com/2026/10/22/sport/adri-mehmeti-us-soccer-phenom-profile",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-10-22T12:00:00Z"
-  },
-  {
-   "title": "Airbnb rule change frees guests from chores involving ‘significant effort’",
-   "link": "https://lite.cnn.com/2026/10/22/travel/airbnb-policy-change-chores-scli-intl",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Travel",
-   "date": "2026-10-22T12:00:00Z"
-  },
-  {
-   "title": "After a Black media empire fell, a photographer explored the extraordinary building it left behind",
-   "link": "https://lite.cnn.com/2026/10/22/style/ebony-jet-design-barbara-karant-photography",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-10-22T12:00:00Z"
-  },
-  {
-   "title": "What is PHP and why did it spark a global cyber-security scramble?",
-   "link": "https://www.bbc.co.uk/news/articles/c3qjnwye0ep5o?at_medium=RSS&at_campaign=rss",
-   "summary": "AI uncovered long-hidden programming flaws, triggering a rare global cyber-security response.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-10-22T11:15:58Z"
-  },
-  {
-   "title": "Achy from sitting at a desk all day? Try doing this",
-   "link": "https://www.npr.org/2026/10/22/nx-s1-6010506/5-simple-ways-to-relieve-the-aches-and-pains-of-sitting-at-a-desk-all-day",
-   "summary": "Sitting at a desk all day hurts. And it isn't good for us. Strategies to make it a little more comfortable, from eye muscle exercises to alleviate eye strain to a back pain-fighting body movement.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-10-22T09:01:00Z"
-  },
-  {
-   "title": "A GOP congressman voted to cut Medicaid. It covers 62% of his district. Can he win?",
-   "link": "https://www.npr.org/2026/10/22/nx-s1-6002928/republican-congress-midterms-medicaid-cuts-david-valadao-california",
-   "summary": "Republican U.S. Rep. David Valadao is fighting for reelection in central California. 6 in 10 residents of his district are covered by Medicaid, which he voted to cut last year.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-10-22T09:00:00Z"
-  },
-  {
-   "title": "Can a dream help you solve a problem? Here's how to try tonight",
-   "link": "https://www.npr.org/2026/10/22/nx-s1-6008129/dream-incubation-research-self-discovery",
-   "summary": "What can you learn from dreams and how can you remember them and steer them to the topics you wish to dream about. Allison Aubrey and A Martinez discuss the resurgance in dream research and how dreams are a tool for…",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-10-22T09:00:00Z"
-  },
-  {
-   "title": "See how Big Tech is transforming Spain's landscape",
-   "link": "https://www.npr.org/2026/10/22/nx-s1-5991641/ai-data-centers-spain-environmental-impact",
-   "summary": "A drought-stricken region of northeast Spain has become a focus for American companies searching for locations to place their data centers.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-10-22T09:00:00Z"
-  },
-  {
-   "title": "Oracle's debt is growing. The tech giant's investors are concerned",
-   "link": "https://www.npr.org/2026/10/22/nx-s1-6007863/oracles-debt-is-growing-the-tech-giants-investors-are-concerned",
-   "summary": "Oracle, the multinational tech giant has taken on a lot of loans to build up its AI capacity. But Oracle's investors are not happy with this piling debt load.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-10-22T08:57:19Z"
-  },
-  {
-   "title": "Tesla beats earnings projections after Musk floats SpaceX merger plan",
-   "link": "https://www.theguardian.com/technology/2026/oct/21/elon-musk-tesla-spacex",
-   "summary": "Musk says ‘there’s a lot of merit’ to potential merger that would require approval of 50% of all Tesla shareholders, but declined to elaborate Investors were paying close attention to Tesla ’s third-quarter earnings…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-10-21T23:03:16Z"
-  },
-  {
-   "title": "Only one female scientist named in GCSEs, research finds",
-   "link": "https://www.bbc.co.uk/news/articles/c69wzv5pg447o?at_medium=RSS&at_campaign=rss",
-   "summary": "A new study finds Rosalind Franklin is the only woman named in Key Stage 4 science specifications.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-10-21T23:02:45Z"
-  },
-  {
-   "title": "AI is shaking up the field of mathematics. But what comes next?",
-   "link": "https://www.npr.org/2026/10/21/nx-s1-5995392/ai-is-shaking-up-the-field-of-mathematics-but-what-comes-next",
-   "summary": "AI-written mathematical proofs have saddled the community with a lot of extra homework.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-10-21T21:35:52Z"
-  },
-  {
-   "title": "A botched scientific experiment returns as a Netflix reality TV show",
-   "link": "https://lite.cnn.com/2026/10/21/science/stanford-prison-experiment-netflix",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Science",
-   "date": "2026-10-21T12:00:00Z"
   }
  ],
  "lessons": [
   {
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/23/2003866461",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/24/2003866521",
    "source": "Taipei Times",
    "topic": "Taiwan",
-   "title": "School, work canceled as typhoon nears",
-   "title_zh": "颱風逼近 全台多數縣市停班停課",
+   "title": "Typhoon Champi shuts down Taiwan",
+   "title_zh": "薔琵颱風使臺灣停擺",
    "paragraphs": [
     {
-     "en": "Most cities and counties across Taiwan have called off classes and work today as Typhoon Champi approaches. Except for Kinmen County, local governments throughout the country announced closures to keep citizens safe. Taitung County suspended activities only on Green Island and Orchid Island, keeping the rest of the county open. The Central Weather Administration (CWA) broadened its land warning to cover 19 regions across Taiwan proper because the storm is expected to skirt the northeastern coast.",
-     "zh": "隨著薔琵（Champi）颱風逼近，台灣各地多數縣市今天已宣布停止上班上課。除了金門縣之外，全台各地方政府均宣布停班停課以確保民眾安全。台東縣僅暫停綠島與蘭嶼的活動，該縣其他地區則照常上班上課。由於這場風暴預計將掠過台灣本島東北部邊緣，交通部中央氣象署（CWA）已擴大陸上颱風警報範圍，涵蓋台灣本島十九個地區。"
+     "en": "Typhoon Champi brought destructive winds and heavy rains to Taiwan, causing extensive damage and leading many cities and counties to cancel work and classes. The Central Weather Administration (CWA) reported that the storm, which was once a super typhoon, generated gusts of about 191 kilometers per hour near its center. Several local governments, including Taipei, New Taipei City, Taoyuan, and Taichung, declared a second consecutive typhoon day, while mountainous regions prepared for intense downpours.",
+     "zh": "薔琵颱風為臺灣帶來具破壞性的強風與豪雨，造成廣泛的損害，並導致許多縣市停班停課。中央氣象署（CWA）報告指出，這場曾一度為強烈颱風的風暴，其中心附近出現時速約191公里的陣風。包括臺北市、新北市、桃園市及臺中市在內的數個地方政府宣布連續第二天放颱風假，同時山區也為劇烈暴雨預作準備。"
     },
     {
-     "en": "Although Champi has weakened into a moderate typhoon, meteorologists warned that direct landfall cannot be completely ruled out. According to CWA Weather Forecast Center Deputy Director Wu Wan-hua, the storm could move unpredictably as it interacts with the island's mountainous terrain. The center of the storm is projected to pass within 80 kilometers of the coast, generating massive waves higher than 10 meters along with fierce coastal gusts.",
-     "zh": "儘管薔琵已減弱為中度颱風，氣象人員仍警告不能完全排除直接登陸的可能性。根據中央氣象署氣象預報中心副主任伍婉華的說法，隨著風暴與島上的山區地形產生交互作用，其路徑可能會難以預測。預計颱風中心將在距離海岸八十公里範圍內掠過，並在沿海帶來超過十公尺的滔天巨浪以及強烈的陣風。"
+     "en": "According to the CWA, the storm was located approximately 100 kilometers east of Yilan yesterday evening, packing maximum sustained winds of 155 kilometers per hour. Forecaster Liu Pei-teng pointed out that the typhoon possessed an unusually large wind radius. Although projected tracks indicated that Champi would head toward the Chinese coast and southern Japan, forecasters warned that landfall remained possible if the storm \"stalls, loops or wobbles from side to side\" near the island. Meanwhile, rainfall at the Taipingshan weather station in Yilan exceeded 500 millimeters.",
+     "zh": "根據中央氣象署的資料，該風暴昨晚位於宜蘭東方約100公里處，最大持續風速達到每小時155公里。預報員劉沛滕指出，該颱風擁有異常龐大的暴風半徑。儘管預測路徑顯示薔琵將朝中國沿海及日本南部移動，但氣象預報員警告，若風暴在接近臺灣時「停滯、打轉或左右擺動」，仍有可能登陸。同時，宜蘭太平山測站的累積雨量已超過500毫米。"
     },
     {
-     "en": "Heavy rainfall is forecast to batter central, eastern, and northern Taiwan, with widespread downpours continuing through tomorrow. The CWA noted that mountainous regions in the north and northeast might receive between 600 and 900 millimeters of rain. Because the arrival of the typhoon coincides with the three-day Retrocession Day weekend, Premier Cho Jung-tai urged the public to stay away from streams, beaches, and mountain areas.",
-     "zh": "預測豪雨將會侵襲台灣中部、東部及北部地區，大範圍的強降雨並將持續到明天。中央氣象署指出，北部和東北部山區到明天可能會有六百至九百毫米的降雨量。由於颱風來襲正逢光復節三天連續假期，行政院長卓榮泰呼籲民眾遠離溪流、海灘和山區。"
+     "en": "The severe weather has resulted in casualties and infrastructure problems across the nation. The Central Emergency Operations Center confirmed that one man died in Pingtung County after being swept away by rough waves, and 350 other people were injured. To protect residents, rescue workers evacuated more than 2,600 people from vulnerable mountainous areas. Furthermore, Taiwan Power Company stated that over 77,000 households lost power, although electricity was restored to more than 75 percent of them by the afternoon.",
+     "zh": "嚴峻的天氣已在全臺造成人員傷亡與基礎設施問題。中央災害應變中心證實，屏東縣有一名男子遭大浪捲走後身亡，另有350人受傷。為了保護居民，搜救人員已從脆弱的山區撤離了超過2,600人。此外，台灣電力公司表示有超過7萬7千戶停電，不過下午已有超過百分之75的用戶恢復供電。"
     },
     {
-     "en": "Severe weather risks have also triggered urgent precautions in eastern Taiwan. National Fire Agency Chief Secretary Cheng Chih-chiang stated that authorities asked Hualien County to evacuate residents living downstream of a landslide dam on Wanli Creek. The barrier was holding five million tonnes of water, posing a serious disaster threat. Meanwhile, tragedy already occurred off Pingtung County, where a young free diver drowned after being swept away by a powerful rip current near Siaoliouciou Island.",
-     "zh": "嚴峻的天氣風險也促使台灣東部採取緊急防範措施。內政部消防署主任秘書鄭志強表示，有關單位已要求花蓮縣政府疏散居住在萬里溪堰塞湖下游的居民。該天然壩體蓄積了五百萬噸的水量，構成了嚴重的災害威脅。與此同時，屏東縣外海已經發生了一起悲劇，一名年輕的自由潛水客在小琉球附近被強烈的離岸流捲走後不幸溺斃。"
+     "en": "Transportation nationwide suffered severe disruptions. The Civil Aviation Administration reported that all 262 domestic flights and 715 international flights were canceled yesterday. In addition, ferry operators suspended maritime travel due to hazardous sea conditions. Because flight and ferry schedules remained uncertain, officials urged passengers to check the latest updates before departing for airports or harbors.",
+     "zh": "全國各地的交通遭受嚴重中斷。民航局報告指出，昨天所有262架次國內線航班及715架次國際線航班均被取消。此外，由於危險的海況，渡輪營運商暫停了海上運輸。由於航班與渡輪時刻表仍充滿不確定性，官員呼籲旅客在出發前往機場或港口前先確認最新消息。"
     }
    ],
-   "words": 284,
+   "words": 293,
    "v": 2,
    "vocab": [
     {
-     "word": "suspend",
-     "pos": "v.",
-     "zh": "暫停；中止"
-    },
-    {
-     "word": "moderate",
+     "word": "destructive",
      "pos": "adj.",
-     "zh": "中度的；適度的"
+     "zh": "具破壞性的"
     },
     {
-     "word": "terrain",
+     "word": "consecutive",
+     "pos": "adj.",
+     "zh": "連續的"
+    },
+    {
+     "word": "approximately",
+     "pos": "adv.",
+     "zh": "大約，大概"
+    },
+    {
+     "word": "radius",
      "pos": "n.",
-     "zh": "地形；地勢"
+     "zh": "半徑；半徑範圍"
     },
     {
-     "word": "downpour",
+     "word": "casualty",
      "pos": "n.",
-     "zh": "暴雨；傾盆大雨"
+     "zh": "傷亡人員"
     },
     {
-     "word": "precaution",
-     "pos": "n.",
-     "zh": "預防措施"
+     "word": "vulnerable",
+     "pos": "adj.",
+     "zh": "易受傷害的，脆弱的"
     },
     {
-     "word": "evacuate",
-     "pos": "v.",
-     "zh": "疏散；撤離"
+     "word": "hazardous",
+     "pos": "adj.",
+     "zh": "危險的"
     }
    ],
    "phrases": [
     {
-     "phrase": "call off",
-     "zh": "取消"
+     "phrase": "result in",
+     "zh": "導致，造成"
     },
     {
-     "phrase": "rule out",
-     "zh": "排除（可能性）"
+     "phrase": "head toward",
+     "zh": "朝向……前往"
     },
     {
-     "phrase": "stay away from",
-     "zh": "遠離…"
+     "phrase": "depart for",
+     "zh": "出發前往"
     }
    ],
    "grammar": [
     {
-     "point": "讓步副詞子句 (Adverb Clause of Concession)",
-     "explain": "由從屬連接詞 although 引導副詞子句，表示「雖然、儘管」，與主要子句形成對比語氣。",
-     "example": "Although Champi has weakened into a moderate typhoon, meteorologists warned that direct landfall cannot be completely ruled out.",
-     "focus": "Although Champi has weakened into a moderate typhoon"
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "由關係代名詞 which 引導非限定關係子句，前後以逗號隔開，用來補充說明先行詞 the storm 的額外資訊。",
+     "example": "The Central Weather Administration (CWA) reported that the storm, which was once a super typhoon, generated gusts of about 191 kilometers per hour near its center.",
+     "focus": ", which was once a super typhoon,"
     },
     {
-     "point": "現在分詞片語表附帶結果 (Present Participle Phrase for Result)",
-     "explain": "在逗號後使用現在分詞 generating 引導分詞片語，用以補充說明主句動作所帶來的附帶結果。",
-     "example": "The center of the storm is projected to pass within 80 kilometers of the coast, generating massive waves higher than 10 meters along with fierce coastal gusts.",
-     "focus": "generating massive waves higher than 10 meters along with fierce coastal gusts"
+     "point": "條件副詞子句 (Adverbial Clause of Condition)",
+     "explain": "由從屬連接詞 if 引導條件副詞子句，用來表示在特定假設情況下可能會發生的結果。",
+     "example": "Although projected tracks indicated that Champi would head toward the Chinese coast and southern Japan, forecasters warned that landfall remained possible if the storm \"stalls, loops or wobbles from side to side\" near the island.",
+     "focus": "if the storm \"stalls, loops or wobbles from side to side\" near the island"
     },
     {
-     "point": "分詞片語作後位修飾 (Participle Phrase as Postmodifier)",
-     "explain": "現在分詞片語 posing... 置於名詞 water 之後，作後位修飾並表達該情況主動造成的狀態或影響。",
-     "example": "The barrier was holding five million tonnes of water, posing a serious disaster threat.",
-     "focus": "posing a serious disaster threat"
+     "point": "介系詞後接動名詞 (Gerund as the Object of a Preposition)",
+     "explain": "介系詞 before 後面接動名詞 departing，作為介系詞的受詞，表達在出發前進行某動作。",
+     "example": "Because flight and ferry schedules remained uncertain, officials urged passengers to check the latest updates before departing for airports or harbors.",
+     "focus": "before departing"
     }
    ],
    "model": "gemini-flash-latest"
   },
   {
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/23/2003866462",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "title": "China escalating election interference efforts, NSB says",
-   "title_zh": "國安局表示：中國正升高選舉干預力道",
+   "link": "https://www.bbc.co.uk/news/articles/c6vgx1ldvz5vo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Education",
+   "title": "Britain's posh schools are heading to India for students and profits",
+   "title_zh": "英國貴族學校前往印度招攬學生並追求獲利",
    "paragraphs": [
     {
-     "en": "China is stepping up its efforts to interfere in Taiwan's upcoming local elections by targeting specific groups, National Security Bureau (NSB) Director-General Tsai Ming-yen announced. For instance, Chinese authorities are pushing airlines to offer discounted tickets to Taiwanese people living in China, encouraging them to fly back and vote. In addition, intelligence officials believe Beijing is secretly providing illegal funding to favored political groups and candidates.",
-     "zh": "國家安全局（NSB）局長蔡明彥宣布，中國正鎖定特定群體，加強干預台灣即將舉行的地方選舉。例如，中國當局正動員航空公司向居住在中國的台灣人提供折扣機票，鼓勵他們回台投票。此外，情報官員認為北京正秘密向其支持的政治團體與候選人提供非法資金。"
+     "en": "Several elite British private schools are opening new campuses across India. Earlier this year, the Bedford School opened an all-girls branch in Mohali, Punjab. Other famous historic schools, such as Harrow School in Bengaluru, Shrewsbury School in Bhopal, and Wellington College in Pune, have also established campuses in the country.",
+     "zh": "數所英國菁英私立學校正在印度各地開設新校區。今年稍早，貝德福德學校在旁遮普邦的莫哈利開設了一所全女子分校。其他著名且歷史悠久的學校，例如班加羅爾的哈羅公學、波帕爾的舒茲伯利學校以及浦那的威靈頓公學，也都在該國設立了校區。"
     },
     {
-     "en": "The bureau and other agencies have uncovered several interference strategies. These tactics include bribing voters with cheap travel packages to China, circulating false information, and managing illegal betting pools. Chinese actors also hack into private systems to steal sensitive election data. To fight these threats, the NSB is applying artificial intelligence tools to track the origins of disinformation before handing evidence over to prosecutors.",
-     "zh": "國安局與其他情報單位已查出數種干預策略。這些手法包括以便宜的赴中旅遊團賄賂選民、散播不實訊息，以及經營非法簽賭盤。中國行動者還侵入私人系統以竊取敏感的選舉情報。為對抗這些威脅，國安局正運用人工智慧工具追查假訊息的來源，並計畫在將證據移交給檢察機關之前完成蒐證。"
+     "en": "This expansion is driven by challenges back home and abroad. In the UK, the government introduced a 20 percent tax on private school fees in 2025. Meanwhile, strict regulations in China, including a 2024 law demanding patriotic education, have forced British institutions to look for new international markets. Naomi Atkins, the founding principal at Bedford School Mohali, stated that \"they are in a desperate situation.\"",
+     "zh": "這種擴張是由國內外的挑戰所推動的。在英國，政府於 2025 年開始對私立學校學費課徵百分之二十的稅。與此同時，中國嚴格的法規——包括一項要求實施愛國教育的 2024 年法律——已迫使英國機構尋找新的國際市場。莫哈利貝德福德學校的創校校長 Naomi Atkins 表示：「他們處於絕望的境地。」"
     },
     {
-     "en": "Cyberattacks have also risen dramatically. Tsai reported that the Government Service Network handled roughly 2.58 million cyberintrusion attempts every day last month. Furthermore, China is increasing physical harassment against critics. For example, comedian Huang Yi-hao, famous for mocking Chinese President Xi Jinping, was recently injured in an allegedly planned traffic accident. Prosecutors suspect that Chinese agents arranged the collision to prevent the comedian from performing.",
-     "zh": "網路攻擊也大幅增加。蔡明彥報告指出，政府服務網路在上個月平均每天面臨約兩百五十八萬次網路入侵企圖。此外，中國對批評者的實質騷擾也在加劇。例如，因嘲弄中國國家主席習近平而聞名的喜劇演員黃逸豪，最近在一場疑似蓄意策劃的車禍中受傷。檢察官懷疑中國指使了這起撞車事件，以阻止該喜劇演員演出。"
+     "en": "India provides an attractive alternative because its growing economy has created many wealthy families who desire a global education for their children. These British schools offer international frameworks like the Cambridge curriculum, while mixing historic UK traditions with local Indian culture. Parents also appreciate that these institutions offer holistic development and do not give special privileges to the children of powerful officials.",
+     "zh": "印度提供了一個具吸引力的替代選擇，因為其成長中的經濟孕育了許多渴望讓子女接受全球化教育的富裕家庭。這些英國學校提供如劍橋課程等國際架構，同時將悠久的英國傳統與印度在地文化融合在一起。家長們也十分讚賞這些機構提供全人發展，而且不給予高官子女特殊特權。"
     },
     {
-     "en": "According to Tsai, Beijing often works with local criminal gangs or private detective firms to carry out these operations. Therefore, the Supreme Prosecutors' Office reminded the public never to assist hostile outside forces. Meanwhile, Chinese coast guard ships and maritime militia vessels have frequently appeared in the waters east and southwest of Taiwan, creating another major security challenge for the nation.",
-     "zh": "蔡明彥表示，北京經常與當地犯罪幫派或私家偵探社合作來執行這些行動。因此，最高檢察署提醒民眾切勿協助境外敵對勢力。與此同時，中國海警船與海上民兵船頻繁出現在台灣東部與西南部海域，為該國帶來了另一項重大安全挑戰。"
+     "en": "However, succeeding in India is not simple. Local competition is fierce because English education is already well established in the country. Furthermore, Indian parents are very price-sensitive, which has led schools like Bedford Mohali to reduce their fees. Although British schools generated over 150 million pounds from overseas branches over the past decade, experts predict that their growth in India will be slow and steady.",
+     "zh": "然而，在印度取得成功並不容易。由於英語教育在該國已根深蒂固，在地的競爭非常激烈。此外，印度家長對價格非常敏感，這導致像莫哈利貝德福德這樣的學校調降了學費。儘管英國學校在過去十年間透過海外分校創造了超過一億五千萬英鎊的獲利，但專家預測它們在印度的成長將會是緩慢而穩定的。"
     }
    ],
-   "words": 256,
+   "words": 242,
    "v": 2,
    "vocab": [
     {
-     "word": "interfere",
-     "pos": "v.",
-     "zh": "干涉，干預"
-    },
-    {
-     "word": "candidate",
+     "word": "expansion",
      "pos": "n.",
-     "zh": "候選人"
+     "zh": "擴張；拓展"
     },
     {
-     "word": "tactic",
+     "word": "institution",
      "pos": "n.",
-     "zh": "策略，手法"
+     "zh": "機構；體制"
     },
     {
-     "word": "intelligence",
-     "pos": "n.",
-     "zh": "情報；智慧"
-    },
-    {
-     "word": "collision",
-     "pos": "n.",
-     "zh": "碰撞，相撞"
-    },
-    {
-     "word": "hostile",
+     "word": "desperate",
      "pos": "adj.",
-     "zh": "有敵意的，敵對的"
+     "zh": "處於絕境的；孤注一擲的"
+    },
+    {
+     "word": "privilege",
+     "pos": "n.",
+     "zh": "特權；優待"
+    },
+    {
+     "word": "fierce",
+     "pos": "adj.",
+     "zh": "激烈的；兇猛的"
+    },
+    {
+     "word": "overseas",
+     "pos": "adj.",
+     "zh": "海外的；國外的"
+    },
+    {
+     "word": "predict",
+     "pos": "v.",
+     "zh": "預測；預料"
     }
    ],
    "phrases": [
     {
-     "phrase": "step up",
-     "zh": "加強，提高"
+     "phrase": "look for",
+     "zh": "尋找"
     },
     {
-     "phrase": "hack into",
-     "zh": "侵入（電腦系統）"
+     "phrase": "mix with",
+     "zh": "與……結合或混合"
     },
     {
-     "phrase": "hand over",
-     "zh": "移交，交出"
-    },
-    {
-     "phrase": "carry out",
-     "zh": "執行，落實"
+     "phrase": "slow and steady",
+     "zh": "穩健的；緩慢而扎實的"
     }
    ],
    "grammar": [
     {
-     "point": "分詞構句 (Participle Construction)",
-     "explain": "逗號後使用現在分詞「encouraging」形成分詞構句，用以修飾主要子句的動作，表示伴隨發生的情況或結果。",
-     "example": "For instance, Chinese authorities are pushing airlines to offer discounted tickets to Taiwanese people living in China, encouraging them to fly back and vote.",
-     "focus": "encouraging them to fly back and vote"
+     "point": "被動語態 (Passive Voice)",
+     "explain": "由「be 動詞 is + 過去分詞 driven」構成現在簡單式的被動語態，表示某件事受到某些因素推動。",
+     "example": "This expansion is driven by challenges back home and abroad.",
+     "focus": "is driven"
     },
     {
-     "point": "不定詞表目的 (Infinitive of Purpose)",
-     "explain": "不定詞片語「to prevent...」在此作副詞修飾動詞 arranged，清楚表達策劃該起衝撞事件的具體目的。",
-     "example": "Prosecutors suspect that Chinese agents arranged the collision to prevent the comedian from performing.",
-     "focus": "to prevent the comedian from performing"
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
+     "explain": "關係代名詞 who 作為形容詞子句的主詞，用來修飾先行詞 families，說明這些家庭的特質。",
+     "example": "India provides an attractive alternative because its growing economy has created many wealthy families who desire a global education for their children.",
+     "focus": "who desire a global education for their children"
     },
     {
-     "point": "被動態 (Passive Voice)",
-     "explain": "由「be 動詞 (was) + 過去分詞 (injured)」構成過去簡單式被動態，表示主詞承受傷害的動作。",
-     "example": "For example, comedian Huang Yi-hao, famous for mocking Chinese President Xi Jinping, was recently injured in an allegedly planned traffic accident.",
-     "focus": "was recently injured"
+     "point": "讓步副詞子句 (Adverb Clause of Concession)",
+     "explain": "由從屬連接詞 Although 引導讓步副詞子句，表示「雖然；儘管」，用來對比主要子句的情況。",
+     "example": "Although British schools generated over 150 million pounds from overseas branches over the past decade, experts predict that their growth in India will be slow and steady.",
+     "focus": "Although British schools generated over 150 million pounds from overseas branches over the past decade"
     }
    ],
    "model": "gemini-flash-latest"
@@ -525,773 +531,7 @@
     }
    ],
    "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://www.bbc.co.uk/news/articles/cmy56q2n1veqo?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Science",
-   "title": "Grid operator says lights will stay on this winter after concerns",
-   "title_zh": "在各界擔憂後 電網營運商表示今年冬天供電無虞",
-   "paragraphs": [
-    {
-     "en": "The body in charge of Britain's electricity network, the National Energy System Operator (NESO), has given assurances that power supplies will remain safe this winter. Despite concerns raised by its engineers, NESO declared that the network is prepared and resilient against upcoming seasonal challenges. Although the operator warned that there could be some tight days, it explained that requesting extra electricity generation from producers during such moments is a routine procedure rather than a blackout alert.",
-     "zh": "負責管理英國電力網絡的國家能源系統營運商（NESO）已做出保證，今年冬天的電力供應將保持安全。儘管其工程師提出了擔憂，NESO 仍宣稱該網絡已做好準備，並具備應對即將到來的季節性挑戰的韌性。雖然該營運商警告可能會有少數用電吃緊的日子，但它解釋，在此類時刻要求發電業者提供額外電力屬於常規程序，而非停電警告。"
-    },
-    {
-     "en": "Separately, a private firm named National Gas also announced that it expected to have sufficient supplies to satisfy winter demand. However, the company predicted that gas usage would increase during peak hours because renewable sources, such as wind and solar, are intermittent. Last year, wind power produced nearly 30% of Britain's electricity, slightly more than gas. Meanwhile, international conflicts in Eastern Europe and the Middle East have pushed up energy prices and sparked concerns regarding power security.",
-     "zh": "另外，名為「國家天然氣」（National Gas）的私營公司也宣布，預計將擁有充足的供應以滿足冬季需求。然而，該公司預測，由於風能和太陽能等再生能源具有間歇特性，尖峰時段的天然氣用量將會增加。去年，風力發電產生了英國近 30% 的電力，略高於天然氣。與此同時，東歐和中東的國際衝突推高了能源價格，並引發了對電力安全的擔憂。"
-    },
-    {
-     "en": "These official outlooks followed an independent inquiry carried out by law firm Eversheds Sutherland, which revealed high stress levels among control room staff. Engineers reported that gas-fired plants were much easier to manage than less flexible green energy, making it difficult to keep supply balanced with demand. The investigation also discovered a significant disconnect between frontline operators and executive leaders, who reportedly failed to appreciate the immense pressure of keeping the lights on.",
-     "zh": "這些官方展望報告是在 Eversheds Sutherland 律師事務所執行一項獨立調查之後發布的，該調查揭露了控制室員工的高壓狀態。工程師報告指出，燃氣電廠遠比缺乏彈性的綠色能源更容易管理，使供需平衡的工作變得更加困難。這項調查還發現，第一線操作人員與高階主管之間存在嚴重的脫節，據傳主管們未能體會維持電力供應運作的巨大壓力。"
-    },
-    {
-     "en": "The inquiry was launched after Conservative shadow energy secretary Clare Coutinho was contacted by a whistle-blower in July regarding claims of altered records during extreme heat in June. While the investigation did not substantiate allegations of deliberate cover-ups, it did uncover notable cultural and governance issues. In response to the findings, Fintan Slye, the chief executive of NESO, promised to work closely with trade unions to improve internal communication and address worker concerns.",
-     "zh": "在保守黨影子能源大臣克萊兒·庫廷霍（Clare Coutinho）於七月接獲吹哨者針對六月極端高溫期間紀錄遭竄改的指控後，這項調查隨即展開。雖然調查並未證實蓄意掩蓋的指控，但確實發現了顯著的文化與治理問題。為了回應這些調查結果，NESO 執行長芬坦·斯萊（Fintan Slye）承諾將與工會密切合作，以改善內部溝通並解決員工的顧慮。"
-    }
-   ],
-   "words": 299,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "assurance",
-     "pos": "n.",
-     "zh": "保證；把握"
-    },
-    {
-     "word": "resilient",
-     "pos": "adj.",
-     "zh": "具復原力的；有適應力的"
-    },
-    {
-     "word": "routine",
-     "pos": "adj.",
-     "zh": "常規的；例行的"
-    },
-    {
-     "word": "intermittent",
-     "pos": "adj.",
-     "zh": "間歇的；斷斷續續的"
-    },
-    {
-     "word": "executive",
-     "pos": "adj.",
-     "zh": "高階主管的；執行的"
-    },
-    {
-     "word": "substantiate",
-     "pos": "v.",
-     "zh": "證實；證明"
-    },
-    {
-     "word": "governance",
-     "pos": "n.",
-     "zh": "管理；治理"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "in charge of",
-     "zh": "負責；掌管"
-    },
-    {
-     "phrase": "push up",
-     "zh": "推高；抬高"
-    },
-    {
-     "phrase": "carry out",
-     "zh": "執行；實施"
-    },
-    {
-     "phrase": "in response to",
-     "zh": "對……做出回應"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "讓步副詞子句 (Adverb Clause of Concession)",
-     "explain": "從屬連接詞 although 引導讓步副詞子句，表示「雖然、儘管」，用來修飾後面的主要子句。",
-     "example": "Although the operator warned that there could be some tight days, it explained that requesting extra electricity generation from producers during such moments is a routine procedure rather than a blackout alert.",
-     "focus": "Although the operator warned that there could be some tight days"
-    },
-    {
-     "point": "被動語態 (Passive Voice)",
-     "explain": "由「be 動詞 was + 過去分詞 launched」構成過去簡單式被動語態，表示該項調查是被啟動的。",
-     "example": "The inquiry was launched after Conservative shadow energy secretary Clare Coutinho was contacted by a whistle-blower in July regarding claims of altered records during extreme heat in June.",
-     "focus": "was launched"
-    },
-    {
-     "point": "非限定關係子句 (Non-defining Relative Clause)",
-     "explain": "由關係代名詞 which 引導非限定關係子句，前方置逗號，用以補充說明先行詞「獨立調查」（independent inquiry）。",
-     "example": "These official outlooks followed an independent inquiry carried out by law firm Eversheds Sutherland, which revealed high stress levels among control room staff.",
-     "focus": ", which revealed high stress levels among control room staff"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://www.bbc.co.uk/news/articles/cwkgjz3dpyj6o?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Science",
-   "title": "Heavy rain warning as Storm Austen sweeps across Scotland",
-   "title_zh": "奧斯汀風暴席捲蘇格蘭之際發布大雨警報",
-   "paragraphs": [
-    {
-     "en": "Scotland is preparing for a severe weekend of wet and windy conditions as two consecutive storms arrive within two days. Storm Austen was the first to strike, prompting the Met Office to issue a yellow weather warning for rain across central and eastern regions from Friday morning until midnight. Forecasters warned that rainfall could reach 60 to 80 millimeters, creating high risks of flooding and causing serious travel disruption.",
-     "zh": "隨著兩場接連而來的風暴在兩天內來襲，蘇格蘭正準備迎接一個潮濕多風的嚴峻週末。奧斯汀風暴（Storm Austen）率先來襲，促使英國氣象局（Met Office）針對中部與東部地區發布從週五上午一直持續到午夜的黃色降雨警報。氣象預報員警告，降雨量可能達到六十至八十毫米，造成高度淹水風險並引發嚴重的交通混亂。"
-    },
-    {
-     "en": "Closely following the first storm, Storm Boelo will arrive on Saturday. A yellow weather warning for strong winds has been announced for the entire Scottish mainland, the Western Isles, and Orkney. This wind alert will begin at 18:00 on Saturday and continue until 21:00 on Sunday. Wind speeds will increase during Saturday afternoon and reach their peak overnight, with widespread gusts of 50 to 65 miles per hour that could reach 80 miles per hour in exposed areas.",
-     "zh": "緊隨第一場風暴之後，波洛風暴（Storm Boelo）將於週六抵達。蘇格蘭全境本土、西部群島（Western Isles）及奧克尼（Orkney）已發布強風黃色天氣警報。這項強風警報將於週六十八時生效，並持續至週日二十一時。風速將在週六下午增強並於夜間達到高峰，各地普遍出現每小時五十至六十五英里的陣風，在無遮蔽地區甚至可能達到每小時八十英里。"
-    },
-    {
-     "en": "The adverse weather will also affect the rest of the United Kingdom on Saturday, leading to hazardous driving conditions because of spray and surface water on motorways and major roads. Railway networks have also taken preventive action. Network Rail Scotland decided to slow down trains to maintain passenger safety, introducing speed restrictions on sections of the East Coast Main Line, the West Coast Main Line, and routes throughout southern and eastern Scotland.",
-     "zh": "惡劣的天氣在週六也將影響英國其他地區，高速公路和主要道路上的路面積水與水花將導致危險的行車路況。鐵路路網也採取了預防性措施。蘇格蘭鐵路網公司（Network Rail Scotland）決定放慢列車行駛速度以維護乘客安全，並在東海岸主線（East Coast Main Line）、西海岸主線（West Coast Main Line）的部分路段以及跨越南部與東部蘇格蘭的路線實施限速。"
-    },
-    {
-     "en": "Railway officials noted that while trips will take longer, these measures allow trains to keep operating in severe weather. Mark Ilderton, the service delivery director at ScotRail, stated that \"safety is always our top priority\" and urged passengers to check travel updates before leaving home. Officials also warned that the storms could cause power cuts, disrupt mobile phone signals, and create hazards from flying debris or damaged roof tiles.",
-     "zh": "鐵路官員指出，雖然車程將會拉長，但這些措施能讓列車在嚴峻的天氣中維持營運。蘇格蘭鐵路（ScotRail）營運服務總監馬克·伊爾德頓（Mark Ilderton）表示「安全永遠是我們的第一優先」，並呼籲乘客在出門前查詢最新的行車資訊。官員也警告，這些風暴可能引發停電、干擾手機訊號，並因飛散的碎片或受損的屋瓦而造成危險。"
-    }
-   ],
-   "words": 288,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "consecutive",
-     "pos": "adj.",
-     "zh": "連續的、接連的"
-    },
-    {
-     "word": "disruption",
-     "pos": "n.",
-     "zh": "中斷、混亂"
-    },
-    {
-     "word": "widespread",
-     "pos": "adj.",
-     "zh": "廣泛的、普遍的"
-    },
-    {
-     "word": "adverse",
-     "pos": "adj.",
-     "zh": "惡劣的、不利的"
-    },
-    {
-     "word": "hazardous",
-     "pos": "adj.",
-     "zh": "危險的"
-    },
-    {
-     "word": "restriction",
-     "pos": "n.",
-     "zh": "限制、約束"
-    },
-    {
-     "word": "priority",
-     "pos": "n.",
-     "zh": "首要任務、優先事項"
-    },
-    {
-     "word": "debris",
-     "pos": "n.",
-     "zh": "殘骸、碎片"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "lead to",
-     "zh": "導致、引起"
-    },
-    {
-     "phrase": "slow down",
-     "zh": "放慢速度、減速"
-    },
-    {
-     "phrase": "prompt sb to",
-     "zh": "促使某人做…"
-    },
-    {
-     "phrase": "power cut",
-     "zh": "停電"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "分詞構句 (Participle Clause)",
-     "explain": "逗號後使用現在分詞 prompting 引導分詞構句，修飾前方的事件並表示其產生的附帶結果。",
-     "example": "Storm Austen was the first to strike, prompting the Met Office to issue a yellow weather warning for rain across central and eastern regions from Friday morning until midnight.",
-     "focus": "prompting the Met Office to issue"
-    },
-    {
-     "point": "不定詞表目的 (Infinitive of Purpose)",
-     "explain": "句中使用不定詞 to maintain 表示「為了維護」的目的，說明放慢列車速度的原因。",
-     "example": "Network Rail Scotland decided to slow down trains to maintain passenger safety, introducing speed restrictions on sections of the East Coast Main Line, the West Coast Main Line, and routes throughout southern and eastern Scotland.",
-     "focus": "to maintain passenger safety"
-    },
-    {
-     "point": "名詞子句作受詞 (Noun Clause as Object)",
-     "explain": "由連接詞 that 引導完整的子句，作為主要動詞 noted 的受詞。",
-     "example": "Railway officials noted that while trips will take longer, these measures allow trains to keep operating in severe weather.",
-     "focus": "that while trips will take longer, these measures allow trains to keep operating in severe weather"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://www.theguardian.com/environment/2026/oct/22/andy-burnham-vows-uk-will-hit-net-zero-targets-despite-jackdaw-gasfield-approval",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "title": "Andy Burnham vows UK will hit net zero target despite Jackdaw gasfield approval",
-   "title_zh": "安迪·本漢姆誓言儘管批准寒鴉天然氣田，英國仍將達成淨零目標",
-   "paragraphs": [
-    {
-     "en": "Prime Minister Andy Burnham has promised that Britain will stay on track to reach its net zero target by 2050, despite recent approval for the Jackdaw gasfield. Although he faces pressure from opponents and some party members to water down climate policies, Burnham stated that his \"determination is unwavering.\" He also pledged to stop issuing new oil and gas licences in the North Sea to protect future generations.",
-     "zh": "首相安迪·本漢姆（Andy Burnham）承諾，儘管最近批准了寒鴉（Jackdaw）天然氣田，英國仍將維持在2050年前達成淨零目標的正軌上。雖然他面臨來自反對者和部分同黨議員要求放寬氣候政策的壓力，但本漢姆表示他的「決心毫不動搖」。他還承諾停止發放北海新的石油與天然氣執照，以保護未來世代。"
-    },
-    {
-     "en": "Burnham explained that recent extreme weather shows the danger is already here. Britain just experienced its hottest summer on record, causing wildfires and dangerous heat for hospital workers and bus drivers. In response to increasing fire threats, Burnham announced that Royal Air Force (RAF) Chinook helicopters and A400M planes will help crews battle wildfires in difficult areas for the first time.",
-     "zh": "本漢姆解釋說，近期的極端天氣顯示危險已經近在眼前。英國剛經歷了有紀錄以來最炎熱的夏天，引發了野火，並對醫院員工和公車司機帶來危險的高溫。為了因應日益嚴重的火災威脅，本漢姆宣布英國皇家空軍（RAF）的契努克（Chinook）直升機和A400M運輸機將首次協助人員在地形險峻的地區撲滅野火。"
-    },
-    {
-     "en": "Meanwhile, Energy Secretary Miatta Fahnbulleh stated that she will independently decide whether to approve the controversial Rosebank oilfield. While Chancellor John Healey expects oil and gas revenues to support a new energy wealth fund, Fahnbulleh stressed that she holds the legal duty to uphold climate commitments. She also expressed deep sadness over the collapse of political cooperation on environmental issues.",
-     "zh": "與此同時，能源大臣米雅塔·凡布勒（Miatta Fahnbulleh）表示，她將獨立決定是否批准具爭議的羅斯班克（Rosebank）油田。儘管財政大臣約翰·希利（John Healey）期望石油和天然氣收益能挹注一項新的能源財富基金，但凡布勒強調她負有維護氣候承諾的法律責任。她也對政治圈在環境議題上合作共識的瓦解表達了深深的悲傷。"
-    },
-    {
-     "en": "To support the shift to clean energy, Burnham aims to protect traditional workers from suffering economic harm, especially in Aberdeen. The government plans to use tax revenues from North Sea fossil fuels for green projects through an energy wealth fund. Fahnbulleh added that businesses have invested one hundred billion pounds in clean energy recently, emphasizing that these investments must create visible jobs for local communities.",
-     "zh": "為了支持轉型至乾淨能源，本漢姆致力於保護傳統勞工免受經濟傷害，特別是在亞伯丁（Aberdeen）。政府計畫透過能源財富基金，將來自北海石化燃料的稅收運用於綠能計畫。凡布勒補充說明，企業界最近已在乾淨能源領域投資了一千億英鎊，並強調這些投資必須為在地社區創造看得見的工作機會。"
-    }
-   ],
-   "words": 254,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "approval",
-     "pos": "n.",
-     "zh": "批准，核准"
-    },
-    {
-     "word": "opponent",
-     "pos": "n.",
-     "zh": "反對者，對手"
-    },
-    {
-     "word": "commitment",
-     "pos": "n.",
-     "zh": "承諾，奉獻"
-    },
-    {
-     "word": "revenue",
-     "pos": "n.",
-     "zh": "收益，稅收"
-    },
-    {
-     "word": "controversial",
-     "pos": "adj.",
-     "zh": "有爭議的"
-    },
-    {
-     "word": "collapse",
-     "pos": "n.",
-     "zh": "崩潰，瓦解"
-    },
-    {
-     "word": "visible",
-     "pos": "adj.",
-     "zh": "看得見的，顯著的"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "stay on track",
-     "zh": "維持在正軌上"
-    },
-    {
-     "phrase": "water down",
-     "zh": "弱化，稀釋（政策或要求）"
-    },
-    {
-     "phrase": "in response to",
-     "zh": "為了因應……，回應……"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "名詞子句作受詞 (Noun Clause as Object)",
-     "explain": "連接詞 that 引導名詞子句，置於及物動詞 explained 之後作為整句的受詞。",
-     "example": "Burnham explained that recent extreme weather shows the danger is already here.",
-     "focus": "that recent extreme weather shows the danger is already here"
-    },
-    {
-     "point": "分詞構句 (Participle Construction)",
-     "explain": "逗號後使用現在分詞 causing 引導分詞片語，省略了連接詞與主詞，用以表示前述事件所產生的結果。",
-     "example": "Britain just experienced its hottest summer on record, causing wildfires and dangerous heat for hospital workers and bus drivers.",
-     "focus": ", causing wildfires and dangerous heat for hospital workers and bus drivers"
-    },
-    {
-     "point": "現在完成式 (Present Perfect Tense)",
-     "explain": "由 have 搭配過去分詞 invested 組成現在完成式，用來描述從過去持續至最近剛完成的投資行為。",
-     "example": "Fahnbulleh added that businesses have invested one hundred billion pounds in clean energy recently, emphasizing that these investments must create visible jobs for local communities.",
-     "focus": "have invested"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://lite.cnn.com/2026/10/22/health/mnra-cancer-vaccine-moderna",
-   "source": "CNN",
-   "topic": "Health",
-   "title": "Experimental mRNA vaccine cuts risk melanoma returns by 42%",
-   "title_zh": "實驗性mRNA疫苗將黑色素瘤復發風險降低42%",
-   "paragraphs": [
-    {
-     "en": "Makers of a personalized messenger ribonucleic acid (mRNA) cancer vaccine shared exciting results from a late-stage clinical trial for patients with melanoma. People who received the experimental treatment alongside the approved drug Keytruda faced a much lower chance of their disease returning compared to those who only took the medication alone. Dr. Michael Postow, a medical expert at the Memorial Sloan Kettering Cancer Center, mentioned that this therapy offers something never seen before regarding its effectiveness.",
-     "zh": "一種個人化信使核糖核酸（mRNA）癌症疫苗的製造商，分享了一項針對黑色素瘤患者的後期臨床試驗之令人振奮的結果。接受該實驗性治療並搭配核准藥物吉舒達（Keytruda）的患者，其病情復發的機率比僅使用該藥物的患者低得多。紀念斯隆凱特琳癌症中心（Memorial Sloan Kettering Cancer Center）的醫療專家麥可·波斯特沃（Michael Postow）醫生表示，這種療法在有效性方面提供了前所未見的成果。"
-    },
-    {
-     "en": "The experimental vaccine is designed specifically for each individual patient based on the genetic traits of their tumor. After surgeons remove the cancer, they analyze a sample to create a shot targeting the exact markers most likely to trigger a strong defense response from the body. Because the immunization is tailor-made, it helps the immune system attack only the harmful cells while ignoring healthy tissue.",
-     "zh": "該實驗性疫苗是根據患者腫瘤的基因特徵，專門為每位患者設計的。在外科醫生切除癌症後，他們會分析樣本，以製造出針對最有可能引發身體強烈防禦反應之標記的注射劑。由於這種免疫療法是量身訂做的，它有助於免疫系統僅攻擊有害細胞，同時忽略健康組織。"
-    },
-    {
-     "en": "A fifty-nine-year-old participant named Beth Ryzyk joined the study after she was diagnosed with advanced skin cancer that had spread to her lymph nodes. Standard care usually involves taking powerful drugs after surgery to prevent the disease from coming back in other parts of the body, such as the lungs or brain. Although she still does not know if she received the active vaccine or a harmless dummy substance during the trial, she is happy to report that she remains cancer-free more than a year later.",
-     "zh": "一名名叫貝絲·里齊克（Beth Ryzyk）的五十九歲參與者，在被診斷出已擴散至淋巴結的晚期皮膚癌後加入了這項研究。標準照護通常包括在手術後服用強力藥物，以預防疾病在身體的其他部位（例如肺部或大腦）復發。儘管她仍然不知道自己在試驗期間是接種了有效的疫苗還是無害的安慰劑，但她很高興地報告說，一年多後她依然沒有癌症。"
-    },
-    {
-     "en": "Although experts viewed the findings as very positive, stock prices for the developers dropped after the announcement because some investors had hoped for even stronger numbers. The companies plan to talk with regulatory authorities soon to seek official approval, and they are also testing the technology on other serious illnesses like lung cancer.",
-     "zh": "儘管專家認為這些發現非常正面，但由於一些投資者曾期待更強勁的數據，開發商的股價在消息公布後下跌。這些公司計劃很快與監管機構進行談話以尋求官方批准，並且他們也正在肺癌等其他重症上測試這項技術。"
-    }
-   ],
-   "words": 280,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "personalized",
-     "pos": "adj.",
-     "zh": "個人化的"
-    },
-    {
-     "word": "experimental",
-     "pos": "adj.",
-     "zh": "實驗性的"
-    },
-    {
-     "word": "effectiveness",
-     "pos": "n.",
-     "zh": "有效性"
-    },
-    {
-     "word": "genetic",
-     "pos": "adj.",
-     "zh": "基因的"
-    },
-    {
-     "word": "participant",
-     "pos": "n.",
-     "zh": "參與者"
-    },
-    {
-     "word": "regulatory",
-     "pos": "adj.",
-     "zh": "監管的"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "come back",
-     "zh": "復發"
-    },
-    {
-     "phrase": "tailor-made",
-     "zh": "量身訂做的"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "關代子句 (Relative Clause)",
-     "explain": "本句使用過去分詞片語作為形容詞修飾前面的名詞。",
-     "example": "People who received the experimental treatment alongside the approved drug Keytruda faced a much lower chance...",
-     "focus": "who received the experimental treatment alongside the approved drug Keytruda"
-    },
-    {
-     "point": "不定詞表目的 (Infinitive of Purpose)",
-     "explain": "本句使用不定詞片語來表達目的「為了尋求官方批准」。",
-     "example": "The companies plan to talk with regulatory authorities soon to seek official approval...",
-     "focus": "to seek official approval"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://www.theguardian.com/technology/2026/oct/21/elon-musk-tesla-spacex",
-   "source": "The Guardian",
-   "topic": "Science",
-   "title": "Tesla beats earnings projections after Musk floats SpaceX merger plan",
-   "title_zh": "馬斯克提出與SpaceX合併計畫後 特斯拉獲利表現超出預期",
-   "paragraphs": [
-    {
-     "en": "Tesla recently announced its third-quarter financial results, which exceeded market forecasts. The electric car company generated $28.05 billion in revenue and reported $0.48 in earnings per share, surpassing Wall Street expectations. Even so, the total revenue was slightly lower than the previous quarter, and its automotive revenue dropped by 3% compared to the prior year.",
-     "zh": "特斯拉最近公布了第三季的財務業績，該表現超出了市場預期。這家電動車公司創造了280.5億美元的營收，每股獲利為0.48美元，超越了華爾街的預估。即便如此，總營收仍略低於上一季，且其汽車業務營收與前一年相比下滑了3%。"
-    },
-    {
-     "en": "Investors paid close attention to the call after chief executive Elon Musk suggested merging Tesla with his rocket and artificial intelligence company, SpaceX. Musk stated that \"there's a lot of merit\" to uniting the two businesses. Special committees from both corporate boards have been put together to explore the potential transaction. However, the plan would still require 50% of all Tesla shareholders to approve it, and Musk refused to discuss details during the call.",
-     "zh": "在執行長伊隆·馬斯克提出將特斯拉與其火箭及人工智慧公司SpaceX合併的構想後，投資人高度關注了這場電話會議。馬斯克表示，結合這兩家公司「有很多優點」。兩家公司董事會的特別委員會已經組建，以探討這項潛在交易。然而，該計畫仍需要全體特斯拉股東的50%投票贊成，而馬斯克在電話會議中拒絕討論詳細細節。"
-    },
-    {
-     "en": "Despite the positive quarterly report, Tesla has endured a difficult year with its stock price dropping by over 11%. The firm has experienced severe pressure from cheaper Chinese electric vehicle manufacturers. To display advanced technology, Musk recently showed off the Roadster 2 sports car in Texas. Equipped with rocket thrusters, the vehicle demonstrated aerial maneuvers by jumping into the air and hovering.",
-     "zh": "儘管第三季報告表現正面，但特斯拉經歷了艱難的一年，其股價下跌超過11%。該公司面臨來自價格更低廉的中國電動車製造商的巨大壓力。為了展示先進技術，馬斯克最近在德州展示了Roadster 2跑車。配備火箭推進器的該車輛透過躍入空中並盤旋，展示了空中動作。"
-    },
-    {
-     "en": "Tesla is currently directing more resources toward robotics and autonomous driving rather than regular car manufacturing. However, the company faces obstacles in producing its Optimus humanoid robot and expanding the Robotaxi fleet. Although Musk predicted that half of the United States population might use Robotaxis by late 2025, market analysts noted that Tesla has repeatedly fallen short of its ambitious promises. Still, Musk maintained that humanoid robots will ultimately become the most significant commercial product in the world.",
-     "zh": "特斯拉目前正將更多資源導向機器人技術與自動駕駛，而非一般汽車製造。然而，該公司在生產其Optimus人形機器人以及擴大Robotaxi車隊方面遭遇阻礙。雖然馬斯克預測半數美國人口可能會在2025年底前使用Robotaxi，但市場分析師指出，特斯拉一再未能達成其雄心勃勃的承諾。儘管如此，馬斯克依然堅持認為，人形機器人終將成為全球最重要的商業產品。"
-    }
-   ],
-   "words": 269,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "surpass",
-     "pos": "v.",
-     "zh": "超越；勝過"
-    },
-    {
-     "word": "potential",
-     "pos": "adj.",
-     "zh": "潛在的；可能的"
-    },
-    {
-     "word": "transaction",
-     "pos": "n.",
-     "zh": "交易；買賣"
-    },
-    {
-     "word": "endure",
-     "pos": "v.",
-     "zh": "經歷；忍受"
-    },
-    {
-     "word": "maneuver",
-     "pos": "n.",
-     "zh": "動作；操作"
-    },
-    {
-     "word": "obstacle",
-     "pos": "n.",
-     "zh": "障礙；阻礙"
-    },
-    {
-     "word": "ambitious",
-     "pos": "adj.",
-     "zh": "雄心勃勃的；宏大的"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "pay attention to",
-     "zh": "關注；注意"
-    },
-    {
-     "phrase": "put together",
-     "zh": "組建；籌備"
-    },
-    {
-     "phrase": "show off",
-     "zh": "展示；炫耀"
-    },
-    {
-     "phrase": "fall short of",
-     "zh": "未能達到；不符"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "非限定關係子句 (Non-defining relative clause)",
-     "explain": "關係代名詞 which 引導非限定關係子句，修飾逗號前的先行詞 its third-quarter financial results，提供補充說明。",
-     "example": "Tesla recently announced its third-quarter financial results, which exceeded market forecasts.",
-     "focus": ", which exceeded market forecasts"
-    },
-    {
-     "point": "分詞構句 (Participle construction)",
-     "explain": "句首使用過去分詞片語修飾主詞 the vehicle，表示被動狀態，即該車輛「被配備」了推進器。",
-     "example": "Equipped with rocket thrusters, the vehicle demonstrated aerial maneuvers by jumping into the air and hovering.",
-     "focus": "Equipped with rocket thrusters,"
-    },
-    {
-     "point": "名詞子句作受詞 (Noun clause as object)",
-     "explain": "連接詞 that 引導完整的名詞子句，作為主要子句中及物動詞 noted 的受詞。",
-     "example": "Although Musk predicted that half of the United States population might use Robotaxis by late 2025, market analysts noted that Tesla has repeatedly fallen short of its ambitious promises.",
-     "focus": "that Tesla has repeatedly fallen short of its ambitious promises"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://www.bbc.co.uk/news/articles/c69wzv5pg447o?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Education",
-   "title": "Only one female scientist named in GCSEs, research finds",
-   "title_zh": "研究發現：英國GCSE科學考試中僅列出一名女性科學家",
-   "paragraphs": [
-    {
-     "en": "A recent study conducted by Cambridge researchers revealed that Rosalind Franklin is the sole female scientist named in General Certificate of Secondary Education (GCSE) and National 5 science exam specifications across the UK. Among the 86 scientists listed by exam boards, the English chemist was the only woman whose name appeared in these foundational courses.",
-     "zh": "根據劍橋大學研究人員進行的一項最新研究顯示，羅莎琳·富蘭克林（Rosalind Franklin）是英國普通中等教育證書（GCSE）與國家五級（National 5）科學考試大綱中，唯一被列出的女性科學家。在考試委員會列出的86位科學家中，這位英國化學家是唯一一位名字出現在這些基礎課程中的女性。"
-    },
-    {
-     "en": "Exam specifications define the required skills and knowledge for students by the end of their courses. Academics from Cambridge, along with institutions in the US and Australia, examined specifications for subjects such as biology, chemistry, physics, environmental science, geology, and astronomy. They found that out of 181 scientists mentioned at Key Stage 5 and equivalent levels, only three were women.",
-     "zh": "考試大綱界定了學生在課程結束時所需具備的技能與知識。來自劍橋大學以及美國和英國以外機構的學者們，檢視了生物學、化學、物理學、環境科學、地質學與天文學等科目的考試大綱。他們發現，在第五階段及同等學力所提及的181位科學家中，只有三位是女性。"
-    },
-    {
-     "en": "Although other women like American cartographer Marie Tharp and Danish seismologist Inge Lehmann appear in some advanced geology specifications, their presence is rare. The historical imbalance is clear because many breakthroughs in the 1800s and early 1900s happened when male researchers dominated the field. Stephanie Buttigieg, one of the authors, stated that relatable role models could help keep more girls in STEM.",
-     "zh": "儘管其他女性，如美國製圖師瑪麗·薩普（Marie Tharp）與丹麥地震學家英格·萊曼（Inge Lehmann），出現在部分進階地質學考試大綱中，但她們的存在十分稀少。這種歷史上的失衡顯而易見，因為1800年代和1900年代初期的許多突破都是在男性研究人員主導該領域的時期發生的。該研究的作者之一史蒂芬妮·布蒂吉格（Stephanie Buttigieg）表示，具親和力的榜樣有助於讓更多女孩留在STEM領域。"
-    },
-    {
-     "en": "Exam boards and government departments responded by acknowledging the issue and noting the need for greater representation. Organizations such as the Joint Council for Qualifications stated that exam boards recognize this concern and will focus on it as qualifications undergo reform. Meanwhile, educational authorities in England and Scotland expressed their commitment to addressing the gender gap in future curricula.",
-     "zh": "考試委員會與政府部門隨之做出回應，坦承此一問題並指出需要更高的代表性。資格聯合委員會（Joint Council for Qualifications）等機構表示，考試委員會已意識到此一疑慮，並將在資格進行改革時予以關注。同時，英格蘭與蘇格蘭的教育主管機關也表達了他們致力於在未來課程中解決性別差距的決心。"
-    }
-   ],
-   "words": 236,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "specification",
-     "pos": "n.",
-     "zh": "規範；考試大綱"
-    },
-    {
-     "word": "foundational",
-     "pos": "adj.",
-     "zh": "基礎的"
-    },
-    {
-     "word": "cartographer",
-     "pos": "n.",
-     "zh": "製圖師"
-    },
-    {
-     "word": "seismologist",
-     "pos": "n.",
-     "zh": "地震學家"
-    },
-    {
-     "word": "imbalance",
-     "pos": "n.",
-     "zh": "失衡"
-    },
-    {
-     "word": "acknowledge",
-     "pos": "v.",
-     "zh": "承認"
-    },
-    {
-     "word": "commitment",
-     "pos": "n.",
-     "zh": "承諾；決心"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "out of",
-     "zh": "在……之中"
-    },
-    {
-     "phrase": "respond by",
-     "zh": "藉由……做出回應"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "過去分詞片語當形容詞 (Past participle phrase as adjective)",
-     "explain": "說明名詞時，置於其後修飾被動關係的過去分詞片語。",
-     "example": "A recent study conducted by Cambridge researchers revealed that Rosalind Franklin is the sole female scientist named in General Certificate of Secondary Education (GCSE) and National 5 science exam specifications across the UK.",
-     "focus": "conducted by Cambridge researchers"
-    },
-    {
-     "point": "關係代名詞子句 (Relative clause)",
-     "explain": "使用關代whose來表示所有格關係，修飾前方的先行詞the only woman。",
-     "example": "Among the 86 scientists listed by exam boards, the English chemist was the only woman whose name appeared in these foundational courses.",
-     "focus": "whose name appeared in these foundational courses"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://www.npr.org/2026/10/21/nx-s1-5995392/ai-is-shaking-up-the-field-of-mathematics-but-what-comes-next",
-   "source": "NPR",
-   "topic": "Tech",
-   "title": "AI is shaking up the field of mathematics. But what comes next?",
-   "title_zh": "人工智慧正在撼動數學領域，但接下來呢？",
-   "paragraphs": [
-    {
-     "en": "Earlier this month, the company OpenAI released a collection of more than 370 results for longstanding mathematics problems. Over the past six months, artificial intelligence (AI) has shocked mathematicians by offering answers to challenges that people spent decades studying. However, these rapidly produced solutions have created a massive homework assignment for researchers worldwide, who must now check whether the complex work is actually correct.",
-     "zh": "本月初，OpenAI 公司發布了一個資料庫，收錄了解決長期數學問題的 370 多項成果。在過去六個月中，人工智慧（AI）提出了人們研究數十年的難題解答，震驚了數學家們。然而，這些迅速產生的解答為全球的研究人員帶來了大量的作業，因為他們現在必須檢查這項複雜的工作是否確實正確。"
-    },
-    {
-     "en": "Dana Moshkovitz, a mathematician at the University of Texas at Austin (UT Austin), had spent years investigating a famous problem called the Unique Games Conjecture. Although AI proposed an answer within hours, she noted that the paper was extremely difficult for humans to read. In addition, these machine-made proofs are not always accurate. Daniel Litt at the University of Toronto discovered a subtle error in an algebraic geometry paper, which unfortunately caused the entire result to be wrong. Litt felt conflicted about being tasked with checking raw data from a major company.",
-     "zh": "德州大學奧斯汀分校（UT Austin）的數學家 Dana Moshkovitz 花費了多年時間研究名為「獨特遊戲猜想」（Unique Games Conjecture）的著名難題。儘管人工智慧在幾小時內就提出了答案，但她指出這篇論文對人類而言極難閱讀。此外，這些由機器產生的證明並不總是準確的。多倫多大學的 Daniel Litt 在一篇代數幾何論文中發現了一個細微的錯誤，不幸地導致整個結果都是錯的。Litt 對於被指派去檢查大公司的原始資料感到心情複雜。"
-    },
-    {
-     "en": "To verify these arguments, experts have turned to a computer program called Lean. Written mathematical proofs are translated into computer code so that Lean can test them. However, Anders Hansen, a professor at the University of Cambridge, found that an AI changed parts of its own work during the translation process. For example, the system switched a four to a five in an equation. This mismatch showed that humans still need to inspect every step carefully.",
-     "zh": "為了驗證這些論證，專家們轉向了一個名為 Lean 的電腦程式。書面數學證明會被轉換成電腦程式碼，以便讓 Lean 進行檢驗。然而，劍橋大學的教授 Anders Hansen 發現，AI 在翻譯過程中修改了它自己的一部分內容。例如，該系統在一個方程式中把四換成了五。這種不一致顯示，人類仍然需要仔細審查每一步驟。"
-    },
-    {
-     "en": "To assist with this enormous task, OpenAI and Anthropic recently announced they were each giving about $5 million to support researchers who evaluate AI results. Yet, serious questions remain about the future of mathematics. As Moshkovitz stated, \"it opens up amazing possibilities for math,\" but she admitted that her original plans are gone and she needs to reevaluate her career.",
-     "zh": "為了協助這項艱鉅的任務，OpenAI 和 Anthropic 最近宣布他們將各自提供約 500 萬美元，以支持評估 AI 結果的研究人員。然而，關於數學的未來仍存在嚴肅的疑問。正如 Moshkovitz 所說，「它為數學開啟了驚人的可能性」，但她承認自己原本的計畫已經落空，需要重新評估她的職業生涯。"
-    }
-   ],
-   "words": 292,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "longstanding",
-     "pos": "adj.",
-     "zh": "存在已久的；長期的"
-    },
-    {
-     "word": "conjecture",
-     "pos": "n.",
-     "zh": "猜想；推論"
-    },
-    {
-     "word": "subtle",
-     "pos": "adj.",
-     "zh": "細微的；不易察覺的"
-    },
-    {
-     "word": "verify",
-     "pos": "v.",
-     "zh": "證實；查驗"
-    },
-    {
-     "word": "mismatch",
-     "pos": "n.",
-     "zh": "不符；不一致"
-    },
-    {
-     "word": "evaluate",
-     "pos": "v.",
-     "zh": "評估；評價"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "turn to",
-     "zh": "求助於；轉向"
-    },
-    {
-     "phrase": "open up",
-     "zh": "開啟；展現"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "關係代名詞引導的形容詞子句 (Relative clause with relative pronoun)",
-     "explain": "關係代名詞 who 引導非限定子句，補充說明前面的名詞 researchers worldwide。",
-     "example": "However, these rapidly produced solutions have created a massive homework assignment for researchers worldwide, who must now check whether the complex work is actually correct.",
-     "focus": "who must now check whether the complex work is actually correct"
-    },
-    {
-     "point": "被動語態 (Passive voice)",
-     "explain": "由「be 動詞 are + 過去分詞 translated」構成現在式被動語態，表示數學證明被轉換成程式碼。",
-     "example": "Written mathematical proofs are translated into computer code so that Lean can test them.",
-     "focus": "are translated"
-    },
-    {
-     "point": "不定詞表目的 (Infinitive of purpose)",
-     "explain": "句首的不定詞片語 To verify these arguments 表目的，說明專家求助於 Lean 程式的原因。",
-     "example": "To verify these arguments, experts have turned to a computer program called Lean.",
-     "focus": "To verify these arguments"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://lite.cnn.com/2026/10/21/science/stanford-prison-experiment-netflix",
-   "source": "CNN",
-   "topic": "Science",
-   "title": "A Netflix reality show evokes one of history’s most controversial scientific experiments — and the man behind it",
-   "title_zh": "Netflix實景秀喚起歷史上最具爭議的科學實驗之一及其背後的人物",
-   "paragraphs": [
-    {
-     "en": "A new Netflix series has brought the Stanford Prison Experiment back into the public eye. Organized in 1971 by psychologist Philip Zimbardo, the study placed male college students into mock prison roles as guards and prisoners in a university basement. Zimbardo wanted to discover if normal people would commit cruel acts simply because of their environment and orders.",
-     "zh": "一部新的Netflix影集將史丹佛監獄實驗重新帶回大眾的視野。這項研究由心理學家菲利普·辛巴達於1971年組織，將男大學生安排在大學地下室中扮演警衛和囚犯的模擬監獄角色。辛巴達想要發現正常人是否會僅僅因為他們的環境和命令而做出殘酷的行為。"
-    },
-    {
-     "en": "However, the two-week study quickly fell apart. Within days, prisoners rebelled, and guards used aggressive tactics to repress them while real-world prison unrest was happening globally. Although the project made Zimbardo famous, experts later questioned its methods and ethics. Evidence showed that Zimbardo directly influenced the outcome by coaching the guards and preventing inmates from leaving.",
-     "zh": "然而，這項為期兩週的研究很快就瓦解了。幾天之內，囚犯們就進行了反抗，而當全球各地正在發生現實世界的監獄動亂時，警衛們則使用激進的策略來壓制他們。儘管這個計畫讓辛巴達聲名大噪，但專家後來質疑其方法和倫理。證據表明，辛巴達透過指導警衛並阻止囚犯離開直接影響了結果。"
-    },
-    {
-     "en": "This controversy reflects a broader crisis within psychological research regarding the reliability of study results. A later attempt to replicate similar social experiments by the BBC in 2002 produced completely different outcomes. Unlike the Stanford study, the guards in the television project did not become tyrannical because there was no authoritative figure directing their behavior, leading the participants to form a shared community instead.",
-     "zh": "這場爭議反映了心理學研究內部關於研究結果可靠性的更廣泛危機。英國廣播公司在2002年隨後試圖複製類似的社會實驗，產生了完全不同的結果。與史丹佛的研究不同，電視計畫中的警衛並沒有變得暴虐，因為沒有權威人物指導他們的行為，這導致參與者反而形成了一個共享的社群。"
-    }
-   ],
-   "words": 178,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "controversy",
-     "pos": "n.",
-     "zh": "爭議"
-    },
-    {
-     "word": "mock",
-     "pos": "adj.",
-     "zh": "模擬的"
-    },
-    {
-     "word": "repress",
-     "pos": "v.",
-     "zh": "壓制"
-    },
-    {
-     "word": "ethics",
-     "pos": "n.",
-     "zh": "倫理"
-    },
-    {
-     "word": "replicate",
-     "pos": "v.",
-     "zh": "複製"
-    },
-    {
-     "word": "tyrannical",
-     "pos": "adj.",
-     "zh": "暴虐的"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "bring back",
-     "zh": "帶回"
-    },
-    {
-     "phrase": "fall apart",
-     "zh": "瓦解"
-    },
-    {
-     "phrase": "lead to",
-     "zh": "導致"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "過去分詞片語當形容詞 (Past participle phrase as adjective)",
-     "explain": "用過去分詞片語放在名詞後面，用來修飾該名詞並表達被動關係。",
-     "example": "Organized in 1971 by psychologist Philip Zimbardo, the study placed male college students into mock prison roles as guards and prisoners in a university basement.",
-     "focus": "Organized in 1971 by psychologist Philip Zimbardo"
-    },
-    {
-     "point": "副詞子句表原因 (Adverbial clause of reason)",
-     "explain": "使用because引導副詞子句，用來補充說明主句動作發生的原因。",
-     "example": "Unlike the Stanford study, the guards in the television project did not become tyrannical because there was no authoritative figure directing their behavior, leading the participants to form a shared community instead.",
-     "focus": "because there was no authoritative figure directing their behavior"
-    },
-    {
-     "point": "現在分詞構句 (Present participle clause)",
-     "explain": "使用逗號連接V-ing分詞片語，表達伴隨發生的結果或情況。",
-     "example": "Unlike the Stanford study, the guards in the television project did not become tyrannical because there was no authoritative figure directing their behavior, leading the participants to form a shared community instead.",
-     "focus": "leading the participants to form a shared community instead"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
   }
  ],
- "lessonsDate": "2026-10-23"
+ "lessonsDate": "2026-10-24"
 }
