@@ -1005,8 +1005,9 @@ a.subtab, a.more-tile { text-decoration: none; }
   /* phones: every pill in view (單字卡 · 單字庫 · 片語 · 🌱 字根字首 …), on a second line when they do not fit, never cut off at the edge */
   .subtabs { flex-wrap: wrap; overflow: visible; gap: 6px; padding-right: 2px; }
 }
-@media (max-width: 420px) { .subtab { padding: 6px 8px; gap: 3px; font-size: 15px; } }
-@media (max-width: 340px) { .subtab { padding: 6px 7px; } }
+/* 單字卡 · 單字庫 · 片語 · 🌱 字根字首 stay on one line down to 320px wide in Chinese; longer English labels wrap */
+@media (max-width: 420px) { .subtabs { gap: 4px; } .subtab { padding: 6px 6px; gap: 3px; font-size: 15px; } }
+@media (max-width: 340px) { .subtabs { gap: 3px; } .subtab { padding: 6px 4px; gap: 2px; font-size: 14px; } }
 
 /* ---------- Desktop folder tabs: 首頁 · 學習 (閱讀 單字 文法) · 練習 (選擇題 克漏字 翻譯) · 紀錄 · 設定 ---------- */
 .tab { position: relative; font: inherit; font-weight: 600; }
