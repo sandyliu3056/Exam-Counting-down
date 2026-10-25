@@ -46,16 +46,13 @@ window.TVESpeech = (() => {
     return best;
   }
   let starts = 0; // utterances that began to speak (say() checks that one did)
-  function utter(text, lang, strict, local, plain, seq) {
+  function utter(text, lang, strict, local, plain) {
     const u = new SpeechSynthesisUtterance(text), v = plain ? null : voiceFor(lang, strict, local), all = speechSynthesis.getVoices();
     // no voice picked: the device's default for this accent, or American English when it has none (not its own language)
     if (v) { u.voice = v; u.lang = v.lang; } else u.lang = !all.length || all.some(x => !badVoices.has(vkey(x)) && normLang(x.lang) === normLang(lang)) ? lang : 'en-US';
-    u.rate = Math.min(1.1, Math.max(0.6, +cfg.rate() || 0.9)); u.pitch = 1; // natural pitch
+    u.rate = rate(); u.pitch = 1; // natural pitch
     u.onstart = () => { starts++; };
-    // a cloud voice that fails (no internet, the service down) says it again with a voice on the device
-    // (only while this is still the latest request: a late error must not start speech after 停止)
-    if (v && v.localService === false && !local) u.onerror = e => { if (seq === speakSeq && !/interrupted|canceled/.test((e && e.error) || '')) speechSynthesis.speak(utter(text, lang, strict, true, false, seq)); };
-    return u;
+    return u; // say() handles errors: a cloud voice that fails reads the rest again with voices on the device
   }
   if (hasTTS()) {
     speechSynthesis.getVoices(); // most browsers load the list lazily
@@ -97,79 +94,100 @@ window.TVESpeech = (() => {
     cfg.toast(cfg.text(isIPad ? 'voiceMuteHintPad' : 'voiceMuteHint'), 7000);
   }
   // say these lines one after another. iPhone Safari can drop a speak() made right after cancel(), so cancel only when
-  // something is playing and wait a moment after it. If nothing is heard (a listed voice that is not installed, a stuck
-  // queue), try the next voice, then the device's default voice, and say so if that does not start either.
-  // Safari does not always send "start" (or any event) for speech that is really playing, above all after a cancel(),
-  // so a voice is judged silent only when the device is not speaking either; while it says it is speaking, the reading
-  // is left alone (a long text takes a while) and only a queue that stays busy far longer than the text needs counts as stuck.
+  // something is playing and speak at least 150 ms after the last cancel().
+  // Chrome, Edge and Android send "start" reliably: no start after 4 s (6 s for a cloud voice) → that voice is silent,
+  // try the next one, then the device's default, and say so if that does not start either.
+  // Safari (iPhone, iPad, Mac) may send no event at all while it reads, and its speaking flag stays on from speak() until
+  // the reading is reported finished, so it cannot tell sound from silence. There a voice is replaced only on clear
+  // evidence (an error, a reading that "ends" at once, or the device not reading anything), never just because no event
+  // came: replacing it would read the same text again. A reading that is still "speaking" long after it should be over
+  // is quietly cleared, so the next 🔊 is not stuck behind it.
+  const webkit = isIOS || (/Safari\//.test(navigator.userAgent) && !/Chrome|Chromium|CriOS|Edg|OPR|Android/.test(navigator.userAgent));
   let speakSeq = 0, last = null; // last: the latest try, to tell whether its voice was heard
   let live = []; // the lines being read, kept referenced so the browser does not drop them (and their events) early
+  let cancelAt = -1e9; // when cancel() was last called
+  const cancel = () => { cancelAt = performance.now(); speechSynthesis.cancel(); };
   const silentMs = new Map(); // voice → time it has stayed silent over taps that came too soon to judge it
-  // about how long the lines take to read (some 150 words a minute at normal speed)
-  const readMs = lines => lines.join(' ').split(/\s+/).filter(Boolean).length / (2.5 * Math.min(1.1, Math.max(0.6, +cfg.rate() || 0.9))) * 1000;
+  const rate = () => Math.min(1.1, Math.max(0.6, +cfg.rate() || 0.9));
+  // about how long a text takes to read (some 150 words a minute at normal speed)
+  const readMs = t => String(t).split(/\s+/).filter(Boolean).length / (2.5 * rate()) * 1000;
   function say(lines, lang, strict, test) {
     if (!hasTTS() || !lines.length) return;
-    // a long text (a whole paragraph) goes sentence by sentence: shorter lines start sooner, and Chrome's online voices
-    // stop after about 15 seconds of one line
-    lines = lines.flatMap(x => String(x).length > 200 ? speechChunks(x) : [x]);
+    // Chrome's online voices stop after about 15 seconds of one line, so a long text goes sentence by sentence there.
+    // Safari reads each next line only once the last one is reported finished, so there a text stays in one piece.
+    if (!webkit) lines = lines.flatMap(x => String(x).length > 150 ? speechChunks(x, Math.round(200 * Math.min(1, rate()))) : [x]);
     // tapped again while the last voice was still silent: that silence counts, so 4 s in all marks the voice
-    // (taps every 2–3 s would otherwise restart its 4 s each time and never move on). A device that said it was
-    // speaking was not silent: that time is not counted.
-    if (last && last.v) {
+    // (taps every 2–3 s would otherwise restart its 4 s each time and never move on). Not on Safari (see above).
+    if (last && last.v && !webkit) {
       const k = vkey(last.v);
-      if (last.heard() || last.busy()) silentMs.delete(k);
+      if (last.heard()) silentMs.delete(k);
       else {
         const now = performance.now(), ms = (silentMs.get(k) || 0) + now - last.t0; silentMs.set(k, ms); last.t0 = now; // counted once
         if (ms >= 4000) { badVoices.add(k); cfg.changed(); }
       }
     }
-    const ss = speechSynthesis, my = ++speakSeq, busy = ss.speaking || ss.pending;
+    const ss = speechSynthesis, my = ++speakSeq;
     bridgeOn(); muteHint(test); // both inside the tap, which iPhone Safari requires
-    if (busy) ss.cancel();
+    if (ss.speaking || ss.pending) cancel();
     if (ss.paused) ss.resume();
-    const run = tries => {
+    const run = (tries, local, from) => {
       if (my !== speakSeq) return;
-      const us = lines.map(text => utter(text, lang, strict, false, tries >= 2, my)), v = us[0].voice, s0 = starts, t0 = performance.now();
+      const part = lines.slice(from);
+      const us = part.map(text => utter(text, lang, strict, local, tries >= 2)), v = us[0].voice, s0 = starts, t0 = performance.now();
       live = us;
-      let gone = false, watch = 0, ended = false, marks = 0, busyMs = 0;
+      let gone = false, watch = 0, ended = false, marks = 0;
       const heard = () => ended || marks > 0 || starts > s0;
       if (v) { const os = us[0].onstart; us[0].onstart = e => { os(e); silentMs.delete(vkey(v)); }; } // heard: its silent time starts again from 0
-      us.forEach(u => { u.onboundary = () => { marks++; }; }); // word by word while it speaks (where the browser says so)
-      last = { v, t0, heard, busy: () => busyMs >= 1000 };
-      const done = () => { clearInterval(watch); if (my === speakSeq) cfg.state(false); };
+      last = { v, t0, heard };
+      const stopWatch = () => { gone = true; clearInterval(watch); };
+      const done = () => { stopWatch(); if (my === speakSeq) cfg.state(false); };
+      const clear = () => { stopWatch(); if (my !== speakSeq) return; if (ss.speaking || ss.pending) cancel(); bridgeOff(); cfg.state(false); }; // over, or stuck: no retry
       const fail = () => {
-        if (gone || my !== speakSeq || heard()) return; gone = true; clearInterval(watch);
+        if (gone || my !== speakSeq || heard()) return; stopWatch();
         if (v) { badVoices.add(vkey(v)); cfg.changed(); }
-        ss.cancel();
+        cancel();
         if (tries >= 2 || (!v && tries >= 1)) { bridgeOff(); last = null; cfg.state(false); cfg.toast(cfg.text(voicesSeen && !ss.getVoices().length ? 'voiceNone' : isIOS ? 'voiceStuckIOS' : 'voiceStuck'), 7000); return; }
-        bridgeOn(); setTimeout(() => run(tries + 1), 150);
+        bridgeOn(); setTimeout(() => run(tries + 1, local, from), 150);
       };
-      if (!us[0].onerror) us[0].onerror = e => { if (!/interrupted|canceled/.test((e && e.error) || '')) fail(); }; // a cloud voice retries on the device first
+      us.forEach((u, i) => {
+        u.onboundary = () => { marks++; }; // word by word while it speaks (where the browser says so)
+        u.onerror = e => {
+          if (gone || my !== speakSeq || /interrupted|canceled/.test((e && e.error) || '')) return;
+          // a cloud voice that fails (no internet, the service down): the rest again, in order, with voices on the device
+          if (u.voice && u.voice.localService === false && !local) { stopWatch(); cancel(); setTimeout(() => run(tries, true, from + i), 150); return; }
+          if (i === 0 && !heard()) fail();
+        };
+      });
       // a browser that never says "start": a line that ends normally, not at once, counts as heard
       let prev = t0; us.forEach(u => { u.onend = () => { const n = performance.now(); if (n - prev > 400) ended = true; prev = n; }; });
-      const lastU = us[us.length - 1], oe = lastU.onend; lastU.onend = e => { oe(e); if (my === speakSeq && heard()) done(); }; // ending at once: still judged below
+      const lastU = us[us.length - 1], oe = lastU.onend; lastU.onend = e => { oe(e); if (!gone && my === speakSeq && heard()) done(); }; // ending at once: still judged below
       cfg.state(true);
       us.forEach(u => ss.speak(u));
-      // Every ¼ s: done when nothing is queued any more and it was heard, or the device spoke for over a second (it ends
-      // by itself, events or not). After 4 s (6 s for a cloud voice), not heard: the device not speaking → silent, try the
-      // next voice; the device speaking → leave it reading, unless it is still "speaking" well past the time the lines need.
-      const wait = v && v.localService === false ? 6000 : 4000, limit = Math.max(6000, readMs(lines) * 1.5 + 4000);
+      // every 0.1 s: finished and heard → done. After 4 s (6 s for a cloud voice) with nothing heard: on Chrome, Edge and
+      // Android, or when the device is not reading anything at all → silent, try the next voice; on Safari while it is
+      // "speaking" → leave it. Long past the time the text needs (still "speaking") → cleared without a retry.
+      const wait = v && v.localService === false ? 6000 : 4000;
+      const limit = Math.max(6000, readMs(part[0]) * 1.5 + 4000), limitAll = Math.max(limit, readMs(part.join(' ')) * 2 + 10000);
       watch = setInterval(() => {
         if (gone || my !== speakSeq) { clearInterval(watch); return; }
         const on = ss.speaking || ss.pending, ms = performance.now() - t0;
-        if (ss.speaking) busyMs += 250;
-        if (!on && ms > 300 && (heard() || busyMs >= 1000)) { done(); return; }
-        if (ms < wait || heard()) return;
-        if (!on || ms > limit) fail();
-      }, 250);
+        if (!on && heard()) { done(); return; }
+        if (heard()) { if (ms > limitAll) clear(); return; } // a heard reading that hangs (Chrome's 15 s cut-off)
+        if (ms < wait) return;
+        if (!on || !webkit) { fail(); return; }
+        if (ms > limit) clear();
+      }, 100);
     };
-    if (busy) setTimeout(() => run(0), 150); else run(0);
+    const gap = 150 - (performance.now() - cancelAt);
+    if (gap > 0) setTimeout(() => run(0, false, 0), gap); else run(0, false, 0);
   }
-  // sentence by sentence, at most about 200 characters a line
-  const speechChunks = text => { const out = []; let cur = ''; (String(text).match(/[^.!?]+[.!?]+["'”’)\]]*\s*|[^.!?]+$/g) || [String(text)]).forEach(s => { if (cur && (cur + s).length > 200) { out.push(cur); cur = ''; } cur += s; }); if (cur.trim()) out.push(cur); return out; };
+  // sentence by sentence, at most max characters a part. A sentence ends at . ! or ? before a capital, a digit or a
+  // quote, not inside U.S., a.m., Dr. or 2.5
+  const sentences = t => String(t).replace(/([.!?]+["'”’)\]]*)(\s+)(?=["“‘(]?[A-Z0-9])/g, (m, p, sp, i, all) => /(?:^|[\s.(])(?:[A-Za-z]|Mr|Mrs|Ms|Dr|St|Mt|Jr|Sr|No|vs)\.$/.test(all.slice(Math.max(0, i - 4), i) + p) ? m : p + sp + '\u0001').split('\u0001');
+  const speechChunks = (text, max = 200) => { const out = []; let cur = ''; sentences(text).forEach(x => { if (cur && (cur + x).length > max) { out.push(cur); cur = ''; } cur += x; }); if (cur.trim()) out.push(cur); return out; };
   // English only: any Chinese in the text (a teacher's own example, a note) is left out, never read with the English voice
-  function speak(text, test) { const en = String(text).replace(/[\u2E80-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF\u3000-\u303F]+/g, ' ').replace(/\s{2,}/g, ' ').trim(); if (!/[A-Za-z]/.test(en)) return; say([en], 'en-US', false, test); }
-  function stop() { speakSeq++; last = null; live = []; bridgeOff(); if (hasTTS() && (speechSynthesis.speaking || speechSynthesis.pending)) speechSynthesis.cancel(); cfg.state(false); }
+  function speak(text, test) { const en = String(text).replace(/[⺀-鿿豈-﫿＀-￯　-〿]+/g, ' ').replace(/\s{2,}/g, ' ').trim(); if (!/[A-Za-z]/.test(en)) return; say([en], 'en-US', false, test); }
+  function stop() { speakSeq++; last = null; live = []; bridgeOff(); if (hasTTS()) cancel(); cfg.state(false); } // cancel() even when it looks idle: Safari can lose the finish of a reading
   // the English voices this device offers, for the 設定 list
   const englishVoices = () => hasTTS() ? speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang || '') && !VOICE_ODD.test(`${v.name || ''} ${v.voiceURI || ''}`)) : [];
   return {
