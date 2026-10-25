@@ -110,7 +110,7 @@ window.CITY_CARDS = [
    {
     "word": "scooter",
     "pos": "n.",
-    "zh": "機車；速克達",
+    "zh": "機車；輕型機車",
     "example": "Thousands of scooters wait at the traffic lights in Taipei every morning."
    },
    {
