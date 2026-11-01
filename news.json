@@ -1,45 +1,181 @@
 {
- "updated": "2026-10-31T01:01:37Z",
+ "updated": "2026-11-01T00:24:42Z",
  "items": [
   {
-   "title": "UK could see 10 days without rain after 'wettest week in two years'",
-   "link": "https://www.bbc.co.uk/weather/articles/cq98zrwd42jzo?at_medium=RSS&at_campaign=rss",
-   "summary": "With high pressure developing across the UK, the start of November is looking very settled with no significant rain in the forecast.",
+   "title": "MAC details stark Taiwan-China divide",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/01/2003866944",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-01T00:00:00Z"
+  },
+  {
+   "title": "Taiwan thanks allies for supporting Strait peace",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/01/2003866945",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-01T00:00:00Z"
+  },
+  {
+   "title": "Lai calls for respect for all as Taiwan celebrates Pride",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/01/2003866946",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-01T00:00:00Z"
+  },
+  {
+   "title": "'Fascinating' rare beetle found in Wales again after 60 years",
+   "link": "https://www.bbc.co.uk/news/articles/cry8317pdp5yo?at_medium=RSS&at_campaign=rss",
+   "summary": "It was feared The Short-Necked Oil Beetle had become extinct in Wales after recent surveys",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-10-31T00:06:31Z"
+   "date": "2026-10-31T22:07:56Z"
   },
   {
-   "title": "VP details drone development strategy",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/31/2003866902",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-10-31T00:00:00Z"
+   "title": "Bute House protested by environmental campaigners",
+   "link": "https://www.bbc.co.uk/news/articles/c9rkypk1g7k0o?at_medium=RSS&at_campaign=rss",
+   "summary": "A Halloween-themed protest against fossil fuels has targeted the first minister's residence in Edinburgh.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-10-31T13:41:07Z"
   },
   {
-   "title": "Ministry approves first carbon sequestration exploration",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/31/2003866904",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-10-31T00:00:00Z"
-  },
-  {
-   "title": "Netanyahu’s bloc loses majority in Israeli parliament",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/10/31/2003866905",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-10-31T00:00:00Z"
-  },
-  {
-   "title": "Australia’s best photos of the month – October 2026",
-   "link": "https://www.theguardian.com/artanddesign/gallery/2026/oct/31/australias-best-photos-of-the-month-october-2026",
-   "summary": "Dolly Parton, tulips and outback life all feature in the best images captured across the country in October Apartments, community centres and a pink outdoor toilet: Australia’s 2026 National Architecture award winners…",
+   "title": "Trump boosted half of US coal plants with taxpayer dollars and ‘free passes to pollute’, report says",
+   "link": "https://www.theguardian.com/us-news/2026/oct/31/trump-coal-plants-taxpayer-dollars",
+   "summary": "Environmental Defense Fund analysis shows administration handed out $950m and Clean Air Act exemptions It’s a good time to be a coal plant in the US. The Trump administration has given support to almost half of the…",
    "source": "The Guardian",
    "topic": "Environment",
-   "date": "2026-10-30T23:00:26Z"
+   "date": "2026-10-31T13:00:42Z"
+  },
+  {
+   "title": "‘Bunch of baloney’: calls grow for Cop summit reforms as countries on track to fail nature targets",
+   "link": "https://www.theguardian.com/environment/2026/oct/31/cop17-reforms-fails-to-deliver-targets",
+   "summary": "Cop17, focused on protecting nature and restoring ecosystems, concludes on Saturday with critics saying system allows ‘one idiot’ to stall progress Calls are growing for major reforms to UN biodiversity summits as…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-10-31T12:30:06Z"
+  },
+  {
+   "title": "Mill 19: a creative hub built into a former steel factory",
+   "link": "https://www.theguardian.com/artanddesign/gallery/2026/oct/31/mill-19-steel-factory-pittsburgh",
+   "summary": "In Pittsburgh, Pennsylviania, a post-industrial site gets a second life Continue reading...",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-10-31T12:00:42Z"
+  },
+  {
+   "title": "Scientists say decades-old theory on the origin of life might be wrong",
+   "link": "https://lite.cnn.com/2026/10/31/science/origin-life-theory-comet-simulation",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Science",
+   "date": "2026-10-31T12:00:00Z"
+  },
+  {
+   "title": "Notorious hacker says stolen crypto is like ‘holding a hot potato’",
+   "link": "https://lite.cnn.com/2026/10/31/business/crypto-hacker-money-laundering",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-10-31T12:00:00Z"
+  },
+  {
+   "title": "Storm set to hit central US on Election Day as key midterm races hang in balance",
+   "link": "https://lite.cnn.com/2026/10/31/weather/election-day-storm-climate",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Weather",
+   "date": "2026-10-31T12:00:00Z"
+  },
+  {
+   "title": "It’s the world’s largest passenger plane. But he still fit some of it inside his home",
+   "link": "https://lite.cnn.com/2026/10/31/travel/worlds-largest-plane-partly-inside-his-home",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Travel",
+   "date": "2026-10-31T12:00:00Z"
+  },
+  {
+   "title": "Americans may feel a bit spooked by Halloween prices",
+   "link": "https://lite.cnn.com/2026/10/31/business/halloween-costume-prices",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-10-31T12:00:00Z"
+  },
+  {
+   "title": "Drone photo award winners: Far-out landscapes. Ship recycling. Rugs, rugs rugs!",
+   "link": "https://www.npr.org/2026/10/31/g-s1-150698/drone-photo-award-winners",
+   "summary": "The Siena Drone Photo Awards for 2026 offer breathtaking bird's-eye views of our planet, revealing landscapes, livelihoods and human stories often invisible from the ground.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-10-31T11:56:10Z"
+  },
+  {
+   "title": "Wild West crypto: Staggering Binance heist exposes sector fragility",
+   "link": "https://www.npr.org/2026/10/31/nx-s1-6023330/wild-west-crypto-staggering-binance-heist-exposes-sector-fragility",
+   "summary": "A massive cyber heist of crypto exchange Binance is exposing some of the fragilities of the sector and reinforcing perceptions of the industry as a financial Wild West, critics warn.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-10-31T11:42:57Z"
+  },
+  {
+   "title": "From gold rush to cosmic questions: a South Dakota mine and the search for the secrets of the universe",
+   "link": "https://www.theguardian.com/science/2026/oct/31/south-dakota-mine-search-secrets-universe-dark-matter-antimatter",
+   "summary": "A mile beneath the Black Hills, scientists are building giant detectors to analyse neutrino particles – and possibly find the answer to existence For more than a century, the mining town of Lead, in the Black Hills of…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-10-31T11:00:40Z"
+  },
+  {
+   "title": "Do you have seasonal affective disorder? How to tell — and what to do about it",
+   "link": "https://www.npr.org/2026/10/31/nx-s1-6023200/do-you-have-seasonal-affective-disorder-how-to-tell-and-what-to-do-about-it",
+   "summary": "The syndrome can make people feel like a \"hibernating bear,\" says Dr. Norman Rosenthal, who published the first research on SAD. He explains how to identify the symptoms and what to do to feel better.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-10-31T09:01:00Z"
+  },
+  {
+   "title": "Oyster stocks have plunged in the Chesapeake. This resident wants to bring them back",
+   "link": "https://www.npr.org/2026/10/31/nx-s1-6011228/oyster-farming-conservation-chesapeake-bay",
+   "summary": "Oyster reefs once abounded in the Chesapeake, but overharvesting slashed their populations, leading to poorer water quality and less habitat for other species. Now, researchers and local residents are finding creative…",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-10-31T09:00:00Z"
+  },
+  {
+   "title": "Your writing was flagged as AI. What does that actually mean?",
+   "link": "https://www.npr.org/2026/10/31/nx-s1-5963520/ai-writing-detectors-pangram",
+   "summary": "As editors turn to imperfect AI detection tools to weed out machine-generated submissions, writers who say they were falsely accused of using AI are left wondering what triggered a positive result.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-10-31T09:00:00Z"
+  },
+  {
+   "title": "How do you navigate Halloween with food allergies?",
+   "link": "https://www.bbc.co.uk/news/articles/ckdd8pmr5l64o?at_medium=RSS&at_campaign=rss",
+   "summary": "BBC News NI speaks to people about how they navigate their allergies at Halloween.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-10-31T07:01:31Z"
+  },
+  {
+   "title": "Rewilding project aims to restore peatland",
+   "link": "https://www.bbc.co.uk/news/articles/crq8nw0q7d5ko?at_medium=RSS&at_campaign=rss",
+   "summary": "Cumbria Wildlife Trust starts work repairing damage to Skiddaw Forest's peatland.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-10-31T06:58:30Z"
+  },
+  {
+   "title": "Why North Korea's 'elite' hackers are the prime suspect in major Binance hack",
+   "link": "https://www.bbc.co.uk/news/articles/ck9dz3v7z7v3o?at_medium=RSS&at_campaign=rss",
+   "summary": "If the accusations are true, the record-making heist shows how powerful suspected North Korean hackers have become.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-10-31T02:12:19Z"
   },
   {
    "title": "This week in science: mysterious X-rays, movement and learning, and memory formation",
@@ -66,28 +202,12 @@
    "date": "2026-10-30T17:56:07Z"
   },
   {
-   "title": "Attenborough-backed appeal secures £30m estate",
-   "link": "https://www.bbc.co.uk/news/articles/ck79pj8zn3vwo?at_medium=RSS&at_campaign=rss",
-   "summary": "The purchase of the vast Rothbury Estate by wildlife groups is hailed as \"something very special\".",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-10-30T15:23:37Z"
-  },
-  {
    "title": "Perfume bottle and child’s necklace among treasures found in Pompeii wardrobe",
    "link": "https://www.theguardian.com/science/2026/oct/30/perfume-bottle-child-necklace-pompeii-wardrobe",
    "summary": "Archaeologists uncover jewellery, cosmetics and coins in cabinet sealed since eruption of Mount Vesuvius in AD79 Fragments of personal objects, from makeup tools and a perfume bottle to coins and a child’s necklace,…",
    "source": "The Guardian",
    "topic": "Science",
    "date": "2026-10-30T15:06:39Z"
-  },
-  {
-   "title": "Public sector an ‘afterthought’ to North Sea oil jobs, says Unison leader",
-   "link": "https://www.theguardian.com/politics/2026/oct/30/public-sector-afterthought-north-sea-oil-jobs-unison",
-   "summary": "Andrea Egan calls for same political focus on teachers, care sector and NHS and says Jackdaw decision ‘a serious misstep’ The leader of the UK’s biggest trade union has called for the same political focus to be given…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-10-30T13:04:03Z"
   },
   {
    "title": "Google value plunges by $500bn as its own AI search hits ad sales",
@@ -106,14 +226,6 @@
    "date": "2026-10-30T12:00:00Z"
   },
   {
-   "title": "The real question we should all be asking about AI",
-   "link": "https://lite.cnn.com/2026/10/30/business/ai-stocks-bonds-debt",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-10-30T12:00:00Z"
-  },
-  {
    "title": "Judge blocks Trump administration’s Medicaid rule forcing sick recipients to prove they can’t work",
    "link": "https://lite.cnn.com/2026/10/30/health/medicaid-frailty-decision",
    "summary": "",
@@ -122,230 +234,2035 @@
    "date": "2026-10-30T12:00:00Z"
   },
   {
-   "title": "World’s largest crypto exchange hit by suspected North Korean hack in world’s largest heist",
-   "link": "https://lite.cnn.com/2026/10/30/tech/binance-crypto-heist-hnk-intl",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-10-30T12:00:00Z"
-  },
-  {
-   "title": "Visit Norway makes toilets ‘great again’ after Trump’s ‘sh*t house country’ jab",
-   "link": "https://lite.cnn.com/2026/10/30/travel/visit-norway-toilets-trump-scli-intl",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Travel",
-   "date": "2026-10-30T12:00:00Z"
-  },
-  {
-   "title": "Big Oil is raking in huge profits. Shareholders like Trump are cashing in. You’re paying for it with high gas prices.",
-   "link": "https://lite.cnn.com/2026/10/30/business/big-oil-profits-trump-gas-prices",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-10-30T12:00:00Z"
-  },
-  {
-   "title": "Packers’ Watson makes improbable ‘Thursday Night Football’ return after mid-game trip to hospital",
-   "link": "https://lite.cnn.com/2026/10/30/sport/packers-watson-tnf-hospital-return",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-10-30T12:00:00Z"
-  },
-  {
-   "title": "Who could be behind the Binance hack and what we know so far",
-   "link": "https://www.bbc.co.uk/news/articles/cm5yn8eqg3npo?at_medium=RSS&at_campaign=rss",
-   "summary": "Binance has been hit by what could be the biggest crypto hack ever - here's what we know so far",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-10-30T11:57:33Z"
-  },
-  {
-   "title": "Five reasons why the US midterms matter for the climate – and your energy bill",
-   "link": "https://www.theguardian.com/us-news/2026/oct/30/climate-crisis-midterms-affordability",
-   "summary": "Voters are feeling the pinch of Trump’s anti-climate agenda as energy costs rise, but a shake-up in Congress could shift things If the polls can be believed, the US could see a blue wave in the midterms, giving…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-10-30T11:30:52Z"
-  },
-  {
    "title": "Nearly 2 out of 3 teens and tweens use AI chatbots, new research shows",
    "link": "https://www.npr.org/2026/10/30/nx-s1-6022278/ai-artificial-intelligence-teens-jed-common-sense-media",
    "summary": "Most kids say they use chatbots for help with homework and when they're stressed, lonely, or anxious. And how they use chatbots is tied to their mental health.",
    "source": "NPR",
    "topic": "Health",
    "date": "2026-10-30T09:00:00Z"
-  },
-  {
-   "title": "Websites pretending to be local news are boosting Democratic candidates",
-   "link": "https://www.npr.org/2026/10/30/nx-s1-6014548/midterms-chatgpt-local-news-democrats",
-   "summary": "The websites of unknown origin are targeting key U.S. House races. They are getting picked up by ChatGPT's responses but Google's products avoid promoting them.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-10-30T09:00:00Z"
-  },
-  {
-   "title": "Florida sees spike in dengue fever cases",
-   "link": "https://www.npr.org/2026/10/30/nx-s1-6020514/florida-sees-spike-in-dengue-fever-cases",
-   "summary": "Florida is seeing a record number of dengue fever cases this year as the tropical disease thrives in warming climates.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-10-30T08:47:21Z"
-  },
-  {
-   "title": "Week in wildlife: a fishing anhinga, a northern nutcracker and cuddling seals",
-   "link": "https://www.theguardian.com/environment/gallery/2026/oct/30/week-in-wildlife-a-fishing-anhinga-a-northern-nutcracker-and-cuddling-seals",
-   "summary": "This week’s best wildlife photographs from around the world Continue reading...",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-10-30T08:00:48Z"
-  },
-  {
-   "title": "What makes this golden eagle chick so important?",
-   "link": "https://www.bbc.co.uk/news/articles/cq4g1jyj9dv7o?at_medium=RSS&at_campaign=rss",
-   "summary": "The bird's arrival on a managed grouse moor in southern Scotland is seen as a key moment for the species.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-10-30T06:22:37Z"
-  },
-  {
-   "title": "Lost your spark? The \"silent sister\" of depression, and a quiz to spot her",
-   "link": "https://www.npr.org/2026/10/29/nx-s1-5996687/anhedonia-quiz-high-functioning-depression",
-   "summary": "Always busy, but rarely joyful? Allison Aubrey and Juana Summers discuss a tool to spot \"high functioning depression.\"",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-10-29T20:00:00Z"
-  },
-  {
-   "title": "Even birds get jet lagged, study shows",
-   "link": "https://www.npr.org/2026/10/29/nx-s1-6019228/manx-shearwater-jet-lag-birds",
-   "summary": "A species of seabirds appears to become disoriented on flights back to its nest due to shifting time zones.",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-10-29T18:00:00Z"
-  },
-  {
-   "title": "Who benefits when massive AI data centers come to town?",
-   "link": "https://www.npr.org/2026/10/29/nx-s1-6022096/who-benefits-when-massive-ai-data-centers-come-to-town",
-   "summary": "The battle over data centers is hitting the ballot box. Brookings scholar Darrell West talks about how the backlash against the AI boom, flock cameras and tech companies is crossing party lines.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-10-29T15:41:59Z"
-  },
-  {
-   "title": "'My legs buckled when I opened my exam results during Covid'",
-   "link": "https://www.bbc.co.uk/news/articles/cwx283rn5yrgo?at_medium=RSS&at_campaign=rss",
-   "summary": "The Scottish Covid Inquiry prepares to hear from education bosses about the exams fiasco of 2020 which saw thousands of pupils downgraded.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-10-29T09:57:22Z"
   }
  ],
  "lessons": [
   {
-   "link": "https://www.bbc.co.uk/weather/articles/cq98zrwd42jzo?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Science",
-   "title": "UK could see 10 days without rain after 'wettest week in two years'",
-   "title_zh": "英國經歷「兩年來最潮濕的一週」後可能迎來連續十天無雨",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/01/2003866945",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "title": "Taiwan thanks allies for supporting Strait peace",
+   "title_zh": "台灣感謝盟友支持台海和平",
    "paragraphs": [
     {
-     "en": "The United Kingdom could experience up to ten consecutive days without rain following an unsettled end to October. Recently, the country was hit by back-to-back storms named Austen and Boelo, which were the first named storms of the season. These turbulent weather systems brought heavy rainfall, power cuts, and travel disruption. According to the Environment Agency, the rain from these storms, combined with another low-pressure system on Monday, resulted in the wettest week England has seen in two years.",
-     "zh": "在歷經十月底不穩定的天氣後，英國可能迎來長達十天沒有降雨的日子。最近，名為奧斯汀（Austen）和博埃洛（Boelo）的接連風暴襲擊了該國，這是本季首批被命名的風暴。這些混亂的天氣系統帶來了豪雨、停電以及交通混亂。根據英國環境署（Environment Agency）的說法，這些風暴帶來的降雨加上週一的另一個低氣壓系統，造成了英格蘭兩年來最潮濕的一週。"
+     "en": "Taiwan has expressed its sincere appreciation to the United States, Japan, and South Korea after their top diplomats highlighted the value of stability across the Taiwan Strait. The foreign ministers shared their views during a three-way meeting held on the sidelines of the G20 gathering in Atlanta, Georgia.",
+     "zh": "在美、日、韓最高層級的外交官強調台海穩定的重要性後，台灣向這三國表達了誠摯的感謝。這幾位外交部長是在喬治亞州亞特蘭大舉行的二十國集團（G20）會議場邊進行三邊會談時，分享了彼此的看法。"
     },
     {
-     "en": "Following this stormy period, a strong area of high pressure is moving in, bringing a prolonged spell of calm and dry conditions across most regions. Even though heavy rain is not in sight, persistent mist and fog will remain a major feature during the mornings. Some of these dense fog patches will be slow to clear, potentially causing reduced visibility and disruptions for travelers before brighter skies finally emerge.",
-     "zh": "在度過這段暴風雨時期之後，一股強大的高氣壓正在移入，為大多數地區帶來持續且乾燥穩定的天氣。儘管目前看不到豪雨的跡象，但持續的薄霧和濃霧仍將是早晨的主要特徵。其中一些濃霧消散得相當緩慢，在轉為晴朗天空之前，可能會降低能見度並給旅客帶來困擾。"
+     "en": "US Secretary of State Marco Rubio met with Japanese Foreign Minister Motegi Toshimitsu and South Korean Foreign Minister Cho Hyun. According to a statement from the US Department of State, the three officials evaluated the development of their partnership, which seeks to promote security and economic success throughout a free and open Indo-Pacific region. During these discussions, they stressed that maintaining peace across the Taiwan Strait remains essential.",
+     "zh": "美國國務卿盧比歐（Marco Rubio）會晤了日本外務大臣茂木敏充以及韓國外交部長趙顯。根據美國國務院的一份聲明，這三位官員評估了彼此夥伴關係的進展，該夥伴關係旨在促進自由開放的印太地區的安全與經濟繁榮。在這些討論中，他們強調維護台海和平依然至關重要。"
     },
     {
-     "en": "For people heading out to celebrate Halloween on Saturday evening, conditions should remain largely dry under clear skies with light winds. However, a few scattered showers could put a dampener on events in the Western Isles of Scotland. As darkness falls, temperatures are expected to edge lower over the coming days, creating a noticeably chilly feel during the nights and early mornings.",
-     "zh": "對於在週六晚間出門慶祝萬聖節的人來說，天空晴朗且風力微弱，天氣應大致保持乾燥。然而，少數零星的陣雨可能會讓蘇格蘭西部群島（Western Isles of Scotland）的活動掃興。隨著夜幕降臨，未來幾天的氣溫預計將逐漸下降，在夜間和清晨帶來明顯的寒意。"
+     "en": "In addition to discussing the Taiwan Strait, Rubio voiced serious concerns regarding Chinese actions across the wider area. He pointed out Beijing’s attempts to claim authority over the South China Sea, as well as its aggressive conduct in the East China Sea and Yellow Sea. Furthermore, Rubio warned that growing military cooperation between China and Russia threatens to disrupt regional peace.",
+     "zh": "除了討論台海議題外，盧比歐也對中國在更廣泛地區的行動表達了嚴重關切。他指出了北京試圖取得對南海的控制權，以及其在東海與黃海的脅迫行徑。此外，盧比歐警告，中俄之間日益增長的軍事合作恐破壞區域和平。"
     },
     {
-     "en": "Experts predict that this settled pattern will last into early November, but a shift could occur around the middle of the month. Signs indicate that the high pressure may loosen its hold, allowing low-pressure systems from the Atlantic to approach. This change could bring wetter and windier weather back to the UK. Furthermore, the intensifying El Niño climate event in the Pacific Ocean has been linked to wetter and stormier conditions during late autumn and early winter.",
-     "zh": "專家預測這種穩定的天氣型態將持續到十一月初，但在月中左右可能會出現轉變。跡象顯示高氣壓可能會減弱其控制，使得來自大西洋的低氣壓系統得以接近。這項轉變可能會為英國再次帶來更加潮濕且多風的天氣。此外，太平洋地區正在增強的聖嬰現象（El Niño），也與深秋及初冬更潮濕、更多風暴的天氣有所關聯。"
+     "en": "In Taipei, Taiwan’s Ministry of Foreign Affairs stated that Foreign Minister Lin Chia-lung welcomed the shared stance of the three democratic allies. Lin conveyed Taiwan’s gratitude for their ongoing focus on cross-strait security and encouraged partner countries to continue protecting regional stability through practical steps.",
+     "zh": "在台北，台灣外交部表示，外交部長林佳龍對這三個民主盟友的共同立場表示歡迎。林佳龍向他們持續關注台海安全表達台灣的謝意，並鼓勵夥伴國家繼續透過具體行動來維護區域穩定。"
+    },
+    {
+     "en": "The ministry noted that foreign ministers from these three countries have repeatedly affirmed the significance of cross-strait peace throughout this year. This frequent support proves that peace in the Taiwan Strait is vital to the entire region and has become an important international priority.",
+     "zh": "外交部指出，這三個國家的外交部長今年已多次公開重申維持台海和平的重要性。這種頻繁的支持證明了台海和平對整個地區至關重要，且已成為國際社會關注的焦點。"
+    },
+    {
+     "en": "As China continues to increase its military pressure and gray-zone intrusions, Taiwan pledged to strengthen its relationships with the US and other democratic partners. Together, they aim to preserve long-term peace, security, and prosperity across the region.",
+     "zh": "面對中國不斷升級的軍事壓力與灰色地帶侵擾，台灣承諾將強化與美國及其他民主夥伴的關係。他們將共同努力，致力維護整個區域的長期和平、穩定與繁榮。"
     }
    ],
-   "words": 287,
+   "words": 303,
    "v": 2,
    "vocab": [
     {
-     "word": "consecutive",
-     "pos": "adj.",
-     "zh": "連續的"
-    },
-    {
-     "word": "turbulent",
-     "pos": "adj.",
-     "zh": "動盪的、混亂的"
-    },
-    {
-     "word": "disruption",
+     "word": "appreciation",
      "pos": "n.",
-     "zh": "中斷、混亂"
+     "zh": "感謝；感激"
     },
     {
-     "word": "prolonged",
-     "pos": "adj.",
-     "zh": "長期的、持續久的"
-    },
-    {
-     "word": "persistent",
-     "pos": "adj.",
-     "zh": "持續不退的"
-    },
-    {
-     "word": "visibility",
-     "pos": "n.",
-     "zh": "能見度"
-    },
-    {
-     "word": "intensify",
+     "word": "evaluate",
      "pos": "v.",
-     "zh": "加劇、增強"
+     "zh": "評估；評價"
+    },
+    {
+     "word": "essential",
+     "pos": "adj.",
+     "zh": "至關重要的；不可或缺的"
+    },
+    {
+     "word": "authority",
+     "pos": "n.",
+     "zh": "掌控權；權力"
+    },
+    {
+     "word": "aggressive",
+     "pos": "adj.",
+     "zh": "具挑釁性的；侵略性的"
+    },
+    {
+     "word": "significance",
+     "pos": "n.",
+     "zh": "重要性；重大意義"
+    },
+    {
+     "word": "intrusion",
+     "pos": "n.",
+     "zh": "侵擾；入侵"
     }
    ],
    "phrases": [
     {
-     "phrase": "back-to-back",
-     "zh": "接連的、連續的"
+     "phrase": "on the sidelines of",
+     "zh": "在…的場邊；在…周邊進行"
     },
     {
-     "phrase": "put a dampener on",
-     "zh": "使…掃興、讓…蒙上陰影"
+     "phrase": "in addition to",
+     "zh": "除了…之外"
     },
     {
-     "phrase": "head out",
-     "zh": "出發、前往"
+     "phrase": "point out",
+     "zh": "指出"
     },
     {
-     "phrase": "loosen one's hold",
-     "zh": "放鬆控制、減弱影響"
+     "phrase": "pledge to",
+     "zh": "承諾要…；發誓要…"
     }
    ],
    "grammar": [
     {
-     "point": "關係代名詞引導的非限定子句 (Non-defining Relative Clause)",
-     "explain": "使用逗號加上關係代名詞「which」形成非限定子句，補充說明先行詞「back-to-back storms」。",
-     "example": "Recently, the country was hit by back-to-back storms named Austen and Boelo, which were the first named storms of the season.",
-     "focus": "which were the first named storms of the season"
+     "point": "過去分詞片語作後位修飾 (Past Participle Phrase as Postmodifier)",
+     "explain": "過去分詞片語 held on... 置於名詞片語 a three-way meeting 之後作後位修飾，表示該會議「被舉行」，相當於省略了 which was。",
+     "example": "The foreign ministers shared their views during a three-way meeting held on the sidelines of the G20 gathering in Atlanta, Georgia.",
+     "focus": "held on the sidelines of the G20 gathering in Atlanta, Georgia"
     },
     {
-     "point": "分詞構句 (Participle Construction)",
-     "explain": "由現在分詞「bringing」引導分詞構句，修飾主要子句，表示伴隨產生的結果。",
-     "example": "Following this stormy period, a strong area of high pressure is moving in, bringing a prolonged spell of calm and dry conditions across most regions.",
-     "focus": "bringing a prolonged spell of calm and dry conditions across most regions"
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "逗號後使用關係代名詞 which 引導非限定關係子句，用以補充說明先行詞 partnership（夥伴關係）的核心目的。",
+     "example": "According to a statement from the US Department of State, the three officials evaluated the development of their partnership, which seeks to promote security and economic success throughout a free and open Indo-Pacific region.",
+     "focus": ", which seeks to promote security and economic success throughout a free and open Indo-Pacific region"
     },
     {
-     "point": "現在完成式被動語態 (Present Perfect Passive Voice)",
-     "explain": "使用「has been + 過去分詞」表示某事物已經被發現與另一情況有所關聯。",
-     "example": "Furthermore, the intensifying El Niño climate event in the Pacific Ocean has been linked to wetter and stormier conditions during late autumn and early winter.",
-     "focus": "has been linked to"
+     "point": "名詞子句作受詞 (Noun Clause as Object)",
+     "explain": "由連接詞 that 引導名詞子句，在句中擔任主要動詞 noted 的受詞，說明外交部所說明的具體內容。",
+     "example": "The ministry noted that foreign ministers from these three countries have repeatedly affirmed the significance of cross-strait peace throughout this year.",
+     "focus": "that foreign ministers from these three countries have repeatedly affirmed the significance of cross-strait peace throughout this year"
     }
    ],
    "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/01/2003866946",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "title": "Lai calls for respect for all as Taiwan celebrates Pride",
+   "title_zh": "賴清德在台灣慶祝同志遊行之際呼籲尊重所有人",
+   "paragraphs": [
+    {
+     "en": "The annual Taiwan Pride parade took place in Taipei, attracting massive crowds from both home and abroad. President William Lai called for equality, dignity, and mutual respect for everyone. He pointed out that Taiwan became the first place in Asia to legalize same-sex marriage seven years ago. However, he emphasized that society must continue working to protect these rights so that citizens can live safely without fearing discrimination or misuse of public authority.",
+     "zh": "一年一度的台灣同志遊行於台北登場，吸引了來自海內外的大批人潮。賴清德總統呼籲人人享有平等、尊嚴與相互尊重。他指出，台灣在七年前成為亞洲第一個將同性婚姻合法化的地方。然而，他強調社會必須繼續努力保障這些權利，讓民眾能安全生活，而不必害怕歧視或公權力的濫用。"
+    },
+    {
+     "en": "The Taiwan Rainbow Civil Action Association reported that more than 170,000 people attended the march, which remains the largest event of its kind in East Asia. The main theme of this year was \"Our Voices, Our Journey,\" designed to promote mutual understanding through shared life stories. Nevertheless, an October 3 police search of a Taipei gay bar had sparked anger, leading association chairperson Simon Tai to demand a transparent investigation and binding policing rules.",
+     "zh": "台灣彩虹公民行動協會表示，超過十七萬人參與了這場遊行，使其維持東亞規模最大的同類活動。今年的主題是「我們的聲音，我們的旅程」，旨在透過分享人生故事來促進相互理解。儘管如此，十月三日警方對台北一家同志酒吧的搜查引發了不滿，促使該協會理事長戴佑勳要求進行透明的調查並制定具約束力的執法準則。"
+    },
+    {
+     "en": "Many marchers took the opportunity to express their identities proudly. A participant named Jian celebrated a personal milestone by attending with his mother after ten years of marching. Another attendee, Jeff, said the parade allowed people to be their true selves despite facing strange looks in daily life. In addition, an international visitor named Romee traveled from the Netherlands to support the event, noting that she hoped to learn from Taiwan while conservatism grows in Europe.",
+     "zh": "許多遊行者藉此機會自豪地展現自己的身分。一位名叫簡先生的參與者在連續參加遊行十年後，首次帶著母親一同出席，慶祝了個人的里程碑。另一位參與者小恩則表示，儘管在日常生活中面臨異樣的眼光，遊行讓大家能夠做真實的自己。此外，一位名叫蘿咪的國際訪客特地從荷蘭前來支持這項活動，並指出隨著歐洲保守主義抬頭，她希望能向台灣學習。"
+    },
+    {
+     "en": "Several political leaders also joined the rally to show their support. Vice President Hsiao Bi-khim led a delegation from the Democratic Progressive Party (DPP), while representatives from several other political groups attended as well. When Taipei Mayor Chiang Wan-an arrived near the conclusion of the event, some participants shouted protests regarding the recent bar raid. Chiang publicly apologized for the impact of the incident and promised a strict review.",
+     "zh": "幾位政治領袖也加入集會表達支持。副總統蕭美琴率領民主進步黨（DPP）代表團出席，其他幾個政黨的代表也到場參加。當台北市長蔣萬安在活動接近尾聲抵達時，部分參與者針對最近的酒吧突擊搜查高喊抗議。蔣萬安為此事件造成的影響公開致歉，並承諾會進行嚴格檢討。"
+    }
+   ],
+   "words": 292,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "dignity",
+     "pos": "n.",
+     "zh": "尊嚴"
+    },
+    {
+     "word": "discrimination",
+     "pos": "n.",
+     "zh": "歧視"
+    },
+    {
+     "word": "transparent",
+     "pos": "adj.",
+     "zh": "透明的、公開的"
+    },
+    {
+     "word": "binding",
+     "pos": "adj.",
+     "zh": "具約束力的"
+    },
+    {
+     "word": "milestone",
+     "pos": "n.",
+     "zh": "里程碑、重大轉折"
+    },
+    {
+     "word": "conservatism",
+     "pos": "n.",
+     "zh": "保守主義"
+    },
+    {
+     "word": "delegation",
+     "pos": "n.",
+     "zh": "代表團"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "take place",
+     "zh": "舉行、發生"
+    },
+    {
+     "phrase": "call for",
+     "zh": "呼籲、要求"
+    },
+    {
+     "phrase": "point out",
+     "zh": "指出"
+    },
+    {
+     "phrase": "take the opportunity to",
+     "zh": "藉機……、把握機會做……"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
+     "explain": "which 為關係代名詞，在此引導非限定子句並以逗號隔開，用來補充說明先行詞 the march。",
+     "example": "The Taiwan Rainbow Civil Action Association reported that more than 170,000 people attended the march, which remains the largest event of its kind in East Asia.",
+     "focus": "which remains the largest event of its kind in East Asia"
+    },
+    {
+     "point": "目的副詞子句 (Adverbial Clause of Purpose with \"so that\")",
+     "explain": "so that 為從屬連接詞，引導表示「目的」的副詞子句，意思是「以便、為了讓……」。",
+     "example": "However, he emphasized that society must continue working to protect these rights so that citizens can live safely without fearing discrimination or misuse of public authority.",
+     "focus": "so that citizens can live safely without fearing discrimination or misuse of public authority"
+    },
+    {
+     "point": "不定詞作目的狀詞 (Infinitive of Purpose)",
+     "explain": "to show their support 為不定詞片語，在此修飾動詞 joined，用來說明加入集會的具體目的。",
+     "example": "Several political leaders also joined the rally to show their support.",
+     "focus": "to show their support"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/cry8317pdp5yo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Science",
+   "title": "'Fascinating' rare beetle found in Wales again after 60 years",
+   "title_zh": "「迷人」的稀有甲蟲在六十年後再次於威爾斯現蹤",
+   "paragraphs": [
+    {
+     "en": "A rare insect called the Short-Necked Oil Beetle has been discovered in Pembrokeshire after being missing from Wales for sixty years. After 1948, the beetle was not reported anywhere in the United Kingdom for nearly six decades because severe habitat loss drove the creature to the edge of extinction. Today, it is officially classified as nationally rare in Great Britain and listed as vulnerable on the IUCN Red List.",
+     "zh": "一種名為短頸油甲蟲（Short-Necked Oil Beetle）的稀有昆蟲在從威爾斯消失六十年後，於彭布羅克郡（Pembrokeshire）被重新發現。1948年之後，由於棲息地嚴重流失將該生物推向滅絕邊緣，這種甲蟲在英國境內有近六十年的時間完全沒有相關通報記錄。如今，它在英國境內被正式歸類為全國稀有物種，並在國際自然保護聯盟（IUCN）紅色名錄中被列為易危物種。"
+    },
+    {
+     "en": "These unusual beetles depend heavily on solitary bees to complete their life cycle. They also require very specific environments to survive, needing thick plants for shelter and dense flowers for food. Adult beetles can grow up to 24 millimeters in length and have a lifespan of approximately one year. They usually appear between March and June in coastal grasslands and sand dunes, becoming most active on warm, sunny days.",
+     "zh": "這些獨特的甲蟲高度依賴獨居蜂來完成牠們的生命週期。牠們還需要非常特定的環境才能生存，需要茂密的植被作為掩蔽處以及密集的開花植物。成年甲蟲體長可達二十四毫米，壽命約為一年。牠們通常在三月至六月間出現於沿海草地和沙丘環境中，並且在溫暖晴朗的日子最為活躍。"
+    },
+    {
+     "en": "Because these ideal conditions are so rare, Natural Resources Wales (NRW) stated that only a handful of UK sites can support them. The beetle was rediscovered in Devon in 2006 and in Scotland in 2009, with other small populations later appearing on Scottish islands like Coll, Tiree, and Islay. Currently, Castlemartin Range in Pembrokeshire is the only place in Wales where the species still exists. Conservationists regularly monitor the site, but finding only dead adults last year caused serious concerns about their future.",
+     "zh": "由於這些理想條件極其罕見，威爾斯自然資源署（NRW）表示，全英國只有少數幾個地點能供牠們棲息。這種甲蟲於2006年在德文郡被重新發現，2009年則在蘇格蘭現蹤，隨後其他小型族群也相繼出現在科爾島、泰里島和艾雷島等蘇格蘭島嶼上。目前，彭布羅克郡的卡斯爾馬丁靶場（Castlemartin Range）是該物種在威爾斯僅存的地點。保育人士持續對該地點進行監測，但去年僅發現成年甲蟲死體的情況引發了對其未來的嚴重擔憂。"
+    },
+    {
+     "en": "Fortunately, after three years of searching, experts recently discovered young larvae on a small section of the site. The number and distribution of these larvae suggest that beetles are successfully reproducing in Wales again. Anne Hobbs from the Bumblebee Conservation Trust said it was \"very exciting\" that the species was breeding. She explained that protecting the beetle is part of a larger recovery program and thanked volunteers for their continued support.",
+     "zh": "幸運的是，在歷經三年的搜尋之後，專家們最近在該地點的一小塊區域發現了幼蟲。這些幼蟲的數量與分布情況顯示，甲蟲已再次成功在威爾斯繁衍。來自大黃蜂保護信託基金會（Bumblebee Conservation Trust）的安·霍布斯（Anne Hobbs）表示，該物種正在繁殖「非常令人興奮」。她說明，保護這種甲蟲是一項更大型復育計畫的一部分，並感謝志工們的持續支持。"
+    }
+   ],
+   "words": 292,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "extinction",
+     "pos": "n.",
+     "zh": "滅絕；絕種"
+    },
+    {
+     "word": "vulnerable",
+     "pos": "adj.",
+     "zh": "易受傷害的；易危的"
+    },
+    {
+     "word": "shelter",
+     "pos": "n.",
+     "zh": "掩蔽處；庇護"
+    },
+    {
+     "word": "dense",
+     "pos": "adj.",
+     "zh": "稠密的；密集的"
+    },
+    {
+     "word": "lifespan",
+     "pos": "n.",
+     "zh": "壽命"
+    },
+    {
+     "word": "monitor",
+     "pos": "v.",
+     "zh": "監控；監測"
+    },
+    {
+     "word": "reproduce",
+     "pos": "v.",
+     "zh": "繁衍；繁殖"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "depend on",
+     "zh": "依賴；仰賴"
+    },
+    {
+     "phrase": "drive sth to the edge of extinction",
+     "zh": "使…瀕臨滅絕"
+    },
+    {
+     "phrase": "a handful of",
+     "zh": "少數的；一把"
+    },
+    {
+     "phrase": "grow up to",
+     "zh": "成長達到（某尺寸或年齡）"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "由 be 動詞 is 加上過去分詞 classified 構成現在簡單式的被動語態，表示主詞「被歸類」。",
+     "example": "Today, it is officially classified as nationally rare in Great Britain and listed as vulnerable on the IUCN Red List.",
+     "focus": "is officially classified"
+    },
+    {
+     "point": "現在分詞構句 (Participle Construction)",
+     "explain": "逗號後省略對等連接詞，直接使用現在分詞 becoming 引導分詞片語，用來補充說明主詞的伴隨狀態。",
+     "example": "They usually appear between March and June in coastal grasslands and sand dunes, becoming most active on warm, sunny days.",
+     "focus": "becoming most active on warm, sunny days"
+    },
+    {
+     "point": "關係副詞引導的形容詞子句 (Relative Clause with Relative Adverb)",
+     "explain": "關係副詞 where 引導形容詞子句修飾先行詞 place，在子句中代替表示地點的副詞功能。",
+     "example": "Currently, Castlemartin Range in Pembrokeshire is the only place in Wales where the species still exists.",
+     "focus": "where the species still exists"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/c9rkypk1g7k0o?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Science",
+   "title": "Bute House protested by environmental campaigners",
+   "title_zh": "環保倡議人士在布特大樓外發起抗議",
+   "paragraphs": [
+    {
+     "en": "Climate campaigners recently gathered outside Bute House, the official residence of Scotland's first minister in Edinburgh, to stage a Halloween-themed protest. Demonstrators dressed up in spooky masks assembled on Charlotte Square, holding creative placards that described energy choices as terrifying and warned political leaders that their choices would haunt them.",
+     "zh": "氣候倡議人士最近聚集在蘇格蘭首席大臣位於愛丁堡的官邸布特大樓（Bute House）外，發起了一場萬聖節主題的抗議活動。盛裝打扮戴著恐怖面具的示威者在夏洛特廣場（Charlotte Square）集會，手持具有創意的標語牌，將能源選擇描述為令人害怕的事物，並警告政治領袖他們的決定將會糾纏著他們。"
+    },
+    {
+     "en": "The activists organized the demonstration after the Scottish government approved a new gas-powered electricity station at Peterhead in Aberdeenshire. In addition, the protest came shortly after the United Kingdom government announced that the Jackdaw gas field near Aberdeen would be allowed to move forward. Campaigners strongly condemned these approvals, emphasizing that burning fossil fuels serves as the primary driver behind extreme weather events, including heavy storms, record heat, and severe flooding.",
+     "zh": "這群倡議人士發起這場示威，是因為蘇格蘭政府核准了位於亞伯丁郡彼得黑德（Peterhead）的一座新燃氣發電廠。此外，這次抗議也緊隨在英國政府宣布允許亞伯丁附近的穴鳥（Jackdaw）氣田開發計畫推進之後。倡議人士強烈譴責這些批准決定，強調燃燒化石燃料是諸如強烈風暴、破紀錄高溫以及嚴重洪水等極端天氣事件背後的主要驅動力。"
+    },
+    {
+     "en": "Kate Whitaker from the environmental organization Friends of the Earth Scotland explained that fossil fuels terrify citizens because of the widespread harm they inflict on millions of lives. She criticized the Peterhead power plant approval as a \"catastrophic failure\" to protect citizens from climate breakdown and rising household energy bills. Instead of supporting fossil fuels, she urged politicians to relieve public fear by investing in green jobs, warmer homes, and reliable bus services.",
+     "zh": "來自環保組織「蘇格蘭地球之友」（Friends of the Earth Scotland）的凱特·惠特克（Kate Whitaker）解釋說，化石燃料之所以讓民眾恐慌，是因為它們對數百萬人的生活造成廣泛傷害。她批評核准彼得黑德發電廠是保護公民免受氣候崩潰與家庭能源帳單負擔加重的「災難性失敗」。她敦促政治人物投資於綠色就業機會、更溫暖的房舍以及可靠的公車服務，以減輕大眾的恐懼，而不是去支持化石燃料。"
+    },
+    {
+     "en": "In response to the public outcry, a spokesperson for the Scottish government stated that ministers remain fully dedicated to fighting climate change and achieving net-zero emissions by 2045. The representative noted that officials clearly outlined their reasons in a decision letter. Furthermore, ministers carefully weighed the potential impacts on nearby communities, natural surroundings, and cultural heritage, along with cumulative environmental effects, during the decision-making process.",
+     "zh": "面對大眾的強烈抗議，蘇格蘭政府發言人表示，部長們仍全力致力於應對氣候變遷，並在2045年前實現淨零排放。該名代表指出，官員們已在一封決定函中清楚說明了理由。此外，在決策過程中，部長們已審慎評估了對鄰近社區、自然環境與文化資產的潛在衝擊，以及各項開發帶來的累積環境效應。"
+    }
+   ],
+   "words": 259,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "campaigner",
+     "pos": "n.",
+     "zh": "倡議者；社會運動人士"
+    },
+    {
+     "word": "condemn",
+     "pos": "v.",
+     "zh": "譴責；強烈指責"
+    },
+    {
+     "word": "severe",
+     "pos": "adj.",
+     "zh": "嚴重的；劇烈的"
+    },
+    {
+     "word": "inflict",
+     "pos": "v.",
+     "zh": "施加；造成（傷害、痛苦）"
+    },
+    {
+     "word": "relieve",
+     "pos": "v.",
+     "zh": "緩和；減輕"
+    },
+    {
+     "word": "dedicated",
+     "pos": "adj.",
+     "zh": "盡心盡力的；致力於……的"
+    },
+    {
+     "word": "cumulative",
+     "pos": "adj.",
+     "zh": "累積的；漸增的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "dress up",
+     "zh": "裝扮；盛裝打扮"
+    },
+    {
+     "phrase": "move forward",
+     "zh": "推展；向前進行"
+    },
+    {
+     "phrase": "in response to",
+     "zh": "回應；對……做出反應"
+    },
+    {
+     "phrase": "along with",
+     "zh": "以及；連同"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "分詞片語作伴隨修飾 (Participial Phrase)",
+     "explain": "現在分詞片語 holding... 在此作副詞修飾語，表示主詞在進行主要動作 assembled 時伴隨發生的動作。",
+     "example": "Demonstrators dressed up in spooky masks assembled on Charlotte Square, holding creative placards that described energy choices as terrifying and warned political leaders that their choices would haunt them.",
+     "focus": "holding creative placards"
+    },
+    {
+     "point": "動名詞作主詞 (Gerund as Subject)",
+     "explain": "動名詞片語 burning fossil fuels 在 that 引導的子句中擔任主詞，動詞使用單數形 serves。",
+     "example": "Campaigners strongly condemned these approvals, emphasizing that burning fossil fuels serves as the primary driver behind extreme weather events, including heavy storms, record heat, and severe flooding.",
+     "focus": "burning fossil fuels"
+    },
+    {
+     "point": "名詞子句作受詞 (Noun Clause as Object)",
+     "explain": "連接詞 that 引導完整的子句，作為主要動詞 noted 的受詞，表達說明的內容。",
+     "example": "The representative noted that officials clearly outlined their reasons in a decision letter.",
+     "focus": "that officials clearly outlined their reasons in a decision letter"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/us-news/2026/oct/31/trump-coal-plants-taxpayer-dollars",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "title": "Trump boosted half of US coal plants with taxpayer dollars and ‘free passes to pollute’, report says",
+   "title_zh": "報告指出：川普以納稅人資金與「污染通行證」扶持半數美國燃煤電廠",
+   "paragraphs": [
+    {
+     "en": "A recent report by the Environmental Defense Fund (EDF) reveals that the Trump administration has supported nearly half of the operating coal plants in the United States. Out of 184 plants connected to the power grid, 90 received assistance. This support included $950 million in government funds for 24 plants, as well as special exemptions from clean air rules for 70 facilities.",
+     "zh": "環境保護基金會（EDF）最近的一份報告指出，川普政府資助了全美近半數運作中的燃煤電廠。在併入電網的184座電廠中，有90座獲得了協助。這項支持包括向24座電廠提供9.5億美元的政府資金，並給予70座設施免除遵守清潔空氣法規的特別豁免。"
+    },
+    {
+     "en": "Environmental advocates argue that these decisions harm the public by increasing both electricity costs and air pollution. In 2024, the government updated rules to limit dangerous substances like mercury and arsenic. However, power companies complained that upgrading their equipment was too expensive. Consequently, the administration allowed many plants to avoid these stricter standards, and it even repealed the updated rules in February.",
+     "zh": "環保人士主張，這些決定藉由增加電費與空氣污染來傷害大眾。在2024年，政府更新了法規以限制汞和砷等危險物質。然而，電力公司抱怨升級設備費用過於昂貴。因此，政府允許許多電廠避開這些更嚴格的標準，甚至在二月廢除了這項更新後的法規。"
+    },
+    {
+     "en": "One facility that received an exemption is the Colstrip plant in Montana, which has released harmful chemicals for over four decades. Another example is the WA Parish plant near Houston, Texas. A university study showed that fine particle pollution from the Texas facility contributed to as many as 177 early deaths each year. Both operators claimed that meeting the updated requirements would threaten their financial stability.",
+     "zh": "其中一座獲得豁免的設施是位於蒙大拿州的科爾斯特里普（Colstrip）電廠，該電廠釋放有害化學物質已超過四十年。另一個例子是德州休士頓附近的WA教區（WA Parish）電廠。一項大學研究顯示，來自該德州設施的微粒污染每年導致多達177人過早死亡。兩家電廠的營運商都聲稱，符合更新後的規範將威脅其財務穩定性。"
+    },
+    {
+     "en": "Researchers explain that without government help, many struggling coal facilities would close and be replaced by cleaner energy sources. However, the White House defended its actions. White House spokesperson Taylor Rogers stated that President Trump aimed to revive the coal industry, claiming that protecting these plants saved lives during periods of high power demand.",
+     "zh": "研究人員解釋，若沒有政府的協助，許多苦苦掙扎的燃煤設施將會關閉，並由更乾淨的能源所取代。然而，白宮為其行動進行辯護。白宮發言人泰勒．羅傑斯（Taylor Rogers）表示，川普總統的目標是振興煤炭產業，並聲稱在用電需求高峰期間保護這些電廠挽救了生命。"
+    }
+   ],
+   "words": 244,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "reveal",
+     "pos": "v.",
+     "zh": "透露，揭露"
+    },
+    {
+     "word": "assistance",
+     "pos": "n.",
+     "zh": "幫助，協助"
+    },
+    {
+     "word": "exemption",
+     "pos": "n.",
+     "zh": "免除，豁免"
+    },
+    {
+     "word": "facility",
+     "pos": "n.",
+     "zh": "場所，設施"
+    },
+    {
+     "word": "consequently",
+     "pos": "adv.",
+     "zh": "因此，結果"
+    },
+    {
+     "word": "threaten",
+     "pos": "v.",
+     "zh": "威脅，危及"
+    },
+    {
+     "word": "revive",
+     "pos": "v.",
+     "zh": "振興，使復興"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "connect to",
+     "zh": "與……連結"
+    },
+    {
+     "phrase": "complain that",
+     "zh": "抱怨……"
+    },
+    {
+     "phrase": "contribute to",
+     "zh": "促成，導致"
+    },
+    {
+     "phrase": "defend one's actions",
+     "zh": "為某人的行為辯護"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "非限定關係子句 (Non-restrictive Relative Clause)",
+     "explain": "由關係代名詞 which 引導子句，前面加上逗號，用來補充說明前面的專有名詞 Colstrip plant。",
+     "example": "One facility that received an exemption is the Colstrip plant in Montana, which has released harmful chemicals for over four decades.",
+     "focus": ", which has released harmful chemicals for over four decades"
+    },
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "由「be動詞 + 過去分詞 replaced」構成被動語態，表示燃煤設施「被」更乾淨的能源取代。",
+     "example": "Researchers explain that without government help, many struggling coal facilities would close and be replaced by cleaner energy sources.",
+     "focus": "be replaced by"
+    },
+    {
+     "point": "不定詞表目的 (Infinitive of Purpose)",
+     "explain": "to limit 在句中是不定詞片語，表達政府更新法規的目的為「為了限制」有害物質。",
+     "example": "In 2024, the government updated rules to limit dangerous substances like mercury and arsenic.",
+     "focus": "to limit dangerous substances"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/environment/2026/oct/31/cop17-reforms-fails-to-deliver-targets",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "title": "‘Bunch of baloney’: calls grow for Cop summit reforms as countries on track to fail nature targets",
+   "title_zh": "「一派胡言」：各國注定無法達成自然目標之際，對締約方大會峰會進行改革的呼聲日益高漲",
+   "paragraphs": [
+    {
+     "en": "The seventeenth Conference of the Parties (Cop17) on biodiversity recently ended in Yerevan, Armenia. During the meeting, nations promised to increase their efforts to protect 30 percent of the planet, repair damaged ecosystems, and redirect harmful environmental subsidies. However, observers point out that governments are far behind on almost every goal. In fact, throughout the 34-year history of the convention, world leaders have never successfully fulfilled their biodiversity targets.",
+     "zh": "生物多樣性第十七次締約方大會（Cop17）近期在亞美尼亞葉里溫閉幕。在會議期間，各國承諾將加倍努力保護地球百分之三十的區域、修復受損的生態系統，並調整對環境有害的補助。然而，觀察家指出，政府在幾乎所有目標上都嚴重落後。事實上，在該公約三十四年的歷史中，世界各國領袖從未成功達成過任何一項生物多樣性目標。"
+    },
+    {
+     "en": "Because of these repeated failures, many officials and activists are demanding major changes to how these United Nations (UN) summits operate. Panama's environment minister, Juan Carlos Navarro, harshly criticized the current setup. He argued that requiring complete consensus allows a single nation to block progress. Navarro stated that the summit process was \"designed to fail\" and recommended that future decisions should be made by a majority vote instead.",
+     "zh": "由於這些屢次發生的失敗，許多官員與倡議人士要求大幅改變這些聯合國（UN）峰會的運作方式。巴拿馬環境部長胡安·卡洛斯·納瓦羅嚴厲批評了當前的體制。他主張，要求所有國家完全達成共識的做法，會讓單一國家得以阻礙進展。納瓦羅表示該峰會程序「生來注定失敗」，並建議未來的決定應改採多數決。"
+    },
+    {
+     "en": "Disagreements among countries also slowed down the negotiations. Nations like Argentina, Saudi Arabia, and Russia weakened the environmental wording in the final agreement. Meanwhile, wealthier governments argued over funding. European countries wanted fast-growing economies such as China and Gulf states to donate money, but the issue remained unresolved. Furthermore, a special fund meant to collect money from companies using digital nature data raised just over 10,000 dollars, falling drastically short of its target.",
+     "zh": "各國之間的分歧也拖慢了談判進程。阿根廷、沙烏地阿拉伯和俄羅斯等國削弱了最終協議中具抱負的環境措辭。與此同時，較富裕的政府則為資金問題爭執不休。歐洲國家希望像中國和波斯灣國家等經濟快速成長的國家也能捐款，但這個問題仍未獲得解決。此外，一項原定從使用數位自然資料的企業籌集資金的特別基金，僅募得剛好超過一萬美元，與其目標相去甚遠。"
+    },
+    {
+     "en": "Despite the difficulties, some delegates still expressed hope. Ruth Davis, the nature envoy from the United Kingdom (UK), admitted that the talks could be annoying, but insisted that real action was happening worldwide. At the same time, Inger Andersen, head of the UN Environment Programme, suggested streamlining the crowded global schedule. She explained that too many separate environmental treaties create overlapping rules and drain valuable energy, urging leaders to simplify the system.",
+     "zh": "儘管面臨重重困難，部分代表仍表達了希望。英國（UK）自然特使露絲·戴維斯坦承這些會談可能令人感到挫折，但堅持世界各地正在落實大量的具體行動。與此同時，聯合國環境規劃署負責人英格·安德森建議精簡擁擠的全球環境議程。她解釋說，過多獨立的環境條約造成計畫重疊並耗損寶貴的精力，並敦促領導人簡化該體系。"
+    }
+   ],
+   "words": 282,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "ecosystem",
+     "pos": "n.",
+     "zh": "生態系統"
+    },
+    {
+     "word": "subsidy",
+     "pos": "n.",
+     "zh": "補貼；補助金"
+    },
+    {
+     "word": "consensus",
+     "pos": "n.",
+     "zh": "共識；一致看法"
+    },
+    {
+     "word": "delegate",
+     "pos": "n.",
+     "zh": "代表"
+    },
+    {
+     "word": "treaty",
+     "pos": "n.",
+     "zh": "條約；協定"
+    },
+    {
+     "word": "streamline",
+     "pos": "v.",
+     "zh": "精簡；簡化"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "point out",
+     "zh": "指出"
+    },
+    {
+     "phrase": "slow down",
+     "zh": "使放慢；拖延"
+    },
+    {
+     "phrase": "fall short of",
+     "zh": "達不到；不如預期"
+    },
+    {
+     "phrase": "at the same time",
+     "zh": "與此同時"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "名詞子句作受詞 (Noun Clause as Object)",
+     "explain": "由連接詞 that 引導名詞子句，置於及物動詞片語 point out 之後作為受詞，說明指出的具體內容。",
+     "example": "However, observers point out that governments are far behind on almost every goal.",
+     "focus": "that governments are far behind on almost every goal"
+    },
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "此處使用「情態助動詞 should + be + 過去分詞 made」構成被動語態，表示未來的決定「應該被做出」。",
+     "example": "Navarro stated that the summit process was \"designed to fail\" and recommended that future decisions should be made by a majority vote instead.",
+     "focus": "should be made"
+    },
+    {
+     "point": "分詞構句 (Participle Construction)",
+     "explain": "此處逗號後使用現在分詞 falling 引導分詞構句，用以修飾前句的主要動作，表達該情況所帶來的結果。",
+     "example": "Furthermore, a special fund meant to collect money from companies using digital nature data raised just over 10,000 dollars, falling drastically short of its target.",
+     "focus": ", falling drastically short of its target"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/31/science/origin-life-theory-comet-simulation",
+   "source": "CNN",
+   "topic": "Science",
+   "title": "Scientists say decades-old theory on the origin of life might be wrong",
+   "title_zh": "科學家表示數十年來關於生命起源的理論可能出錯",
+   "paragraphs": [
+    {
+     "en": "For decades, scientists believed that comets helped spark life on Earth by delivering vital organic materials billions of years ago. However, new computer simulations challenge this long-held idea. Researchers suggest that delicate chemical building blocks would have been ruined by the extreme heat and force of comet collisions, questioning a concept that has existed since at least 1961.",
+     "zh": "數十年來，科學家一直認為彗星在數十億年前藉由運送關鍵的有機物質，協助促成了地球上的生命。然而，新的電腦模擬對這個長久以來的想法提出了質疑。研究人員指出，脆弱的化學基石會被彗星撞擊的極端高溫與力量所摧毀，這使至少自1961年以來就存在的概念受到懷疑。"
+    },
+    {
+     "en": "Over four billion years ago, our young planet was bombarded by thousands of comets. To test whether these icy objects could supply the chemicals needed for prebiotic chemistry, a team led by Richard Anslow at the University of Cambridge simulated early planetary conditions 100,000 times. They discovered that comets traveled at velocities far too high to deliver fragile molecules safely. Anslow stated that \"there were no successful impacts\" on average, as collisions destroyed the chemicals.",
+     "zh": "四十多億年前，我們年輕的星球遭到數以千計的彗星轟炸。為測試這些冰冷的天體是否能提供前生命期化學所需的化學物質，由劍橋大學（University of Cambridge）的理查·安斯洛（Richard Anslow）領導的團隊模擬了早期行星環境十萬次。他們發現彗星運行的速度過高，無法安全運送脆弱的分子。安斯洛表示，平均而言「沒有任何一次撞擊成功」，因為碰撞摧毀了這些化學物質。"
+    },
+    {
+     "en": "The research concentrated on hydrogen cyanide (HCN), an essential chemical that can form amino acids when mixed with water. Even if a rare collision occurred in an ideal location with liquid water, the intense pressure would likely wipe out the HCN. Furthermore, comets usually lack other crucial elements, such as phosphorus and sulfur, which means they could not provide all the necessary ingredients in one single place.",
+     "zh": "該研究聚焦於氰化氫（HCN），這是一種在與水結合時能夠形成胺基酸的重要化學物質。即使罕見的碰撞發生在擁有液態水的理想地點，強烈的壓力也很可能會消滅氰化氫。此外，彗星通常缺乏其他關鍵元素，例如磷和硫，這意味著它們無法在同一個地點提供所有必要的成分。"
+    },
+    {
+     "en": "Instead of comets, other sources might have kick-started life. Earth might have produced its own organic molecules, or asteroids could have delivered them because asteroids strike more slowly. Interestingly, the researchers pointed out that ancient Mars might have preserved HCN better than Earth because comets collided with the smaller planet at much lower speeds.",
+     "zh": "除了彗星之外，其他來源也可能促成了生命。地球可能自行產生了有機分子，或者小行星可能運送了它們，因為小行星撞擊的速度較慢。有趣的是，研究人員指出，古老的火星保留氰化氫的效果可能比地球更好，因為彗星撞擊這顆較小行星時的速度要慢得多。"
+    },
+    {
+     "en": "Some experts not involved in the research urge caution before completely dismissing comets. Queenie Chan from Royal Holloway University of London suggested that reactions could have happened before impact, producing stronger molecules. Still, the study sets valuable boundaries on how life may have begun on our planet.",
+     "zh": "一些未參與這項研究的專家呼籲，在完全排除彗星之前應保持謹慎。倫敦大學皇家霍洛威學院（Royal Holloway University of London）的陳倩儀（Queenie Chan）表示，反應可能在撞擊前就已經發生，從而產生了更穩固的分子。儘管如此，這項研究仍為生命如何在我們星球上開始設定了寶貴的界線。"
+    }
+   ],
+   "words": 301,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "simulation",
+     "pos": "n.",
+     "zh": "模擬"
+    },
+    {
+     "word": "delicate",
+     "pos": "adj.",
+     "zh": "脆弱的、精細的"
+    },
+    {
+     "word": "collision",
+     "pos": "n.",
+     "zh": "碰撞、撞擊"
+    },
+    {
+     "word": "velocity",
+     "pos": "n.",
+     "zh": "速度"
+    },
+    {
+     "word": "essential",
+     "pos": "adj.",
+     "zh": "必要的、不可或缺的"
+    },
+    {
+     "word": "preserve",
+     "pos": "v.",
+     "zh": "保存、保留"
+    },
+    {
+     "word": "boundary",
+     "pos": "n.",
+     "zh": "界線、範圍"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "wipe out",
+     "zh": "消滅、徹底摧毀"
+    },
+    {
+     "phrase": "point out",
+     "zh": "指出"
+    },
+    {
+     "phrase": "instead of",
+     "zh": "而不是、代替"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "分詞構句 (Participle Construction)",
+     "explain": "逗號後面的分詞「questioning」為現在分詞構句，在此表示主要子句動作伴隨產生的結果或補充說明。",
+     "example": "Researchers suggest that delicate chemical building blocks would have been ruined by the extreme heat and force of comet collisions, questioning a concept that has existed since at least 1961.",
+     "focus": ", questioning"
+    },
+    {
+     "point": "名詞子句作受詞 (Noun Clause as Object)",
+     "explain": "由連接詞「whether」引導的名詞子句，在句中作動詞不定詞「To test」的受詞，表達「是否……」。",
+     "example": "To test whether these icy objects could supply the chemicals needed for prebiotic chemistry, a team led by Richard Anslow at the University of Cambridge simulated early planetary conditions 100,000 times.",
+     "focus": "whether these icy objects could supply the chemicals needed for prebiotic chemistry"
+    },
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
+     "explain": "關係代名詞「that」在形容詞子句中擔任主詞，用來修飾先行詞「an essential chemical」。",
+     "example": "The research concentrated on hydrogen cyanide (HCN), an essential chemical that can form amino acids when mixed with water.",
+     "focus": "that can form amino acids when mixed with water"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/31/business/crypto-hacker-money-laundering",
+   "source": "CNN",
+   "topic": "Business",
+   "title": "Notorious hacker says stolen crypto is like ‘holding a hot potato’",
+   "title_zh": "惡名昭彰的駭客表示被盜的加密貨幣就像「燙手山芋」",
+   "paragraphs": [
+    {
+     "en": "Recently, over $6 billion was stolen from Binance, the largest cryptocurrency exchange in the world. Investigators found evidence pointing to North Korean hackers, who emptied the accounts within just a few minutes. Following the incident, Binance stated that it had covered 90 percent of the lost money for customers and planned to reopen withdrawals soon. Meanwhile, North Korea has previously rejected accusations of cyberattacks.",
+     "zh": "最近，全球最大的加密貨幣交易所幣安（Binance）有超過六十億美元遭竊。調查人員發現證據指向北韓駭客，他們在短短幾分鐘內就抽空了帳戶。事件發生後，幣安表示已為客戶承擔了百分之九十的損失資金，並計劃很快重新開放提款。與此同時，北韓先前曾否認各項網路攻擊的指控。"
+    },
+    {
+     "en": "To explain what criminals do with stolen digital currency, former hacker Ilya Lichtenstein shared his thoughts. In 2023, Lichtenstein and his wife admitted to organizing a massive money-laundering plot after the 2016 Bitfinex exchange attack. After receiving a five-year prison sentence in 2024, he was released early this January and now serves as a legal \"white hat\" security expert who prevents cybercrimes.",
+     "zh": "為了說明罪犯如何處理被盜的數位貨幣，前駭客伊利亞．利希滕斯坦（Ilya Lichtenstein）分享了他的看法。二〇二三年，利希滕斯坦與妻子坦承在二〇一六年 Bitfinex 交易所遭駭後策劃了一場龐大的洗錢陰謀。他在二〇二四年被判處五年徒刑，於今年一月提早獲釋，如今擔任合法的「白帽」資安專家，致力於防範網路犯罪。"
+    },
+    {
+     "en": "According to Lichtenstein, stealing the funds is often simpler than actually spending or hiding them. He explained that criminals are \"holding a hot potato\" because blockchain records are completely open to the public. High-tech tracking tools make it easy for investigators to follow transactions, and some crypto companies can even freeze suspicious accounts. To avoid detection, thieves must quickly split the digital coins into tiny amounts and move them across different networks, a tactic known as chain hopping.",
+     "zh": "利希滕斯坦指出，竊取資金通常比實際花費或隱藏資金更簡單。他解釋說罪犯就像「拿著燙手山芋」（\"holding a hot potato\"），因為區塊鏈紀錄是完全對大眾公開的。高科技追蹤工具使調查人員能夠輕易追查交易，部分加密貨幣公司甚至有能力凍結可疑帳戶。為了避免被發現，竊賊必須迅速將數位代幣拆分成微小金額並轉移到不同的網絡之間，這種手法被稱為「跳鏈」（chain hopping）。"
+    },
+    {
+     "en": "Lichtenstein also warned that rapid advancements in artificial intelligence (AI) could make cybercrime much more dangerous. While leading companies keep their top AI models secure, powerful open-source models are emerging rapidly. In just a few months, these tools could become accessible to ordinary people, allowing anyone to launch sophisticated attacks at machine speed. He emphasized that crime is never worth the severe long-term consequences.",
+     "zh": "利希滕斯坦還警告，人工智慧（AI）的迅速發展可能會使網路犯罪更加危險。儘管頂尖企業讓最先進的 AI 模型受到嚴密保護，但功能強大的開源模型正快速湧現。在短短幾個月內，這些工具可能就會普及於一般人，使任何人都能以機器般的速度發動複雜的攻擊。他強調犯罪絕不值得承受嚴重的長遠後果。"
+    }
+   ],
+   "words": 268,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "incident",
+     "pos": "n.",
+     "zh": "事件"
+    },
+    {
+     "word": "suspicious",
+     "pos": "adj.",
+     "zh": "可疑的"
+    },
+    {
+     "word": "detection",
+     "pos": "n.",
+     "zh": "察覺、查出"
+    },
+    {
+     "word": "advancement",
+     "pos": "n.",
+     "zh": "進步、發展"
+    },
+    {
+     "word": "accessible",
+     "pos": "adj.",
+     "zh": "可取得的、易使用的"
+    },
+    {
+     "word": "sophisticated",
+     "pos": "adj.",
+     "zh": "複雜精密的"
+    },
+    {
+     "word": "consequence",
+     "pos": "n.",
+     "zh": "後果"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "point to",
+     "zh": "指向、表明"
+    },
+    {
+     "phrase": "open to",
+     "zh": "對……開放或公開"
+    },
+    {
+     "phrase": "split into",
+     "zh": "拆分成、分成"
+    },
+    {
+     "phrase": "accessible to",
+     "zh": "可供……使用或獲取"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞引導的非限定子句 (Non-defining relative clause)",
+     "explain": "先行詞為特定的人或團體時，可在逗號後使用關係代名詞 who 引導非限定子句，作補充說明。",
+     "example": "Investigators found evidence pointing to North Korean hackers, who emptied the accounts within just a few minutes.",
+     "focus": "who emptied the accounts within just a few minutes"
+    },
+    {
+     "point": "虛受詞 it 的句型 (Preparatory object 'it')",
+     "explain": "在動詞 make 之後以 it 作為虛受詞，真正的受詞是不定詞片語 to follow transactions。",
+     "example": "High-tech tracking tools make it easy for investigators to follow transactions, and some crypto companies can even freeze suspicious accounts.",
+     "focus": "make it easy for investigators to follow transactions"
+    },
+    {
+     "point": "不定詞片語表目的 (Infinitive of purpose)",
+     "explain": "放在句首的 to 加原形動詞片語，用來具體表達主詞執行後方動作的目的為何。",
+     "example": "To avoid detection, thieves must quickly split the digital coins into tiny amounts and move them across different networks, a tactic known as chain hopping.",
+     "focus": "To avoid detection"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/31/travel/worlds-largest-plane-partly-inside-his-home",
+   "source": "CNN",
+   "topic": "Travel",
+   "title": "It’s the world’s largest passenger plane. But he still fit some of it inside his home",
+   "title_zh": "這是世界上最大的客機。但他還是把一部分塞進了家中",
+   "paragraphs": [
+    {
+     "en": "Aviation fans often show their passion in unusual ways. Arun Rajagopal loves the Airbus A380 so much that he has decorated his home to look like a first-class airplane cabin.",
+     "zh": "航空迷經常以不尋常的方式展現他們的熱情。艾倫·拉賈戈帕爾（Arun Rajagopal）非常喜愛空中巴士A380（Airbus A380），以至於他把自己的家裝潢得像頭等艙機艙一樣。"
+    },
+    {
+     "en": "After taking 220 flights on the massive aircraft, he collected several genuine airline items. His Dubai apartment now features authentic first-class seats, lamps, and a coffee table made from an airplane wheel.",
+     "zh": "在這架巨大的飛機上搭乘了220次航班後，他收集了幾個真正的航空公司物品。他的杜拜公寓現在擺放著真正的頭等艙座椅、燈具，以及一個由飛機輪胎製成的咖啡桌。"
+    },
+    {
+     "en": "Meanwhile, another large aircraft, the Airbus A340-600, has reached the end of its commercial journey with German carrier Lufthansa. Although it was never a major hit with airlines, it has a dedicated group of loyal supporters.",
+     "zh": "同時，另一款大型飛機空中巴士A340-600（Airbus A340-600）已經結束了它在德國載旗航空公司漢莎航空（Lufthansa）的商業飛行歷程。儘管它從未受到各大航空公司的重用，但它擁有一群忠實的支持者。"
+    },
+    {
+     "en": "For travelers looking for a retro stay, a retired Boeing 727 in Bristol, England, has been transformed into a unique hotel. Run by local entrepreneur Johnny Palmer, the vintage aircraft offers guests a 1980s experience complete with solar power and two lounges.",
+     "zh": "對於尋求復古住宿的旅客來說，一架退役的波音727（Boeing 727）在英國布里斯托已被改造成一間獨特的旅館。這架由當地企業家強尼·帕爾默（Johnny Palmer）經營的骨董客機，為客人提供融合太陽能電力與兩個客廳的1980年代體驗。"
+    },
+    {
+     "en": "However, higher fuel costs are currently impacting more than just aviation. A continuous cruise ship named Villa Vie Odyssey abruptly halted operations in Cambodia after rising fuel prices made its long voyage too expensive to continue.",
+     "zh": "然而，不斷上漲的燃料成本目前影響到的不只是航空業。一艘名為維拉維奧德賽號（Villa Vie Odyssey）的環球郵輪在柬埔寨突然中止營運，因為油價飆升使得其漫長的航程變得太昂貴而無法繼續。"
+    }
+   ],
+   "words": 176,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "authentic",
+     "pos": "adj.",
+     "zh": "真正的"
+    },
+    {
+     "word": "supporter",
+     "pos": "n.",
+     "zh": "支持者"
+    },
+    {
+     "word": "entrepreneur",
+     "pos": "n.",
+     "zh": "企業家"
+    },
+    {
+     "word": "transform",
+     "pos": "v.",
+     "zh": "轉變"
+    },
+    {
+     "word": "abruptly",
+     "pos": "adv.",
+     "zh": "突然地"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "show passion",
+     "zh": "展現熱情"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "說明某物承受動作，結構為「be動詞 + 過去分詞」。",
+     "example": "A retired Boeing 727 in Bristol, England, has been transformed into a unique hotel.",
+     "focus": "has been transformed"
+    },
+    {
+     "point": "目的不定詞片語 (Infinitive of Purpose)",
+     "explain": "使用「to + 原形動詞」表達旅客尋找住宿的目的。",
+     "example": "For travelers looking for a retro stay, a retired Boeing 727 in Bristol, England, has been transformed into a unique hotel.",
+     "focus": "looking for a retro stay"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/31/g-s1-150698/drone-photo-award-winners",
+   "source": "NPR",
+   "topic": "Health",
+   "title": "Drone photo award winners: Far-out landscapes. Ship recycling. Rugs, rugs rugs!",
+   "title_zh": "無人機攝影獎得主：奇特的地景、船舶回收，還有滿滿的地毯！",
+   "paragraphs": [
+    {
+     "en": "The 2026 Siena Drone Photo Awards celebrate breathtaking aerial views from around the world. The top prize went to photographer George Steinmetz for his picture of shipbreaking on the coast of Bangladesh. His drone captured an enormous tanker that used to carry liquefied natural gas. As dozens of workers dismantled the massive ship on the mudflats at low tide, their tiny figures highlighted the vessel's gigantic scale, illustrating a striking example of large-scale metal recycling.",
+     "zh": "2026 年西恩納無人機攝影獎（Siena Drone Photo Awards）表揚了來自世界各地令人驚嘆的鳥瞰景觀。最高榮譽頒給了攝影師喬治．斯坦梅茨（George Steinmetz），以表彰他在孟加拉海岸拍攝的拆船照片。他的無人機捕捉到一艘曾運送液化天然氣的龐大油輪。當數十名工人在退潮時的泥灘上拆解這艘巨輪時，他們渺小的身影突顯了船體的龐大規模，展現出大規模金屬回收的驚人範例。"
+    },
+    {
+     "en": "Photographing this industry was challenging because shipyards often face criticism for pollution and unsafe labor conditions, making owners cautious about cameras. However, Steinmetz managed to get permission. Before drones existed, he explored aerial photography using a motorized paraglider over the Sahara. He explained that modern drones have completely transformed how photographers work, allowing them to reveal human stories and landscapes that people cannot easily see from the ground.",
+     "zh": "拍攝這個產業相當具有挑戰性，因為拆船廠常因污染與不安全的工作環境而面臨批評，使得船廠業主對鏡頭十分提防。然而，斯坦梅茨設法獲得了許可。在無人機出現之前，他曾使用動力滑翔翼飛越撒哈拉沙漠探索空中攝影。他解釋說，現代無人機徹底改變了攝影師的工作方式，使他們能夠揭示人們從地面上不易看見的人類故事與地景。"
+    },
+    {
+     "en": "In southern Turkey, lawyer and photographer Dilek Yurdakul won first place in the People category. Her drone captured thousands of colorful handmade rugs spread across open fields in Antalya. Leaving the carpets under the blazing sun for weeks softens their bright colors into gentle tones. Yurdakul explained that her image served as a \"visual metaphor for the invisibility of labor,\" honoring the craftspeople whose hard work often remains unseen.",
+     "zh": "在土耳其南部，身兼律師與攝影師的迪萊克．尤爾達庫爾（Dilek Yurdakul）榮獲人物組第一名。她的無人機拍攝到安塔利亞（Antalya）開闊田野上鋪展的數千張色彩繽紛的手工毯。將地毯置於烈日下曝曬數週，能使原本鮮豔的色彩轉變為柔和的色調。尤爾達庫爾解釋說，她的照片是「勞動隱形的一種視覺隱喻」，向那些辛勤付出卻往往未被看見的手工藝者致敬。"
+    },
+    {
+     "en": "Other commended images highlighted dramatic natural scenery. Colas Decloitre photographed the Tumpak Sewu waterfall in Indonesia, lining it up with Mount Semeru during an unexpected eruption. Meanwhile, Isabella Tabacchi photographed a glowing red volcanic cone in the high-altitude Argentine Puna. These remarkable aerial photographs prove that viewing our planet from the sky can turn ordinary geological features and daily traditions into unforgettable visual stories.",
+     "zh": "其他受到高度讚譽的作品則突顯了戲劇性的自然景觀。科拉斯．德克盧瓦特（Colas Decloitre）拍攝了印尼的賽武千層瀑布（Tumpak Sewu），並將瀑布與意外噴發中的塞梅魯火山（Mount Semeru）對齊。與此同時，伊莎貝拉．塔巴奇（Isabella Tabacchi）則拍下了阿根廷普納（Argentine Puna）高原上一座散發微紅光芒的火山錐。這些出色的空中照片證明，從空中俯瞰我們的星球，能將平凡的地質特徵與日常傳統轉化為令人難忘的視覺故事。"
+    }
+   ],
+   "words": 276,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "dismantle",
+     "pos": "v.",
+     "zh": "拆卸；拆解"
+    },
+    {
+     "word": "vessel",
+     "pos": "n.",
+     "zh": "大船；艦艇"
+    },
+    {
+     "word": "criticism",
+     "pos": "n.",
+     "zh": "批評；指責"
+    },
+    {
+     "word": "cautious",
+     "pos": "adj.",
+     "zh": "謹慎的；警惕的"
+    },
+    {
+     "word": "transform",
+     "pos": "v.",
+     "zh": "徹底改變；使轉變"
+    },
+    {
+     "word": "metaphor",
+     "pos": "n.",
+     "zh": "隱喻；象徵"
+    },
+    {
+     "word": "eruption",
+     "pos": "n.",
+     "zh": "（火山）噴發；爆發"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "at low tide",
+     "zh": "在退潮時"
+    },
+    {
+     "phrase": "spread across",
+     "zh": "散布於；鋪滿"
+    },
+    {
+     "phrase": "line up",
+     "zh": "使…對齊；排成一線"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
+     "explain": "關係代名詞「that」引導形容詞子句以修飾先行詞「an enormous tanker」，並在子句中作主詞。",
+     "example": "His drone captured an enormous tanker that used to carry liquefied natural gas.",
+     "focus": "that used to carry liquefied natural gas"
+    },
+    {
+     "point": "動名詞當主詞 (Gerund as Subject)",
+     "explain": "動名詞片語「Photographing this industry」在句中作主詞，動詞採用單數形式「was」。",
+     "example": "Photographing this industry was challenging because shipyards often face criticism for pollution and unsafe labor conditions, making owners cautious about cameras.",
+     "focus": "Photographing this industry"
+    },
+    {
+     "point": "分詞構句 (Participle Construction)",
+     "explain": "以現在分詞「illustrating」引導分詞構句，省略了連接詞，用以補充說明前述現象帶來的結果或伴隨狀態。",
+     "example": "As dozens of workers dismantled the massive ship on the mudflats at low tide, their tiny figures highlighted the vessel's gigantic scale, illustrating a striking example of large-scale metal recycling.",
+     "focus": ", illustrating a striking example of large-scale metal recycling"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/31/nx-s1-6023330/wild-west-crypto-staggering-binance-heist-exposes-sector-fragility",
+   "source": "NPR",
+   "topic": "Tech",
+   "title": "Wild West crypto: Staggering Binance heist exposes sector fragility",
+   "title_zh": "蠻荒西部般的加密貨幣：幣安驚天劫案暴露該產業的脆弱性",
+   "paragraphs": [
+    {
+     "en": "Recently, hackers stole more than $6 billion from the Binance crypto exchange, making it the biggest heist in cryptocurrency history. Investigators widely believe that the North Korean military broke into investor accounts used to trade digital currencies like Bitcoin. Following the attack, Binance promised to repay every user who suffered losses. The company also announced that it has managed to freeze around $3 billion of the stolen funds as it works to recover the rest.",
+     "zh": "最近，駭客從幣安（Binance）加密貨幣交易所竊取了超過 60 億美元，使其成為加密貨幣史上規模最大的一起劫案。調查人員普遍認為北韓軍方侵入了用來交易比特幣等數位貨幣的投資者帳戶。在遭遇攻擊後，幣安承諾會賠償每位蒙受損失的使用者。該公司還宣布，在努力追回其餘款項的同時，他們已成功凍結了約 30 億美元遭竊的資金。"
+    },
+    {
+     "en": "This massive incident has sparked new fears about the security of the cryptocurrency market. Experts point out that the unique structure of crypto exchanges creates serious risks. Amanda Fischer from the financial advocacy group Better Markets explained that traditional stock investors do not leave their money with exchanges. Instead, they keep funds with brokers who are regulated by government authorities and carry insurance. In contrast, crypto platforms allow users both to trade and to store their assets directly on the exchange.",
+     "zh": "這起重大事件引發了人們對加密貨幣市場安全性的新擔憂。專家指出，加密貨幣交易所的獨特結構帶來了嚴重的風險。來自金融倡議團體「更健全市場」（Better Markets）的 Amanda Fischer 解釋說，傳統股票投資者並不會將資金留在交易所。相反地，他們將資金存放在受到政府主管機關監管並備有保險的經紀人手中。相較之下，加密貨幣平台則允許使用者直接在交易所進行交易並存放資產。"
+    },
+    {
+     "en": "This single location for trading and holding assets makes crypto exchanges tempting targets for cybercriminals. In addition, these platforms do not face the same strict regulations as established banks. Without strong legal protections, firms may be tempted to misuse customer funds during difficult periods. A similar crisis occurred in 2022, when the prominent exchange FTX collapsed after improperly handling user money.",
+     "zh": "這種結合交易與保管資產的單一場所，使加密貨幣交易所成為網路罪犯極具誘惑力的目標。此外，這些平台並不像老牌銀行那樣面臨同樣嚴格的法規約束。在缺乏強力法律保障的情況下，企業可能會在艱困時期忍不住挪用客戶資金。2022 年就曾發生過類似的危機，當時知名的 FTX 交易所因不當處理使用者資金而崩潰。"
+    },
+    {
+     "en": "Critics argue that the cryptocurrency industry wants benefits without responsibility, claiming to be safe while resisting the rules that govern Wall Street. Despite the huge theft, strict new rules seem unlikely to arrive soon because recent leadership has promised lighter oversight. Under these conditions, consumer advocates warn ordinary investors that they must remain very careful when dealing with cryptocurrencies.",
+     "zh": "批評人士認為，加密貨幣產業想要享有利益卻不願承擔責任，一邊聲稱自己很安全，一邊又抗拒管理華爾街的規則。儘管發生了這起巨額竊案，新的嚴格法規似乎不太可能很快推出，因為近期的領導層已承諾會放寬監管。在這些情況下，消費者倡議人士警告一般投資人，在接觸加密貨幣時必須保持高度謹慎。"
+    }
+   ],
+   "words": 276,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "incident",
+     "pos": "n.",
+     "zh": "事件"
+    },
+    {
+     "word": "security",
+     "pos": "n.",
+     "zh": "安全性；防護"
+    },
+    {
+     "word": "authority",
+     "pos": "n.",
+     "zh": "主管機關；官方機構"
+    },
+    {
+     "word": "tempting",
+     "pos": "adj.",
+     "zh": "誘人的；吸引人的"
+    },
+    {
+     "word": "prominent",
+     "pos": "adj.",
+     "zh": "著名的；重要的"
+    },
+    {
+     "word": "resist",
+     "pos": "v.",
+     "zh": "抗拒；抵制"
+    },
+    {
+     "word": "oversight",
+     "pos": "n.",
+     "zh": "監管；監督"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "break into",
+     "zh": "侵入；闖入"
+    },
+    {
+     "phrase": "point out",
+     "zh": "指出"
+    },
+    {
+     "phrase": "in contrast",
+     "zh": "相較之下；對比之下"
+    },
+    {
+     "phrase": "deal with",
+     "zh": "處理；應對"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "分詞構句 (Participle Construction)",
+     "explain": "由逗號隔開的現在分詞片語「making...」表示主要子句事件所產生的自然結果。",
+     "example": "Recently, hackers stole more than $6 billion from the Binance crypto exchange, making it the biggest heist in cryptocurrency history.",
+     "focus": "making it the biggest heist in cryptocurrency history"
+    },
+    {
+     "point": "名詞子句作受詞 (Noun Clause as Object)",
+     "explain": "連接詞 that 引導完整的名詞子句，在主要動詞 explained 後面充當受詞。",
+     "example": "Amanda Fischer from the financial advocacy group Better Markets explained that traditional stock investors do not leave their money with exchanges.",
+     "focus": "that traditional stock investors do not leave their money with exchanges"
+    },
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause)",
+     "explain": "關係代名詞 who 在子句中作主詞，用來修飾先行詞 every user。",
+     "example": "Following the attack, Binance promised to repay every user who suffered losses.",
+     "focus": "who suffered losses"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/31/nx-s1-6011228/oyster-farming-conservation-chesapeake-bay",
+   "source": "NPR",
+   "topic": "Science",
+   "title": "Oyster stocks have plunged in the Chesapeake. This resident wants to bring them back",
+   "title_zh": "雀薩比灣牡蠣數量銳減 居民與科學家攜手復育",
+   "paragraphs": [
+    {
+     "en": "John Consoli, a university photographer in Maryland, cares deeply about oysters in the Chesapeake Bay. While working on a campus project about oyster research, he learned how these creatures filter water and create a healthy environment for other marine life. Inspired by what he saw, Consoli decided to stock the bay with baby oysters near his pier. Although these oysters are not for eating, they help clean the water and provide essential homes for small fish and crabs.",
+     "zh": "馬里蘭大學的校園攝影師約翰·康索利（John Consoli）非常關心雀薩比灣（Chesapeake Bay）的牡蠣。在參與一項關於牡蠣研究的校園專案時，他了解到這些生物如何過濾水質並為其他海洋生物創造健康的環境。受到他所見所聞的啟發，康索利決定在他的碼頭附近放養小牡蠣。雖然這些牡蠣不是用來吃的，但牠們有助於淨化水質，並為小魚和螃蟹提供重要棲息地。"
+    },
+    {
+     "en": "Historically, oyster reefs were common in the bay, but overfishing caused their numbers to drop by more than ninety-nine percent by two thousand and eleven. Even though wild populations and farming have shown some recovery recently, current numbers remain very low compared to the past. Meanwhile, farmers and conservationists still face major problems. It is difficult to know exactly where to drop baby oysters so they do not suffocate in the mud, and it is equally hard to determine when mature oysters are ready for harvest.",
+     "zh": "歷史上，牡蠣礁在灣內非常普遍，但過度捕撈導致其數量在二〇一一年時暴跌了百分之九十九以上。儘管野生族群和養殖業最近顯示出一些復甦跡象，但與過去相比，目前的數量仍然非常低。同時，養殖戶與保育人士仍面臨重大難題。很難確切知道該把小牡蠣放在哪裡才不會在泥土中窒息，同樣地，也很難判斷成熟牡蠣何時可以採收。"
+    },
+    {
+     "en": "To solve these challenges, mechanical engineer Miao Yu and her university team are developing advanced technology. They created a raft-like robot named Oysterbot, equipped with sonar to scan the underwater environment. Working alongside another small underwater robot, they gather detailed visuals of the seabed. The laboratory then uses artificial intelligence to analyze this data, transforming blurry images into useful maps that could guide farmers on planting and harvesting.",
+     "zh": "為了克服這些挑戰，機械工程師苗玉（Miao Yu）與她的大學團隊正在開發先進技術。他們創造了一個名為Oysterbot的木筏狀機器人，配備聲納以掃描水下環境。透過與另一台小型水下機器人配合，他們收集了海底的詳細視覺資料。實驗室隨後利用人工智慧來分析這些資料，將模糊的影像轉化為地圖，藉此指導農民何時種植與採收。"
+    },
+    {
+     "en": "Beyond science labs, Consoli wants to get more local residents involved in his mission. He talks to his neighbors about growing oysters and explains that the process is quite simple. Many people are receptive, noting how much marine life has returned to the water around their piers. Furthermore, Consoli worked with a local restaurant to place one million baby oysters near their dock. His wife now calls him the Pied Piper of oysters because he has inspired dozens of neighbors to help restore the bay.",
+     "zh": "除了科學實驗室之外，康索利希望讓更多當地居民參與他的使命。他向鄰居談論養殖牡蠣，並解釋這個過程相當簡單。許多人對此接受，並注意到有多少海洋生物回到了他們碼頭周圍的水域。此外，康索利還與當地一家餐廳合作，在其碼頭附近放置了一百萬隻小牡蠣。他的妻子現在稱他為牡蠣花衣吹笛手，因為他已經啟發了數十位鄰居協助恢復海灣。"
+    }
+   ],
+   "words": 317,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "filter",
+     "pos": "v.",
+     "zh": "過濾"
+    },
+    {
+     "word": "suffocate",
+     "pos": "v.",
+     "zh": "窒息"
+    },
+    {
+     "word": "determine",
+     "pos": "v.",
+     "zh": "決定；判斷"
+    },
+    {
+     "word": "harvest",
+     "pos": "n.",
+     "zh": "收成；採收"
+    },
+    {
+     "word": "analyze",
+     "pos": "v.",
+     "zh": "分析"
+    },
+    {
+     "word": "receptive",
+     "pos": "adj.",
+     "zh": "能接受的；樂意接受的"
+    },
+    {
+     "word": "restore",
+     "pos": "v.",
+     "zh": "恢復；修復"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "care about",
+     "zh": "關心；在意"
+    },
+    {
+     "phrase": "drop by",
+     "zh": "下降；順道拜訪"
+    },
+    {
+     "phrase": "get involved in",
+     "zh": "參與；投入"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞子句 (Relative clause)",
+     "explain": "用來修飾前方名詞 creatures，補充說明其功能。",
+     "example": "He learned how these creatures filter water and create a healthy environment for other marine life.",
+     "focus": "filter water and create a healthy environment for other marine life"
+    },
+    {
+     "point": "不定詞表目的 (Infinitive of purpose)",
+     "explain": "用來表達進行某個動作的目的（為了……）。",
+     "example": "They created a raft-like robot named Oysterbot, equipped with sonar to scan the underwater environment.",
+     "focus": "to scan the underwater environment"
+    },
+    {
+     "point": "分詞構句 (Participial clause)",
+     "explain": "用現在分詞片語作為附加說明，表示伴隨的動作。",
+     "example": "Working alongside another small underwater robot, they gather detailed visuals of the seabed.",
+     "focus": "Working alongside another small underwater robot"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/10/31/nx-s1-5963520/ai-writing-detectors-pangram",
+   "source": "NPR",
+   "topic": "Tech",
+   "title": "Your writing was flagged as AI. What does that actually mean?",
+   "title_zh": "您的寫作被標記為AI。這實際上代表什麼？",
+   "paragraphs": [
+    {
+     "en": "Ghostwriter Sally McGraw faced an unexpected problem when a prospective client told her that several artificial intelligence detection tools had marked her book proposal as machine-generated. McGraw was deeply upset because she had written every single word by herself. Although she assured the client of her original work, she chose not to argue further since the job was very small.",
+     "zh": "代筆作家莎莉·麥格勞面臨一個意想不到的問題，當時一位潛在客戶告訴她，幾個人工智慧檢測工具將她的書籍提案標記為機器生成。麥格勞感到非常難過，因為每一個字都是她自己寫的。儘管她向客戶保證這是她原創的作品，但她選擇不再爭論，因為這份工作非常小。"
+    },
+    {
+     "en": "As editors face a growing wave of automated submissions, many turn to detection software to sort through the increasing volume. However, these tools are far from perfect. They frequently mistake human writing for computer text, leaving authors confused about why their work was flagged and how they can prove their innocence. Neil Clarke, publisher and editor of Clarkesworld, explains that a flood of automated submissions has created serious mistrust in the publishing process.",
+     "zh": "當編輯們面臨日益增長的自動化投稿浪潮時，許多人轉向檢測軟體來篩選不斷增加的數量。然而，這些工具遠非完美。它們經常把人類寫作誤認為電腦文本，讓作者們對自己的作品為何被標記以及如何證明清白感到困惑。《克拉克世界》（Clarkesworld）的發行人兼編輯尼爾·克拉克解釋說，自動化投稿的湧入在出版過程中造成了嚴重的 불신（不信任）。"
+    },
+    {
+     "en": "Researchers have tested various detectors and found that they can reach completely different conclusions about the same piece of writing. Furthermore, a university professor noted that large language models often find text from their training data unusually predictable. This weakness can lead to shocking false positives, such as when an author's previously published book was mistakenly identified as machine-written with high confidence.",
+     "zh": "研究人員測試了各種檢測器，發現它們對於同一篇寫作可能會得出完全不同的結論。此外，一位大學教授指出，大型語言模型經常發現其訓練數據中的文本異常地容易預測。這個弱點可能會導致令人驚訝的誤報，例如當一位作者先前出版的書籍被錯誤地以高信心辨識為機器寫作時。"
+    },
+    {
+     "en": "Detectors search for specific clues like unusual word choices, punctuation habits, and sentence structures. While these elements are simply normal habits for human writers, the software can use them to generate negative results. The Authors Guild warned that this creates an atmosphere like a witch hunt, where writers worry constantly about false accusations and damaged reputations.",
+     "zh": "檢測器會搜尋特定的線索，例如不尋常的用詞選擇、標點符號習慣和句子結構。雖然這些元素對人類作家來說只是正常的習慣，但軟體卻可以用它們來產生負面結果。美國作家協會（The Authors Guild）警告說，這營造了一種宛如獵巫行動的氣氛，讓作家們 constamment（不斷地）擔心不實指控和受損的名譽。"
+    },
+    {
+     "en": "Because of these ongoing fears, McGraw has completely changed her writing style. She now intentionally avoids certain words and punctuation marks, hoping the changes will prove her human identity. She worries that the next false accusation might ruin a major career opportunity, saying she is bracing for the time when an important assignment could make or break her.",
+     "zh": "由於這些持續的恐懼，麥格勞徹底改變了她的寫作風格。她現在刻意避開某些字詞和標點符號，希望這些改變能證明她的人類身分。她擔心下一次的不實指控可能會毀掉一個重要的職業機會，並表示她正在為一項重要任務可能決定她成敗的時刻做心理準備。"
+    }
+   ],
+   "words": 309,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "prospective",
+     "pos": "adj.",
+     "zh": "潛在的"
+    },
+    {
+     "word": "proposal",
+     "pos": "n.",
+     "zh": "提案"
+    },
+    {
+     "word": "predictable",
+     "pos": "adj.",
+     "zh": "可預測的"
+    },
+    {
+     "word": "reputation",
+     "pos": "n.",
+     "zh": "名譽"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "sort through",
+     "zh": "篩選；整理"
+    },
+    {
+     "phrase": "far from",
+     "zh": "遠非；一點也不"
+    },
+    {
+     "phrase": "make or break",
+     "zh": "決定成敗"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞 (Relative Clause)",
+     "explain": "用來修飾前方名詞，說明該名詞的特徵。",
+     "example": "Ghostwriter Sally McGraw faced an unexpected problem when a prospective client told her that several artificial intelligence detection tools had marked her book proposal as machine-generated.",
+     "focus": "that several artificial intelligence detection tools had marked her book proposal as machine-generated"
+    },
+    {
+     "point": "副詞子句表原因 (Adverbial Clause of Cause)",
+     "explain": "用來表示動作發生的原因，常由 because引導。",
+     "example": "McGraw was deeply upset because she had written every single word by herself.",
+     "focus": "because she had written every single word by herself"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/ckdd8pmr5l64o?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Education",
+   "title": "How do you navigate Halloween with food allergies?",
+   "title_zh": "面對食物過敏，你該如何度過萬聖節？",
+   "paragraphs": [
+    {
+     "en": "Food plays a major role in holiday celebrations, but Halloween can be tricky for people who live with food allergies. When going to parties or collecting treats from neighbors, staying safe requires constant caution. Ciara, a fifteen-year-old who is allergic to milk and eggs, must inspect every food packet carefully and wait until she arrives home before tasting anything. She carries adrenaline injections known as EpiPens in case of severe allergic reactions. Ciara believes higher public awareness would allow everyone to participate fully, and her supportive friends know exactly how to assist during an emergency.",
+     "zh": "食物在節慶慶祝活動中扮演著重要角色，但對於患有食物過敏的人來說，萬聖節可能會很棘手。當去參加派對或向鄰居討糖時，確保安全需要持續保持謹慎。對牛奶和雞蛋過敏的十五歲女孩席亞拉（Ciara）必須仔細檢查每一個食品包裝，並等到回家後才吃任何東西。她隨身攜帶被稱為 EpiPen 的腎上腺素注射劑，以防發生嚴重的過敏反應。席亞拉認為提高大眾的意識能讓每個人都能充分參與，而支持她的朋友們也確切知道在緊急情況下該如何提供協助。"
+    },
+    {
+     "en": "Ciara's mother, Claire McGuigan, explains that parents carry constant emotional worries. She emphasizes that preventing harm is much more important than depending on emergency medicine. In her view, people who cope with allergies must try to navigate an environment that was not made for them, but with thoughtful planning, young people can still enjoy the festive atmosphere safely.",
+     "zh": "席亞拉的母親克萊兒．麥奎根（Claire McGuigan）解釋說，家長承受著持續的情緒擔憂。她強調，預防傷害遠比依賴急救藥物重要得多。在她看來，應對過敏的人必須努力應對一個並非為他們設計的環境，但只要經過周密的規劃，年輕人仍然可以安全地享受節日氣氛。"
+    },
+    {
+     "en": "Another child, eleven-year-old Caolán, has severe allergies to dairy, eggs, and nuts. In the past, he suffered an intense reaction that put him into an induced coma in intensive care. When he goes trick-or-treating, he patiently waits until other children have received their candy before telling homeowners about his condition. His mother, Colette Donaghy, suggests that households can distribute individually wrapped items to reduce cross-contamination. She also recommends affordable non-food gifts like small toys or fruit, and mentions that teal pumpkins can signal allergy-friendly houses.",
+     "zh": "另一名十一歲的男孩考蘭（Caolán）對乳製品、雞蛋和堅果有嚴重過敏。過去，他曾遭遇嚴重的過敏反應，導致他在加護病房中陷入誘導性昏迷。當他去討糖時，他會耐心地等到其他孩子都拿到糖果後，才向屋主說明自己的狀況。他的母親柯萊特．多納希（Colette Donaghy）建議各家各戶可以發放單獨包裝的物品，以減少交叉污染。她也建議提供小玩具或水果等實惠的非食品禮物，並提到藍綠色南瓜可以作為對過敏友善家庭的標誌。"
+    },
+    {
+     "en": "Niamh Kennedy, who chairs Food Allergy NI, works to promote an inclusive environment for affected families. She notes that special occasions demand extra planning because every item must be checked for potential risks. According to Kennedy, people can make a huge difference by offering non-food alternatives, communicating clearly about ingredients, and being mindful of cross-contact.",
+     "zh": "擔任北愛爾蘭食物過敏協會（Food Allergy NI）主席的尼芙．甘迺迪（Niamh Kennedy）致力於為受影響的家庭營造一個具包容性的環境。她指出，特殊場合需要額外的規劃，因為每件物品都必須針對潛在風險進行檢查。甘迺迪表示，人們可以透過提供非食品替代品、清楚溝通成分內容以及留意交叉接觸，來帶來巨大的改變。"
+    }
+   ],
+   "words": 293,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "awareness",
+     "pos": "n.",
+     "zh": "意識；認知"
+    },
+    {
+     "word": "navigate",
+     "pos": "v.",
+     "zh": "應對；穿梭於"
+    },
+    {
+     "word": "intensive",
+     "pos": "adj.",
+     "zh": "密集的；加護的"
+    },
+    {
+     "word": "alternative",
+     "pos": "n.",
+     "zh": "替代選擇"
+    },
+    {
+     "word": "inclusive",
+     "pos": "adj.",
+     "zh": "具包容性的"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "make a difference",
+     "zh": "產生影響；帶來改變"
+    },
+    {
+     "phrase": "in case of",
+     "zh": "萬一；以防"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
+     "explain": "關係代名詞 who 在子句中作主詞，修飾先行詞 a fifteen-year-old。",
+     "example": "Ciara, a fifteen-year-old who is allergic to milk and eggs, must inspect every food packet carefully and wait until she arrives home before tasting anything.",
+     "focus": "who is allergic to milk and eggs"
+    },
+    {
+     "point": "過去分詞作後位修飾 (Past Participle as an Adjective Phrase)",
+     "explain": "過去分詞片語 known as EpiPens 置於名詞 injection 之後，用來作後位修飾，表示「被稱為 EpiPen 的」。",
+     "example": "She carries adrenaline injections known as EpiPens in case of severe allergic reactions.",
+     "focus": "known as EpiPens"
+    },
+    {
+     "point": "不定詞片語表目的 (Infinitive of Purpose)",
+     "explain": "不定詞片語 to reduce cross-contamination 表達發放單獨包裝物品的「目的」。",
+     "example": "His mother, Colette Donaghy, suggests that households can distribute individually wrapped items to reduce cross-contamination.",
+     "focus": "to reduce cross-contamination"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/crq8nw0q7d5ko?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Science",
+   "title": "Rewilding project aims to restore peatland",
+   "title_zh": "荒野復育計畫旨在恢復泥炭地",
+   "paragraphs": [
+    {
+     "en": "A new project has officially started to bring 435 hectares of damaged peatland back to its healthy state. Cumbria Wildlife Trust will carry out the necessary work in Skiddaw Forest. During this operation, workers will also repair a boundary fence that measures 6 kilometers in length.",
+     "zh": "一項新計畫已正式啟動，旨在使 435 公頃受損的泥炭地恢復健康狀態。坎布里亞野生生物信託基金會將在斯基多森林執行這項必要的工程。在此作業期間，工作人員也將修復一段長達 6 公里的邊界圍欄。"
+    },
+    {
+     "en": "This particular forest contains one of the largest unbroken expanses of blanket bog found in the Lake District. Furthermore, the area functions as a massive carbon store, which helps trap greenhouse gases effectively. The natural landscape is therefore extremely valuable for the local environment.",
+     "zh": "這座特定的森林擁有湖區內最大且未被破壞的毯狀泥炭沼澤之一。此外，該地區充當著巨大的碳儲存庫，有助於有效捕捉溫室氣體。因此，這種自然景觀對當地環境而言極具價值。"
+    },
+    {
+     "en": "Susie Webb, who serves as the peatland team manager for the trust, explained the multiple benefits of the work. She stated that the improved peatlands could slow the flow of water off the fells. This change might protect local communities situated downstream from flooding while also supporting a rich variety of wildlife.",
+     "zh": "擔任該信託基金會泥炭地團隊經理的蘇西・韋布解釋了這項工作的多重效益。她表示，改善後的泥炭地可以減緩水流從山丘流出的速度。這種轉變或許能保護位於下游的當地社區免受水災，同時也能支持多樣豐富的野生動植物。"
+    },
+    {
+     "en": "The restoration work is anticipated to require three to four months for completion. However, officials noted that public access to Skiddaw Forest will remain completely unaffected while crews are on site. People can still visit and enjoy the area as usual during this period.",
+     "zh": "預期這項復育工程需要三到四個月才能完成。不過，官方指出，在工作人員駐場期間，公眾對斯基多森林的通行將完全不受影響。民眾在此期間仍可如常造訪並欣賞該地區。"
+    },
+    {
+     "en": "Webb mentioned that they expect to observe a rise in specialist plants like sundews and sphagnum mosses, alongside greater numbers of dragonflies. Additionally, birds such as snipe that inhabit wet grasslands and moorlands could benefit greatly from the rewetted ground.",
+     "zh": "韋布提到，他們預期會看到毛氈苔與泥炭苔等特有植物數量增加，並伴隨著更多數量的蜻蜓。此外，棲息於溼草地與荒原的鴴鷸等鳥類，也可能從重新變溼的土地中獲益良多。"
+    }
+   ],
+   "words": 226,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "restoration",
+     "pos": "n.",
+     "zh": "恢復，復育"
+    },
+    {
+     "word": "hectare",
+     "pos": "n.",
+     "zh": "公頃"
+    },
+    {
+     "word": "downstream",
+     "pos": "adv.",
+     "zh": "在下游"
+    },
+    {
+     "word": "anticipate",
+     "pos": "v.",
+     "zh": "預期，預料"
+    },
+    {
+     "word": "inhabit",
+     "pos": "v.",
+     "zh": "棲息於，居住於"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "carry out",
+     "zh": "執行，進行"
+    },
+    {
+     "phrase": "on site",
+     "zh": "在現場"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞子句 (Relative clause)",
+     "explain": "用 which 引導形容詞子句來修飾前面的先行詞 a massive carbon store，補充說明其功能。",
+     "example": "Furthermore, the area functions as a massive carbon store, which helps trap greenhouse gases effectively.",
+     "focus": "which helps trap greenhouse gases effectively"
+    },
+    {
+     "point": "被動語態 (Passive voice)",
+     "explain": "用 be 動詞加上過去分詞表示主詞受到動作影響，此處說明大眾通行將不會受到影響。",
+     "example": "However, officials noted that public access to Skiddaw Forest will remain completely unaffected while crews are on site.",
+     "focus": "will remain completely unaffected"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/ck9dz3v7z7v3o?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Tech",
+   "title": "Why North Korea's 'elite' hackers are the prime suspect in major Binance hack",
+   "title_zh": "為什麼北韓「菁英」駭客成為大型幣安駭客攻擊案的主要嫌疑人",
+   "paragraphs": [
+    {
+     "en": "Two major blockchain analytics firms have stated that they have strong intelligence pointing to a state-backed group from North Korea as the likely culprits behind a massive digital currency hack. The incident involved the theft of $6.3bn (£4.7bn) from Binance, which is known as the world's largest cryptocurrency exchange. The group identified with high confidence by TRM Labs and Chainalysis is called the Lazarus Group, also known by the name TraderTraitor.",
+     "zh": "兩家主要的區鎖鏈分析公司表示，他們掌握了強而有力的情報，指向一個有北韓官方支持的團體，是這起大型數位貨幣遭駭事件的可能罪魁禍首。該事件涉及從全球最大的加密貨幣交易所幣安盜取了六十七億美元（約四十七億英鎊）。被 TRM Labs 和 Chainalysis 以高度信心辨識出的團體稱為「拉撒路集團」（Lazarus Group），也以「TraderTraitor」這個名稱為人所知。"
+    },
+    {
+     "en": "This event adds to a growing list of cyber attacks connected to the nation, which is among the poorest globally and maintains severe restrictions on internet access. Experts accuse the government led by North Korean leader Kim Jong Un of depending on cybercrime to fund itself. Although Pyongyang has repeatedly denied such claims, investigators point to a consistent pattern of digital asset theft over recent years.",
+     "zh": "此事件增添了一系列與該國有關的網路攻擊，該國在全球最貧窮國家之列，且對網路存取維持嚴格限制。專家指責由北韓領導人金正恩領導的政府依賴網路犯罪來資助自己。儘管平壤多次否認此類說法，但調查人員指出近年來數位資產遭竊呈現持續的模式。"
+    },
+    {
+     "en": "During the previous year, the Federal Bureau of Investigation (FBI) stated that North Korea was responsible for stealing $1.5bn on the Bybit exchange. Following that attack, the agency reported that the hackers moved quickly to launder and break down the stolen funds, converting them into Bitcoin and other digital assets. Their ultimate goal was turning these stolen funds into hard currency while expanding their cyber operations through systematic recruitment.",
+     "zh": "在去年，聯邦調查局（FBI）表示北韓需為在 Bybit 交易所竊取十五億.美元負責。在該次攻擊之後，該機構報告稱駭客迅速行動以清洗並分散遭竊資金，將其轉換為比特幣和其他數位資產。他們的最終目標是將這些遭竊資金變成硬通貨，同時透過系統性招募來擴大其網路行動。"
+    },
+    {
+     "en": "In the most recent heist, agents are suspected of using a special authorization to change a hot wallet connected to the internet into a tool that moved funds automatically to the attacker. TRM suggested that the attacker likely gained access to the hot wallet signing system as part of the scheme. Binance stated that its initial belief regarding an engineer's compromised laptop was updated because subsequent investigations uncovered additional points of breach.",
+     "zh": "在最近的一次搶案中，探員被懷疑使用特殊授權，將一個連接到網際網路的熱錢包變成了一個自動將資金轉移給攻擊者的工具。TRM 指出，攻擊者很可能是作為該計畫的一部分，獲得了熱錢包簽署系統的存取權。幣安表示，其先前關於工程師筆記型電腦遭入侵的初步看法已經更新，因為後續調查發現了更多漏洞點。"
+    },
+    {
+     "en": "A Binance spokesperson mentioned on Friday that roughly 80% of the stolen assets have been secured, although the remaining portion remains unaccounted for. If these allegations prove true, the record-making heist demonstrates how powerful suspected North Korean hackers have become. Experts also suggest that artificial intelligence may have been used to infiltrate systems, utilizing laundering patterns that investigators have not witnessed before.",
+     "zh": "幣安發言人週五提到，大約百分之八十遭竊的資產已被確保安全，儘管剩餘部分仍然下落不明。如果這些指控被證明屬實，這起創紀錄的搶案展現了被懷疑的北韓駭客變得多麼強大。專家也暗示人工智慧可能被用來滲透系統，利用調查人員未曾見過的洗錢模式。"
+    }
+   ],
+   "words": 340,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "analytics",
+     "pos": "n.",
+     "zh": "分析"
+    },
+    {
+     "word": "culprit",
+     "pos": "n.",
+     "zh": "罪魁禍首"
+    },
+    {
+     "word": "restriction",
+     "pos": "n.",
+     "zh": "限制"
+    },
+    {
+     "word": "launder",
+     "pos": "v.",
+     "zh": "洗錢"
+    },
+    {
+     "word": "authorization",
+     "pos": "n.",
+     "zh": "授權"
+    },
+    {
+     "word": "infiltrate",
+     "pos": "v.",
+     "zh": "滲透"
+    },
+    {
+     "word": "allegation",
+     "pos": "n.",
+     "zh": "指控"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "point to",
+     "zh": "指向；指出"
+    },
+    {
+     "phrase": "depend on",
+     "zh": "依賴；依靠"
+    },
+    {
+     "phrase": "break down",
+     "zh": "分散；分解"
+    },
+    {
+     "phrase": "remain unaccounted for",
+     "zh": "下落不明；尚未交代清楚"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "使用關代子句來修飾先行詞 Binance，補充說明其為全球最大的交易所。",
+     "example": "The incident involved the theft of $6.3bn (£4.7bn) from Binance, which is known as the world's largest cryptocurrency exchange.",
+     "focus": "which is known as the world's largest cryptocurrency exchange"
+    },
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "使用「be 動詞 + 過去分詞」來表達資產已被確保安全的這個被動動作。",
+     "example": "A Binance spokesperson mentioned on Friday that roughly 80% of the stolen assets have been secured, although the remaining portion remains unaccounted for.",
+     "focus": "have been secured"
+    },
+    {
+     "point": "不定詞表目的 (Infinitive of Purpose)",
+     "explain": "使用 to 加原形動詞來表達將數位資產轉換成其他資產的目的。",
+     "example": "Following that attack, the agency reported that the hackers moved quickly to launder and break down the stolen funds, converting them into Bitcoin and other digital assets.",
+     "focus": "to launder and break down the stolen funds"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/cvwy72e0n72yo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Tech",
+   "title": "US tech stocks see sharp falls as AI spending nears $1tn",
+   "title_zh": "美科技股因人工智慧支出近一兆美元而急跌",
+   "paragraphs": [
+    {
+     "en": "Major technology companies are facing a sharp market drop as people worry about the massive amounts of money being spent on artificial intelligence (AI). This downward trend caused the Nasdaq index of the largest tech firms in the US to suffer its worst monthly decline since March 2025 at the end of October.",
+     "zh": "由於人們擔憂人工智慧（AI）的巨額資金投入，大型科技公司正面臨市場急遽下跌。這股下跌趨勢使得美國大型科技公司的那斯達克指數在十月底經歷了自2025年三月以來最糟糕的單月跌幅。"
+    },
+    {
+     "en": "Tech giants like Meta, Alphabet, Oracle, Amazon, and Microsoft have planned to spend $800bn together in 2026. However, their financial returns are not matching what analysts expect, which creates fears of an AI bubble. For instance, Alphabet saw its market value drop significantly after it revealed that its new AI search summaries were hurting its main advertising revenue. At the same time, the company expects to spend up to $205bn this year on investments that are almost entirely related to AI.",
+     "zh": "Meta、Alphabet、Oracle、Amazon和Microsoft等科技巨頭計畫在2026年共同支出8000億美元。然而，他們的財務回報並未達到分析師的預期，這引發了人們對AI泡沫的恐懼。例如，Alphabet在透露其新的AI搜尋摘要正在損害其主要廣告營收後，市值大幅下跌。同時，該公司預計今年將花費高達2050億美元在幾乎全部與AI相關的投資上。"
+    },
+    {
+     "en": "Hardware and e-commerce companies are also seeing heavy losses. Intel shares plummeted after the chip maker stated it planned to increase AI spending despite weaker computer demand. Meanwhile, Amazon revealed that its spending had increased six times over three months as it put money into AI data centres and servers.",
+     "zh": "硬體與電子商務公司也面臨慘重損失。英特爾（Intel）的股價在大跌後暴跌，因為這家晶片製造商表示，儘管電腦需求減弱，它仍計畫增加AI支出。同時，亞馬遜（Amazon）透露，隨著它將資金投入AI資料中心與伺服器，其支出在三個月內增加了六倍。"
+    },
+    {
+     "en": "Other platforms are struggling as well. Reddit stock dropped sharply after reporting weaker daily user numbers and warning that Google's growing AI search was hurting traffic. Roblox also saw its share price fall as its daily active user numbers decreased.",
+     "zh": "其他平台也陷入困境。Reddit在公佈較弱的每日使用者數據並警告Google不斷成長的AI搜尋正在損害流量後，股價急劇下跌。Roblox的股價也隨著每日活躍使用者數量的減少而下跌。"
+    },
+    {
+     "en": "Industry experts point out that these companies are showing signs of growing pains as they aggressively pursue the AI build-out. Kathleen Brookes from trading firm XTB noted that investors are now very strict, stating, \"Investors have turned ruthless, punishing any signs of disappointment in third-quarter earnings.\" While November is normally a strong month for stocks, market experts warn that continued struggles could mean the AI trade has passed its peak.",
+     "zh": "產業專家指出，這些公司在積極追求AI建置的過程中，正展現出成長陣痛的跡象。來自交易公司XTB的凱瑟琳・布魯克斯（Kathleen Brookes）指出，投資人現在非常嚴格，並表示：「投資人已經變得冷酷無情，懲罰第三季財報中的任何失望跡象。」雖然十一月通常是股市表現強勁的月份，但市場專家警告，持續的掙扎可能意味著AI交易已經過了高峰。"
+    }
+   ],
+   "words": 294,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "plummet",
+     "pos": "v.",
+     "zh": "暴跌"
+    },
+    {
+     "word": "analyst",
+     "pos": "n.",
+     "zh": "分析師"
+    },
+    {
+     "word": "revenue",
+     "pos": "n.",
+     "zh": "營收"
+    },
+    {
+     "word": "demand",
+     "pos": "n.",
+     "zh": "需求"
+    },
+    {
+     "word": "ruthless",
+     "pos": "adj.",
+     "zh": "無情的"
+    },
+    {
+     "word": "disappointment",
+     "pos": "n.",
+     "zh": "失望"
+    },
+    {
+     "word": "peak",
+     "pos": "n.",
+     "zh": "高峰"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "face a drop",
+     "zh": "面臨下跌"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "分詞構句 (Participial clause)",
+     "explain": "用現在分詞子句補充說明主句動作同時或接續發生的情況。",
+     "example": "Meanwhile, Amazon revealed that its spending had increased six times over three months as it put money into AI data centres and servers.",
+     "focus": "as it put money into AI data centres and servers"
+    },
+    {
+     "point": "被動語態 (Passive voice)",
+     "explain": "表示主詞承受動作，結構為 be 動詞加上過去分詞。",
+     "example": "Major technology companies are facing a sharp market drop as people worry about the massive amounts of money being spent on artificial intelligence (AI).",
+     "focus": "being spent"
+    },
+    {
+     "point": "關係代名詞子句 (Relative clause)",
+     "explain": "使用關係代名詞引導子句來修飾前面的名詞。",
+     "example": "This downward trend caused the Nasdaq index of the largest tech firms in the US to suffer its worst monthly decline since March 2025 at the end of October.",
+     "focus": "of the largest tech firms in the US"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/commentisfree/2026/oct/30/the-guardian-view-on-50-years-of-the-selfish-gene-flawed-outdated-yet-still-a-model-of-truly-popular-science-writing",
+   "source": "The Guardian",
+   "topic": "Science",
+   "title": "The Guardian view on 50 years of The Selfish Gene: flawed, outdated, yet still a model of truly popular science writing | Editorial",
+   "title_zh": "《衛報》對《自私的基因》出版五十週年的看法：有瑕疵、過時，卻依然是大眾科學寫作的典範",
+   "paragraphs": [
+    {
+     "en": "Richard Dawkins’ book The Selfish Gene was first published in 1976 with a small initial print run of just 5,000 copies. Despite low expectations at the start, it went on to sell millions of copies and became one of the most influential works of popular science in history. For half a century, it has served as an essential resource for everyday readers who want to understand evolution.",
+     "zh": "理查·道金斯（Richard Dawkins）的作品《自私的基因》於1976年首次出版，最初的印刷量僅有5,000本。儘管一開始的期望不高，但它後來售出了數百萬冊，並成為歷史上最具影響力的大眾科學著作之一。半個世紀以來，它一直是想理解演化的普通讀者不可或缺的資源。"
+    },
+    {
+     "en": "The book gained its lasting power partly because of its provocative core claim. The zoologist argued that humans are survival machines programmed by genes, which reduce complex life down to a simple rule. However, the author also focused on showing how selfless behaviors like animal altruism can emerge from these basic selfish drives. Furthermore, he used vivid and entertaining examples of various creatures, from ants to lions, to explain his complex scientific points clearly.",
+     "zh": "這本書之所以獲得持久的影響力，部分原因在於其挑釁性的核心主張。這位動物學家認為，人類是被基因程式化設定的生存機器，這將複雜的生命簡化為一項簡單的規則。然而，作者也致力於展示動物利他主義等無私行為如何從這些基本的自私驅動力中產生。此外，他使用了從螞蟻到獅子等各種生物生動有趣的例子，來清楚地解釋他複雜的科學觀點。"
+    },
+    {
+     "en": "Even with its major success, the fiftieth anniversary has faced mixed reactions and criticism from the scientific community. Historian of science Nathaniel Comfort suggested that the book promotes a troubling kind of determinism. Other critics took issue with the heavy focus on genes as the primary target of natural selection rather than entire groups. Biologists also noted that the work assumes every trait is an adaptation, ignoring the role of chance, and it looks almost exclusively at animals.",
+     "zh": "儘管取得了巨大成功，但五十週年紀念卻面臨來自科學界的褒貶不一的反應與批評。科學史學家內森·康福特（Nathaniel Comfort）指出，這本書助長了一種令人擔憂的決定論。其他批評者則對該書過度將基因視為天擇的主要目標而非整個群體提出異議。生物學家也指出，該著作假設每個特徵都是一種適應，忽略了機率的作用，且幾乎只關注動物。"
+    },
+    {
+     "en": "Although the text has clear flaws and its author has made controversial comments outside his field, the publication remains a remarkable model of writing style. Philosopher John Dupré noted that it is a strong example of successful popular science because it takes a clear stand and argues with great energy. The science has moved on and new theories have appeared, but future writers must still understand the reasons behind its long-running success.",
+     "zh": "雖然該文本有明顯的瑕疵，且其作者在專業領域之外曾發表具爭議性的言論，但這部出版品仍然是寫作風格的傑出典範。哲學家約翰·迪普雷（John Dupré）指出，這是成功大眾科學的一個強大範例，因為它採取了明確的立場並以巨大的活力進行辯論。科學已經向前邁進且新理論已經出現，但未來的作家仍必須理解其長期成功背後的理由。"
+    }
+   ],
+   "words": 291,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "print run",
+     "pos": "n.",
+     "zh": "印數"
+    },
+    {
+     "word": "provocative",
+     "pos": "adj.",
+     "zh": "挑釁的；引起議論的"
+    },
+    {
+     "word": "altruism",
+     "pos": "n.",
+     "zh": "利他主義"
+    },
+    {
+     "word": "determinism",
+     "pos": "n.",
+     "zh": "決定論"
+    },
+    {
+     "word": "adaptation",
+     "pos": "n.",
+     "zh": "適應"
+    },
+    {
+     "word": "flaw",
+     "pos": "n.",
+     "zh": "缺點；瑕疵"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "go on to",
+     "zh": "接著進行；繼而"
+    },
+    {
+     "phrase": "take issue with",
+     "zh": "對……提出異議；反對"
+    },
+    {
+     "phrase": "move on",
+     "zh": "向前邁進；進步"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞 (Relative Pronoun)",
+     "explain": "用所引導的形容詞子句修飾先行詞 everyday readers。",
+     "example": "For half a century, it has served as an essential resource for everyday readers who want to understand evolution.",
+     "focus": "who want to understand evolution"
+    },
+    {
+     "point": "分詞構句 (Participial Construction)",
+     "explain": "用現在分詞片語作為附加說明，補充說明動物學家所做的事。",
+     "example": "The zoologist argued that humans are survival machines programmed by genes, which reduce complex life down to a simple rule.",
+     "focus": "programmed by genes"
+    },
+    {
+     "point": "副詞片語表目的 (Infinitive of Purpose)",
+     "explain": "用不定詞片語表達使用生動例子所要達到的目的。",
+     "example": "Furthermore, he used vivid and entertaining examples of various creatures, from ants to lions, to explain his complex scientific points clearly.",
+     "focus": "to explain his complex scientific points clearly"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/science/2026/oct/30/perfume-bottle-child-necklace-pompeii-wardrobe",
+   "source": "The Guardian",
+   "topic": "Science",
+   "title": "Perfume bottle and child’s necklace among treasures found in Pompeii wardrobe",
+   "title_zh": "龐貝古城衣櫃內發現香水瓶與孩童項鍊等寶藏",
+   "paragraphs": [
+    {
+     "en": "Archaeologists exploring the ruins of Pompeii have recently discovered various personal items inside a wooden wardrobe that had remained completely sealed for nearly two thousand years. These recovered objects include makeup tools, a small glass perfume bottle, thirty-eight bronze coins, and a child's necklace. Such discoveries offer researchers a clear look into the everyday life of the ancient Roman city before the eruption of Mount Vesuvius in AD79.",
+     "zh": "探索龐貝古城遺址的考古學家最近在一個幾乎完全封存了兩千年的木製衣櫃內，發現了各種私人物品。這些出土的物品包括化妝工具、一個小型玻璃香水瓶、三十八枚青銅硬幣以及一條孩童項鍊。這些發現為研究人員提供了西元79年維蘇威火山爆發前，該古代羅馬城市日常生活清晰的一瞥。"
+    },
+    {
+     "en": "Among all the relics found within the wardrobe, the most fascinating item was a unique necklace decorated with more than twenty small charms. These charms were crafted from different materials and shaped to represent several deities, including the gods Bes and Mercury. This particular type of jewelry, traditionally worn by young children, featured rattling decorations that helped parents keep track of their family members.",
+     "zh": "在衣櫃內發現的所有遺物中，最迷人的物品是一條獨特的項鍊，上面裝飾著二十多個小飾品。這些飾品由不同的材料製成，並雕刻成代表幾位神明的形狀，其中包括貝斯神與墨丘利神。這種通常由幼童佩戴的特定類型珠寶，帶有會發出聲音的裝飾，能幫助父母隨時掌握家庭成員的行蹤。"
+    },
+    {
+     "en": "Gabriel Zuchtriegel, the director of the Pompeii archaeological park, explained the special cultural function of this accessory. He stated that it served as a meaningful reminder of parents who might have lived far away. Because many people frequently moved across the Mediterranean region and often carried their personal belongings with them, this kind of item was very typical of that ancient society.",
+     "zh": "龐貝考古公園館長加布里埃爾·祖特里傑爾解釋了這種飾品的特殊文化功能。他表示，它能作為對可能住在遠處父母的有意義提醒。由於許多人頻繁地在地中海地區移動且常隨身攜帶個人財物，這類物品在那個古代社會中非常典型。"
+    },
+    {
+     "en": "In addition to the wardrobe contents, experts working on a restoration project have been examining other parts of the site, including the servants' quarters at the Villa of the Mysteries. Because the majority of the inhabitants there were servants, researchers hope to gain deeper insight into the daily life and economy of individuals who lived in the shadow of history. Meanwhile, ongoing excavations throughout the city continue to yield surprising discoveries from the ancient ruins.",
+     "zh": "除了衣櫃內的物品外，從事修復計畫的專家們也一直在檢視該遺址的其他部分，包括祕密莊園的僕人區。由於那裡的大多數居民都是僕人，研究人員希望藉此深入了解那些生活在歷史陰影中的個人的日常生活與經濟狀況。同時，全城持續進行的挖掘工作也不斷從古代遺址中產出令人驚嘆的發現。"
+    }
+   ],
+   "words": 269,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "archaeologist",
+     "pos": "n.",
+     "zh": "考古學家"
+    },
+    {
+     "word": "wardrobe",
+     "pos": "n.",
+     "zh": "衣櫃"
+    },
+    {
+     "word": "relic",
+     "pos": "n.",
+     "zh": "遺物"
+    },
+    {
+     "word": "deity",
+     "pos": "n.",
+     "zh": "神明"
+    },
+    {
+     "word": "accessory",
+     "pos": "n.",
+     "zh": "飾品"
+    },
+    {
+     "word": "inhabitant",
+     "pos": "n.",
+     "zh": "居民"
+    },
+    {
+     "word": "excavation",
+     "pos": "n.",
+     "zh": "挖掘"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "keep track of",
+     "zh": "記錄；掌握……的行蹤"
+    },
+    {
+     "phrase": "in addition to",
+     "zh": "除了……之外"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "過去分詞片語當形容詞 (Past Participle Phrase as Adjective)",
+     "explain": "說明被動概念的分詞片語放在名詞後方，用來修飾該名詞。",
+     "example": "These recovered objects include makeup tools, a small glass perfume bottle, thirty-eight bronze coins, and a child's necklace.",
+     "focus": "recovered"
+    },
+    {
+     "point": "關代所有格 (Relative Pronoun Whose)",
+     "explain": "使用whose引導形容詞子句，表示所修飾的名詞與先行詞之間的所有格關係。",
+     "example": "Gabriel Zuchtriegel, the director of the Pompeii archaeological park, explained the special cultural function of this accessory.",
+     "focus": "director of the Pompeii archaeological park"
+    },
+    {
+     "point": "地方副詞子句 (Adverbial Clause of Place)",
+     "explain": "使用where引導副詞子句，用來修飾動詞並指明動作發生的地點。",
+     "example": "Because the majority of the inhabitants there were servants, researchers hope to gain deeper insight into the daily life and economy of individuals who lived in the shadow of history.",
+     "focus": "lived in the shadow of history"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/30/business/binance-hackers-crypto-safety",
+   "source": "CNN",
+   "topic": "Business",
+   "title": "Hackers just stole $6 billion in crypto. It’s not the first time, and it won’t be the last",
+   "title_zh": "駭客剛盜走60億美元的加密貨幣。這不是第一次，也不會是最後一次",
+   "paragraphs": [
+    {
+     "en": "On Thursday, the world's largest cryptocurrency exchange, Binance, suffered a massive cyberattack where over six billion dollars were stolen in about twenty minutes. About half of the lost funds were stablecoins, which issuers managed to freeze quickly. However, the rest consisted of digital tokens like bitcoin and ether that lack centralized authorities and are likely impossible to get back.",
+     "zh": "週四時，全球最大的加密貨幣交易所幣安（Binance）遭受了大規模的網路攻擊，在約二十分鐘內有超過六十億美元遭到竊取。大約一半失竊的資金是穩定幣，發行商設法迅速將其凍結。然而，其餘部分則是由比特幣和以太幣等數位代幣組成，這些代幣缺乏中央管理機構，且很可能無法追回。"
+    },
+    {
+     "en": "Binance researchers stated that the company's losses could exceed three billion dollars, which is much higher than its one billion dollar emergency fund. The firm promised to cover these losses using its emergency reserves and other assets, stressing that user funds are safe. Following the incident, Binance suspended both deposits and withdrawals, just hours after another security breach affected a prediction market called Polymarket.",
+     "zh": "幣安的研究人員表示，該公司的損失可能會超過三十億美元，這遠高於其十億美元的緊急準備金。該公司承諾使用其緊急準備金與其他資產來彌補這些損失，並強調使用者資金是安全的。在此事件後，幣安暫停了存款與提款，就在幾小時前，另一起安全漏洞才剛影響了名為Polymarket的預測市場。"
+    },
+    {
+     "en": "According to an analytics firm, about seven hundred Polymarket users lost millions of dollars through unauthorized withdrawals. Like Binance, Polymarket also pledged to make its customers whole. Despite these reimbursement promises, security experts warn that having enough money to fix the damage is not the same as having strong operational security.",
+     "zh": "根據一家分析公司的數據，大約有七百名Polymarket使用者透過未授權的提款損失了數百萬美元。和幣安一樣，Polymarket也承諾要賠償客戶的損失。儘管有這些補償承諾，安全專家警告說，擁有足夠的資金來修復損害並不等於擁有強大的營運安全性。"
+    },
+    {
+     "en": "Experts point out that centralized exchanges are very attractive targets for hackers because they operate outside of strict financial regulations. Furthermore, criminals often favor crypto because it allows them to move money quickly and anonymously across borders. This risk is further increased by artificial intelligence, as researchers observed attackers using automation to hide the trail of funds.",
+     "zh": "專家指出，中心化交易所對駭客而言是非常具有吸引力的目標，因為它們的運作不受嚴格的金融監管約束。此外，罪犯通常偏好加密貨幣，因為它能讓他們在國界之間快速且匿名地轉移資金。人工智慧更進一步增加了這種風險，因為研究人員觀察到攻擊者使用自動化技術來隱藏資金流向的足跡。"
+    },
+    {
+     "en": "To protect digital assets, security specialists suggest that people should not keep their money on the same exchanges where they buy and sell. Instead, users are advised to move their funds to a self-custody wallet for better safety. Of course, managing one's own wallet has its own risks, such as losing access permanently if a password is forgotten.",
+     "zh": "為了保護數位資產，安全專家建議人們不應該將資金放在他們買賣的同一個交易所中。相反地，建議使用者將資金轉移到自主託管錢包以獲得更好的安全性。當然，管理自己的錢包也有其自身的風險，例如如果忘記密碼就會永久失去存取權限。"
+    }
+   ],
+   "words": 289,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "exchange",
+     "pos": "n.",
+     "zh": "交易所"
+    },
+    {
+     "word": "suspend",
+     "pos": "v.",
+     "zh": "暫停、中止"
+    },
+    {
+     "word": "breach",
+     "pos": "n.",
+     "zh": "漏洞、侵害"
+    },
+    {
+     "word": "automation",
+     "pos": "n.",
+     "zh": "自動化"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "make sb whole",
+     "zh": "賠償某人損失"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞子句 (Relative clause)",
+     "explain": "用來修飾前方名詞 stablecoins 的形容詞子句，說明其特性。",
+     "example": "About half of the lost funds were stablecoins, which issuers managed to freeze quickly.",
+     "focus": "which issuers managed to freeze quickly"
+    },
+    {
+     "point": "過去分詞作形容詞 (Past participle as adjective)",
+     "explain": "用過去分詞 unauthorized 來修飾名詞 withdrawals，表達被動的概念。",
+     "example": "According to an analytics firm, about seven hundred Polymarket users lost millions of dollars through unauthorized withdrawals.",
+     "focus": "unauthorized withdrawals"
+    },
+    {
+     "point": "表目的之不定詞片語 (Infinitive phrase of purpose)",
+     "explain": "用不定詞片語 to protect digital assets 來表達採取建議的目的。",
+     "example": "To protect digital assets, security specialists suggest that people should not keep their money on the same exchanges where they buy and sell.",
+     "focus": "To protect digital assets"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/10/30/health/medicaid-frailty-decision",
+   "source": "CNN",
+   "topic": "Health",
+   "title": "Judge blocks Trump administration’s Medicaid rule forcing sick recipients to prove they can’t work",
+   "title_zh": "法官擋下川普政府的醫療補助規定，迫使生病受助者證明自己無法工作",
+   "paragraphs": [
+    {
+     "en": "A federal judge in Boston ruled Thursday that chronically ill people enrolled in Medicaid do not have to follow new work requirements to qualify for certain health exemptions.",
+     "zh": "波士頓的一名聯邦法官於週四裁定，參與醫療補助計畫（Medicaid）的慢性病患不必遵守新的工作規定，即可取得特定健康豁免資格。"
+    },
+    {
+     "en": "US District Judge Richard Stearns partially favored a group of twenty-five states and the District of Columbia. These plaintiffs had sued the Trump administration in June regarding guidance from the Centers for Medicare and Medicaid Services (CMS). The CMS guidance was connected to a 2025 law that introduced the first federal work requirement for the safety net healthcare program.",
+     "zh": "美國聯邦地方法官理查・斯特恩斯部分支持了由二十五個州及哥倫比亞特區組成的陣營。這些原告在六月時，針對來自醫療保險與醫療補助服務中心（CMS）的指導方針控告川普政府。該 CMS 指導方針與一項 2025 年的法律有關，該法為這個安全網醫療保健計畫引入了史上首次的聯邦工作要求。"
+    },
+    {
+     "en": "The law states that the definition of medically frail must include individuals with specific conditions, such as blindness, disabilities, or serious medical issues. However, the CMS rule demanded that those people also prove their medical issues significantly impair their ability to meet the work rules.",
+     "zh": "該法律規定，醫療虛弱者的定義必須包含具備特定狀況的個人，例如失明、身心障礙或嚴重的醫療問題。然而，CMS 的規定卻要求這些人同時證明其醫療問題大幅削弱了他們達到工作規定的能力。"
+    },
+    {
+     "en": "States expressed concern that this stricter rule would create heavy paperwork burdens and prevent eligible Americans from receiving necessary care. Judge Stearns agreed, stating that enforcing an unlawful definition could lead to vulnerable individuals losing their coverage.",
+     "zh": "各州表達擔憂，認為這項更嚴格的規定會製造沉重的文書負擔，並阻止符合資格的美國人獲得必要的照顧。斯特恩斯法官表示同意，並指出強制執行不合法的定義可能導致弱勢個人失去他們的保險涵蓋。"
+    },
+    {
+     "en": "While the judge blocked parts of the policy, he still upheld two other restrictions regarding how states must verify medical frailty. This includes rejecting proof older than one year and allowing only one self-attestation per continuous enrollment period.",
+     "zh": "雖然法官擋下了該政策的部分內容，但他仍維持了另外兩項關於各州如何驗證醫療虛弱的限制。這包含拒絕超過一年的證明，以及在每個連續投保期間只允許一次自我聲明。"
+    },
+    {
+     "en": "Starting January 1, expansion enrollees between the ages of 19 and 64 must work, do community service, or attend school for a required number of hours. An estimated 5.3 million more people could become uninsured by 2034 because of these new mandates.",
+     "zh": "從 1 月 1 日開始，19 歲至 64 歲之間的擴大納保對象必須工作、從事社區服務，或以規定時數上學。由於這些新的強制規定，預估到 2034 年可能會有多達 530 萬人失去保險。"
+    }
+   ],
+   "words": 249,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "chronically",
+     "pos": "adv.",
+     "zh": "長期地、慢性地"
+    },
+    {
+     "word": "exemption",
+     "pos": "n.",
+     "zh": "豁免、免除"
+    },
+    {
+     "word": "guidance",
+     "pos": "n.",
+     "zh": "指導方針、指引"
+    },
+    {
+     "word": "impair",
+     "pos": "v.",
+     "zh": "損害、削弱"
+    },
+    {
+     "word": "vulnerable",
+     "pos": "adj.",
+     "zh": "脆弱的、易受傷害的"
+    },
+    {
+     "word": "mandate",
+     "pos": "n.",
+     "zh": "強制令、授權"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "lead to",
+     "zh": "導致、引起"
+    },
+    {
+     "phrase": "upheld",
+     "zh": "維持（原判）、支持"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "句中使用助動詞與過去分詞構成本身被動的語態，強調政策或狀態遭到施加或影響。",
+     "example": "An estimated 5.3 million more people could become uninsured by 2034 because of these new mandates.",
+     "focus": "could become uninsured"
+    },
+    {
+     "point": "分詞構句 (Participle Clause)",
+     "explain": "使用分詞直接接在名詞後方或以逗點隔開作為補充說明，表示狀態或原因。",
+     "example": "US District Judge Richard Stearns partially favored a group of twenty-five states and the District of Columbia.",
+     "focus": "partially favored"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
   }
  ],
- "lessonsDate": "2026-10-31"
+ "lessonsDate": "2026-11-01"
 }
