@@ -1,45 +1,197 @@
 {
- "updated": "2026-11-05T01:45:50Z",
+ "updated": "2026-11-06T01:47:20Z",
  "items": [
   {
-   "title": "NPA cracks down on election meddling",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/05/2003867183",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-05T00:00:00Z"
-  },
-  {
-   "title": "Democrats take U.S. Congress as voters rebuke Trump",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/05/2003867184",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-05T00:00:00Z"
-  },
-  {
-   "title": "Investigators seize boats in probe into aide’s escape",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/05/2003867185",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-05T00:00:00Z"
-  },
-  {
-   "title": "Typhoons batter East Asia as El Niño makes Pacific 'burn with fever'",
-   "link": "https://www.bbc.co.uk/news/articles/cw33kgj7nkemo?at_medium=RSS&at_campaign=rss",
-   "summary": "Even for countries where typhoons are a way of life, the last few months have brought unusually wild weather.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-04T23:12:47Z"
-  },
-  {
-   "title": "Elon Musk's millions failed to deliver Republican wins in fierce midterms",
-   "link": "https://www.bbc.co.uk/news/articles/cv8ez3p3ge5ko?at_medium=RSS&at_campaign=rss",
-   "summary": "Musk spent nearly $500m in the 2026 US midterm elections, an individual election spending record.",
+   "title": "Major tech stocks plunge as US midterms add to fears of AI slowdown",
+   "link": "https://www.bbc.co.uk/news/articles/cmn04705rd8jo?at_medium=RSS&at_campaign=rss",
+   "summary": "Markets have been reacting to possible tougher scrutiny of data centre construction and the AI industry following the US midterms.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-04T21:41:15Z"
+   "date": "2026-11-06T01:44:03Z"
+  },
+  {
+   "title": "Could the earliest weakening of the polar vortex on record bring UK snow?",
+   "link": "https://www.bbc.co.uk/weather/articles/cwyvrz09mnd6o?at_medium=RSS&at_campaign=rss",
+   "summary": "An unprecedented early weakening of the polar vortex is causing uncertainty amongst experts over the impact it will have on UK weather as Simon King explains.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-06T01:22:39Z"
+  },
+  {
+   "title": "The engine parts that 'fight the laws of the universe'",
+   "link": "https://www.bbc.co.uk/news/articles/cwe9lmp1pyyxo?at_medium=RSS&at_campaign=rss",
+   "summary": "Investment has surged into the making of jet turbine blades - an extremely difficult component to make.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-06T00:06:06Z"
+  },
+  {
+   "title": "China targeted 131 Taiwanese: MAC",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/06/2003867245",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-06T00:00:00Z"
+  },
+  {
+   "title": "NSTC in talks to establish space investment fund",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/06/2003867246",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-06T00:00:00Z"
+  },
+  {
+   "title": "Retired general out on bail, suspected of vote interference",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/06/2003867247",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-06T00:00:00Z"
+  },
+  {
+   "title": "Delhi's toxic winter air is back - is the Indian capital prepared for pollution?",
+   "link": "https://www.bbc.co.uk/news/articles/cm78p0n09q3xo?at_medium=RSS&at_campaign=rss",
+   "summary": "The Delhi government has announced a four-month winter action plan, but experts say that won't be enough.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-05T23:16:53Z"
+  },
+  {
+   "title": "Powerhouse Parramatta opens this weekend – and it’s dazzling inside and out",
+   "link": "https://www.theguardian.com/culture/ng-interactive/2026/nov/06/powerhouse-parramatta-opening-festival",
+   "summary": "Coups de théâtre abound in the $915m addition to western Sydney’s skyline, which opens on Saturday with five new exhibitions – and a 23-day festival Get our weekend culture and lifestyle email Dubbed the “Opera House…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-05T23:00:36Z"
+  },
+  {
+   "title": "BBC Inside Science",
+   "link": "https://www.bbc.co.uk/sounds/play/w3ct978k?at_medium=RSS&at_campaign=rss",
+   "summary": "A glimpse into the world of the incredibly tiny",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-05T21:00:00Z"
+  },
+  {
+   "title": "School failed to deal with racist bullying, father claims",
+   "link": "https://www.bbc.co.uk/news/articles/cvrly1g1e85ro?at_medium=RSS&at_campaign=rss",
+   "summary": "The school and council say the school is safe for every pupil.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-05T18:58:20Z"
+  },
+  {
+   "title": "How Democrats used the midterms to turn affordability concerns into ‘green populism’",
+   "link": "https://www.theguardian.com/us-news/2026/nov/05/democrats-climate-crisis-in-midterm-election-results",
+   "summary": "From energy prices to datacenters, climate became a cost-of-living issue – and a winning one Q&A: Ask your questions about Democrats’ win in the midterms Climate-forward Democrats swept into power on Tuesday night as a…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-05T17:00:28Z"
+  },
+  {
+   "title": "‘It’s kind of a melting pot’: how one US city transformed a highway into a leafy oasis",
+   "link": "https://www.theguardian.com/environment/2026/nov/05/lancaster-california-transformed-highway-leafy-oasis",
+   "summary": "The BLVD is home to 250 enterprises, from banks, tattoo shops and restaurants to museums and a performing arts centre Passing through the Mojave desert on State Route 14, going by landscapes Hollywood uses to represent…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-05T14:07:12Z"
+  },
+  {
+   "title": "Teens worldwide aren't getting enough exercise -- especially girls",
+   "link": "https://www.npr.org/2026/11/05/nx-s1-6027635/exercise-workout-teenagers-adolescents-gender-gap",
+   "summary": "A new study looks at the recommended amount of daily exercise for adolescents — and how few are getting it.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-05T12:24:14Z"
+  },
+  {
+   "title": "The Great Pacific Garbage Patch may now have so much plastic, it’s changing the color of the ocean",
+   "link": "https://lite.cnn.com/2026/11/05/climate/great-pacific-garbage-patch-changing-color-microplastics-pollution",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Environment",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "‘Catastrophic’ flooding sets off 100+ rescues, inundates homes and businesses in North Georgia and southern Tennessee",
+   "link": "https://lite.cnn.com/2026/11/05/weather/flooding-georgia-tennessee-mccaysville-copperhill-climate",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Weather",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "Earliest evidence of cannabis use found in ancient Siberian tomb",
+   "link": "https://lite.cnn.com/2026/11/05/science/ancient-cannabis-siberia-scli-intl",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Science",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "The awkward ending to Cristiano Ronaldo’s extraordinary Portugal career",
+   "link": "https://lite.cnn.com/2026/11/05/sport/cristiano-ronaldo-portgual-retirement-analysis",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "LIV Golf winding down operations, lawyer says in bankruptcy hearing",
+   "link": "https://lite.cnn.com/2026/11/05/sport/liv-golf-winding-down-operations",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "Thicker bacon and ditching breakfast. Wendy’s hopes a menu shakeup can revive sales",
+   "link": "https://lite.cnn.com/2026/11/05/business/wendys-third-quarter-earnings-turnaround-plan",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "The Met Gala plays it safe with new exhibition theme",
+   "link": "https://lite.cnn.com/2026/11/05/style/met-gala-2027-new-theme-announcement",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Culture",
+   "date": "2026-11-05T12:00:00Z"
+  },
+  {
+   "title": "South West Water’s failure to fix leaks ‘putting customer supplies at risk’",
+   "link": "https://www.theguardian.com/business/2026/nov/05/south-west-water-failure-fix-leaks-putting-customer-supplies-at-risk",
+   "summary": "With parts of region served by company in severe drought still, regulators give it six weeks to come up with action plan Repeated failures by South West Water to tackle leaks are putting customers at higher risks of…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-05T10:00:02Z"
+  },
+  {
+   "title": "Former permanent secretary alleges he was 'bullied' by education minister, says MLA",
+   "link": "https://www.bbc.co.uk/news/articles/c35yn7p4970go?at_medium=RSS&at_campaign=rss",
+   "summary": "Sinn Féin assembly member Pat Sheehan made the claim during a committee hearing earlier this week.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-05T06:30:52Z"
+  },
+  {
+   "title": "‘Ferritin face’: can you really diagnose low iron from a selfie? – podcast",
+   "link": "https://www.theguardian.com/science/audio/2026/nov/05/ferritin-face-can-you-really-diagnose-low-iron-from-a-selfie-podcast",
+   "summary": "Social media is awash with claims iron deficiency can be identified in the mirror by dark circles, breaking hair and dry skin. But is ‘ferritin face’ real? Madeleine Finlay tells Ian Sample why so many of us struggle…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-05T05:00:55Z"
+  },
+  {
+   "title": "Historians say King Verica persuaded Rome to invade Britain. But could Verica actually have been a queen?",
+   "link": "https://www.theguardian.com/uk-news/2026/nov/05/verica-rome-invade-britain-queen-or-king",
+   "summary": "Controversial theory that Verica, who incited Emperor Claudius’s AD43 landing, was a woman could put a new spin on British history if true It was a moment that changed the course of British history: in AD43, Roman…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-05T05:00:54Z"
   },
   {
    "title": "Elon Musk will face scrutiny from Democrats after midterms",
@@ -58,102 +210,6 @@
    "date": "2026-11-04T20:46:26Z"
   },
   {
-   "title": "French blood storage impacted by freezer hacks as theories swirl about culprits",
-   "link": "https://www.bbc.co.uk/news/articles/c8vgxyvz6y9ro?at_medium=RSS&at_campaign=rss",
-   "summary": "The French Blood Establishment (EFS) said cold rooms storing blood were impacted by hackers.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-04T16:26:15Z"
-  },
-  {
-   "title": "Endangered giant burrowing frog returns to wild after tadpoles rescued from ashes of black summer fires",
-   "link": "https://www.theguardian.com/australia-news/2026/nov/05/giant-burrowing-frog-returns-to-wild-after-tadpoles-rescued-black-summer-fires-australia",
-   "summary": "Tadpoles collected from puddles in East Gippsland were transported to Melbourne zoo, where they were raised to metamorphosis and successfully bred in captivity for the first time After the 2019-20 black summer…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-04T14:01:35Z"
-  },
-  {
-   "title": "The Southern Taurid meteor shower will bring rare fireballs tonight",
-   "link": "https://lite.cnn.com/2026/11/04/science/southern-taurids-meteor-shower",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Science",
-   "date": "2026-11-04T12:00:00Z"
-  },
-  {
-   "title": "A 3,200-pound NASA observatory plunged back to Earth. Here’s what to know",
-   "link": "https://lite.cnn.com/2026/11/04/science/nasa-swift-observatory-reentry-deorbit",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Science",
-   "date": "2026-11-04T12:00:00Z"
-  },
-  {
-   "title": "CVS to split into two companies, in major breakup of its $117 billion healthcare empire",
-   "link": "https://lite.cnn.com/2026/11/04/business/cvs-to-split-into-two-companies",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-04T12:00:00Z"
-  },
-  {
-   "title": "Do you use AI agents to run your daily life? We want to hear about it",
-   "link": "https://lite.cnn.com/2026/11/04/tech/how-people-use-ai-agents-callout",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-04T12:00:00Z"
-  },
-  {
-   "title": "Look of the Week: Glenn Close and her six-foot impersonator demand a double take",
-   "link": "https://lite.cnn.com/2026/11/04/style/glenn-close-alexis-stone-lotw",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-04T12:00:00Z"
-  },
-  {
-   "title": "Why Nintendo is betting on a nearly 30-year-old game remake to win the holiday",
-   "link": "https://lite.cnn.com/2026/11/04/tech/nintendo-link-legend-of-zelda-ocarina-gta",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-04T12:00:00Z"
-  },
-  {
-   "title": "Firework noise limit should be drastically cut to protect wild animals, UK government told",
-   "link": "https://www.theguardian.com/environment/2026/nov/04/firework-noise-limit-protect-wild-animals-bonfire-night",
-   "summary": "Ministers urged to go further than proposed cut to 110 decibels to ease acute stress on birds and others animals Campaigners are calling on the UK government to protect the welfare of wild animals by cutting the…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-04T11:47:33Z"
-  },
-  {
-   "title": "Children spending too long on maths app TT Rockstars, MP warns",
-   "link": "https://www.bbc.co.uk/news/articles/c64g1vyxq4j5o?at_medium=RSS&at_campaign=rss",
-   "summary": "The makers of the popular times table game say they are bringing in curfews and limits to screen time.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-04T11:31:39Z"
-  },
-  {
-   "title": "Funding to help poorer countries cope with climate crisis has stalled, says UN",
-   "link": "https://www.theguardian.com/global-development/2026/nov/04/funding-poorer-countries-climate-crisis-adaptation-un-report",
-   "summary": "Report reveals financial support promised by rich nations for adaptation measures is well behind the pace that is needed Flows of money to help poor countries cope with the climate crisis have been flat or falling…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-04T11:00:09Z"
-  },
-  {
-   "title": "Very good boys? The dark, dystopian rise of robot dogs | Arwa Mahwadi",
-   "link": "https://www.theguardian.com/commentisfree/2026/nov/04/robot-dogs-ice-dimensional-warhound",
-   "summary": "Pups that carry your shopping are one thing – but what about the mechanical canines being bought up in the US by ICE? Or the mutant mutts due to be developed by a startup called Warhound? Have you ever wanted to hang…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-04T11:00:09Z"
-  },
-  {
    "title": "Review: The Legend of Zelda: Ocarina of Time remake is superb, streamlined and safe",
    "link": "https://www.npr.org/2026/11/04/nx-s1-6026597/review-legend-of-zelda-ocarina-of-time-remake-switch-2",
    "summary": "Nintendo's new Ocarina of Time remake enshrines its place in the gaming canon for generations to come. But despite its stupendous production values, the game left me feeling oddly bereft.",
@@ -162,60 +218,12 @@
    "date": "2026-11-04T11:00:00Z"
   },
   {
-   "title": "Delhi air quality worsens ahead of Diwali as firework restrictions enter force",
-   "link": "https://www.bbc.co.uk/news/articles/c699z8792n7ro?at_medium=RSS&at_campaign=rss",
-   "summary": "On Wednesday morning, Delhi's air quality index reading stood at 377, in the \"very poor\" category.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-04T07:39:38Z"
-  },
-  {
-   "title": "Scottish colleges need £2.5bn investment boost by 2037, report warns",
-   "link": "https://www.bbc.co.uk/news/articles/cwly4elj2546o?at_medium=RSS&at_campaign=rss",
-   "summary": "A new report has laid bare the financial challenges facing Scotland's college sector.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-04T06:18:46Z"
-  },
-  {
-   "title": "Tiktoker 'super excited' to co-host BBC nature show",
-   "link": "https://www.bbc.co.uk/news/articles/c6y93pgydvzdo?at_medium=RSS&at_campaign=rss",
-   "summary": "Naturewatch, hosted by Chris Packham, Megan McCubbin and Kyle Thomas, is being made in Bristol.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-04T06:15:01Z"
-  },
-  {
-   "title": "The next global pandemic could be brewing on a mink farm in Utah – and little is being done to stop it | George Monbiot",
-   "link": "https://www.theguardian.com/commentisfree/2026/nov/04/global-pandemic-mink-farm-utah-farming-livestock",
-   "summary": "Mink farms are the perfect petri dishes for deadly flu strains to emerge. Yet officials appear to be protecting business interests over human lives Could this be ground zero? Could it be the spot where the next…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-04T06:00:26Z"
-  },
-  {
-   "title": "The night-sky image so incredible the NZ man behind it has been accused of using AI",
-   "link": "https://www.theguardian.com/world/2026/nov/04/viral-image-nz-night-sky-satellites-accused-of-being-ai-brendan-larsen",
-   "summary": "Brendan Larsen spent hours taking hundreds of photographs of the sky over a mountain in New Zealand A photograph showing thousands of satellites cross-hatching the night sky over New Zealand appeared so extraordinary…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-04T00:29:51Z"
-  },
-  {
    "title": "Some universities have programs that allow students to live in retirement communities",
    "link": "https://www.npr.org/2026/11/03/nx-s1-6019425/some-universities-have-programs-that-allow-students-to-live-in-retirement-communities",
    "summary": "Universities are offering students an alternative to the typical on-campus and off-campus living options: living alongside seniors in a retirement community.",
    "source": "NPR",
    "topic": "Education",
    "date": "2026-11-03T21:14:05Z"
-  },
-  {
-   "title": "Google will let schools turn off AI, but they may also lose Search",
-   "link": "https://lite.cnn.com/2026/11/03/tech/google-ai-search-policy",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-03T12:00:00Z"
   },
   {
    "title": "How former Yahoo CEO Marissa Mayer sees AI assistants fitting into busy women's lives",
@@ -232,105 +240,266 @@
    "source": "NPR",
    "topic": "Health",
    "date": "2026-11-02T10:00:00Z"
-  },
-  {
-   "title": "With students scarce, college admissions offices get friendlier, less intimidating",
-   "link": "https://www.npr.org/2026/11/02/nx-s1-6007855/college-admissions-change-fewer-students",
-   "summary": "Colleges are trying to transform an admissions process that has often been daunting, secretive and stressful into an experience that's open, easier — and downright friendly.",
-   "source": "NPR",
-   "topic": "Education",
-   "date": "2026-11-02T10:00:00Z"
   }
  ],
  "lessons": [
   {
-   "link": "https://www.bbc.co.uk/news/articles/cw33kgj7nkemo?at_medium=RSS&at_campaign=rss",
+   "link": "https://www.bbc.co.uk/news/articles/cmn04705rd8jo?at_medium=RSS&at_campaign=rss",
    "source": "BBC",
-   "topic": "Science",
-   "title": "Typhoons batter East Asia as El Niño makes Pacific 'burn with fever'",
-   "title_zh": "聖嬰現象讓太平洋如發燒般滾燙，東亞各地飽受強烈颱風侵襲",
+   "topic": "Tech",
+   "title": "Major tech stocks plunge as US midterms add to fears of AI slowdown",
+   "title_zh": "美國期中選舉增添人工智慧發展放緩疑慮，主要科技股暴跌",
    "paragraphs": [
     {
-     "en": "East Asia and Southeast Asia have recently experienced an unusual wave of powerful storms worsened by the El Nino climate pattern. This extreme weather has caused dozens of deaths, closed major transportation hubs, and destroyed agricultural fields as well as local infrastructure.",
-     "zh": "東亞與東南亞地區最近經歷了一波異常強烈的風暴，並因聖嬰氣候現象而惡化。這種極端天氣已造成數十人死亡、主要交通樞紐關閉，並摧毀了農田以及當地基礎設施。"
+     "en": "Major technology companies across the United States and Asia lost hundreds of billions of dollars in market value following the US midterm elections. The political results sparked intense worries about a possible slowdown in artificial intelligence development, leading to a massive stock market sell-off.",
+     "zh": "在美國期中選舉之後，美國與亞洲的主要科技公司市值蒸發了數千億美元。選舉結果引發了對人工智慧發展可能放緩的強烈擔憂，導致股市出現大規模拋售潮。"
     },
     {
-     "en": "In October, a massive storm packing winds of up to 295 kilometers per hour threatened Taiwan. Although it did not make direct landfall, the outer bands forced hundreds of flight cancellations across Hong Kong, Taiwan, and Japan, while also cutting power to thousands of homes in Japan and the Philippines.",
-     "zh": "十月份時，一場風速高達每小時295公里的巨大風暴對台灣構成威脅。雖然它沒有直接登陸，但其外圍環流迫使香港、台灣和日本取消了數百個航班，同時也切斷了日本和菲律賓數千戶家庭的電力。"
+     "en": "In the United States, the Nasdaq composite index dropped by over 5.5%, marking its worst trading day in recent years. Democratic candidates had campaigned heavily on slowing down the growth of data centres. After winning both the Senate and the House of Representatives, Democrats now control Congress for the rest of President Donald Trump's term.",
+     "zh": "在美國，那斯達克綜合指數下跌超過百分之五點五，創下近年來最糟糕的交易日。民主黨候選人在競選期間大力主張放慢資料中心的成長。在贏得參議院與眾議院之後，民主黨人現在控制了國會，直到美國總統唐納·川普的任期結束。"
     },
     {
-     "en": "The Pacific Ocean has been heated to record levels because of this climate phenomenon, providing plenty of energy for storms. Experts explain that warmer waters cause typhoons to form further east and stay strong for longer periods, leading to higher rainfall and severe flooding.",
-     "zh": "由於此氣候現象，太平洋已被加熱到創紀錄的程度，為風暴提供了充足的能量。專家解釋，較暖的海水導致颱風在更偏東的地方形成並維持強勢更長時間，從而導致降雨量增加和嚴重的洪水。"
+     "en": "Asian markets also suffered severe losses as computer chip makers saw their shares slide significantly. Japan's Nikkei 225 index fell by 6%, while South Korea's Kospi index dropped more than 8.5%, forcing authorities to trigger a circuit breaker to halt panic selling temporarily. Taiwan's Taiex decreased by over 8.3%, and the major chipmaking giant TSMC fell by nearly 8.5%.",
+     "zh": "隨著電腦晶片製造商的股價顯著下滑，亞洲市場也遭受了慘重損失。日本日經二二五指數下跌百分之六，而南韓綜合股價指數下跌超過百分之八點五，迫使當局啟動熔斷機制來暫時阻止恐慌性拋售。台灣加權指數下跌超過百分之八點三，主要晶片製造巨頭台積電則下跌將近百分之八點五。"
     },
     {
-     "en": "Climatologists warn that sea surface temperatures in the equatorial Pacific have reached unprecedented highs compared to records starting in 1949. As governments race to prepare vulnerable areas, experts emphasize that communities must improve their long-term resilience against such severe climate hazards.",
-     "zh": "氣候學家警告說，與1949年開始的記錄相比，赤道太平洋的海面溫度已達到空前的高點。隨著各政府競相準備易受災害影響的地區，專家強調，各社區必須提高對此類嚴重氣候災害的長期韌性。"
+     "en": "Investors are increasingly worried that the huge amounts of money spent on artificial intelligence infrastructure might not bring the expected financial returns. Furthermore, stricter environmental scrutiny and local opposition to data centres could delay future construction projects and raise overall industry costs.",
+     "zh": "投資人越來越擔心，花在人工智慧基礎設施上的巨額資金可能無法帶來預期的財務回報。此外，更嚴格的環境審查以及地方對資料中心的反對，可能會延遲未來的建設專案並提高整體產業成本。"
     }
    ],
-   "words": 177,
+   "words": 200,
    "v": 2,
    "vocab": [
+    {
+     "word": "slowdown",
+     "pos": "n.",
+     "zh": "減緩、放緩"
+    },
+    {
+     "word": "index",
+     "pos": "n.",
+     "zh": "指數"
+    },
+    {
+     "word": "trigger",
+     "pos": "v.",
+     "zh": "觸發、引起"
+    },
+    {
+     "word": "scrutiny",
+     "pos": "n.",
+     "zh": "審查、仔細檢查"
+    },
     {
      "word": "infrastructure",
      "pos": "n.",
      "zh": "基礎設施"
-    },
-    {
-     "word": "phenomenon",
-     "pos": "n.",
-     "zh": "現象"
-    },
-    {
-     "word": "unprecedented",
-     "pos": "adj.",
-     "zh": "史無前例的"
-    },
-    {
-     "word": "vulnerable",
-     "pos": "adj.",
-     "zh": "易受傷害的；脆弱的"
-    },
-    {
-     "word": "resilience",
-     "pos": "n.",
-     "zh": "韌性；恢復力"
     }
    ],
    "phrases": [
     {
-     "phrase": "make landfall",
-     "zh": "登陸"
+     "phrase": "market value",
+     "zh": "市值"
     },
     {
-     "phrase": "cut power",
-     "zh": "斷電"
-    },
-    {
-     "phrase": "compared to",
-     "zh": "與……相比"
+     "phrase": "sell-off",
+     "zh": "拋售潮"
     }
    ],
    "grammar": [
     {
-     "point": "過去分詞片語當形容詞 (Past Participle Phrase as Adjective)",
-     "explain": "說明被動概念或修飾前方名詞，此處用來補充說明被氣候現象惡化的風暴。",
-     "example": "East Asia and Southeast Asia have recently experienced an unusual wave of powerful storms worsened by the El Nino climate pattern.",
-     "focus": "worsened by the El Nino climate pattern"
+     "point": "關係代名詞子句 (Relative Clause)",
+     "explain": "使用關代說明先行詞晶片製造商，補充說明其業務性質。",
+     "example": "Asian markets also suffered severe losses as computer chip makers saw their shares slide significantly.",
+     "focus": "as computer chip makers saw their shares slide significantly"
     },
     {
-     "point": "不定詞表示目的 (Infinitive of Purpose)",
-     "explain": "用來表達進行某個動作的目的，此處說明各國政府競相準備的目的是為了應對脆弱地區。",
-     "example": "As governments race to prepare vulnerable areas, experts emphasize that communities must improve their long-term resilience against such severe climate hazards.",
-     "focus": "to prepare vulnerable areas"
-    },
-    {
-     "point": "被動語態 (Passive Voice)",
-     "explain": "強調動作的承受者，此處說明太平洋被加熱到創紀錄的程度。",
-     "example": "The Pacific Ocean has been heated to record levels because of this climate phenomenon, providing plenty of energy for storms.",
-     "focus": "has been heated"
+     "point": "現在分詞作形容詞 (Present Participle as Adjective)",
+     "explain": "使用現在分詞修飾名詞，表達正在進行或具有某種特質的狀態。",
+     "example": "The political results sparked intense worries about a possible slowdown in artificial intelligence development.",
+     "focus": "artificial intelligence development"
     }
    ],
    "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/culture/ng-interactive/2026/nov/06/powerhouse-parramatta-opening-festival",
+   "source": "The Guardian",
+   "topic": "Science",
+   "title": "Powerhouse Parramatta opens this weekend – and it’s dazzling inside and out",
+   "title_zh": "耗資龐大的巴拉瑪塔動力博物館本週末開幕——內部與外部同樣令人驚豔",
+   "paragraphs": [
+    {
+     "en": "The new Powerhouse Parramatta in western Sydney is opening its doors on Saturday with five new exhibitions and a 23-day festival. Often called the Opera House of western Sydney, the venue features a white lattice exoskeleton made of 1,300 individual pieces, wrapping around 30,000 square metres of interior space. However, the project has also faced a controversial history since it was announced in 2014. A group of critics, led by former staff and trustees, has complained that the museum neglected its Ultimo site to fund this new infrastructure project. They also argued that the museum shifted away from its traditional focus toward contemporary art and events.",
+     "zh": "位於雪梨西部的全新巴拉瑪塔動力博物館（Powerhouse Parramatta）將於週六開幕，推出五個全新展覽及為期二十三天的節慶活動。這座場館常被稱為雪梨西部的歌劇院，其特色在於採用由一千三百個獨立組件組成的白色網格狀外骨骼結構，包覆著三萬平方公尺的室內空間。然而，自從該計畫於二〇一四年宣布以來，也面臨了充滿爭議的歷史。由前員工及董事會成員領導的一群批評者抱怨，該博物館忽略了烏爾蒂莫（Ultimo）館址，將資金轉而投入這個新的基礎設施計畫。他們也主張，該博物館已從傳統焦點轉向當代藝術與活動。"
+    },
+    {
+     "en": "The massive price tag of 915 million dollars also drew heavy scrutiny during a period of financial precarity for the arts. This led to a New South Wales Treasury investigation regarding the museum's governance and procurement practices, and CEO Lisa Havilah was stood down ten weeks before the opening. To welcome the public, the museum is offering a 23-day festival with performances, parties, and workshops, where 65% of the program will be free. Visitors walking through the building will notice a calm atmosphere, featuring an airy colour palette and interior walls covered in a textured render made from 600,000 crushed oyster shells.",
+     "zh": "在藝術界財務不穩定的時期，高達九億一千五百萬美元的驚人價格也引發了嚴格審查。這導致新南威爾斯州財政部（New South Wales Treasury）針對該博物館的管理與採購實務展開調查，執行長麗莎·哈維拉（Lisa Havilah）則在開幕前十 weeks（應譯為十週）被暫停職務。為了迎接大眾，博物館推出了為期二十三天的節慶活動，包含表演、派對與工作坊，其中百分之六十五的節目為免費。走進這棟建築的訪客會注意到寧靜的氛圍，其特色為通風的色彩搭配以及採用六十萬個壓碎生蠔殼製成之紋理塗料的內牆。"
+    },
+    {
+     "en": "The museum's opening exhibitions offer diverse experiences, ranging from space travel to a celebration of shopping malls. Task Eternal is the flagship opening exhibition, which requires a paid ticket for adults, and explores the history of air and space travel through various objects. Another exhibition called The Dark is designed for children aged four to twelve inside a large replica meteorite, requiring visitors to store their smartphones before entering. Additionally, an installation titled Overflow presents high-definition short films by director Ivan Sen on a 16-metre display, accompanied by a shallow pool of water.",
+     "zh": "該博物館的開幕展覽提供了多元的體驗，從太空旅行到對購物中心的慶祝活動。「永恆任務」（Task Eternal）是旗艦開幕展覽，成人需要購票入場，透過各種物件探索航空與太空旅行的歷史。另一個名為「黑暗」（The Dark）的展覽專為四至十二歲兒童設計，位於大型複製隕石內部，訪客在進入前必須存放他們的智慧型手機。此外，「滿溢」（Overflow）這個裝置藝術在十六公尺長的螢幕上呈現導演伊凡·山（Ivan Sen）的高畫質短片，並伴隨著一個淺水池。"
+    }
+   ],
+   "words": 301,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "exoskeleton",
+     "pos": "n.",
+     "zh": "外骨骼"
+    },
+    {
+     "word": "governance",
+     "pos": "n.",
+     "zh": "治理"
+    },
+    {
+     "word": "procurement",
+     "pos": "n.",
+     "zh": "採購"
+    },
+    {
+     "word": "exhibition",
+     "pos": "n.",
+     "zh": "展覽"
+    },
+    {
+     "word": "replica",
+     "pos": "n.",
+     "zh": "複製品"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "face a controversial history",
+     "zh": "面臨爭議的歷史"
+    },
+    {
+     "phrase": "draw heavy scrutiny",
+     "zh": "引發嚴格審查"
+    },
+    {
+     "phrase": "be designed for",
+     "zh": "專為…而設計"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞 (Relative pronoun)",
+     "explain": "使用關代子句來修飾先行詞 the museum，補充說明其忽略了舊館址的行為。",
+     "example": "A group of critics, led by former staff and trustees, has complained that the museum neglected its Ultimo site to fund this new infrastructure project.",
+     "focus": "that the museum neglected its Ultimo site to fund this new infrastructure project"
+    },
+    {
+     "point": "被動語態 (Passive voice)",
+     "explain": "使用被動語態表達執行長在開幕前遭到撤職的情況。",
+     "example": "This led to a New South Wales Treasury investigation regarding the museum's governance and procurement practices, and CEO Lisa Havilah was stood down ten weeks before the opening.",
+     "focus": "was stood down"
+    },
+    {
+     "point": "不定詞表目的 (Infinitive of purpose)",
+     "explain": "使用不定詞片語來表達迎賓的動機與目的。",
+     "example": "To welcome the public, the museum is offering a 23-day festival with performances, parties, and workshops, where 65% of the program will be free.",
+     "focus": "To welcome the public"
+    }
+   ],
+   "model": "gemini-flash-lite-latest"
+  },
+  {
+   "link": "https://www.npr.org/2026/11/05/nx-s1-6027635/exercise-workout-teenagers-adolescents-gender-gap",
+   "source": "NPR",
+   "topic": "Health",
+   "title": "Teens worldwide aren't getting enough exercise -- especially girls",
+   "title_zh": "全球青少年運動量不足——尤其是女孩",
+   "paragraphs": [
+    {
+     "en": "The World Health Organization (WHO) advises teenagers to work up a sweat for at least one hour daily through moderate-to-vigorous physical activity to support their growing bodies. However, a study published in The Lancet Global Health shows that very few teenagers meet this standard. In fact, roughly one out of four adolescents does not achieve an hour of exercise on any single day of the week, and global levels have barely improved over the past fifteen years.",
+     "zh": "世界衛生組織（WHO）建議青少年每天透過中度至劇烈的身體活動流汗至少一小時，以支持他們成長中的身體。然而，發表在《刺胳針全球衛生》（The Lancet Global Health）上的一項研究顯示，極少數青少年達到這一標準。事實上，大約每四名青少年中就有一人在一週中的任何一天都沒有達到一小時的運動量，而且全球水平在過去十五年間幾乎沒有改善。"
+    },
+    {
+     "en": "The findings are based on surveys covering more than three million teenagers from 140 countries. Overall, only about 14 percent of adolescents worldwide exercise for an hour every day. Researchers noticed that teenagers in middle- and lower-income countries generally move less than those in wealthier Western nations. Epidemiologist Andrea Ramirez Varela from the University of Texas Health Science Center in Houston explained that living environments often limit opportunities. Many cities lack safe pedestrian routes, and polluted air makes outdoor exercise unhealthy. In addition, attractive digital screens play a role by keeping teenagers sedentary at home after school.",
+     "zh": "這些研究結果是根據涵蓋來自一百四十個國家、超過三百萬名青少年的調查資料。總體而言，全球僅有約百分之十四的青少年每天運動一小時。研究人員注意到，中低收入國家的青少年活動量通常少於較富裕的西方國家青少年。來自休士頓德州大學健康科學中心的流行病學家安德莉亞．拉米雷斯．瓦雷拉（Andrea Ramirez Varela）解釋說，生活環境往往限制了運動的機會。許多城市缺乏安全的步行路線，而且空氣污染使戶外運動變得不健康。此外，吸引人的數位螢幕也產生了影響，讓青少年放學回家後久坐不動。"
+    },
+    {
+     "en": "The research also revealed a significant gender gap worldwide. Nearly 30 percent of girls do not exercise at all during the week, whereas the figure for boys is 22 percent, and girls average fewer active days each week. Cultural expectations often drive this difference. Solveig Cunningham, a global health researcher at Emory University, noted that in countries like India, families worry that spending time under the sun will darken girls' skin and affect their marriage prospects. Furthermore, while boys play sports, girls often spend their active time performing household chores.",
+     "zh": "該研究還揭示了全球顯著的性別差距。將近百分之三十的女孩在一週內完全不運動，而男孩的比例為百分之二十二，且女孩每週平均運動天數也較少。文化期望往往是造成這種差異的主因。艾莫瑞大學（Emory University）全球衛生研究員索爾薇格．坎寧安（Solveig Cunningham）指出，在印度等國家，家庭擔心在陽光下待太久會讓女孩的皮膚變黑，並影響她們的婚姻前景。此外，當男孩在從事體育活動時，女孩通常將活躍的時間花在做家事上。"
+    },
+    {
+     "en": "Experts believe that schools offer the most practical setting to address this crisis. Fiona Bull from the WHO warned, \"Business as usual will not change these trends.\" Developing affordable and accessible school sports programs could encourage lifelong healthy habits. Varela added that failing to solve this problem during youth will carry over into adulthood, which will eventually create heavy physical and mental health burdens for society.",
+     "zh": "專家認為，學校是解決這場危機最實際的場所。來自世衛組織的費歐娜．布爾（Fiona Bull）警告說：「照常運作不會改變這些趨勢。」發展負擔得起且容易參與的學校運動計畫，可能有助於培養終身的健康習慣。瓦雷拉補充說，在青少年時期沒有解決這個問題將會延續到成年期，這最終將給社會帶來沉重的身心健康負擔。"
+    }
+   ],
+   "words": 330,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "moderate",
+     "pos": "adj.",
+     "zh": "中等的；適度的"
+    },
+    {
+     "word": "pedestrian",
+     "pos": "adj.",
+     "zh": "行人的；步行的"
+    },
+    {
+     "word": "sedentary",
+     "pos": "adj.",
+     "zh": "久坐的；缺乏運動的"
+    },
+    {
+     "word": "prospect",
+     "pos": "n.",
+     "zh": "前景；指望"
+    },
+    {
+     "word": "accessible",
+     "pos": "adj.",
+     "zh": "易於取得的；容易使用的"
+    },
+    {
+     "word": "burden",
+     "pos": "n.",
+     "zh": "負擔；重擔"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "work up a sweat",
+     "zh": "流汗；做劇烈運動"
+    },
+    {
+     "phrase": "play a role",
+     "zh": "扮演角色；發揮作用"
+    },
+    {
+     "phrase": "carry over into",
+     "zh": "延伸至；波及"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "名詞子句作受詞 (Noun Clause as Object)",
+     "explain": "從屬連接詞「that」引導完整的名詞子句，置於及物動詞「shows」後方作為該動詞的受詞。",
+     "example": "However, a study published in The Lancet Global Health shows that very few teenagers meet this standard.",
+     "focus": "that very few teenagers meet this standard"
+    },
+    {
+     "point": "動名詞片語當主詞 (Gerund Phrase as Subject)",
+     "explain": "動名詞「Developing」引導名詞片語置於主要子句句首作主詞，表達單一事件概念。",
+     "example": "Developing affordable and accessible school sports programs could encourage lifelong healthy habits.",
+     "focus": "Developing affordable and accessible school sports programs"
+    },
+    {
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "逗號後的關係代名詞「which」引導非限定子句，指代前面整件事作為先行詞並補充說明後續影響。",
+     "example": "Varela added that failing to solve this problem during youth will carry over into adulthood, which will eventually create heavy physical and mental health burdens for society.",
+     "focus": ", which will eventually create heavy physical and mental health burdens for society"
+    }
+   ],
+   "model": "gemini-flash-latest"
   },
   {
    "link": "https://www.npr.org/2026/11/04/nx-s1-6029650/elon-musk-midterms-democrats-texas-congress",
@@ -417,276 +586,7 @@
     }
    ],
    "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://www.theguardian.com/australia-news/2026/nov/05/giant-burrowing-frog-returns-to-wild-after-tadpoles-rescued-black-summer-fires-australia",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "title": "Endangered giant burrowing frog returns to wild after tadpoles rescued from ashes of black summer fires",
-   "title_zh": "瀕危的大穴居蛙在蝌蚪從盛夏野火的灰燼中被救出後重返野外",
-   "paragraphs": [
-    {
-     "en": "Following the severe 2019-20 bushfires in eastern Victoria, scientists discovered puddles containing tadpoles of the southern giant burrowing frog. This amphibian is recognized as one of the state's most cryptic animals. The fires damaged large parts of East Gippsland, creating serious worries about whether the critically endangered frogs could survive.",
-     "zh": "在維多利亞州東部發生嚴重的 2019-20 年叢林大火之後，科學家們發現了裝有南方大穴居蛙蝌蚪的水坑。這種兩棲動物被認為是該州最神祕的動物之一。大火破壞了東吉普斯蘭的大片地區，讓人們對這種極度瀕危的青蛙能否存活產生了嚴重的擔憂。"
-    },
-    {
-     "en": "Around 160 tadpoles were gathered and brought to the Melbourne zoo. Experts raised them through metamorphosis into frogs, and the institution successfully bred them in captivity for the first time last year. About five years later, 53 of these original tadpoles have now grown into male frogs and returned to their natural home in a distant part of the state.",
-     "zh": "大約 160 隻蝌蚪被收集並帶到墨爾本動物園。專家將牠們扶養至變態發育為青蛙，該機構去年首次成功地在人工環境下繁殖牠們。大約五年後，這些最初蝌蚪中的 53 隻現已長成雄蛙，並被送回該州偏遠地區的自然家園。"
-    },
-    {
-     "en": "Adult frogs of this species can grow to the size of a cricket ball and likely live for many years. Matt Clancy, an expert in the species, explained that they spend extensive periods hidden underground inside sandy soils and forests. They remain totally still until the next rains arrive.",
-     "zh": "這個物種的成年青蛙可以長到板球的大小，並且可能活很多年。該物種專家馬特·克蘭西解釋說，牠們大部分時間都躲在沙質土壤和森林底下的地底中。牠們保持完全靜止，直到下一場雨到來。"
-    },
-    {
-     "en": "The frogs only come to the surface to breed in temporary creeks and ponds when conditions become suitable. The 53 frogs were released right after major thunderstorms in areas that received significant rainfall. Ryan Moes, a specialist amphibian keeper, noted that genetic testing was performed on all collected tadpoles to prevent siblings from breeding together in the program.",
-     "zh": "只有在條件合適的時候，這些青蛙才會浮出水面，在暫時性的小溪和池塘裡繁殖. 這 53 隻青蛙在經歷重大雷雨後，立即被釋放到降雨量顯著的地區。兩棲動物專門飼養員萊恩·莫斯指出，所有收集到的蝌蚪都進行了基因檢測，以防止計畫中的手足互相交配。"
-    },
-    {
-     "en": "Before release, each frog received a tag, and song meters were set up at the sites to listen for their calls. Moes stated that the ultimate goal of the breeding program is to ensure that wild populations remain healthy and robust, and that the frog avoids extinction. However, ongoing threats like climate change, habitat destruction, and reduced rainfall continue to challenge the survival of the species.",
-     "zh": "在釋放之前，每隻青蛙都被做了標記，並且在現場安裝了聲音測量儀來聆聽牠們的叫聲。莫斯表示，繁殖計畫的最終目標是確保野生族群維持健康茁壯，並讓青蛙避免絕種。然而，氣候變遷、棲息地破壞以及降雨量減少等持續存在的威脅，仍舊對該物種的生存造成挑戰。"
-    }
-   ],
-   "words": 283,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "amphibian",
-     "pos": "n.",
-     "zh": "兩棲動物"
-    },
-    {
-     "word": "metamorphosis",
-     "pos": "n.",
-     "zh": "變態發育"
-    },
-    {
-     "word": "captivity",
-     "pos": "n.",
-     "zh": "囚禁；人工飼養"
-    },
-    {
-     "word": "extinction",
-     "pos": "n.",
-     "zh": "絕種；滅絕"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "set up",
-     "zh": "設置；建立"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "目的副詞片語 (Infinitive of Purpose)",
-     "explain": "使用不定詞片語來表達某個動作的目的，回答「為什麼」的問題。",
-     "example": "The frogs only come to the surface to breed in temporary creeks and ponds when conditions become suitable.",
-     "focus": "to breed"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://www.theguardian.com/world/2026/nov/04/viral-image-nz-night-sky-satellites-accused-of-being-ai-brendan-larsen",
-   "source": "The Guardian",
-   "topic": "Science",
-   "title": "The night-sky image so incredible the NZ man behind it has been accused of using AI",
-   "title_zh": "紐西蘭男子的夜空攝影作品太驚人，因而被指控使用AI",
-   "paragraphs": [
-    {
-     "en": "Astrophotographer Brendan Larsen spent many hours capturing the night sky in New Zealand. His spectacular final image shows thousands of satellites crossing paths above Mount Taranaki on the North Island.",
-     "zh": "天文攝影師布蘭登·拉森花費許多時間拍攝紐西蘭的夜空。他那張壯觀的最終影像顯示，成千上萬的人造衛星在北島的塔拉納基山上方交錯而過。"
-    },
-    {
-     "en": "To make this viral picture, Larsen left his camera running for two hours to take hundreds of individual shots. He then spent about forty hours layering the photos together and removing stars to reveal the hidden satellites.",
-     "zh": "為了拍出這張爆紅的照片，拉森讓相機持續運作兩小時，拍下了數百張獨立的照片。接著，他花了大約四十小時將這些照片疊加在一起，並去除星星以顯現隱藏的人造衛星。"
-    },
-    {
-     "en": "Some online viewers dismissed the stunning photograph as artificial intelligence. Larsen explained that AI software is becoming so good that people without knowledge of astrophotography find it difficult to tell real images from fake ones.",
-     "zh": "一些網路觀眾將這張驚人的照片斥為人工智慧生成。拉森解釋說，AI軟體變得如此厲害，以至於不熟悉天文攝影的人很難分辨真實影像與假影像。"
-    },
-    {
-     "en": "As a child, Larsen was deeply impressed by the starry rural skies of New Zealand. However, he has noticed a troubling increase in light pollution and space debris during his six years of photography.",
-     "zh": "小時候，拉森對紐西蘭鄉間滿天繁星的景象印象深刻。然而，在進行攝影的六年期間，他注意到光害與太空垃圾令人擔憂地增加。"
-    },
-    {
-     "en": "Experts warn that metal particles from rocket launches and satellite reentries could affect the atmosphere and the ozone layer. Larsen hopes his remarkable photo will encourage people to discuss and protect the night sky responsibly.",
-     "zh": "專家警告，火箭發射和衛星重返大氣層產生的金屬顆粒可能會影響大氣層與臭氧層。拉森希望他這張非凡的照片能鼓勵人們討論並負責任地保護夜空。"
-    }
-   ],
-   "words": 171,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "spectacular",
-     "pos": "adj.",
-     "zh": "壯觀的，令人驚嘆的"
-    },
-    {
-     "word": "layer",
-     "pos": "v.",
-     "zh": "使成層疊加"
-    },
-    {
-     "word": "reveal",
-     "pos": "v.",
-     "zh": "顯現，露出"
-    },
-    {
-     "word": "dismiss",
-     "pos": "v.",
-     "zh": "不予考慮，對…不屑一顧"
-    },
-    {
-     "word": "artificial",
-     "pos": "adj.",
-     "zh": "人工的，人造的"
-    },
-    {
-     "word": "debris",
-     "pos": "n.",
-     "zh": "殘骸，碎片"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "cross paths",
-     "zh": "交錯，相遇"
-    },
-    {
-     "phrase": "tell real images from fake ones",
-     "zh": "分辨真實影像與假影像"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "現在分詞當形容詞 (Present Participle as Adjective)",
-     "explain": "用現在分詞 stunning 來修飾名詞 photograph，表示該照片本身具有令人驚豔的特質。",
-     "example": "Some online viewers dismissed the stunning photograph as artificial intelligence.",
-     "focus": "stunning"
-    },
-    {
-     "point": "目的不定詞片語 (Infinitive Phrase of Purpose)",
-     "explain": "使用不定詞片語 to reveal the hidden satellites 來表達花費四十小時疊加照片的目的。",
-     "example": "He then spent about forty hours layering the photos together and removing stars to reveal the hidden satellites.",
-     "focus": "to reveal the hidden satellites"
-    },
-    {
-     "point": "被動語態 (Passive Voice)",
-     "explain": "使用被動語態 are becoming so good (在此為連綴動詞與形容詞構成狀態，另一句為被動結構) 或由 be + 過去分詞構成的被動語態，此處展示原文字句中的被動與狀態變化用法。",
-     "example": "Larsen explained that AI software is becoming so good that people without knowledge of astrophotography find it difficult to tell real images from fake ones.",
-     "focus": "is becoming"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://lite.cnn.com/2026/11/03/tech/google-ai-search-policy",
-   "source": "CNN",
-   "topic": "Tech",
-   "title": "Google will let schools turn off AI, but they may also lose Search",
-   "title_zh": "Google 將允許學校關閉人工智慧，但也可能失去搜尋功能",
-   "paragraphs": [
-    {
-     "en": "Google is introducing new rules that let schools limit students from using the company's artificial intelligence tools. However, if educational institutions decide to opt out of these features completely, they will also lose access to Google Search.",
-     "zh": "Google 正在推出一項新規，讓學校能夠限制學生使用該公司的「人工智慧」（AI）工具。然而，如果教育機構決定完全退出這些功能，他們也將失去使用 Google 搜尋（Google Search）的管道。"
-    },
-    {
-     "en": "This policy update arrives while numerous communities demand tighter rules regarding screen time and AI usage in schools. Many people worry that technology might harm student learning and development or create safety problems. Because of these worries, several school districts, including New York City and Los Angeles public schools, chose to ban generative artificial intelligence tools for many students this school year.",
-     "zh": "這項政策更新之際，許多社區正要求對學校的螢幕使用時間和人工智慧使用訂定更嚴格的規則。許多人擔心這項技術可能會損害學生的學習與發展，或造成安全問題。由於這些擔憂，包括紐約市和洛杉磯公立學校在內的幾個學區，選擇在本學年為許多學生禁止生成式人工智慧工具。"
-    },
-    {
-     "en": "Google stated that its artificial intelligence products, such as the Gemini assistant and Google Search, will stay turned off by default for kindergarten through twelfth-grade student accounts until school administrators explicitly turn them on. This decision changes an earlier move from August when Gemini was turned on automatically inside the Google Classrooms app.",
-     "zh": "Google 表示，其人工智慧產品（例如 Gemini 助理和 Google 搜尋）對於幼兒園到十二年級的學生帳戶將預設保持關閉，直到學校管理者明確將其開啟為止。這項決定改變了八月份時的一項早期舉措，當時 Gemini 在 Google 教室（Google Classrooms）應用程式中是自動開啟的。"
-    },
-    {
-     "en": "Chris Phillips, who serves as the vice president of education at Google, explained to reporters that search systems and artificial intelligence are deeply connected. He mentioned that schools blocking artificial intelligence will not have access to search and will see a message indicating it is unavailable.",
-     "zh": "擔任 Google 教育副總裁的克里斯·菲利普斯（Chris Phillips）向記者解釋，搜尋系統與人工智慧有著深厚的連結。他提到，阻擋人工智慧的學校將無法使用搜尋功能，並且會看到一則顯示其無法使用的訊息。"
-    },
-    {
-     "en": "The technology company also introduced a guided learning principle to help students work through problems instead of simply giving them answers. Under this system, when the technology detects homework help requests, students receive step-by-step guidance rather than a single direct answer. Other technology companies are taking similar approaches to prove their products are valuable learning tools for the future workforce.",
-     "zh": "這家科技公司還引入了一項引導式學習原則，旨在幫助學生透過問題來學習，而不是直接給他們答案。在此系統下，當技術檢測到家庭作業求助請求時，學生會收到逐步引導，而不是單一的直接答案。其他科技公司也正採取類似的方法，來證明其產品是未來勞動市場中有價值的學習工具。"
-    },
-    {
-     "en": "Not everyone is happy with the announcement. New York Mayor Zohran Mamdani accused the company of trying to force artificial intelligence into schools, stating in an online post that no corporation should have the power to dictate how children are taught.",
-     "zh": "並非所有人都對這項公告感到滿意。紐約市長佐赫蘭·馬姆達尼（Zohran Mamdani）指責該公司試圖將人工智慧強加於學校，並在網路貼文中表示，沒有任何企業應該擁有決定如何教導我們孩子的權力。"
-    }
-   ],
-   "words": 299,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "institution",
-     "pos": "n.",
-     "zh": "機構"
-    },
-    {
-     "word": "administrator",
-     "pos": "n.",
-     "zh": "管理者"
-    },
-    {
-     "word": "explicitly",
-     "pos": "adv.",
-     "zh": "明確地"
-    },
-    {
-     "word": "unavailable",
-     "pos": "adj.",
-     "zh": "無法使用的"
-    },
-    {
-     "word": "principle",
-     "pos": "n.",
-     "zh": "原則"
-    },
-    {
-     "word": "detect",
-     "pos": "v.",
-     "zh": "檢測"
-    },
-    {
-     "word": "dictate",
-     "pos": "v.",
-     "zh": "決定"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "opt out",
-     "zh": "選擇退出"
-    },
-    {
-     "phrase": "by default",
-     "zh": "預設地"
-    },
-    {
-     "phrase": "work through",
-     "zh": "逐步解決"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "關係代名詞 (Relative Pronoun)",
-     "explain": "說明主詞 Chris Phillips 的身份背景，提供補充資訊。",
-     "example": "Chris Phillips, who serves as the vice president of education at Google, explained to reporters that search systems and artificial intelligence are deeply connected.",
-     "focus": "who serves as the vice president of education at Google"
-    },
-    {
-     "point": "分詞構句 (Participial Clause)",
-     "explain": "用現在分詞表達伴隨的動作或狀態。",
-     "example": "New York Mayor Zohran Mamdani accused the company of trying to force artificial intelligence into schools, stating in an online post that no corporation should have the power to dictate how children are taught.",
-     "focus": "stating in an online post that no corporation should have the power to dictate how children are taught"
-    },
-    {
-     "point": "被動語態 (Passive Voice)",
-     "explain": "表示主詞受到動作的影響，強調動作的承受者。",
-     "example": "Under this system, when the technology detects homework help requests, students receive step-by-step guidance rather than a single direct answer.",
-     "focus": "receive step-by-step guidance"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
   }
  ],
- "lessonsDate": "2026-11-05"
+ "lessonsDate": "2026-11-06"
 }
