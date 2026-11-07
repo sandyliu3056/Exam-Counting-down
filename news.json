@@ -1,61 +1,173 @@
 {
- "updated": "2026-11-06T01:47:20Z",
+ "updated": "2026-11-07T01:10:01Z",
  "items": [
   {
-   "title": "Major tech stocks plunge as US midterms add to fears of AI slowdown",
-   "link": "https://www.bbc.co.uk/news/articles/cmn04705rd8jo?at_medium=RSS&at_campaign=rss",
-   "summary": "Markets have been reacting to possible tougher scrutiny of data centre construction and the AI industry following the US midterms.",
+   "title": "Taiwan to activate NSF amid stock rout",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/07/2003867305",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-07T00:00:00Z"
+  },
+  {
+   "title": "Legislator May Chin indicted on security charges",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/07/2003867306",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-07T00:00:00Z"
+  },
+  {
+   "title": "Taiwan to close its office in Papua New Guinea",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/07/2003867307",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-07T00:00:00Z"
+  },
+  {
+   "title": "How octopuses squeeze through teeny tiny holes",
+   "link": "https://www.npr.org/2026/11/06/nx-s1-6027897/how-octopuses-squeeze-through-teeny-tiny-holes",
+   "summary": "Robots used during search and rescue operations need to be able to wriggle through narrow cracks and crevices. Researchers have turned to a natural contortionist for inspiration — the octopus.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-06T22:24:10Z"
+  },
+  {
+   "title": "Elon Musk appears to signal the end of the road for Cybertruck",
+   "link": "https://www.bbc.co.uk/news/articles/cq1j33w7d232o?at_medium=RSS&at_campaign=rss",
+   "summary": "Musk said it was to make room for production of its Cybercabs - autonomous taxis without a driver.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-06T01:44:03Z"
+   "date": "2026-11-06T21:49:50Z"
   },
   {
-   "title": "Could the earliest weakening of the polar vortex on record bring UK snow?",
-   "link": "https://www.bbc.co.uk/weather/articles/cwyvrz09mnd6o?at_medium=RSS&at_campaign=rss",
-   "summary": "An unprecedented early weakening of the polar vortex is causing uncertainty amongst experts over the impact it will have on UK weather as Simon King explains.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-06T01:22:39Z"
-  },
-  {
-   "title": "The engine parts that 'fight the laws of the universe'",
-   "link": "https://www.bbc.co.uk/news/articles/cwe9lmp1pyyxo?at_medium=RSS&at_campaign=rss",
-   "summary": "Investment has surged into the making of jet turbine blades - an extremely difficult component to make.",
+   "title": "AI stocks climb after trillions wiped from market values",
+   "link": "https://www.bbc.co.uk/news/articles/c35ynnpzdq51o?at_medium=RSS&at_campaign=rss",
+   "summary": "Investors had been selling off tech shares in part due to concerns the Democrat election victory would mean slower AI development.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-06T00:06:06Z"
+   "date": "2026-11-06T21:06:25Z"
   },
   {
-   "title": "China targeted 131 Taiwanese: MAC",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/06/2003867245",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-06T00:00:00Z"
+   "title": "Trump's global health strategy is emerging. What will the Democratic Congress say?",
+   "link": "https://www.npr.org/2026/11/06/nx-s1-6028828/global-health-usaid-trump-democrats-congress",
+   "summary": "The Trump Administration has ushered in a fundamental shift in the U.S. approach to global health aid. How will the newly elected Democratic Congress weigh in?",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-06T20:09:58Z"
   },
   {
-   "title": "NSTC in talks to establish space investment fund",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/06/2003867246",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-06T00:00:00Z"
+   "title": "Famous New Mexico rock formation destroyed after torrential El Niño rains",
+   "link": "https://www.theguardian.com/environment/2026/nov/06/new-mexico-alien-throne-collapse-el-nino-rain",
+   "summary": "Officials expected to investigate whether super El Niño storms in US south-west damaged the Alien Throne spires Undulating, gravity-defying rock spires are one of the most magical parts of the landscape of the US…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-06T19:23:03Z"
   },
   {
-   "title": "Retired general out on bail, suspected of vote interference",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/06/2003867247",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-06T00:00:00Z"
+   "title": "Health intel-sharing group warns industry in wake of cyberattack on French blood bank",
+   "link": "https://www.npr.org/2026/11/06/nx-s1-6032602/cyberattack-blood-bank-healthcare",
+   "summary": "A healthcare intelligence-sharing organization is warning its members to lock down systems following cyberattacks on cold storage systems, including a French blood bank.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-06T19:00:21Z"
   },
   {
-   "title": "Delhi's toxic winter air is back - is the Indian capital prepared for pollution?",
-   "link": "https://www.bbc.co.uk/news/articles/cm78p0n09q3xo?at_medium=RSS&at_campaign=rss",
-   "summary": "The Delhi government has announced a four-month winter action plan, but experts say that won't be enough.",
+   "title": "Why the US midterms sparked an AI stock selloff",
+   "link": "https://www.bbc.co.uk/news/articles/crlykkzwwpydo?at_medium=RSS&at_campaign=rss",
+   "summary": "Fears of more AI regulation appear to have sparked fear among investors, but concerns about the industry have been growing for some time.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-06T18:32:16Z"
+  },
+  {
+   "title": "How climate change worsens heatwaves, droughts, wildfires and floods",
+   "link": "https://www.bbc.co.uk/news/articles/cy4dgp1p3p1o?at_medium=RSS&at_campaign=rss",
+   "summary": "Rising global temperatures mean extreme weather events are becoming more common and more intense.",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-11-05T23:16:53Z"
+   "date": "2026-11-06T16:43:30Z"
+  },
+  {
+   "title": "A really simple guide to climate change",
+   "link": "https://www.bbc.co.uk/news/articles/c9w15nggj58o?at_medium=RSS&at_campaign=rss",
+   "summary": "Human activities are causing the world to heat up, posing serious threats to people and nature.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-06T16:40:51Z"
+  },
+  {
+   "title": "What is the Paris Agreement and why does 1.5C matter?",
+   "link": "https://www.bbc.co.uk/news/articles/c93d59d4zy1o?at_medium=RSS&at_campaign=rss",
+   "summary": "The 2015 pact is at the heart of the international commitment to tackle rising global temperatures.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-06T16:39:07Z"
+  },
+  {
+   "title": "In Alaska’s capital, food comes by water, air or, most often, community sharing",
+   "link": "https://www.theguardian.com/environment/2026/nov/06/alaska-juneau-food-access",
+   "summary": "Juneau has little arable land, a short growing season and few farmers – and deep traditions of residents and the land feeding each other Forty miles north-west of Alaska’s capital, the highway just ends. At Glacier…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-06T15:00:46Z"
+  },
+  {
+   "title": "Australia’s coal and gas approvals are starting to stink ahead of Cop31 | Jess Harwood",
+   "link": "https://www.theguardian.com/commentisfree/picture/2026/nov/07/australias-coal-and-gas-approvals-are-starting-to-stink-ahead-of-cop31",
+   "summary": "What happened to climate injustice? Continue reading...",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-06T14:00:44Z"
+  },
+  {
+   "title": "Parents warned to be on alert after school data breach",
+   "link": "https://www.bbc.co.uk/news/articles/cm9dzz6191gvo?at_medium=RSS&at_campaign=rss",
+   "summary": "There have been concerns that the breach may have allowed access to parent contact details and some pupil information.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-06T13:15:50Z"
+  },
+  {
+   "title": "Tesla set to wind down production of Cybertruck",
+   "link": "https://lite.cnn.com/2026/11/06/business/tesla-winding-down-production-of-cybertruck",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-06T12:00:00Z"
+  },
+  {
+   "title": "‘This is a hate-hate relationship’: Why Miami-Notre Dame still burns after all these years",
+   "link": "https://lite.cnn.com/2026/11/06/sport/miami-notre-dame-rivalry",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-06T12:00:00Z"
+  },
+  {
+   "title": "Doomscrolling (and kids) destroyed my reading habit. Could the ‘Booker Challenge’ save it?",
+   "link": "https://lite.cnn.com/2026/11/06/style/booker-prize-reading-challenge-doomscrolling",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Culture",
+   "date": "2026-11-06T12:00:00Z"
+  },
+  {
+   "title": "Past White House adviser Raj Panjabi has written a playbook for 'living room' crises",
+   "link": "https://www.npr.org/2026/11/06/nx-s1-6021013/white-house-adviser-raj-panjabi-safer-playbook",
+   "summary": "Dr. Raj Panjabi is the author of Safer: A Playbook. His goal is to help people face a personal crisis — health, workplace, family conflicts — and \"turn fear into action.\"",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-06T11:57:32Z"
+  },
+  {
+   "title": "Why public schools nationwide are facing a massive drop in student enrollment",
+   "link": "https://www.npr.org/2026/11/06/nx-s1-5971283/public-school-enrollment-ice-deportation-birthrate",
+   "summary": "School enrollment was already expected to plunge by 2 million kids by 2030. Education experts say deporting immigrant families, many with school-age children, is making the crisis worse.",
+   "source": "NPR",
+   "topic": "Education",
+   "date": "2026-11-06T10:00:00Z"
   },
   {
    "title": "Powerhouse Parramatta opens this weekend – and it’s dazzling inside and out",
@@ -66,44 +178,28 @@
    "date": "2026-11-05T23:00:36Z"
   },
   {
-   "title": "BBC Inside Science",
-   "link": "https://www.bbc.co.uk/sounds/play/w3ct978k?at_medium=RSS&at_campaign=rss",
-   "summary": "A glimpse into the world of the incredibly tiny",
-   "source": "BBC",
+   "title": "Origin of Stonehenge’s altar remains enigma as north-east Scotland theory ruled out",
+   "link": "https://www.theguardian.com/uk-news/2026/nov/05/origin-stonehenge-altar-remains-enigma-north-east-scotland-ruled-out",
+   "summary": "Geologists say they are getting closer to solving mystery as tests suggest stone may have come from elsewhere in Scotland, northern England or even Ireland They spent countless hours on weather-battered Scottish hills,…",
+   "source": "The Guardian",
    "topic": "Science",
-   "date": "2026-11-05T21:00:00Z"
+   "date": "2026-11-05T14:26:52Z"
   },
   {
-   "title": "School failed to deal with racist bullying, father claims",
-   "link": "https://www.bbc.co.uk/news/articles/cvrly1g1e85ro?at_medium=RSS&at_campaign=rss",
-   "summary": "The school and council say the school is safe for every pupil.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-05T18:58:20Z"
+   "title": "Storm drenching East Coast after causing deadly, catastrophic flooding in Georgia and Tennessee",
+   "link": "https://lite.cnn.com/2026/11/05/weather/flooding-georgia-tennessee-mccaysville-copperhill-climate",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Weather",
+   "date": "2026-11-05T12:00:00Z"
   },
   {
-   "title": "How Democrats used the midterms to turn affordability concerns into ‘green populism’",
-   "link": "https://www.theguardian.com/us-news/2026/nov/05/democrats-climate-crisis-in-midterm-election-results",
-   "summary": "From energy prices to datacenters, climate became a cost-of-living issue – and a winning one Q&A: Ask your questions about Democrats’ win in the midterms Climate-forward Democrats swept into power on Tuesday night as a…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-05T17:00:28Z"
-  },
-  {
-   "title": "‘It’s kind of a melting pot’: how one US city transformed a highway into a leafy oasis",
-   "link": "https://www.theguardian.com/environment/2026/nov/05/lancaster-california-transformed-highway-leafy-oasis",
-   "summary": "The BLVD is home to 250 enterprises, from banks, tattoo shops and restaurants to museums and a performing arts centre Passing through the Mojave desert on State Route 14, going by landscapes Hollywood uses to represent…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-05T14:07:12Z"
-  },
-  {
-   "title": "Teens worldwide aren't getting enough exercise -- especially girls",
-   "link": "https://www.npr.org/2026/11/05/nx-s1-6027635/exercise-workout-teenagers-adolescents-gender-gap",
-   "summary": "A new study looks at the recommended amount of daily exercise for adolescents — and how few are getting it.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-05T12:24:14Z"
+   "title": "Japan’s former soccer chief aims to run against Gianni Infantino for FIFA presidency",
+   "link": "https://lite.cnn.com/2026/11/05/sport/soccer-fifa-kozo-tashima-infantino-intl-hnk",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-05T12:00:00Z"
   },
   {
    "title": "The Great Pacific Garbage Patch may now have so much plastic, it’s changing the color of the ocean",
@@ -111,14 +207,6 @@
    "summary": "",
    "source": "CNN",
    "topic": "Environment",
-   "date": "2026-11-05T12:00:00Z"
-  },
-  {
-   "title": "‘Catastrophic’ flooding sets off 100+ rescues, inundates homes and businesses in North Georgia and southern Tennessee",
-   "link": "https://lite.cnn.com/2026/11/05/weather/flooding-georgia-tennessee-mccaysville-copperhill-climate",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Weather",
    "date": "2026-11-05T12:00:00Z"
   },
   {
@@ -130,68 +218,12 @@
    "date": "2026-11-05T12:00:00Z"
   },
   {
-   "title": "The awkward ending to Cristiano Ronaldo’s extraordinary Portugal career",
-   "link": "https://lite.cnn.com/2026/11/05/sport/cristiano-ronaldo-portgual-retirement-analysis",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-11-05T12:00:00Z"
-  },
-  {
-   "title": "LIV Golf winding down operations, lawyer says in bankruptcy hearing",
-   "link": "https://lite.cnn.com/2026/11/05/sport/liv-golf-winding-down-operations",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-11-05T12:00:00Z"
-  },
-  {
-   "title": "Thicker bacon and ditching breakfast. Wendy’s hopes a menu shakeup can revive sales",
-   "link": "https://lite.cnn.com/2026/11/05/business/wendys-third-quarter-earnings-turnaround-plan",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-05T12:00:00Z"
-  },
-  {
-   "title": "The Met Gala plays it safe with new exhibition theme",
-   "link": "https://lite.cnn.com/2026/11/05/style/met-gala-2027-new-theme-announcement",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-05T12:00:00Z"
-  },
-  {
-   "title": "South West Water’s failure to fix leaks ‘putting customer supplies at risk’",
-   "link": "https://www.theguardian.com/business/2026/nov/05/south-west-water-failure-fix-leaks-putting-customer-supplies-at-risk",
-   "summary": "With parts of region served by company in severe drought still, regulators give it six weeks to come up with action plan Repeated failures by South West Water to tackle leaks are putting customers at higher risks of…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-05T10:00:02Z"
-  },
-  {
-   "title": "Former permanent secretary alleges he was 'bullied' by education minister, says MLA",
-   "link": "https://www.bbc.co.uk/news/articles/c35yn7p4970go?at_medium=RSS&at_campaign=rss",
-   "summary": "Sinn Féin assembly member Pat Sheehan made the claim during a committee hearing earlier this week.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-05T06:30:52Z"
-  },
-  {
-   "title": "‘Ferritin face’: can you really diagnose low iron from a selfie? – podcast",
+   "title": "‘Ferritin face’: what you need to know about low iron - podcast",
    "link": "https://www.theguardian.com/science/audio/2026/nov/05/ferritin-face-can-you-really-diagnose-low-iron-from-a-selfie-podcast",
    "summary": "Social media is awash with claims iron deficiency can be identified in the mirror by dark circles, breaking hair and dry skin. But is ‘ferritin face’ real? Madeleine Finlay tells Ian Sample why so many of us struggle…",
    "source": "The Guardian",
    "topic": "Science",
-   "date": "2026-11-05T05:00:55Z"
-  },
-  {
-   "title": "Historians say King Verica persuaded Rome to invade Britain. But could Verica actually have been a queen?",
-   "link": "https://www.theguardian.com/uk-news/2026/nov/05/verica-rome-invade-britain-queen-or-king",
-   "summary": "Controversial theory that Verica, who incited Emperor Claudius’s AD43 landing, was a woman could put a new spin on British history if true It was a moment that changed the course of British history: in AD43, Roman…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-05T05:00:54Z"
+   "date": "2026-11-05T06:00:55Z"
   },
   {
    "title": "Elon Musk will face scrutiny from Democrats after midterms",
@@ -202,126 +234,15 @@
    "date": "2026-11-04T21:11:23Z"
   },
   {
-   "title": "It was a big night for doctors to win seats in Congress, riding the blue wave",
-   "link": "https://www.npr.org/2026/11/04/nx-s1-6017757/democrats-republicans-doctors-acton-andrews-blue-wave",
-   "summary": "Historically, most physicians who served in the House or Senate have been Republicans. In the next Congress, physicians who are Democrats made significant gains.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-04T20:46:26Z"
-  },
-  {
    "title": "Review: The Legend of Zelda: Ocarina of Time remake is superb, streamlined and safe",
    "link": "https://www.npr.org/2026/11/04/nx-s1-6026597/review-legend-of-zelda-ocarina-of-time-remake-switch-2",
    "summary": "Nintendo's new Ocarina of Time remake enshrines its place in the gaming canon for generations to come. But despite its stupendous production values, the game left me feeling oddly bereft.",
    "source": "NPR",
    "topic": "Tech",
    "date": "2026-11-04T11:00:00Z"
-  },
-  {
-   "title": "Some universities have programs that allow students to live in retirement communities",
-   "link": "https://www.npr.org/2026/11/03/nx-s1-6019425/some-universities-have-programs-that-allow-students-to-live-in-retirement-communities",
-   "summary": "Universities are offering students an alternative to the typical on-campus and off-campus living options: living alongside seniors in a retirement community.",
-   "source": "NPR",
-   "topic": "Education",
-   "date": "2026-11-03T21:14:05Z"
-  },
-  {
-   "title": "How former Yahoo CEO Marissa Mayer sees AI assistants fitting into busy women's lives",
-   "link": "https://www.npr.org/2026/11/02/nx-s1-6022451/how-former-yahoo-ceo-marissa-mayer-sees-ai-assistants-fitting-into-busy-womens-lives",
-   "summary": "NPR's Juana Summers talks with former Yahoo CEO Marissa Mayer about AI assistants and lightening the load of emotional labor.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-02T22:27:07Z"
-  },
-  {
-   "title": "How does this fluoride-free toothpaste compare when it comes to oral health?",
-   "link": "https://www.npr.org/2026/11/02/nx-s1-5955806/fluoride-toothpaste-hydroxyapatite-dental-oral-health",
-   "summary": "Many people are swapping out their fluoride dental products for ones made with a mineral called hydroxyapatite. What do dentists say about it?",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-02T10:00:00Z"
   }
  ],
  "lessons": [
-  {
-   "link": "https://www.bbc.co.uk/news/articles/cmn04705rd8jo?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Tech",
-   "title": "Major tech stocks plunge as US midterms add to fears of AI slowdown",
-   "title_zh": "美國期中選舉增添人工智慧發展放緩疑慮，主要科技股暴跌",
-   "paragraphs": [
-    {
-     "en": "Major technology companies across the United States and Asia lost hundreds of billions of dollars in market value following the US midterm elections. The political results sparked intense worries about a possible slowdown in artificial intelligence development, leading to a massive stock market sell-off.",
-     "zh": "在美國期中選舉之後，美國與亞洲的主要科技公司市值蒸發了數千億美元。選舉結果引發了對人工智慧發展可能放緩的強烈擔憂，導致股市出現大規模拋售潮。"
-    },
-    {
-     "en": "In the United States, the Nasdaq composite index dropped by over 5.5%, marking its worst trading day in recent years. Democratic candidates had campaigned heavily on slowing down the growth of data centres. After winning both the Senate and the House of Representatives, Democrats now control Congress for the rest of President Donald Trump's term.",
-     "zh": "在美國，那斯達克綜合指數下跌超過百分之五點五，創下近年來最糟糕的交易日。民主黨候選人在競選期間大力主張放慢資料中心的成長。在贏得參議院與眾議院之後，民主黨人現在控制了國會，直到美國總統唐納·川普的任期結束。"
-    },
-    {
-     "en": "Asian markets also suffered severe losses as computer chip makers saw their shares slide significantly. Japan's Nikkei 225 index fell by 6%, while South Korea's Kospi index dropped more than 8.5%, forcing authorities to trigger a circuit breaker to halt panic selling temporarily. Taiwan's Taiex decreased by over 8.3%, and the major chipmaking giant TSMC fell by nearly 8.5%.",
-     "zh": "隨著電腦晶片製造商的股價顯著下滑，亞洲市場也遭受了慘重損失。日本日經二二五指數下跌百分之六，而南韓綜合股價指數下跌超過百分之八點五，迫使當局啟動熔斷機制來暫時阻止恐慌性拋售。台灣加權指數下跌超過百分之八點三，主要晶片製造巨頭台積電則下跌將近百分之八點五。"
-    },
-    {
-     "en": "Investors are increasingly worried that the huge amounts of money spent on artificial intelligence infrastructure might not bring the expected financial returns. Furthermore, stricter environmental scrutiny and local opposition to data centres could delay future construction projects and raise overall industry costs.",
-     "zh": "投資人越來越擔心，花在人工智慧基礎設施上的巨額資金可能無法帶來預期的財務回報。此外，更嚴格的環境審查以及地方對資料中心的反對，可能會延遲未來的建設專案並提高整體產業成本。"
-    }
-   ],
-   "words": 200,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "slowdown",
-     "pos": "n.",
-     "zh": "減緩、放緩"
-    },
-    {
-     "word": "index",
-     "pos": "n.",
-     "zh": "指數"
-    },
-    {
-     "word": "trigger",
-     "pos": "v.",
-     "zh": "觸發、引起"
-    },
-    {
-     "word": "scrutiny",
-     "pos": "n.",
-     "zh": "審查、仔細檢查"
-    },
-    {
-     "word": "infrastructure",
-     "pos": "n.",
-     "zh": "基礎設施"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "market value",
-     "zh": "市值"
-    },
-    {
-     "phrase": "sell-off",
-     "zh": "拋售潮"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "關係代名詞子句 (Relative Clause)",
-     "explain": "使用關代說明先行詞晶片製造商，補充說明其業務性質。",
-     "example": "Asian markets also suffered severe losses as computer chip makers saw their shares slide significantly.",
-     "focus": "as computer chip makers saw their shares slide significantly"
-    },
-    {
-     "point": "現在分詞作形容詞 (Present Participle as Adjective)",
-     "explain": "使用現在分詞修飾名詞，表達正在進行或具有某種特質的狀態。",
-     "example": "The political results sparked intense worries about a possible slowdown in artificial intelligence development.",
-     "focus": "artificial intelligence development"
-    }
-   ],
-   "model": "gemini-flash-lite-latest"
-  },
   {
    "link": "https://www.theguardian.com/culture/ng-interactive/2026/nov/06/powerhouse-parramatta-opening-festival",
    "source": "The Guardian",
@@ -406,100 +327,6 @@
     }
    ],
    "model": "gemini-flash-lite-latest"
-  },
-  {
-   "link": "https://www.npr.org/2026/11/05/nx-s1-6027635/exercise-workout-teenagers-adolescents-gender-gap",
-   "source": "NPR",
-   "topic": "Health",
-   "title": "Teens worldwide aren't getting enough exercise -- especially girls",
-   "title_zh": "全球青少年運動量不足——尤其是女孩",
-   "paragraphs": [
-    {
-     "en": "The World Health Organization (WHO) advises teenagers to work up a sweat for at least one hour daily through moderate-to-vigorous physical activity to support their growing bodies. However, a study published in The Lancet Global Health shows that very few teenagers meet this standard. In fact, roughly one out of four adolescents does not achieve an hour of exercise on any single day of the week, and global levels have barely improved over the past fifteen years.",
-     "zh": "世界衛生組織（WHO）建議青少年每天透過中度至劇烈的身體活動流汗至少一小時，以支持他們成長中的身體。然而，發表在《刺胳針全球衛生》（The Lancet Global Health）上的一項研究顯示，極少數青少年達到這一標準。事實上，大約每四名青少年中就有一人在一週中的任何一天都沒有達到一小時的運動量，而且全球水平在過去十五年間幾乎沒有改善。"
-    },
-    {
-     "en": "The findings are based on surveys covering more than three million teenagers from 140 countries. Overall, only about 14 percent of adolescents worldwide exercise for an hour every day. Researchers noticed that teenagers in middle- and lower-income countries generally move less than those in wealthier Western nations. Epidemiologist Andrea Ramirez Varela from the University of Texas Health Science Center in Houston explained that living environments often limit opportunities. Many cities lack safe pedestrian routes, and polluted air makes outdoor exercise unhealthy. In addition, attractive digital screens play a role by keeping teenagers sedentary at home after school.",
-     "zh": "這些研究結果是根據涵蓋來自一百四十個國家、超過三百萬名青少年的調查資料。總體而言，全球僅有約百分之十四的青少年每天運動一小時。研究人員注意到，中低收入國家的青少年活動量通常少於較富裕的西方國家青少年。來自休士頓德州大學健康科學中心的流行病學家安德莉亞．拉米雷斯．瓦雷拉（Andrea Ramirez Varela）解釋說，生活環境往往限制了運動的機會。許多城市缺乏安全的步行路線，而且空氣污染使戶外運動變得不健康。此外，吸引人的數位螢幕也產生了影響，讓青少年放學回家後久坐不動。"
-    },
-    {
-     "en": "The research also revealed a significant gender gap worldwide. Nearly 30 percent of girls do not exercise at all during the week, whereas the figure for boys is 22 percent, and girls average fewer active days each week. Cultural expectations often drive this difference. Solveig Cunningham, a global health researcher at Emory University, noted that in countries like India, families worry that spending time under the sun will darken girls' skin and affect their marriage prospects. Furthermore, while boys play sports, girls often spend their active time performing household chores.",
-     "zh": "該研究還揭示了全球顯著的性別差距。將近百分之三十的女孩在一週內完全不運動，而男孩的比例為百分之二十二，且女孩每週平均運動天數也較少。文化期望往往是造成這種差異的主因。艾莫瑞大學（Emory University）全球衛生研究員索爾薇格．坎寧安（Solveig Cunningham）指出，在印度等國家，家庭擔心在陽光下待太久會讓女孩的皮膚變黑，並影響她們的婚姻前景。此外，當男孩在從事體育活動時，女孩通常將活躍的時間花在做家事上。"
-    },
-    {
-     "en": "Experts believe that schools offer the most practical setting to address this crisis. Fiona Bull from the WHO warned, \"Business as usual will not change these trends.\" Developing affordable and accessible school sports programs could encourage lifelong healthy habits. Varela added that failing to solve this problem during youth will carry over into adulthood, which will eventually create heavy physical and mental health burdens for society.",
-     "zh": "專家認為，學校是解決這場危機最實際的場所。來自世衛組織的費歐娜．布爾（Fiona Bull）警告說：「照常運作不會改變這些趨勢。」發展負擔得起且容易參與的學校運動計畫，可能有助於培養終身的健康習慣。瓦雷拉補充說，在青少年時期沒有解決這個問題將會延續到成年期，這最終將給社會帶來沉重的身心健康負擔。"
-    }
-   ],
-   "words": 330,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "moderate",
-     "pos": "adj.",
-     "zh": "中等的；適度的"
-    },
-    {
-     "word": "pedestrian",
-     "pos": "adj.",
-     "zh": "行人的；步行的"
-    },
-    {
-     "word": "sedentary",
-     "pos": "adj.",
-     "zh": "久坐的；缺乏運動的"
-    },
-    {
-     "word": "prospect",
-     "pos": "n.",
-     "zh": "前景；指望"
-    },
-    {
-     "word": "accessible",
-     "pos": "adj.",
-     "zh": "易於取得的；容易使用的"
-    },
-    {
-     "word": "burden",
-     "pos": "n.",
-     "zh": "負擔；重擔"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "work up a sweat",
-     "zh": "流汗；做劇烈運動"
-    },
-    {
-     "phrase": "play a role",
-     "zh": "扮演角色；發揮作用"
-    },
-    {
-     "phrase": "carry over into",
-     "zh": "延伸至；波及"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "名詞子句作受詞 (Noun Clause as Object)",
-     "explain": "從屬連接詞「that」引導完整的名詞子句，置於及物動詞「shows」後方作為該動詞的受詞。",
-     "example": "However, a study published in The Lancet Global Health shows that very few teenagers meet this standard.",
-     "focus": "that very few teenagers meet this standard"
-    },
-    {
-     "point": "動名詞片語當主詞 (Gerund Phrase as Subject)",
-     "explain": "動名詞「Developing」引導名詞片語置於主要子句句首作主詞，表達單一事件概念。",
-     "example": "Developing affordable and accessible school sports programs could encourage lifelong healthy habits.",
-     "focus": "Developing affordable and accessible school sports programs"
-    },
-    {
-     "point": "非限定關係子句 (Non-defining Relative Clause)",
-     "explain": "逗號後的關係代名詞「which」引導非限定子句，指代前面整件事作為先行詞並補充說明後續影響。",
-     "example": "Varela added that failing to solve this problem during youth will carry over into adulthood, which will eventually create heavy physical and mental health burdens for society.",
-     "focus": ", which will eventually create heavy physical and mental health burdens for society"
-    }
-   ],
-   "model": "gemini-flash-latest"
   },
   {
    "link": "https://www.npr.org/2026/11/04/nx-s1-6029650/elon-musk-midterms-democrats-texas-congress",
