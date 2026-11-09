@@ -1,53 +1,173 @@
 {
- "updated": "2026-11-08T00:54:09Z",
+ "updated": "2026-11-09T01:11:45Z",
  "items": [
   {
-   "title": "Can the Zelda remake capture the magic of the original?",
-   "link": "https://www.bbc.co.uk/news/articles/cm8xznl0n1q4o?at_medium=RSS&at_campaign=rss",
-   "summary": "Nintendo has released its remake of what is considered one of the best games ever made - the BBC's Tom Gerken gives his verdict.",
+   "title": "A glimmer of good news for Britain's sleepy dormouse",
+   "link": "https://www.bbc.co.uk/news/articles/c85ynn0p5k71o?at_medium=RSS&at_campaign=rss",
+   "summary": "New figures suggest hazel dormice may be recovering after decades of decline, with warmer summers boosting survival.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-09T00:56:43Z"
+  },
+  {
+   "title": "NSC tightens anti-infiltration measures",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/09/2003867397",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-09T00:00:00Z"
+  },
+  {
+   "title": "US cites China in PNG closure of Taiwan site",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/09/2003867398",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-09T00:00:00Z"
+  },
+  {
+   "title": "Chinese-owned yachts barred from Taiwan ports",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/09/2003867399",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-09T00:00:00Z"
+  },
+  {
+   "title": "NASA is looking for astronauts to live and work on the Moon",
+   "link": "https://www.npr.org/2026/11/08/nx-s1-6034002/nasa-astronaut-class-applications-2026",
+   "summary": "NASA needs more recruits in order to return to the moon after being gone more than half a century.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-08T23:36:47Z"
+  },
+  {
+   "title": "Free school milk scheme could end after 50 years",
+   "link": "https://www.bbc.co.uk/news/articles/c6wydxxg8eexo?at_medium=RSS&at_campaign=rss",
+   "summary": "Free school milk has been provided to children in Wales since the 1970s, but that could now change.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-08T21:51:43Z"
+  },
+  {
+   "title": "Cold blast brings springtime snow to alpine regions as temperatures plummet across Australia’s south-east",
+   "link": "https://www.theguardian.com/australia-news/2026/nov/08/australia-weather-cold-blast-springtime-snow-thredbo-perisher-hotham-victoria-tasmania-el-nino",
+   "summary": "Thredbo, Perisher and Mount Hotham all recorded falls, along with Kunanyi/Mount Wellington in Tasmania Get our breaking news email , free app or daily news podcast Snow blanketed parts of New South Wales, Victoria and…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-08T21:25:10Z"
+  },
+  {
+   "title": "Secondary schools told to stop teaching GCSEs before Year 10",
+   "link": "https://www.bbc.co.uk/news/articles/c680z89dk827o?at_medium=RSS&at_campaign=rss",
+   "summary": "The government says pupils in Year 7 to 9 should have \"richer, more engaging\" learning than preparing for GCSEs.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-08T19:00:32Z"
+  },
+  {
+   "title": "Heavy rain floods displaced families’ tents in Gaza – in pictures",
+   "link": "https://www.theguardian.com/world/gallery/2026/nov/08/heavy-rain-floods-displaced-families-tents-gaza-in-pictures",
+   "summary": "The first winter storm began affecting the people of Gaza this weekend with heavy rain hitting on Saturday. Reports that about 70,000 tents were flooded within 12 hours prompted warnings of a worsening humanitarian…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-08T18:50:12Z"
+  },
+  {
+   "title": "Labour expected to cut EV targets for UK’s car industry despite MPs’ protests",
+   "link": "https://www.theguardian.com/environment/2026/nov/08/labour-cut-ev-target-car-industry-despite-climate-concerns",
+   "summary": "Exclusive: Louise Haigh likely to weaken mandate for sales that forms key part of emission reduction plan Analysis: Climate always comes second – are green issues slipping down Burnham’s agenda? Ministers are expected…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-08T17:51:19Z"
+  },
+  {
+   "title": "The Guardian view on Ordnance Survey maps: still a superior way to navigate the landscape | Editorial",
+   "link": "https://www.theguardian.com/commentisfree/2026/nov/08/the-guardian-view-on-ordnance-survey-maps-still-a-superior-way-to-navigate-the-landscape",
+   "summary": "The 225th anniversary of the organisation’s first publication is an opportunity to celebrate its unique contribution to our sense of place In his one-paragraph short story , On Exactitude in Science, Jorge Luis Borges…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-08T17:25:45Z"
+  },
+  {
+   "title": "Nasa seeks next generation of astronauts to live and work on the moon",
+   "link": "https://www.theguardian.com/science/2026/nov/08/nasa-astronauts-moon-applications-open",
+   "summary": "Applications due on 3 December for new generation of explorers who can ‘shape humanity’s future in space’ Nasa has launched a callout for a new generation of astronauts as it searches for explorers who could live and…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-08T16:54:44Z"
+  },
+  {
+   "title": "Government 'looking seriously' at banning under-16s from Vinted and eBay",
+   "link": "https://www.bbc.co.uk/news/articles/cmzxjvpqrjxro?at_medium=RSS&at_campaign=rss",
+   "summary": "The culture secretary confirms reports they could be in the list of platforms set to be banned next March.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-08T00:37:45Z"
+   "date": "2026-11-08T15:37:25Z"
   },
   {
-   "title": "Taiwan Strait peace a priority: IPAC",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/08/2003867350",
+   "title": "Nandy rejects claims of politicising Remembrance Sunday after Erasmus row",
+   "link": "https://www.bbc.co.uk/news/articles/cmvg72p1zgvlo?at_medium=RSS&at_campaign=rss",
+   "summary": "The culture secretary says the UK rejoining the EU's study and work scheme will help honour wartime sacrifice.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-08T13:05:30Z"
+  },
+  {
+   "title": "Dormice 'thrive' at National Trust site",
+   "link": "https://www.bbc.co.uk/news/articles/c50meerl8xp1o?at_medium=RSS&at_campaign=rss",
+   "summary": "Killerton National Trust has 100 nest boxes across its estate in Devon.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-08T12:22:05Z"
+  },
+  {
+   "title": "Nvidia launches investigation into CEO Jensen Huang over foreign intelligence concerns",
+   "link": "https://lite.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang",
    "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-08T00:00:00Z"
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-08T12:00:00Z"
   },
   {
-   "title": "PLA may be simulating Taiwan isolation: report",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/08/2003867351",
+   "title": "NASCAR phenom Kyle Larson wins 2nd consecutive Cup Series title",
+   "link": "https://lite.cnn.com/2026/11/08/sport/kyle-larson-second-consecutive-nascar-cup-series-title",
    "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-08T00:00:00Z"
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-08T12:00:00Z"
   },
   {
-   "title": "China confirms plans for Xi-Trump-Putin meeting",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/08/2003867352",
+   "title": "The vanity economy is taking over America’s downtowns",
+   "link": "https://lite.cnn.com/2026/11/08/business/cities-retail-vanity-economy",
    "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-08T00:00:00Z"
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-08T12:00:00Z"
   },
   {
-   "title": "How do you broker UN climate talks when your own country is a big coal and gas exporter? Chris Bowen is about to find out",
-   "link": "https://www.theguardian.com/environment/2026/nov/08/chris-bowen-cop31-experts-condemn-australia-coal-gas-approvals",
-   "summary": "Ahead of Cop31, climate change minister dismisses concerns about whether Australia as a major producer can keep the world moving away from fossil fuels Listen to the podcast: Chris Bowen on how he’ll reach consensus at…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-07T19:00:20Z"
+   "title": "Climate change is altering the colors we see in the world: an illustrated journey",
+   "link": "https://www.npr.org/2026/11/08/nx-s1-5393776/color-climate-change-coral-lakes",
+   "summary": "From Arctic landscapes to insect bodies, climate change is shifting the familiar colors of nature.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-08T11:00:00Z"
   },
   {
-   "title": "Let a thousand blossoms bloom: Sydney’s jacarandas put on their spring show – in pictures",
-   "link": "https://www.theguardian.com/australia-news/gallery/2026/nov/08/sydney-jacaranda-season-in-pictures",
-   "summary": "The city enters its purple patch with jacaranda trees blazing into flower in the warmer weather. Every October and November the fast-growing trees are festooned with trumpet-shaped blossoms that soon carpet the ground…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-07T19:00:20Z"
+   "title": "One air ambulance service rethinks what it takes to practice medicine in the sky",
+   "link": "https://www.npr.org/2026/11/08/nx-s1-6017801/air-ambulance-service-rural-healthcare-staffing",
+   "summary": "Air medical service comes with high risks, high costs, and staffing struggles. To reduce turnover and serve rural patients, LifeFlight of Maine is putting the needs of healthcare workers first.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-08T11:00:00Z"
+  },
+  {
+   "title": "Countryside managers prepare for climate change",
+   "link": "https://www.bbc.co.uk/news/articles/c3ewe99dzdlpo?at_medium=RSS&at_campaign=rss",
+   "summary": "North Pennines National Landscape's plan includes restoring peatland and wildfire preparedness.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-08T07:16:55Z"
   },
   {
    "title": "Thunderstruck: what does the future hold for lightning?",
@@ -56,14 +176,6 @@
    "source": "The Guardian",
    "topic": "Science",
    "date": "2026-11-07T14:00:13Z"
-  },
-  {
-   "title": "‘Mind-blowing’: dark-sky fans gather on Exmoor to see what light pollution hides",
-   "link": "https://www.theguardian.com/environment/2026/nov/07/dark-skies-festival-exmoor-light-pollution",
-   "summary": "The UK is 14th most light-polluted country, but in south-west England the veil is lifted at the dark skies festival “It’s just mind-blowing,” says the astronomer and teacher Jo Richardson. She is standing in Exmoor…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-07T13:00:11Z"
   },
   {
    "title": "How UMD's historic campus farm remains a vital classroom for modern students",
@@ -106,44 +218,12 @@
    "date": "2026-11-07T11:50:21Z"
   },
   {
-   "title": "Steve Jones on dangerous tech innovations – cartoon",
-   "link": "https://www.theguardian.com/commentisfree/picture/2026/nov/07/steve-jones-dangerous-tech-innovations-cartoon-ai-fire",
-   "summary": "Continue reading...",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-07T11:00:09Z"
-  },
-  {
    "title": "An unexpected activist emerged to help block a $5 billion data center in Maryland",
    "link": "https://www.npr.org/2026/11/07/nx-s1-6007770/data-centers-activist-moratorium",
    "summary": "Thousands across the U.S. have gotten involved to oppose data centers. One is a Maryland woman who'd been evicted after a pay cut and became a leader of a community effort that blocked a vast project.",
    "source": "NPR",
    "topic": "Tech",
    "date": "2026-11-07T10:00:00Z"
-  },
-  {
-   "title": "Autumn colours around the world – in pictures",
-   "link": "https://www.theguardian.com/environment/gallery/2026/nov/07/autumn-colours-around-the-world-in-pictures",
-   "summary": "The seasonal transformation offers the chance to enjoy warm, golden colours before winter Continue reading...",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-07T08:30:05Z"
-  },
-  {
-   "title": "New Forest wildfire restoration work begins",
-   "link": "https://www.bbc.co.uk/news/articles/cw98zzn7z04vo?at_medium=RSS&at_campaign=rss",
-   "summary": "Work begins to restore nature to part of the New Forest destroyed by a summer wildfire.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-07T07:14:33Z"
-  },
-  {
-   "title": "One of the year's most prolific meteor showers to light up the night sky this weekend",
-   "link": "https://www.bbc.co.uk/weather/articles/cmlykqq7zg9zo?at_medium=RSS&at_campaign=rss",
-   "summary": "The Leonid meteor shower, known for its bright and fast meteors, will kick off this weekend and continue until the end of November.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-07T02:03:28Z"
   },
   {
    "title": "How octopuses squeeze through teeny tiny holes",
@@ -154,199 +234,12 @@
    "date": "2026-11-06T22:24:10Z"
   },
   {
-   "title": "Elon Musk appears to signal the end of the road for Cybertruck",
-   "link": "https://www.bbc.co.uk/news/articles/cq1j33w7d232o?at_medium=RSS&at_campaign=rss",
-   "summary": "Musk said it was to make room for production of its Cybercabs - autonomous taxis without a driver.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-06T21:49:50Z"
-  },
-  {
-   "title": "AI stocks climb after trillions wiped from market values",
-   "link": "https://www.bbc.co.uk/news/articles/c35ynnpzdq51o?at_medium=RSS&at_campaign=rss",
-   "summary": "Investors had been selling off tech shares in part due to concerns the Democrat election victory would mean slower AI development.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-06T21:06:25Z"
-  },
-  {
-   "title": "Trump's global health strategy is emerging. What will the Democratic Congress say?",
-   "link": "https://www.npr.org/2026/11/06/nx-s1-6028828/global-health-usaid-trump-democrats-congress",
-   "summary": "The Trump Administration has ushered in a fundamental shift in the U.S. approach to global health aid. How will the newly elected Democratic Congress weigh in?",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-06T20:09:58Z"
-  },
-  {
-   "title": "Health intel-sharing group warns industry in wake of cyberattack on French blood bank",
-   "link": "https://www.npr.org/2026/11/06/nx-s1-6032602/cyberattack-blood-bank-healthcare",
-   "summary": "A healthcare intelligence-sharing organization is warning its members to lock down systems following cyberattacks on cold storage systems, including a French blood bank.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-06T19:00:21Z"
-  },
-  {
-   "title": "How climate change worsens heatwaves, droughts, wildfires and floods",
-   "link": "https://www.bbc.co.uk/news/articles/cy4dgp1p3p1o?at_medium=RSS&at_campaign=rss",
-   "summary": "Rising global temperatures mean extreme weather events are becoming more common and more intense.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-06T16:43:30Z"
-  },
-  {
-   "title": "Parents warned to be on alert after school data breach",
-   "link": "https://www.bbc.co.uk/news/articles/cm9dzz6191gvo?at_medium=RSS&at_campaign=rss",
-   "summary": "There have been concerns that the breach may have allowed access to parent contact details and some pupil information.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-06T13:15:50Z"
-  },
-  {
-   "title": "Tesla set to wind down production of Cybertruck",
-   "link": "https://lite.cnn.com/2026/11/06/business/tesla-winding-down-production-of-cybertruck",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-06T12:00:00Z"
-  },
-  {
    "title": "‘This is a hate-hate relationship’: Why Miami-Notre Dame still burns after all these years",
    "link": "https://lite.cnn.com/2026/11/06/sport/miami-notre-dame-rivalry",
    "summary": "",
    "source": "CNN",
    "topic": "Sports",
    "date": "2026-11-06T12:00:00Z"
-  },
-  {
-   "title": "Doomscrolling (and kids) destroyed my reading habit. Could the ‘Booker Challenge’ save it?",
-   "link": "https://lite.cnn.com/2026/11/06/style/booker-prize-reading-challenge-doomscrolling",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-06T12:00:00Z"
-  },
-  {
-   "title": "Why public schools nationwide are facing a massive drop in student enrollment",
-   "link": "https://www.npr.org/2026/11/06/nx-s1-5971283/public-school-enrollment-ice-deportation-birthrate",
-   "summary": "School enrollment was already expected to plunge by 2 million kids by 2030. Education experts say deporting immigrant families, many with school-age children, is making the crisis worse.",
-   "source": "NPR",
-   "topic": "Education",
-   "date": "2026-11-06T10:00:00Z"
-  },
-  {
-   "title": "Rainy weekend for Northeast after storm system swamps East Coast",
-   "link": "https://lite.cnn.com/2026/11/05/weather/flooding-georgia-tennessee-mccaysville-copperhill-climate",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Weather",
-   "date": "2026-11-05T12:00:00Z"
   }
- ],
- "lessons": [
-  {
-   "link": "https://www.bbc.co.uk/news/articles/cm8xznl0n1q4o?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Tech",
-   "title": "Can the Zelda remake capture the magic of the original?",
-   "title_zh": "《薩爾達》重製版能否捕捉原作的魔力？",
-   "paragraphs": [
-    {
-     "en": "On Thursday, the anticipated remake of The Legend of Zelda: Ocarina of Time officially arrived after years of persistent rumors. When the original game launched in 1998 on the Nintendo 64 (N64), it set the standard for 3D action games. Many features that modern players take for granted, such as riding horses and targeting enemies, were pioneered in this classic title. Decades later, it remains the highest-rated video game in history on the review aggregation website Metacritic.",
-     "zh": "週四，在有關重製版的多年間持續傳聞之後，《薩爾達傳說：時之笛》備受期待的重製版正式登場。當原作於 1998 年在任天堂 64（N64）主機上推出時，它為 3D 動作遊戲樹立了標準。許多現代玩家視為理所當然的特色，例如騎馬和鎖定敵人，都是在這款經典作品中開創的。數十年後，它在評論彙整網站 Metacritic 上依然是史上評分最高的電玩遊戲。"
-    },
-    {
-     "en": "Instead of completely changing the formula, Nintendo chose to keep the remake very close to the original version. Series producer Eiji Aonuma and producer Hidemaro Fujibayashi explained that modern graphics help express details clearly without requiring players to rely heavily on imagination. However, improved visual power also brought unexpected challenges. Aonuma noted that testers told the team the spooky Skulltula House was \"too scary,\" prompting adjustments to maintain the original balance between frightening and funny moments.",
-     "zh": "任天堂沒有徹底改變遊戲模式，而是選擇讓這款重製版與原作版本非常相近。系列製作人青沼英二與製作人藤林秀麿解釋，現代畫面有助於清楚呈現細節，而不需要玩家過度依賴想像力。然而，提升後的視覺運算能力也帶來了意想不到的挑戰。青沼指出，測試人員告訴團隊陰森的骷髏蛛之家「太嚇人了」，促使團隊進行調整，以維持可怕與搞笑時刻之間的原始平衡。"
-    },
-    {
-     "en": "Online content creators have shared overwhelmingly positive reactions to the updated game. Mike Channell from the YouTube channel Outside Xbox praised the meticulous care behind every design decision, noting that the project succeeded in living up to high expectations. Another popular YouTuber, Ed King, also known as Zeltik, highlighted the unique charm of the Forest Temple. Furthermore, Nintendo redesigned the notoriously difficult Water Temple, making it easier to tackle by allowing players to switch heavy boots quickly and control the camera.",
-     "zh": "網路內容創作者們對這款更新後的遊戲給予了極為正面的反響。來自 YouTube 頻道 Outside Xbox 的 Mike Channell 讚許了每個設計決策背後的一絲不苟，並指出該作品成功符合了高度的期望。另一位廣受歡迎、也被稱為 Zeltik 的 YouTuber Ed King，則強調了森之神殿的獨特魅力。此外，任天堂重新設計了惡名昭彰且困難的水之神殿，讓玩家能迅速更換重靴並控制視角，使之更容易應對。"
-    },
-    {
-     "en": "For returning fans, this trip down memory lane brings both comfort and minor drawbacks. Some puzzles might feel too simple because veterans immediately remember the solutions from memory. Even though some reviewers wonder whether Nintendo played it too safe, the creators believe they preserved the true essence of the masterpiece. With a Zelda movie coming next year, fans will have even more adventures to anticipate.",
-     "zh": "對於回鍋的老粉絲來說，這趟回憶之旅既帶來了親切感，也伴隨著些微缺點。某些謎題可能會讓人覺得太簡單，因為老手憑記憶就能立刻想起解法。儘管部分評論者想知道任天堂是否行事過於保守，但創作者們相信他們保留了這部傑作的真正精髓。隨著明年即將推出一部《薩爾達》電影，粉絲們將有更多冒險值得期待。"
-    }
-   ],
-   "words": 299,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "persistent",
-     "pos": "adj.",
-     "zh": "持續的、反覆出現的"
-    },
-    {
-     "word": "standard",
-     "pos": "n.",
-     "zh": "標準、規範"
-    },
-    {
-     "word": "aggregation",
-     "pos": "n.",
-     "zh": "彙整、聚集"
-    },
-    {
-     "word": "balance",
-     "pos": "n.",
-     "zh": "平衡"
-    },
-    {
-     "word": "meticulous",
-     "pos": "adj.",
-     "zh": "縝密的、一絲不苟的"
-    },
-    {
-     "word": "tackle",
-     "pos": "v.",
-     "zh": "應對、處理"
-    },
-    {
-     "word": "drawback",
-     "pos": "n.",
-     "zh": "缺點、不利條件"
-    },
-    {
-     "word": "essence",
-     "pos": "n.",
-     "zh": "精髓、本質"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "take for granted",
-     "zh": "把……視為理所當然"
-    },
-    {
-     "phrase": "live up to",
-     "zh": "符合、不負（期望）"
-    },
-    {
-     "phrase": "play it safe",
-     "zh": "採取穩妥做法、不冒險"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "限定關係代名詞子句 (Defining relative clause)",
-     "explain": "關係代名詞 that 在此引導關係子句以修飾先行詞 features，並在關係子句中作受詞。",
-     "example": "Many features that modern players take for granted, such as riding horses and targeting enemies, were pioneered in this classic title.",
-     "focus": "that modern players take for granted"
-    },
-    {
-     "point": "分詞構句 (Participle construction)",
-     "explain": "逗號後方以現在分詞 prompting 引導分詞構句，用來表示前述主要子句動作所產生的結果。",
-     "example": "Aonuma noted that testers told the team the spooky Skulltula House was \"too scary,\" prompting adjustments to maintain the original balance between frightening and funny moments.",
-     "focus": "prompting adjustments to maintain the original balance between frightening and funny moments"
-    },
-    {
-     "point": "名詞子句作受詞 (Noun clause as object)",
-     "explain": "連接詞 whether 引導名詞子句，在主要子句中作為及物動詞 wonder 的受詞，表示「是否」。",
-     "example": "Even though some reviewers wonder whether Nintendo played it too safe, the creators believe they preserved the true essence of the masterpiece.",
-     "focus": "whether Nintendo played it too safe"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  }
- ],
- "lessonsDate": "2026-11-08"
+ ]
 }
