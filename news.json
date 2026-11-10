@@ -1,37 +1,221 @@
 {
- "updated": "2026-11-09T01:11:45Z",
+ "updated": "2026-11-10T03:47:35Z",
  "items": [
   {
-   "title": "A glimmer of good news for Britain's sleepy dormouse",
-   "link": "https://www.bbc.co.uk/news/articles/c85ynn0p5k71o?at_medium=RSS&at_campaign=rss",
-   "summary": "New figures suggest hazel dormice may be recovering after decades of decline, with warmer summers boosting survival.",
+   "title": "Qantas to outsource 850 local jobs with most roles moving to India",
+   "link": "https://www.bbc.co.uk/news/articles/cry838v4qzvyo?at_medium=RSS&at_campaign=rss",
+   "summary": "The Australian airline said the move was aimed at modernising its IT systems and noted the impact of AI.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-10T01:55:22Z"
+  },
+  {
+   "title": "Headteachers say families will struggle after another rise in school dinner prices",
+   "link": "https://www.bbc.co.uk/news/articles/c9m262yv6yx8o?at_medium=RSS&at_campaign=rss",
+   "summary": "The price of a school dinner in a primary school will have risen from £2.60 to £3.40 since the start of 2026.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-10T00:00:22Z"
+  },
+  {
+   "title": "Nvidia shares slide amid spy claims",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/10/2003867459",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-10T00:00:00Z"
+  },
+  {
+   "title": "TIER forecasts GDP to grow 12.34% this year",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/10/2003867460",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-10T00:00:00Z"
+  },
+  {
+   "title": "Exports expand 58.9% to record US$96.76 billion",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/10/2003867461",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-10T00:00:00Z"
+  },
+  {
+   "title": "Phones to be banned from pupils' bags or pockets under stricter rules for schools in England",
+   "link": "https://www.bbc.co.uk/news/articles/c51kdk422w8jo?at_medium=RSS&at_campaign=rss",
+   "summary": "The government says it is strengthening its guidance for schools in England, which came into force in June.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-09T22:51:09Z"
+  },
+  {
+   "title": "Scientists think they've found ancient remnants of dinosaur blood",
+   "link": "https://www.npr.org/2026/11/09/nx-s1-6026704/scientists-think-theyve-found-ancient-remnants-of-dinosaur-blood",
+   "summary": "Scientists have studied plenty of dinosaur bones, eggs and footprints. Now, some think they've found their strongest evidence yet of dinosaur blood.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-09T22:00:49Z"
+  },
+  {
+   "title": "Mice can learn to fight by watching tiny rodent cage matches, study finds",
+   "link": "https://www.npr.org/2026/11/09/nx-s1-6027938/mice-can-learn-to-fight-by-watching-tiny-rodent-cage-matches-study-finds",
+   "summary": "Brain scientists set up \"gladiator style\" cage matches for mice — and found that simply observing fighting matches can rewire a mouse's brain to resemble those who actually fought.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-09T21:39:35Z"
+  },
+  {
+   "title": "Air pollution soars as fog traps emissions in England’s urban areas",
+   "link": "https://www.theguardian.com/environment/2026/nov/09/air-pollution-soars-fog-traps-emissions-england-urban-areas",
+   "summary": "Particles from fireworks and bonfires likely to have contributed to levels well above WHO’s daily guideline Air pollution soared to “very high” levels across urban parts of England on Monday as still, foggy weather…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-09T19:13:59Z"
+  },
+  {
+   "title": "Did you solve it? The multi-choice maths quiz taking over the world",
+   "link": "https://www.theguardian.com/science/2026/nov/09/did-you-solve-it-the-multi-choice-maths-quiz-taking-over-the-world",
+   "summary": "The answer to today’s Kangaroo puzzle Earlier today I set you the following problem from the international maths Kangaroo, a multiple choice challenge taken by more than seven million children every year. (For more…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-09T17:00:14Z"
+  },
+  {
+   "title": "Medical breakthrough offers hope to people with same stiff person syndrome as Céline Dion",
+   "link": "https://www.theguardian.com/science/2026/nov/09/medical-breakthrough-offers-hope-to-people-with-same-stiff-person-syndrome-as-celine-dion",
+   "summary": "Some patients with autoimmune condition in the trial have been able to return to work and resume hobbies Doctors have made a potentially significant breakthrough in the hunt for a treatment for stiff person syndrome,…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-09T16:42:22Z"
+  },
+  {
+   "title": "How yesterday's waste is becoming tomorrow's fashion",
+   "link": "https://www.bbc.co.uk/news/articles/cm5yd1q12g1no?at_medium=RSS&at_campaign=rss",
+   "summary": "Brands including Dr Martens, Nike and Coach are among those using recycled materials.",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-11-09T00:56:43Z"
+   "date": "2026-11-09T13:18:38Z"
   },
   {
-   "title": "NSC tightens anti-infiltration measures",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/09/2003867397",
+   "title": "Nvidia is in peril. Can it survive without Jensen Huang?",
+   "link": "https://lite.cnn.com/2026/11/09/business/nvidia-survive-without-jensen-huang",
    "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-09T00:00:00Z"
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-09T12:00:00Z"
   },
   {
-   "title": "US cites China in PNG closure of Taiwan site",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/09/2003867398",
+   "title": "81-year-old sci-fi author M. John Harrison wins the 2026 Booker Prize",
+   "link": "https://lite.cnn.com/2026/11/09/style/booker-prize-winner-2026-m-john-harrison",
    "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-09T00:00:00Z"
+   "source": "CNN",
+   "topic": "Culture",
+   "date": "2026-11-09T12:00:00Z"
   },
   {
-   "title": "Chinese-owned yachts barred from Taiwan ports",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/09/2003867399",
+   "title": "US FDA orders new eye risk warnings for Ozempic, Zepbound",
+   "link": "https://lite.cnn.com/2026/11/09/health/glp1-vision-loss-fda-warning",
    "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-09T00:00:00Z"
+   "source": "CNN",
+   "topic": "Health",
+   "date": "2026-11-09T12:00:00Z"
+  },
+  {
+   "title": "Jensen Huang is living proof that AI’s rockstar CEOs are also a hidden risk",
+   "link": "https://lite.cnn.com/2026/11/09/tech/nvidia-jensen-huang-ai-ceos-risks",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Tech",
+   "date": "2026-11-09T12:00:00Z"
+  },
+  {
+   "title": "The College Football Playoff is expanding to 24 teams. Football Saturdays will never be the same",
+   "link": "https://lite.cnn.com/2026/11/09/sport/college-football-playoff-expansion",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-09T12:00:00Z"
+  },
+  {
+   "title": "Cruise ship pianist rescued by fishermen after nine hours treading water in Pacific Ocean",
+   "link": "https://lite.cnn.com/2026/11/09/travel/cruise-ship-pianist-pacific-intl-scli",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Travel",
+   "date": "2026-11-09T12:00:00Z"
+  },
+  {
+   "title": "Luxury brands try to entice younger consumers with new experiences",
+   "link": "https://lite.cnn.com/2026/11/09/business/luxury-brands-exhibits-lvmh",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-09T12:00:00Z"
+  },
+  {
+   "title": "Why a South Korean city is turning to a U.S. college to outsmart AI?",
+   "link": "https://www.npr.org/2026/11/09/g-s1-151519/why-a-south-korean-city-is-turning-to-a-u-s-college-to-outsmart-ai",
+   "summary": "Through civic participation and liberal education, South Korean educators hope to \"quietly stitch the fabric of our democracy…before it unravels beyond repair.\"",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-09T10:47:00Z"
+  },
+  {
+   "title": "This grim story of marine park whales could yet have a positive outcome – if it teaches us to value other species | Elle Hunt",
+   "link": "https://www.theguardian.com/commentisfree/2026/nov/09/marine-park-whales-species-mammals-marineland-canada",
+   "summary": "There is no ‘saving’ these traumatised mammals from places like Marineland in Canada. Humans need to understand that our actions are not easily undone Remember “Save the whales”? Now that was an environmental campaign…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-09T10:00:06Z"
+  },
+  {
+   "title": "Palantir hires a former Democratic senator as it faces scrutiny in new Congress",
+   "link": "https://www.npr.org/2026/11/09/nx-s1-6029641/palantir-congress-jon-tester-investigations",
+   "summary": "The secretive software company has been accused of letting its powerful tools be used by the Trump administration to surveil Americans. Now it's hiring former Sen. Jon Tester to burnish its image.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-09T10:00:00Z"
+  },
+  {
+   "title": "Free school milk scheme could end after 50 years",
+   "link": "https://www.bbc.co.uk/news/articles/c6wydxxg8eexo?at_medium=RSS&at_campaign=rss",
+   "summary": "Free school milk has been provided to children in Wales since the 1970s, but that could now change.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-09T09:55:21Z"
+  },
+  {
+   "title": "Is it true that … dock leaves cure nettle stings?",
+   "link": "https://www.theguardian.com/lifeandstyle/2026/nov/09/is-it-true-that-dock-leaves-cure-nettle-stings",
+   "summary": "It’s a time-honoured treatment and rubbing certainly helps, but other leaves could be just as good If you’ve ever brushed against a stinging nettle, chances are someone told you to find a dock leaf. The wide green…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-09T08:00:03Z"
+  },
+  {
+   "title": "Scientists predict 2026 hottest year on record as climate talks begin",
+   "link": "https://www.bbc.co.uk/news/articles/c6pvgg7mdvdvo?at_medium=RSS&at_campaign=rss",
+   "summary": "Scientists are predictng this could be the hottest year on record as the COP31 climate summit opens.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-09T07:30:12Z"
+  },
+  {
+   "title": "Print commissioned by Nasa uncovered for exhibition",
+   "link": "https://www.bbc.co.uk/news/articles/cw98zm084dr3o?at_medium=RSS&at_campaign=rss",
+   "summary": "The Pop Art at Cartwright Hall exhibition tells the story of the British International Print Biennale.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-09T06:18:19Z"
+  },
+  {
+   "title": "Democrats to attend Cop31 climate talks boosted by midterms and eager to make up for Trump-era setbacks",
+   "link": "https://www.theguardian.com/environment/2026/nov/09/cop31-climate-democrats-midterms",
+   "summary": "US government will have no official presence at UN’s annual climate summit, this year’s Cop31 held in Antalya, Turkey The US will be absent from key UN climate talks that start on Monday, a further sign of Donald…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-09T06:00:01Z"
   },
   {
    "title": "NASA is looking for astronauts to live and work on the Moon",
@@ -42,118 +226,6 @@
    "date": "2026-11-08T23:36:47Z"
   },
   {
-   "title": "Free school milk scheme could end after 50 years",
-   "link": "https://www.bbc.co.uk/news/articles/c6wydxxg8eexo?at_medium=RSS&at_campaign=rss",
-   "summary": "Free school milk has been provided to children in Wales since the 1970s, but that could now change.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-08T21:51:43Z"
-  },
-  {
-   "title": "Cold blast brings springtime snow to alpine regions as temperatures plummet across Australia’s south-east",
-   "link": "https://www.theguardian.com/australia-news/2026/nov/08/australia-weather-cold-blast-springtime-snow-thredbo-perisher-hotham-victoria-tasmania-el-nino",
-   "summary": "Thredbo, Perisher and Mount Hotham all recorded falls, along with Kunanyi/Mount Wellington in Tasmania Get our breaking news email , free app or daily news podcast Snow blanketed parts of New South Wales, Victoria and…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-08T21:25:10Z"
-  },
-  {
-   "title": "Secondary schools told to stop teaching GCSEs before Year 10",
-   "link": "https://www.bbc.co.uk/news/articles/c680z89dk827o?at_medium=RSS&at_campaign=rss",
-   "summary": "The government says pupils in Year 7 to 9 should have \"richer, more engaging\" learning than preparing for GCSEs.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-08T19:00:32Z"
-  },
-  {
-   "title": "Heavy rain floods displaced families’ tents in Gaza – in pictures",
-   "link": "https://www.theguardian.com/world/gallery/2026/nov/08/heavy-rain-floods-displaced-families-tents-gaza-in-pictures",
-   "summary": "The first winter storm began affecting the people of Gaza this weekend with heavy rain hitting on Saturday. Reports that about 70,000 tents were flooded within 12 hours prompted warnings of a worsening humanitarian…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-08T18:50:12Z"
-  },
-  {
-   "title": "Labour expected to cut EV targets for UK’s car industry despite MPs’ protests",
-   "link": "https://www.theguardian.com/environment/2026/nov/08/labour-cut-ev-target-car-industry-despite-climate-concerns",
-   "summary": "Exclusive: Louise Haigh likely to weaken mandate for sales that forms key part of emission reduction plan Analysis: Climate always comes second – are green issues slipping down Burnham’s agenda? Ministers are expected…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-08T17:51:19Z"
-  },
-  {
-   "title": "The Guardian view on Ordnance Survey maps: still a superior way to navigate the landscape | Editorial",
-   "link": "https://www.theguardian.com/commentisfree/2026/nov/08/the-guardian-view-on-ordnance-survey-maps-still-a-superior-way-to-navigate-the-landscape",
-   "summary": "The 225th anniversary of the organisation’s first publication is an opportunity to celebrate its unique contribution to our sense of place In his one-paragraph short story , On Exactitude in Science, Jorge Luis Borges…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-08T17:25:45Z"
-  },
-  {
-   "title": "Nasa seeks next generation of astronauts to live and work on the moon",
-   "link": "https://www.theguardian.com/science/2026/nov/08/nasa-astronauts-moon-applications-open",
-   "summary": "Applications due on 3 December for new generation of explorers who can ‘shape humanity’s future in space’ Nasa has launched a callout for a new generation of astronauts as it searches for explorers who could live and…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-08T16:54:44Z"
-  },
-  {
-   "title": "Government 'looking seriously' at banning under-16s from Vinted and eBay",
-   "link": "https://www.bbc.co.uk/news/articles/cmzxjvpqrjxro?at_medium=RSS&at_campaign=rss",
-   "summary": "The culture secretary confirms reports they could be in the list of platforms set to be banned next March.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-08T15:37:25Z"
-  },
-  {
-   "title": "Nandy rejects claims of politicising Remembrance Sunday after Erasmus row",
-   "link": "https://www.bbc.co.uk/news/articles/cmvg72p1zgvlo?at_medium=RSS&at_campaign=rss",
-   "summary": "The culture secretary says the UK rejoining the EU's study and work scheme will help honour wartime sacrifice.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-08T13:05:30Z"
-  },
-  {
-   "title": "Dormice 'thrive' at National Trust site",
-   "link": "https://www.bbc.co.uk/news/articles/c50meerl8xp1o?at_medium=RSS&at_campaign=rss",
-   "summary": "Killerton National Trust has 100 nest boxes across its estate in Devon.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-08T12:22:05Z"
-  },
-  {
-   "title": "Nvidia launches investigation into CEO Jensen Huang over foreign intelligence concerns",
-   "link": "https://lite.cnn.com/2026/11/08/business/nvidia-investigation-ceo-jensen-huang",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-08T12:00:00Z"
-  },
-  {
-   "title": "NASCAR phenom Kyle Larson wins 2nd consecutive Cup Series title",
-   "link": "https://lite.cnn.com/2026/11/08/sport/kyle-larson-second-consecutive-nascar-cup-series-title",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-11-08T12:00:00Z"
-  },
-  {
-   "title": "The vanity economy is taking over America’s downtowns",
-   "link": "https://lite.cnn.com/2026/11/08/business/cities-retail-vanity-economy",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-08T12:00:00Z"
-  },
-  {
-   "title": "Climate change is altering the colors we see in the world: an illustrated journey",
-   "link": "https://www.npr.org/2026/11/08/nx-s1-5393776/color-climate-change-coral-lakes",
-   "summary": "From Arctic landscapes to insect bodies, climate change is shifting the familiar colors of nature.",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-11-08T11:00:00Z"
-  },
-  {
    "title": "One air ambulance service rethinks what it takes to practice medicine in the sky",
    "link": "https://www.npr.org/2026/11/08/nx-s1-6017801/air-ambulance-service-rural-healthcare-staffing",
    "summary": "Air medical service comes with high risks, high costs, and staffing struggles. To reduce turnover and serve rural patients, LifeFlight of Maine is putting the needs of healthcare workers first.",
@@ -162,84 +234,122 @@
    "date": "2026-11-08T11:00:00Z"
   },
   {
-   "title": "Countryside managers prepare for climate change",
-   "link": "https://www.bbc.co.uk/news/articles/c3ewe99dzdlpo?at_medium=RSS&at_campaign=rss",
-   "summary": "North Pennines National Landscape's plan includes restoring peatland and wildfire preparedness.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-08T07:16:55Z"
-  },
-  {
-   "title": "Thunderstruck: what does the future hold for lightning?",
-   "link": "https://www.theguardian.com/science/ng-interactive/2026/nov/08/future-of-lightning-global-heating-weather-australia",
-   "summary": "Humans have always been awed by the power and beauty of lightning. How does the experience and understanding of it change in a warming world? In a rock shelter in Kakadu national park in the north of Australia is an…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-07T14:00:13Z"
-  },
-  {
    "title": "How UMD's historic campus farm remains a vital classroom for modern students",
    "link": "https://www.npr.org/2026/11/07/nx-s1-6030640/how-umds-historic-campus-farm-remains-a-vital-classroom-for-modern-students",
    "summary": "The University of Maryland's campus farm in College Park, Md., is both a remnant of the university's ag school roots and a place where students still learn.",
    "source": "NPR",
    "topic": "Education",
    "date": "2026-11-07T12:41:04Z"
-  },
-  {
-   "title": "He left NYC after 9/11 for a new life in South America",
-   "link": "https://lite.cnn.com/2026/11/07/travel/leaving-nyc-after-9-11-for-south-america",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Travel",
-   "date": "2026-11-07T12:00:00Z"
-  },
-  {
-   "title": "Washington made Moscow a pariah. Now a tanker of Russian diesel is headed for US shores",
-   "link": "https://lite.cnn.com/2026/11/07/business/russian-diesel-us-sanctions-trump-intl",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-07T12:00:00Z"
-  },
-  {
-   "title": "How Yoshitomo Nara’s ‘big-headed girls’ took over the world",
-   "link": "https://lite.cnn.com/2026/11/07/style/yoshitomo-nara-nyc-show",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-07T12:00:00Z"
-  },
-  {
-   "title": "This teen boy set out to get people talking about periods. He's now a Diana honoree",
-   "link": "https://www.npr.org/2026/11/07/g-s1-152225/princess-diana-honor-menstruation-stigma",
-   "summary": "This year's the Princess Diana honor roll highlights 198 inspiring young activists and advocates — including an 18-year-old guy in India who founded Team Period.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-07T11:50:21Z"
-  },
-  {
-   "title": "An unexpected activist emerged to help block a $5 billion data center in Maryland",
-   "link": "https://www.npr.org/2026/11/07/nx-s1-6007770/data-centers-activist-moratorium",
-   "summary": "Thousands across the U.S. have gotten involved to oppose data centers. One is a Maryland woman who'd been evicted after a pay cut and became a leader of a community effort that blocked a vast project.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-07T10:00:00Z"
-  },
-  {
-   "title": "How octopuses squeeze through teeny tiny holes",
-   "link": "https://www.npr.org/2026/11/06/nx-s1-6027897/how-octopuses-squeeze-through-teeny-tiny-holes",
-   "summary": "Robots used during search and rescue operations need to be able to wriggle through narrow cracks and crevices. Researchers have turned to a natural contortionist for inspiration — the octopus.",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-11-06T22:24:10Z"
-  },
-  {
-   "title": "‘This is a hate-hate relationship’: Why Miami-Notre Dame still burns after all these years",
-   "link": "https://lite.cnn.com/2026/11/06/sport/miami-notre-dame-rivalry",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-11-06T12:00:00Z"
   }
- ]
+ ],
+ "lessons": [
+  {
+   "link": "https://www.bbc.co.uk/news/articles/cry838v4qzvyo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Tech",
+   "title": "Qantas to outsource 850 local jobs with most roles moving to India",
+   "title_zh": "澳洲航空將外包850個在地職位，多數職缺移往印度",
+   "paragraphs": [
+    {
+     "en": "Qantas plans to outsource 850 corporate positions in Australia to consulting giant Accenture. Most of these jobs will move to India, while a few will remain in Australia. The airline is speeding up its investment in artificial intelligence (AI) to update its systems.",
+     "zh": "澳洲航空（Qantas）計畫將澳洲境內的850個企業職位外包給顧問巨頭埃森哲（Accenture）。這些職缺大部分將移往印度，少數則會留在澳洲。該航空公司正加快對人工智慧（AI）的投資，以更新其系統。"
+    },
+    {
+     "en": "The staff reduction will start in the middle of 2027. Positions in finance, purchasing, human resources, and marketing are scheduled to shift overseas. In a message sent to employees, chief executive officer (CEO) Vanessa Hudson acknowledged that \"this is hard news for some\" and apologized for the uncertainty.",
+     "zh": "這項裁員將於2027年年中展開。財務、採購、人資與行銷等職位預計將移往海外。執行長（CEO）凡妮莎·哈德森（Vanessa Hudson）在給員工的內部訊息中坦言「這對某些人來說是個艱難的消息」，並對此帶來的不確定性表示歉意。"
+    },
+    {
+     "en": "According to Hudson, the rapid pace of modern technological development is completely unprecedented. Qantas currently spends more than one billion Australian dollars each year on technology. However, it still depends on over 1,000 outdated computer applications from an earlier period that were never designed to cooperate with one another.",
+     "zh": "哈德森表示，現代科技發展的飛快速度完全是前所未見的。澳航目前每年在科技上花費超過十億澳幣。然而，該公司仍然依賴一千多個來自過去時代的過時電腦應用程式，這些程式當初從未被設計成能夠彼此互相協同運作。"
+    },
+    {
+     "en": "By partnering with Accenture, the airline hopes to simplify corporate tasks, cut repetitive work, and boost operational efficiency. Over time, the tasks handled by Accenture will incorporate even more automation and AI tools. Hudson noted that these adjustments would allow workers to concentrate on duties that bring genuine value to customers and business operations.",
+     "zh": "透過與埃森哲合作，該航空公司希望簡化企業運作、減少重複性工作，並提升營運效率。隨著時間推移，由埃森哲接手的工作將引進更多自動化與人工智慧工具。哈德森指出，這些調整將使員工能夠專注於為顧客與企業營運帶來真實價值的工作。"
+    },
+    {
+     "en": "This major transition follows a recent market announcement regarding flight reductions and higher ticket prices caused by rising fuel expenses. Qantas stated that affected employees will be reassigned to other positions whenever possible, including new roles in Australia. The company currently employs roughly 28,000 workers in Australia and 4,000 internationally, and it is discussing these plans with labor unions.",
+     "zh": "這項重大轉變是在該公司近期發布市場最新消息之後所推動的，該消息指出因燃油成本上漲而將減少航班並調漲機票價格。澳航表示，受影響的員工只要可能都會被重新調派至其他職位，包括澳洲境內的新工作。該公司目前在澳洲僱用約28,000名員工，在國際上另有4,000名員工，目前正與工會就這些計畫進行討論。"
+    }
+   ],
+   "words": 253,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "outsource",
+     "pos": "v.",
+     "zh": "外包"
+    },
+    {
+     "word": "corporate",
+     "pos": "adj.",
+     "zh": "公司的；企業的"
+    },
+    {
+     "word": "uncertainty",
+     "pos": "n.",
+     "zh": "不確定性"
+    },
+    {
+     "word": "unprecedented",
+     "pos": "adj.",
+     "zh": "前所未有的；史無前例的"
+    },
+    {
+     "word": "efficiency",
+     "pos": "n.",
+     "zh": "效率"
+    },
+    {
+     "word": "genuine",
+     "pos": "adj.",
+     "zh": "真正的；真實的"
+    },
+    {
+     "word": "reassign",
+     "pos": "v.",
+     "zh": "重新調派；轉調"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "speed up",
+     "zh": "加速；加快"
+    },
+    {
+     "phrase": "depend on",
+     "zh": "依賴；依靠"
+    },
+    {
+     "phrase": "over time",
+     "zh": "隨著時間推移；漸漸地"
+    },
+    {
+     "phrase": "concentrate on",
+     "zh": "專注於"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "不定詞表目的 (Infinitive of Purpose)",
+     "explain": "不定詞片語 to update its systems 作為副詞，用來修飾主要子句的動作，說明加快投資的目的是「為了更新系統」。",
+     "example": "The airline is speeding up its investment in artificial intelligence (AI) to update its systems.",
+     "focus": "to update its systems"
+    },
+    {
+     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
+     "explain": "關係代名詞 that 在子句中擔任主詞，引導形容詞子句修飾前面的先行詞 1,000 outdated computer applications。",
+     "example": "However, it still depends on over 1,000 outdated computer applications from an earlier period that were never designed to cooperate with one another.",
+     "focus": "that were never designed to cooperate with one another"
+    },
+    {
+     "point": "被動語態 (Passive Voice)",
+     "explain": "由助動詞 will 與「be + 過去分詞 (reassigned)」構成未來式被動語態，表示員工將「被重新分派」到其他職務。",
+     "example": "Qantas stated that affected employees will be reassigned to other positions whenever possible, including new roles in Australia.",
+     "focus": "will be reassigned"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  }
+ ],
+ "lessonsDate": "2026-11-10"
 }
