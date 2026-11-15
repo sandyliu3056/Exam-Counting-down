@@ -1,6 +1,182 @@
 {
- "updated": "2026-11-14T01:43:33Z",
+ "updated": "2026-11-15T01:16:56Z",
  "items": [
+  {
+   "title": "US firms tout orbital threat detection",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/15/2003867754",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-15T00:00:00Z"
+  },
+  {
+   "title": "Allies tout Taiwan at climate conference",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/15/2003867755",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-15T00:00:00Z"
+  },
+  {
+   "title": "US airlines work to fix nationwide ground stop",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/15/2003867756",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-15T00:00:00Z"
+  },
+  {
+   "title": "Hello? James Gleick's new book compares the history of the telephone to the modern era",
+   "link": "https://www.npr.org/2026/11/14/nx-s1-6037416/hello-james-gleicks-new-book-compares-the-history-of-the-telephone-to-the-modern-era",
+   "summary": "Have you ever wondered where phone etiquette or the idea for the first social network came from? Author James Gleick talks about his new book, The Telephone.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-14T22:48:35Z"
+  },
+  {
+   "title": "An NPR correspondent on what she learned following special education teachers all year",
+   "link": "https://www.npr.org/2026/11/14/nx-s1-6035713/an-npr-correspondent-on-what-she-learned-following-special-education-teachers-all-year",
+   "summary": "NPR's Jonaki Mehta talks about she learned from following special education teachers throughout a school year.",
+   "source": "NPR",
+   "topic": "Education",
+   "date": "2026-11-14T22:48:33Z"
+  },
+  {
+   "title": "SpaceX’s Starship returns to launch pad from orbit in victory for company",
+   "link": "https://www.theguardian.com/science/2026/nov/14/spacex-starship-double-catch",
+   "summary": "Although booster exploded, company caught upper stage for first time in campaign to make megarocket reusable SpaceX’s megarocket Starship returned to its Texas launch tower on Saturday, a milestone in the company’s…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-14T22:35:06Z"
+  },
+  {
+   "title": "SpaceX makes history with Starship catch",
+   "link": "https://www.npr.org/2026/11/14/nx-s1-6041089/spacex-makes-history-with-starship-catch",
+   "summary": "SpaceX catches its Starship rocket as it comes back from space for the very first time.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-14T22:31:41Z"
+  },
+  {
+   "title": "SpaceX successfully catches top of huge Starship rocket for first time",
+   "link": "https://www.bbc.co.uk/news/articles/ckregdgnl0xpo?at_medium=RSS&at_campaign=rss",
+   "summary": "The rocket stage was caught mid air using huge mechanical arms nicknamed “chopsticks”.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-14T22:15:52Z"
+  },
+  {
+   "title": "US has lost measles elimination status, global health authorities say",
+   "link": "https://www.npr.org/2026/11/14/nx-s1-6041119/us-measles-elimination-status-vaccines-cdc-paho",
+   "summary": "The U.S. has lost its status as a country where measles is eliminated, according to researchers with direct knowledge of the deliberations at the Pan American Health Organization.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-14T22:15:02Z"
+  },
+  {
+   "title": "SpaceX successfully catches Starship and makes history",
+   "link": "https://www.npr.org/2026/11/14/g-s1-153786/spacex-successfully-catches-starship-and-makes-history",
+   "summary": "The company's spacecraft returned to its Texas launchpad in dramatic fashion — by carefully lowering itself until two metal arms attached to the launch tower could secure it.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-14T21:42:41Z"
+  },
+  {
+   "title": "Italy fines Meta €805m over accessing users' photos",
+   "link": "https://www.bbc.co.uk/news/articles/cwn83gxemk35o?at_medium=RSS&at_campaign=rss",
+   "summary": "The social media giant is accused of not informing 20 million users it had access to their photos.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-14T18:28:06Z"
+  },
+  {
+   "title": "LGBTQ+ protesters defy crackdown in Turkey to march with Cop31 activists",
+   "link": "https://www.theguardian.com/world/2026/nov/14/lgbtq-protesters-defy-crackdown-in-turkey-to-march-with-cop31-activists",
+   "summary": "Civil society campaigners form protective cordon around LGBTQ+ campaigners as they unfurl flags and placards Queer and gay protesters defied a crackdown on LGBTQ+ rights in Turkey to lead a civil society climate march…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-14T17:08:18Z"
+  },
+  {
+   "title": "Indigenous students retrace Lewis and Clark’s historic journey: ‘We can’t protect what we cannot see’",
+   "link": "https://www.theguardian.com/us-news/2026/nov/14/lewis-clark-indigenous-students",
+   "summary": "Two centuries after the expedition, Indigenous students are conducting a new wildlife survey along the route In 1804, when Thomas Jefferson dispatched Meriwether Lewis and William Clark and their Corps of Discovery to…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-14T14:00:46Z"
+  },
+  {
+   "title": "Underwater salt mine closure in Ohio raises safety and supply concerns for winter",
+   "link": "https://www.theguardian.com/us-news/2026/nov/14/salt-mine-ohio-flooding-safety-winter",
+   "summary": "Questions remain about reason for leak, safety of drinking water and where salt can be sourced for roads during winter When water last month began gushing through a crack in the ceiling of a Morton Salt mine in Ohio,…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-14T13:00:45Z"
+  },
+  {
+   "title": "How a $49 sushi boat and sizzling dumplings help turn P.F. Chang’s around",
+   "link": "https://lite.cnn.com/2026/11/14/food/pf-changs-turnaround-plan",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Food",
+   "date": "2026-11-14T12:00:00Z"
+  },
+  {
+   "title": "The Garbage Man: Bill Gates has earned billions investing in climate-polluting landfills",
+   "link": "https://lite.cnn.com/2026/11/14/climate/bill-gates-landfills-propublica",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Environment",
+   "date": "2026-11-14T12:00:00Z"
+  },
+  {
+   "title": "The world’s highest bridge is so much more than just an engineering marvel",
+   "link": "https://lite.cnn.com/2026/11/14/travel/travel-news-worlds-highest-bridge",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Travel",
+   "date": "2026-11-14T12:00:00Z"
+  },
+  {
+   "title": "How to spot November's planetary parade in the pre-dawn sky",
+   "link": "https://www.bbc.co.uk/weather/articles/cke8rr37lrryo?at_medium=RSS&at_campaign=rss",
+   "summary": "The planets of Mercury, Venus, Mars and Jupiter will align in pre-dawn sky throughout November.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-14T11:07:51Z"
+  },
+  {
+   "title": "A new policy could help solve the U.S. organ shortage. Critics say it's unethical",
+   "link": "https://www.npr.org/2026/11/14/nx-s1-6032604/organ-transplant-donor-dead-ethics",
+   "summary": "New guidelines are supposed to protect organ donors in a retrieval procedure that keeps blood flowing through livers, kidneys, lungs and hearts. But bioethicists have troubling questions.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-14T10:00:00Z"
+  },
+  {
+   "title": "Hundreds of children in England prescribed weight-loss jabs, figures show",
+   "link": "https://www.theguardian.com/science/2026/nov/14/children-iengland-prescribed-weight-loss-jabs",
+   "summary": "Exclusive: investigation finds prescriptions for children under 12, as experts stress need for specialist supervision and long-term monitoring Hundreds of children in England are receiving prescriptions for GLP-1…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-14T08:00:39Z"
+  },
+  {
+   "title": "Extreme weather leaves gardeners hedging their bets",
+   "link": "https://www.bbc.co.uk/news/articles/c6qj5r2qzqpwo?at_medium=RSS&at_campaign=rss",
+   "summary": "Gardeners across Sussex are changing their planting strategies after this year's unprecedented heat.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-14T07:12:14Z"
+  },
+  {
+   "title": "Microsoft says services fully restored after day-long global outage",
+   "link": "https://www.bbc.co.uk/news/articles/c6rrg51rkz09o?at_medium=RSS&at_campaign=rss",
+   "summary": "Efforts to address the underlying problem with Outlook, Teams and Copilot are complete, the tech firm says.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-14T06:42:27Z"
+  },
   {
    "title": "Tech Now",
    "link": "https://www.bbc.co.uk/iplayer/episode/m0034hf1?at_medium=RSS&at_campaign=rss",
@@ -18,78 +194,6 @@
    "date": "2026-11-14T00:53:52Z"
   },
   {
-   "title": "Even Grand Theft Auto's original creators haven't been able to play GTA 6",
-   "link": "https://www.bbc.co.uk/news/articles/c6jd7k5ryl1mo?at_medium=RSS&at_campaign=rss",
-   "summary": "The next title in the series is expected to be the biggest video game release ever.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-14T00:37:01Z"
-  },
-  {
-   "title": "Bluetongue virus confirmed on County Down farm",
-   "link": "https://www.bbc.co.uk/news/articles/cmr4gxvrxd9yo?at_medium=RSS&at_campaign=rss",
-   "summary": "Officials from the Department of Agriculture, Environment and Rural Affairs said the virus had been detected in three sheep.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-14T00:17:45Z"
-  },
-  {
-   "title": "Jojo the gorilla has spent his life alone. Can he finally find a companion?",
-   "link": "https://www.bbc.co.uk/news/articles/cwm2mn272nqlo?at_medium=RSS&at_campaign=rss",
-   "summary": "Jojo was poached as an infant and grew up in captivity. His keepers want to find him a friend - but it's not straightforward.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-14T00:03:56Z"
-  },
-  {
-   "title": "Setback for SpaceX Starship rocket's double-catch test",
-   "link": "https://www.bbc.co.uk/news/articles/ckregdgnl0xpo?at_medium=RSS&at_campaign=rss",
-   "summary": "Elon Musk’s company aborted an attempted catch of the rocket’s booster - instead it came down in the ocean.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-14T00:01:01Z"
-  },
-  {
-   "title": "China drills ‘silent intimidation’: Taiwan",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/14/2003867710",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-14T00:00:00Z"
-  },
-  {
-   "title": "Align director, wife charged over suspicious chips",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/14/2003867711",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-14T00:00:00Z"
-  },
-  {
-   "title": "Legislature passes parental leave increase",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/14/2003867712",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-14T00:00:00Z"
-  },
-  {
-   "title": "Rip out ugly clutter to help revive UK high streets, says thinktank",
-   "link": "https://www.theguardian.com/society/2026/nov/13/rip-out-clutter-to-retail-revive-high-streets-thinktank",
-   "summary": "Exclusive: Report says restricting cars and freeing up pavement space could be a cheap way to bring shoppers back The long decline of the high street is a problem that has gripped British governments for years. But…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-13T21:34:43Z"
-  },
-  {
-   "title": "Microsoft outage 'stark reminder' of how much we rely on tech",
-   "link": "https://www.bbc.co.uk/news/articles/cxzd9171m51qo?at_medium=RSS&at_campaign=rss",
-   "summary": "Microsoft has apologised for the issue, which it said was due to a technical failure.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-13T21:15:41Z"
-  },
-  {
    "title": "Microsoft outage disrupts work and gives some a chance to unplug",
    "link": "https://www.npr.org/2026/11/13/nx-s1-6040004/microsoft-outage-disrupts-work-and-gives-some-a-chance-to-unplug",
    "summary": "Millions of individuals, organizations and businesses were left without access to Microsoft's Outlook email on Thursday. Some people celebrated a day without email, while others work around obstacles.",
@@ -98,44 +202,12 @@
    "date": "2026-11-13T21:06:07Z"
   },
   {
-   "title": "Send us your questions about climate crisis and politics for the next Stateside guest: Bill McKibben",
-   "link": "https://www.theguardian.com/us-news/2026/nov/13/climate-environment-questions-bill-mckibben",
-   "summary": "Kai Wright of the Guardian podcast Stateside will speak with author and environmentalist Bill McKibben – and we’d like to hear your questions Was the climate crisis one of your top political priorities during the…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-13T20:23:23Z"
-  },
-  {
-   "title": "The Guardian view on M John Harrison’s Booker win: a new frontier for science fiction | Editorial",
-   "link": "https://www.theguardian.com/commentisfree/2026/nov/13/the-guardian-view-on-m-john-harrisons-booker-win-a-new-frontier-for-science-fiction",
-   "summary": "The End of Everything is a novel for our age of permacrisis. Genre boundaries belong to the past “Science fiction will never be Literature with a capital ‘L,’” began a New York Times review of Margaret Atwood’s novel…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-13T18:00:56Z"
-  },
-  {
    "title": "Global Microsoft outage affects NI schools, councils and other services",
    "link": "https://www.bbc.co.uk/news/articles/crgqx8l7ngqlo?at_medium=RSS&at_campaign=rss",
    "summary": "The outage started on Thursday, with monitoring website Downdetector seeing problems reported in more than 70 countries.",
    "source": "BBC",
    "topic": "Education",
    "date": "2026-11-13T16:19:48Z"
-  },
-  {
-   "title": "How Sen. Chris Van Hollen plans to flex Democratic power on the foreign aid front",
-   "link": "https://www.npr.org/2026/11/13/g-s1-153350/senator-chris-van-hollen-global-health-development-aid",
-   "summary": "He's the ranking member of the Senate Foreign Relations Subcommittee that oversees health aid and he's just announced he's running for Majority Leader. He spoke to NPR about his foreign aid vision.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-13T15:46:35Z"
-  },
-  {
-   "title": "Happy World Kindness Day! Check out our kind photos of kindness to humans -- and cats",
-   "link": "https://www.npr.org/2026/11/13/g-s1-153274/world-kindness-day-altruism-generosity",
-   "summary": "Friday, November 13 is World Kindness Day. Your mission: Do something kind. Small acts of kindness definitely count!",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-13T12:06:28Z"
   },
   {
    "title": "After 26 years, the US has lost its measles elimination status",
@@ -154,14 +226,6 @@
    "date": "2026-11-13T12:00:00Z"
   },
   {
-   "title": "Nvidia’s week of chaos, explained",
-   "link": "https://lite.cnn.com/2026/11/13/business/nvidia-jensen-huang-affair-fallout-vis",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-13T12:00:00Z"
-  },
-  {
    "title": "‘Standing up here alone feels wrong’: Steven Spielberg honored at Museum of Modern Art Film Benefit",
    "link": "https://lite.cnn.com/2026/11/13/style/steven-spielberg-moma-film-benefit",
    "summary": "",
@@ -176,70 +240,6 @@
    "source": "CNN",
    "topic": "Sports",
    "date": "2026-11-13T12:00:00Z"
-  },
-  {
-   "title": "Paris court annuls Sotheby’s sale of Pissarro painting",
-   "link": "https://lite.cnn.com/2026/11/13/style/sothebys-nazi-looted-pissarro-scli-intl",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-13T12:00:00Z"
-  },
-  {
-   "title": "The Italian waiter held our baby. Then the unexpected happened",
-   "link": "https://lite.cnn.com/2026/11/13/travel/cnn-postcards-brief-vivid-travel-stories",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Travel",
-   "date": "2026-11-13T12:00:00Z"
-  },
-  {
-   "title": "Colette Kress becomes Nvidia's interim CEO after Jensen Huang resigns",
-   "link": "https://www.npr.org/2026/11/13/nx-s1-6038889/colette-kress-becomes-nvidias-interim-ceo-after-jensen-huang-resigns",
-   "summary": "Nvidia's CEO Jensen Huang is out, and the company's chief financial officer Colette Kress is taking over as interim CEO. She'll have to guide the company through an exceptionally challenging time.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-13T11:47:38Z"
-  },
-  {
-   "title": "Nvidia's interim CEO inherits risky AI bets and a legal mess",
-   "link": "https://www.npr.org/2026/11/13/nx-s1-6038868/nvidia-interim-ceo-colette-kress-ai-bets-investigation-lutnick",
-   "summary": "AI expert Gary Marcus breaks down what's at stake for Nvidia and the mess its new CEO has inherited.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-13T11:47:00Z"
-  },
-  {
-   "title": "Kratom and 7-OH can feel like 'a miracle.' They can also be addictive",
-   "link": "https://www.npr.org/2026/11/13/nx-s1-6039203/kratom-7-oh-dea-addiction-opioid",
-   "summary": "In the last decade, strong support for kratom and 7-OH products have kept them federally legal. That's started to change. A crackdown for some highly potent products related to kratom is coming.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-13T11:00:00Z"
-  },
-  {
-   "title": "SpaceX's giant rocket may leave NASA in the dust",
-   "link": "https://www.npr.org/2026/11/13/nx-s1-6039312/spacex-nasa-starship-iss-dragon-falcon-musk",
-   "summary": "As it races to develop its new massive rocket, the space launch company is preparing to retire NASA's main ride to the International Space Station.",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-11-13T10:00:00Z"
-  },
-  {
-   "title": "The sinister power of Friday 13th: how this maligned date affects our lives",
-   "link": "https://www.theguardian.com/science/2026/nov/13/the-sinister-power-of-friday-13th-how-this-maligned-date-affects-our-lives",
-   "summary": "Property sales that complete on this day have a lower median price. Air fares are cheaper. Weddings are non-existent. And motor collisions increase. How did it become so mired in superstition? “I have only worked one…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-13T05:00:10Z"
-  },
-  {
-   "title": "European survey reveals 900m galaxies – and possibly secrets of ‘dark universe’",
-   "link": "https://www.theguardian.com/science/2026/nov/12/european-euclid-mission-reveals-900m-galaxies-secrets-dark-universe",
-   "summary": "Unprecedented view of cosmos provided by Euclid mission throws up many more cases of gravitational lensing A mission to create the largest ever 3D map of the universe has revealed more than 900m galaxies in its first…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-12T11:08:54Z"
   }
  ]
 }
