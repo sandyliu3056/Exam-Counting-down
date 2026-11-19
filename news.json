@@ -1,93 +1,221 @@
 {
- "updated": "2026-11-18T03:06:56Z",
+ "updated": "2026-11-19T02:47:08Z",
  "items": [
   {
-   "title": "Tag team: dual waterspouts appear in San Francisco Bay amid stormy weather",
-   "link": "https://www.theguardian.com/us-news/2026/nov/17/san-francisco-bay-area-waterspouts",
-   "summary": "Phenomenon is not a common occurrence in the Bay area and inclement weather is expected to continue for few days A pair of waterspouts were recorded recently in the San Francisco Bay area, much to the delight and shock…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-18T02:33:21Z"
-  },
-  {
-   "title": "Delhi devotees brave river pollution as Chhath festival celebrated across India - in pictures",
-   "link": "https://www.theguardian.com/world/gallery/2026/nov/18/chhath-festival-india-nepal-photos",
-   "summary": "In Delhi, Hindu devotees congregated at the Yamuna River for the Chhath festival, wading through patches of toxic foam created by a mixture of pollutants including industrial chemicals and untreated sewage. The Chhath…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-18T02:09:02Z"
-  },
-  {
-   "title": "Nvidia says it won't reinstate Huang as firm reports bumper results",
-   "link": "https://www.bbc.co.uk/news/articles/cm2kl50vkwkdo?at_medium=RSS&at_campaign=rss",
-   "summary": "The AI chip giant reported strong quarterly earnings on Tuesday after the dramatic exit of Jensen Huang.",
+   "title": "Claude-maker Anthropic poised for stock market debut worth up to $1.5tn",
+   "link": "https://www.bbc.co.uk/news/articles/c6742m39xgzxo?at_medium=RSS&at_campaign=rss",
+   "summary": "Anthropic started just five years ago an is now one of the biggest names in artificial intelligence.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-18T01:18:18Z"
+   "date": "2026-11-19T02:20:15Z"
   },
   {
-   "title": "Largest British study to check social media ban's effect on youth mental health",
-   "link": "https://www.bbc.co.uk/news/articles/cm0evw0d2wq4o?at_medium=RSS&at_campaign=rss",
-   "summary": "Ten different research teams will look at how well teenagers are coping without social media.",
+   "title": "Elon Musk says record spending on US midterms was 'pretty foolish'",
+   "link": "https://www.bbc.co.uk/news/articles/cm9q8j2z3gg8o?at_medium=RSS&at_campaign=rss",
+   "summary": "The multi-billionaire also said he was \"not Maga\", distancing himself from the political movement linked to Trump.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-19T01:56:28Z"
+  },
+  {
+   "title": "Taiwan eyeing US-China-Russia talks",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/19/2003867998",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-19T00:00:00Z"
+  },
+  {
+   "title": "CIB identifies 30 suspected election interference cases",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/19/2003867999",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-19T00:00:00Z"
+  },
+  {
+   "title": "Xi welcomes Trump to China ahead of summit",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/19/2003868000",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-19T00:00:00Z"
+  },
+  {
+   "title": "Anthropic IPO raises record $81.3 billion on strong AI demand",
+   "link": "https://www.npr.org/2026/11/18/nx-s1-6046212/anthropic-record-ipo-price",
+   "summary": "The five-year-old artificial intelligence powerhouse priced its initial public offering at $83 a share, shrugging off growing concern about a possible AI bubble and volatility in tech stocks.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-18T23:54:56Z"
+  },
+  {
+   "title": "The seven Anthropic founders who are about to become multi-billionaires",
+   "link": "https://www.bbc.co.uk/news/articles/cmd7159vlr85o?at_medium=RSS&at_campaign=rss",
+   "summary": "The AI company behind Claude is about to sell its shares on the US stock market - making its founders very rich.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-18T23:42:07Z"
+  },
+  {
+   "title": "After Nepal's epic flood, they're restoring their community ... and their lives",
+   "link": "https://www.npr.org/2026/11/18/nx-s1-6022034/flood-nepal-survival-climate-change",
+   "summary": "As the emergency response to the flood ends, aid workers turn to the hard work of rebuilding communities that lost everything. Many of those workers lost everything, too.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-18T22:01:17Z"
+  },
+  {
+   "title": "Senate committee rejects Trump nominee to lead National Science Foundation",
+   "link": "https://www.theguardian.com/us-news/2026/nov/18/trump-national-science-foundation-nominee",
+   "summary": "Committee chair Bill Cassidy, a Republican, said Jim O’Neill ‘did not do enough to stand up for science’ in previous posts Jim O’Neill will not undergo a confirmation hearing on Wednesday to head he National Science…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-18T17:46:34Z"
+  },
+  {
+   "title": "Grand Theft Auto 6 is a masterpiece, say critics",
+   "link": "https://www.bbc.co.uk/news/articles/cw8r75xm8v4po?at_medium=RSS&at_campaign=rss",
+   "summary": "Critics have their say as to whether GTA 6, the most anticipated video game of all time, lives up to the hype.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-18T17:34:25Z"
+  },
+  {
+   "title": "UK government ‘breaking the law’ by not stopping decline of wild birds",
+   "link": "https://www.theguardian.com/environment/2026/nov/18/uk-government-angela-eagle-natural-england-wild-birds-decline-",
+   "summary": "Populations at lowest level on record with 45% of native breeding species in decline, environment watchdog says The environment secretary, Angela Eagle, her ministers and Natural England are breaking the law by failing…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-18T16:56:18Z"
+  },
+  {
+   "title": "Students face being 'turned away from college' over budget gap",
+   "link": "https://www.bbc.co.uk/news/articles/cw782xzn3m49o?at_medium=RSS&at_campaign=rss",
+   "summary": "Elin Jones said the funding was a result of the \"financial reality\" the Welsh government are facing.",
    "source": "BBC",
    "topic": "Education",
-   "date": "2026-11-18T00:49:31Z"
+   "date": "2026-11-18T16:40:08Z"
   },
   {
-   "title": "Government risks missing climate targets if EV rules weakened, adviser warns",
-   "link": "https://www.bbc.co.uk/news/articles/c63rgqg5l9l2o?at_medium=RSS&at_campaign=rss",
-   "summary": "The UK could miss legally binding climate targets if EV targets are cut, an adviser warns",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-18T00:44:48Z"
-  },
-  {
-   "title": "UK will miss climate targets if it weakens EV sales rules, advisers warn",
-   "link": "https://www.theguardian.com/environment/2026/nov/18/uk-will-miss-climate-targets-if-weakens-rules-on-ev-sales-zev-ccc",
-   "summary": "Analysts say mooted move to let more petrol and diesel vehicles be sold would wreck plan to reach net zero by 2050 Weakening the UK’s electric car sales rules would probably cause the government to miss legally binding…",
+   "title": "‘Huge experiment in biogeography’: US offshore windfarms are creating artificial reefs",
+   "link": "https://www.theguardian.com/us-news/2026/nov/18/offshore-wind-farms-artificial-reef-experiment-fishing-industry",
+   "summary": "Scientists and fishers study how these ‘reefs’ and the creatures living on them are transforming the ocean floor – and what it means for the fishing industry A few years ago, Tony DiLernia, a New York-based charter…",
    "source": "The Guardian",
    "topic": "Environment",
-   "date": "2026-11-18T00:01:26Z"
+   "date": "2026-11-18T14:00:04Z"
   },
   {
-   "title": "Europe plans to catch the next computer chip wave",
-   "link": "https://www.bbc.co.uk/news/articles/cqglwjd450k0o?at_medium=RSS&at_campaign=rss",
-   "summary": "Europe hopes to be a leader in a new generation of computer chips which use light to process data.",
+   "title": "Business Council of Australia more aligned with fossil fuel industry than its members’ values, analysis finds",
+   "link": "https://www.theguardian.com/australia-news/2026/nov/19/bca-policy-energy-companies-members-climate-concerns",
+   "summary": "Research by InfluenceMap raises questions about association’s policies and representation, particularly around advocacy for new gas supplies Get our breaking news email , free app or daily news podcast The Business…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-18T14:00:02Z"
+  },
+  {
+   "title": "Hacks, AI or just overdue updates - why have there been so many outages?",
+   "link": "https://www.bbc.co.uk/news/articles/c6z0kly2lll7o?at_medium=RSS&at_campaign=rss",
+   "summary": "There is no evidence these are linked, but the constant series of tech disruptions can be unnerving.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-18T00:00:24Z"
+   "date": "2026-11-18T13:16:53Z"
   },
   {
-   "title": "Russian warplanes enter Taiwan ADIZ",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/18/2003867931",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-18T00:00:00Z"
+   "title": "The off-and-on switch for U.S. aid leads to a cliffhanger for Zambia and Zimbabwe",
+   "link": "https://www.npr.org/2026/11/18/g-s1-153872/u-s-foreign-aid-memorandum-understanding-zambia-zimbabwe",
+   "summary": "After dismantling the United States Agency for International Development, the Trump administration is restarting foreign aid. In Zambia and Zimbabwe, there are different approaches but similar worries.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-18T13:03:38Z"
   },
   {
-   "title": "US blocks China’s indirect access to latest chips",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/18/2003867932",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-18T00:00:00Z"
-  },
-  {
-   "title": "Three accused of spying on social media influencers",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/18/2003867933",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-18T00:00:00Z"
-  },
-  {
-   "title": "Pakistan's solar revolution has been so successful the national grid is crumbling",
-   "link": "https://www.bbc.co.uk/news/articles/ckvg2n2q3103o?at_medium=RSS&at_campaign=rss",
-   "summary": "People installing their own solar panels has helped boost the solar share of Pakistan's electricity from 1% to 28%.",
+   "title": "Stormont department failing to protect wild birds, investigation finds",
+   "link": "https://www.bbc.co.uk/news/articles/c8p3vwevreyqo?at_medium=RSS&at_campaign=rss",
+   "summary": "The Office for Environmental Protection said Daera had not complied with environmental law requiring it to classify and update Special Protection Areas.",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-11-17T23:34:56Z"
+   "date": "2026-11-18T12:13:32Z"
+  },
+  {
+   "title": "Intense flooding slams Florida in developing storm that could snarl early Thanksgiving travel on the East Coast",
+   "link": "https://lite.cnn.com/2026/11/18/weather/florida-flooding-rain-storm-thanksgiving-travel-climate",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Weather",
+   "date": "2026-11-18T12:00:00Z"
+  },
+  {
+   "title": "Vincent van Gogh painting sells for $190 million, smashing auction record",
+   "link": "https://lite.cnn.com/2026/11/18/style/vincent-van-gogh-painting-auction-record",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Culture",
+   "date": "2026-11-18T12:00:00Z"
+  },
+  {
+   "title": "The farthest spacecraft from Earth reaches unprecedented milestone in interstellar space",
+   "link": "https://lite.cnn.com/2026/11/18/science/voyager-1-light-day",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Science",
+   "date": "2026-11-18T12:00:00Z"
+  },
+  {
+   "title": "What’s causing all these outages? The internet is held together with shoestring and bubblegum",
+   "link": "https://lite.cnn.com/2026/11/18/tech/whats-causing-outages",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Tech",
+   "date": "2026-11-18T12:00:00Z"
+  },
+  {
+   "title": "GTA VI has made more than $1.5 billion before anyone has played it",
+   "link": "https://lite.cnn.com/2026/11/18/business/grand-theft-auto-vi-presale-data-vis",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-18T12:00:00Z"
+  },
+  {
+   "title": "After 49 years, Nasa’s Voyager 1 is one light-day away from us. Can we save this ‘pale blue dot’? | Kim Heacox",
+   "link": "https://www.theguardian.com/commentisfree/2026/nov/18/nasa-voyager-1-pale-blue-dot",
+   "summary": "Since the spacecraft’s 1977 launch, our wonderful and terrible species has done great damage to our planet. Voyager has offered us a clear view of ourselves Imagine traveling nonstop for 49 years, alone in the dark…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-18T11:00:56Z"
+  },
+  {
+   "title": "OpenAI announces new AI safety program; researchers worry it won't be enough",
+   "link": "https://www.npr.org/2026/11/18/nx-s1-6044223/openai-embedded-evaluators-program-critics",
+   "summary": "OpenAI CEO Sam Altman said he would grant \"employee level\" access to outside researchers to evaluate AI safety. The pilot program appears much more restrictive.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-18T10:00:00Z"
+  },
+  {
+   "title": "Project Gryffindor: Meta's plan to get more school kids using Instagram",
+   "link": "https://www.npr.org/2026/11/18/nx-s1-6037808/meta-instagram-schools-teens-safety",
+   "summary": "Meta said it launched its \"school partnership program\" to keep teens safe, but internal documents tell a different story.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-18T10:00:00Z"
+  },
+  {
+   "title": "Special education teachers shared their stories. You told NPR you felt seen",
+   "link": "https://www.npr.org/2026/11/18/nx-s1-6031176/special-education-teachers-audience-response",
+   "summary": "NPR is following along as about a dozen special education teachers navigate this school year and share their joys and challenges. Listeners say they're not alone.",
+   "source": "NPR",
+   "topic": "Education",
+   "date": "2026-11-18T10:00:00Z"
+  },
+  {
+   "title": "Body found in Derry bog decapitated more than 2,000 years ago, coroner finds",
+   "link": "https://www.theguardian.com/uk-news/2026/nov/18/ballymacombs-more-woman-derry-bog-decapitated-2000-years-ago",
+   "summary": "Inquest-style inquiry concludes iron age remains are of 15- to 22-year-old female who may have been ritually sacrificed A coroner’s investigation into Northern Ireland ’s most venerable cold case has concluded that the…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-18T08:00:36Z"
   },
   {
    "title": "Public health expert reacts to latest measles milestone",
@@ -96,54 +224,6 @@
    "source": "NPR",
    "topic": "Health",
    "date": "2026-11-17T22:20:41Z"
-  },
-  {
-   "title": "US loses measles elimination status amid worst outbreak since 1991",
-   "link": "https://www.theguardian.com/us-news/2026/nov/17/us-measles-outbreak-elimination-status",
-   "summary": "Infectious disease is now continually spreading after being eliminated for 26 years, with more than 5,400 US cases The US has lost its measles elimination status, global health authorities announced, an official…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-17T22:18:53Z"
-  },
-  {
-   "title": "U.S. officially loses its measles elimination status",
-   "link": "https://www.npr.org/2026/11/17/nx-s1-6044227/u-s-officially-loses-its-measles-elimination-status",
-   "summary": "The Pan American Health Organization announced that measles is no longer considered eliminated in the U.S. It's classified as endemic now because a strain has lingered in the U.S. for over a year.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-17T21:53:30Z"
-  },
-  {
-   "title": "Air travel, Microsoft, banking: Why are our IT systems failing?",
-   "link": "https://www.npr.org/2026/11/17/nx-s1-6043850/air-travel-microsoft-banking-why-are-our-it-systems-failing",
-   "summary": "NPR's Sacha Pfeiffer speaks with cybersecurity expert Dmitri Alperovitch about the coincidence of several major technical failures in IT infrastructure — and how best to understand it.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-17T21:40:41Z"
-  },
-  {
-   "title": "Tech Life",
-   "link": "https://www.bbc.co.uk/sounds/play/w3ct8jyw?at_medium=RSS&at_campaign=rss",
-   "summary": "Video gaming is huge - it's more lucrative than the movies and music combined.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-17T20:30:00Z"
-  },
-  {
-   "title": "William and Kate celebrate Earthshot Prize winners in Mumbai",
-   "link": "https://www.bbc.co.uk/news/articles/cqlykve012d1o?at_medium=RSS&at_campaign=rss",
-   "summary": "The Prince and Princess of Wales were joined by sporting and acting stars for the annual environmental awards ceremony.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-17T18:20:36Z"
-  },
-  {
-   "title": "Nvidia board says it does not intend to reinstate Jensen Huang as CEO",
-   "link": "https://www.npr.org/2026/11/17/nx-s1-6044213/jensen-huang-nvidia-congress",
-   "summary": "The former Nvidia CEO said he would be \"honored\" to return if the board allowed. But the board says it has no intention of reinstating him.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-17T17:36:31Z"
   },
   {
    "title": "Families reach last-minute agreement over disputed $180M Van Gogh sale",
@@ -160,86 +240,6 @@
    "source": "CNN",
    "topic": "Tech",
    "date": "2026-11-17T12:00:00Z"
-  },
-  {
-   "title": "Three children ended up among the famed Inca ‘ice mummies.’ Their final moments are coming to light",
-   "link": "https://lite.cnn.com/2026/11/17/science/inca-ice-mummies-sacrifice-andes",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Science",
-   "date": "2026-11-17T12:00:00Z"
-  },
-  {
-   "title": "Jensen Huang says he would be ‘honored’ to be reinstated as Nvidia CEO in new statement",
-   "link": "https://lite.cnn.com/2026/11/17/business/jensen-huang-nvidia-ceo-statement",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-17T12:00:00Z"
-  },
-  {
-   "title": "The wild world of modern penis enlargement",
-   "link": "https://lite.cnn.com/2026/11/17/style/manhood-documentary-penis-filler",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-17T12:00:00Z"
-  },
-  {
-   "title": "Why tech bros are desperate to bring Jensen Huang back — and why that would be a mistake",
-   "link": "https://lite.cnn.com/2026/11/17/business/jensen-huang-return-risk",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-17T12:00:00Z"
-  },
-  {
-   "title": "US authorities interviewed Alice Huang in probe over possible diversion of chips",
-   "link": "https://lite.cnn.com/2026/11/17/tech/doj-investigation-alice-huang",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-17T12:00:00Z"
-  },
-  {
-   "title": "I'm a human doctor with human intelligence. But I sure do like my AI notetaker",
-   "link": "https://www.npr.org/2026/11/17/nx-s1-6037556/medicine-ai-doctor-notetaker-scribe",
-   "summary": "Has your doctor asked whether they can use artificial intelligence to take notes during an exam? It's very popular, and here's how to think through the pros and the cons of the new technology.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-17T11:00:00Z"
-  },
-  {
-   "title": "More people are getting the flu. Should you get a flu shot before you travel?",
-   "link": "https://www.npr.org/2026/11/17/nx-s1-6043086/thanksgiving-travel-cold-flu-vaccine-shot-booster",
-   "summary": "Thanksgiving is just around the corner, just as millions of Americans are expected to travel for the holidays. Another thing that's upon us? Cold and flu season.",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-11-17T10:00:00Z"
-  },
-  {
-   "title": "Does locking up a student's cell phone improve test scores? A new study suggests so",
-   "link": "https://www.npr.org/2026/11/17/nx-s1-6035684/school-cellphone-ban-learning-loss-yondr-research",
-   "summary": "A new study of school cellphone bans finds they may help students make up for some of the learning they've lost since 2013 – a divergence from earlier study results.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-17T10:00:00Z"
-  },
-  {
-   "title": "Nasa’s Voyager 1 probe in sight of an incredible milestone – podcast",
-   "link": "https://www.theguardian.com/science/audio/2026/nov/17/nasa-voyager-1-probe-incredible-milestone-podcast",
-   "summary": "Nasa sent the Voyager 1 and 2 probes into space almost 50 years ago to explore the outer reaches of our solar system. Now Voyager 1, the farthest human-made object from Earth, is about to reach a distance of one…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-17T05:00:04Z"
-  },
-  {
-   "title": "‘Orwellian’: HIV scientist’s ordeal lays bare Trump officials’ interference in grant-making",
-   "link": "https://www.theguardian.com/us-news/2026/nov/16/hiv-scientist-nih-grant-making-process",
-   "summary": "Researchers forced to scrap original studies as NIH rethinks grants not in ‘alignment’ with administration’s priorities Dr Jade Pagkas-Bather received her first grant from the National Institutes of Health (NIH) in…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-16T13:00:01Z"
   }
  ]
 }
