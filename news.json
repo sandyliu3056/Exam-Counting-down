@@ -1,29 +1,157 @@
 {
- "updated": "2026-11-20T02:34:09Z",
+ "updated": "2026-11-21T02:47:44Z",
  "items": [
   {
-   "title": "GTA 6 breaks records as sales top $2bn - industry estimate",
-   "link": "https://www.bbc.co.uk/news/articles/c9zr5nyv5dj2o?at_medium=RSS&at_campaign=rss",
-   "summary": "Rockstar Games ended a 13-year wait with what is expected to be the biggest entertainment launch ever.",
+   "title": "Can AI really help spot Black Friday deals? We put it to the test",
+   "link": "https://www.bbc.co.uk/news/articles/cw8dv4jmnle2o?at_medium=RSS&at_campaign=rss",
+   "summary": "We put four AI models to the test to see if they could save us money on a new TV.",
    "source": "BBC",
    "topic": "Tech",
-   "date": "2026-11-20T02:13:05Z"
+   "date": "2026-11-21T00:06:11Z"
   },
   {
-   "title": "More climate money for Africa? Europe says use what's already pledged",
-   "link": "https://www.bbc.co.uk/news/articles/c6074k5jjrzko?at_medium=RSS&at_campaign=rss",
-   "summary": "African countries at the UN climate summit in Turkey are demanding more funding from developed nations to help them cope with climate change.",
+   "title": "Additional budget passes with no cuts",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/21/2003868118",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-21T00:00:00Z"
+  },
+  {
+   "title": "Legislature approves KMT’s NT$20,000 payout bill",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/21/2003868119",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-21T00:00:00Z"
+  },
+  {
+   "title": "TAIEX plunges almost 18% in worst week since 1991",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/21/2003868120",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-21T00:00:00Z"
+  },
+  {
+   "title": "In a year of AI solving maths problems, Anthropic may have just solved the biggest",
+   "link": "https://www.bbc.co.uk/news/articles/c6pqr2g7w059o?at_medium=RSS&at_campaign=rss",
+   "summary": "A mathematician at Anthropic says he used an AI to prove the famed Riemann hypothesis, though verification will take some time.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-20T23:08:57Z"
+  },
+  {
+   "title": "GTA 6 sales hit $3.8bn in a single day - the biggest entertainment launch in history",
+   "link": "https://www.bbc.co.uk/news/articles/c9zr5nyv5dj2o?at_medium=RSS&at_campaign=rss",
+   "summary": "The mammoth figure surpasses every video game launch and single-day film box office record.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-20T22:53:24Z"
+  },
+  {
+   "title": "'My biggest fear was getting changed in front of them' - why teenage girls stop playing sport",
+   "link": "https://www.bbc.co.uk/news/articles/ck9q84gwr533o?at_medium=RSS&at_campaign=rss",
+   "summary": "There has been a drop in teenage girls participating in sport. But what are the reasons behind that?",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-20T22:45:26Z"
+  },
+  {
+   "title": "S&P 500 sinks 3.7% and the Nasdaq composite goes negative for the year",
+   "link": "https://www.npr.org/2026/11/20/g-s1-154797/nasdaq-sp500-stock-market-ai-sink-negative",
+   "summary": "AI stocks have hefty market values and have a much bigger impact on the market's direction. They were responsible for Wall Street's big gains this year and are now behind the big slide for the market.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-20T22:11:29Z"
+  },
+  {
+   "title": "Tech stocks end the week on a down note, despite Anthropic's mega-IPO",
+   "link": "https://www.npr.org/2026/11/20/nx-s1-6048645/tech-stocks-end-the-week-on-a-down-note-despite-anthropics-mega-ipo",
+   "summary": "The stock market is ending the week down despite Anthropic's blockbuster IPO and a strong Nvidia earnings report, largely thanks to investor jitters about the future of AI.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-20T21:38:32Z"
+  },
+  {
+   "title": "New research gives insight to where your brain plans out your speech",
+   "link": "https://www.npr.org/2026/11/20/nx-s1-6047695/new-research-gives-insight-to-where-your-brain-plans-out-your-speech",
+   "summary": "New research shows where this all takes place and what it means for possibly treating those who have speech difficulties.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-20T21:38:25Z"
+  },
+  {
+   "title": "Machine Gods: Anthropic's early days",
+   "link": "https://www.npr.org/2026/11/20/nx-s1-6047503/machine-gods-anthropics-early-days",
+   "summary": "In the wake of AI giant Anthropic's record-breaking IPO, Machine Gods hosts Kevin Roose and Casey Newton look back on the early days of the company, when less than 200 workers in a cramped office obsessed over AI…",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-20T21:38:14Z"
+  },
+  {
+   "title": "Cop31 talks go into overtime as debate rages over lack of fossil fuels in draft deal",
+   "link": "https://www.theguardian.com/environment/2026/nov/20/cop31-talks-overtime-fossil-fuels-vanish-from-draft-deal",
+   "summary": "African ministers say they ‘didn’t come here to beg’, with civil society groups calling it the ‘worst Cop ever’ Crucial climate talks headed into overtime on the last official day of the Cop31 UN summit as countries…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-20T20:04:46Z"
+  },
+  {
+   "title": "What to know about the US permitting bill, from datacenters to Trump’s arch",
+   "link": "https://www.theguardian.com/us-news/2026/nov/20/what-to-know-permitting-bill-energy-passed",
+   "summary": "Environmental groups are aghast, but supporters say bill might be only chance to speed up clean energy projects The US Senate has passed a bill to fast-track energy and datacenter projects by removing environmental and…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-20T18:26:08Z"
+  },
+  {
+   "title": "US Senate approves bill to speed up permitting reviews for energy projects and datacenters",
+   "link": "https://www.theguardian.com/us-news/2026/nov/20/senate-energy-datacenters-review-bill",
+   "summary": "Bipartisan legislation now goes to the House amid concerns by some Democrats and environmental groups The Senate approved bipartisan legislation on Thursday aimed at speeding up permitting reviews to build power…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-20T15:09:09Z"
+  },
+  {
+   "title": "Is Wonder the dinner company for our anti-social times?",
+   "link": "https://lite.cnn.com/2026/11/20/business/wonder-food-delivery-marc-lore",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-20T12:00:00Z"
+  },
+  {
+   "title": "The young star painter seducing the art world with glittering curtains. (Just don’t ask what’s behind them)",
+   "link": "https://lite.cnn.com/2026/11/20/style/louise-giovanelli-interview-white-cube-exhibition",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Culture",
+   "date": "2026-11-20T12:00:00Z"
+  },
+  {
+   "title": "What are heat pumps and how much do they cost?",
+   "link": "https://www.bbc.co.uk/news/articles/c8xgdv9e007o?at_medium=RSS&at_campaign=rss",
+   "summary": "The government wants more homes to have heat pumps to cut fossil fuel use and drive down energy bills.",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-11-20T00:54:50Z"
+   "date": "2026-11-20T10:24:52Z"
   },
   {
-   "title": "Tens of thousands of UK fridges secured from hackers in secret nationwide operation",
-   "link": "https://www.bbc.co.uk/news/articles/c6eq49zyx7p4o?at_medium=RSS&at_campaign=rss",
-   "summary": "Supermarkets, warehouses, restaurants and stadiums have been scrambling to make their devices safe.",
+   "title": "Wildlife conservation cash targets ex-colliery sites",
+   "link": "https://www.bbc.co.uk/news/articles/cmx2785nzpw2o?at_medium=RSS&at_campaign=rss",
+   "summary": "The project aims to create and restore habitats for amphibians and lizards at sites in Yorkshire.",
    "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-20T00:02:07Z"
+   "topic": "Science",
+   "date": "2026-11-20T06:21:50Z"
+  },
+  {
+   "title": "Mysterious Mercury is about to get a visitor - after spacecraft's eight-year epic voyage",
+   "link": "https://www.bbc.co.uk/news/articles/c39w9l4v1p9ro?at_medium=RSS&at_campaign=rss",
+   "summary": "The mission is set to give us our best ever view of Mercury - the closest planet to the Sun.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-20T05:59:56Z"
   },
   {
    "title": "Spacecraft reaches Mercury on second-ever mission to enter its orbit",
@@ -34,36 +162,12 @@
    "date": "2026-11-20T00:01:15Z"
   },
   {
-   "title": "China eyes Taiwan elections as test: US",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/20/2003868061",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-20T00:00:00Z"
-  },
-  {
-   "title": "China, Russia release ‘peace declaration’",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/20/2003868062",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-20T00:00:00Z"
-  },
-  {
-   "title": "Cabinet approves changes to sibling inheritance rules",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/20/2003868063",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-20T00:00:00Z"
-  },
-  {
-   "title": "Anthropic becomes one of world's most valuable public companies in stock market debut",
-   "link": "https://www.bbc.co.uk/news/articles/c3x29ggenz12o?at_medium=RSS&at_campaign=rss",
-   "summary": "Anthropic is the first purely AI company to be publicly listed, creating a test for the entire industry.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-19T23:33:51Z"
+   "title": "An elevator, a brick wall and a bathroom: scientists use gravity to send ‘practically unblockable’ message",
+   "link": "https://www.theguardian.com/science/2026/nov/20/scientists-communicate-using-gravity-elevator-brick-wall-bathroom-experiment",
+   "summary": "Australian physicists chose to transmit the word ‘gravity’ in binary code through brick wall Get our breaking news email , free app or daily news podcast Australian scientists have used gravity as a means of…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-19T23:30:26Z"
   },
   {
    "title": "The cost of college is confusing. Some schools are trying to change that",
@@ -74,20 +178,12 @@
    "date": "2026-11-19T22:03:28Z"
   },
   {
-   "title": "BBC Inside Science",
-   "link": "https://www.bbc.co.uk/sounds/play/w3ct978m?at_medium=RSS&at_campaign=rss",
-   "summary": "SpaceX is on the verge of making space affordable.",
-   "source": "BBC",
+   "title": "Spuds in space: scientists say potatoes could be key food source for future moon base",
+   "link": "https://www.theguardian.com/science/2026/nov/19/potatoes-moon-base-nasa",
+   "summary": "New report details how potatoes were successfully cultivated in simulated lunar soil The humble potato could be the key to sustaining human life on the moon , according to a new scientific report asserting that…",
+   "source": "The Guardian",
    "topic": "Science",
-   "date": "2026-11-19T21:00:00Z"
-  },
-  {
-   "title": "Oil firm fined for breaking environmental rules hundreds of times",
-   "link": "https://www.bbc.co.uk/news/articles/cmwy5de1177yo?at_medium=RSS&at_campaign=rss",
-   "summary": "Ten charges involved oil, cyanide and other pollutants entering local waterways.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-19T19:58:27Z"
+   "date": "2026-11-19T18:49:54Z"
   },
   {
    "title": "The 'Magic Six': How to strengthen your marriage in midlife",
@@ -96,30 +192,6 @@
    "source": "NPR",
    "topic": "Health",
    "date": "2026-11-19T18:28:23Z"
-  },
-  {
-   "title": "Cop31 told it risks being ‘ghost’ summit as all mentions of fossil fuels removed from draft text",
-   "link": "https://www.theguardian.com/environment/2026/nov/19/cop31-risks-becoming-ghost-summit-after-all-mentions-of-fossil-fuels-removed-from-draft-text",
-   "summary": "Draft agreement also fails to show how developing countries will receive financial help to deal with climate crisis Cop31 live – latest updates Every mention of fossil fuels has been expunged from the draft outcome of…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-19T17:58:21Z"
-  },
-  {
-   "title": "Why fibbing about stolen snacks is an important part of childhood",
-   "link": "https://www.bbc.co.uk/news/articles/cwvg2mp0de2jo?at_medium=RSS&at_campaign=rss",
-   "summary": "Research shows lies and deception can start \"surprisingly young\" and are not always a bad thing.",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-19T16:36:33Z"
-  },
-  {
-   "title": "‘It’s a biohazard’: Native communities in US south-west try to recover after flooding intensified by El Niño",
-   "link": "https://www.theguardian.com/us-news/2026/nov/19/el-nino-flooding-native-communities",
-   "summary": "Residents and local groups band together after severe flooding submerged a New Mexico town in toxic water On the night of 23 October, Jimmie Goodman was trying to get some rest when his sister, who was recovering from…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-19T12:30:47Z"
   },
   {
    "title": "World Toilet Day is a funny idea with a serious goal: A world awash in toilets",
@@ -154,54 +226,6 @@
    "date": "2026-11-19T12:00:00Z"
   },
   {
-   "title": "Race to replant five South African baobabs after export blocked",
-   "link": "https://www.theguardian.com/environment/2026/nov/19/baobab-five-trees-south-africa-dug-up-export-blocked-georgia-aoe",
-   "summary": "The trees, intended for an unnamed buyer in Georgia, were reportedly dug up without the necessary permits Environmentalists in South Africa are racing to replant five centuries-old baobabs after the 20-tonne trees were…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-19T11:03:24Z"
-  },
-  {
-   "title": "Investors scramble for a piece of AI giant Anthropic in blockbuster IPO",
-   "link": "https://www.npr.org/2026/11/19/nx-s1-6042558/anthropic-ipo-breaks-records-100-billion",
-   "summary": "Shares in the maker of the popular Claude artificial intelligence model leapt in first day of trading on the Nasdaq Thursday.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-19T10:00:00Z"
-  },
-  {
-   "title": "IPCC report delay will threaten global effort to tackle climate crisis, says top scientist",
-   "link": "https://www.theguardian.com/science/2026/nov/19/ipcc-report-delay-climate-crisis-scientist",
-   "summary": "Johan Rockström, one of world’s leading climate experts, says slowing down scientific work puts cooperation at risk Climate science is “foundational” to the Paris agreement and worldwide progress on tackling global…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-19T07:16:45Z"
-  },
-  {
-   "title": "Could measles and midterms bring down Maha? – podcast",
-   "link": "https://www.theguardian.com/science/audio/2026/nov/19/could-measles-and-midterms-bring-down-maha-podcast",
-   "summary": "This week the US lost its measles elimination status, an official recognition that the infectious disease is endemic in the country after being eliminated for 26 years. To find out what this means in practical terms…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-19T05:00:19Z"
-  },
-  {
-   "title": "Anthropic IPO raises record $81.3 billion on strong AI demand",
-   "link": "https://www.npr.org/2026/11/18/nx-s1-6046212/anthropic-record-ipo-price",
-   "summary": "The five-year-old artificial intelligence powerhouse priced its initial public offering at $83 a share, shrugging off growing concern about a possible AI bubble and volatility in tech stocks.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-18T23:54:56Z"
-  },
-  {
-   "title": "After Nepal's epic flood, they're restoring their community ... and their lives",
-   "link": "https://www.npr.org/2026/11/18/nx-s1-6022034/flood-nepal-survival-climate-change",
-   "summary": "As the emergency response to the flood ends, aid workers turn to the hard work of rebuilding communities that lost everything. Many of those workers lost everything, too.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-18T22:01:17Z"
-  },
-  {
    "title": "Florida being pummeled by developing storm that could snarl early Thanksgiving travel on the East Coast",
    "link": "https://lite.cnn.com/2026/11/18/weather/florida-flooding-rain-storm-thanksgiving-travel-climate",
    "summary": "",
@@ -216,30 +240,6 @@
    "source": "CNN",
    "topic": "Culture",
    "date": "2026-11-18T12:00:00Z"
-  },
-  {
-   "title": "The farthest spacecraft from Earth reaches unprecedented milestone in interstellar space",
-   "link": "https://lite.cnn.com/2026/11/18/science/voyager-1-light-day",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Science",
-   "date": "2026-11-18T12:00:00Z"
-  },
-  {
-   "title": "What’s causing all these outages? The internet is held together with shoestring and bubblegum",
-   "link": "https://lite.cnn.com/2026/11/18/tech/whats-causing-outages",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-18T12:00:00Z"
-  },
-  {
-   "title": "OpenAI announces new AI safety program; researchers worry it won't be enough",
-   "link": "https://www.npr.org/2026/11/18/nx-s1-6044223/openai-embedded-evaluators-program-critics",
-   "summary": "OpenAI CEO Sam Altman said he would grant \"employee level\" access to outside researchers to evaluate AI safety. The pilot program appears much more restrictive.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-18T10:00:00Z"
   }
  ],
  "lessons": [
