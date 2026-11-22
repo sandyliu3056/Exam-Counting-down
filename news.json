@@ -1,6 +1,158 @@
 {
- "updated": "2026-11-21T02:47:44Z",
+ "updated": "2026-11-22T01:33:20Z",
  "items": [
+  {
+   "title": "US lawmaker upbeat on Taiwan ties",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/22/2003868165",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-22T00:00:00Z"
+  },
+  {
+   "title": "FSC announces measures after stock market losses",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/22/2003868166",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-22T00:00:00Z"
+  },
+  {
+   "title": "COP31 extended as countries unable to reach an agreement",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/22/2003868167",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-22T00:00:00Z"
+  },
+  {
+   "title": "Fight over fossil fuels leaves COP31 climate talks in deadlock",
+   "link": "https://www.bbc.co.uk/news/articles/c6ly5w40eg07o?at_medium=RSS&at_campaign=rss",
+   "summary": "Countries from nearly 200 countries are in a deadlock to try and get a new global climate agreement.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-21T22:19:43Z"
+  },
+  {
+   "title": "Google employees protest AI in schools policy",
+   "link": "https://www.npr.org/2026/11/21/nx-s1-6048599/google-employees-protest-ai-in-schools-policy",
+   "summary": "More than 550 Google employees signed a petition to allow schools access to Search without AI. Parents and educators protested outside Google offices in 6 cities last week for the same ask.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-21T22:01:40Z"
+  },
+  {
+   "title": "Scientists sequenced a whale's entire genome using drones and whale snot",
+   "link": "https://www.npr.org/2026/11/21/nx-s1-6044816/scientists-sequenced-a-whales-entire-genome-using-drones-and-whale-snot",
+   "summary": "Scientists were able to sequence the entire genome of a whale using samples of its snot. They used sharp flying skills and commercial drones affixed with petri dishes to collect the samples.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-21T12:40:15Z"
+  },
+  {
+   "title": "Philadelphia neonatologist Joanna Parga-Belinkie on keeping babies safe from measles",
+   "link": "https://www.npr.org/2026/11/21/nx-s1-6038857/philadelphia-neonatologist-joanna-parga-belinkie-on-keeping-babies-safe-from-measles",
+   "summary": "Amid ongoing measles outbreaks, Philadelphia neonatologist Joanna Parga-Belinkie talks with NPR's Scott Simon about how she keeps infants too young for the vaccine safe.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-21T12:40:10Z"
+  },
+  {
+   "title": "How red squirrels made island their home",
+   "link": "https://www.bbc.co.uk/news/articles/c61k9mwxmplxo?at_medium=RSS&at_campaign=rss",
+   "summary": "Conservationists say that, with red squirrels dwindling in the UK, Jersey is an \"important refuge\".",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-21T12:18:55Z"
+  },
+  {
+   "title": "Why does your body store fat in your butt?",
+   "link": "https://lite.cnn.com/2026/11/21/health/body-fat-butt-conversation",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Health",
+   "date": "2026-11-21T12:00:00Z"
+  },
+  {
+   "title": "Anthropic worker claims to have solved a Holy Grail of math problems with the help of AI",
+   "link": "https://lite.cnn.com/2026/11/21/tech/anthropic-math-problem-ai",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Tech",
+   "date": "2026-11-21T12:00:00Z"
+  },
+  {
+   "title": "Two sisters checked into an English B&B. The trouble started when the key broke in the lock",
+   "link": "https://lite.cnn.com/2026/11/21/travel/two-sisters-english-inn-stuck-travel-news",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Travel",
+   "date": "2026-11-21T12:00:00Z"
+  },
+  {
+   "title": "How a young couple can become multimillionaires by retirement age, according to an expert",
+   "link": "https://lite.cnn.com/2026/11/21/business/savings-challenge-dont-be-afraid-to-ask-tip",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-21T12:00:00Z"
+  },
+  {
+   "title": "Your 401(k) is full of AI. How to deal with the volatility",
+   "link": "https://lite.cnn.com/2026/11/21/business/ai-stocks-volatility-investing",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-21T12:00:00Z"
+  },
+  {
+   "title": "The AI boom had a really bad week — and it's raising loud alarms",
+   "link": "https://www.npr.org/2026/11/21/nx-s1-6048729/ai-stock-markets-anthropic-nvidia",
+   "summary": "AI stocks — and the broader markets — got pummeled this week, raising major concerns about the financial system and the wider economy. Here's what to know.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-21T10:00:00Z"
+  },
+  {
+   "title": "Anthropic says it will put humanity first. Will its IPO change that?",
+   "link": "https://www.npr.org/2026/11/21/nx-s1-6048678/anthropic-ipo-mission-ai-safety",
+   "summary": "Critics say now that the AI giant is a public company, its commitment to put safety ahead of commercial success will be tested.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-21T10:00:00Z"
+  },
+  {
+   "title": "China commits to low-carbon electrification and help for others to improve",
+   "link": "https://www.theguardian.com/environment/2026/nov/21/china-commits-low-carbon-electrification-help-others-improve",
+   "summary": "Exclusive: Countries at Cop31 are being urged to commit to deriving 35% of their energy from electricity by 2035 Cop31 live – latest updates China is pushing for rapid electrification of its economy using low-carbon…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-21T09:47:57Z"
+  },
+  {
+   "title": "'My biggest fear was getting changed in front of them' - why teenage girls stop playing sport",
+   "link": "https://www.bbc.co.uk/news/articles/ck9q84gwr533o?at_medium=RSS&at_campaign=rss",
+   "summary": "There has been a drop in teenage girls participating in sport. But what are the reasons behind that?",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-21T09:27:32Z"
+  },
+  {
+   "title": "Beating Ebola takes more than medicine – I saw what worked in west Africa a decade ago | Kayode Akintola",
+   "link": "https://www.theguardian.com/global-development/2026/nov/21/ebola-outbreak-congo-worst-ever",
+   "summary": "The outbreak in DR Congo is shaping up to be the worst ever, but the support of local faith leaders – and adequate funding – will be needed to bring it under control Ebola is terrifying: I know, because I lived through…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-21T06:00:53Z"
+  },
+  {
+   "title": "Tech Now",
+   "link": "https://www.bbc.co.uk/iplayer/episode/m0034tjc?at_medium=RSS&at_campaign=rss",
+   "summary": "Alasdair Keane is in Naples exploring how tech is transforming the America's Cup race.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-21T01:00:00Z"
+  },
   {
    "title": "Can AI really help spot Black Friday deals? We put it to the test",
    "link": "https://www.bbc.co.uk/news/articles/cw8dv4jmnle2o?at_medium=RSS&at_campaign=rss",
@@ -10,68 +162,12 @@
    "date": "2026-11-21T00:06:11Z"
   },
   {
-   "title": "Additional budget passes with no cuts",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/21/2003868118",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-21T00:00:00Z"
-  },
-  {
-   "title": "Legislature approves KMT’s NT$20,000 payout bill",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/21/2003868119",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-21T00:00:00Z"
-  },
-  {
-   "title": "TAIEX plunges almost 18% in worst week since 1991",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/21/2003868120",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-21T00:00:00Z"
-  },
-  {
-   "title": "In a year of AI solving maths problems, Anthropic may have just solved the biggest",
+   "title": "In a year of AI solving maths problems, an Anthropic worker says he may have cracked the biggest",
    "link": "https://www.bbc.co.uk/news/articles/c6pqr2g7w059o?at_medium=RSS&at_campaign=rss",
    "summary": "A mathematician at Anthropic says he used an AI to prove the famed Riemann hypothesis, though verification will take some time.",
    "source": "BBC",
    "topic": "Tech",
    "date": "2026-11-20T23:08:57Z"
-  },
-  {
-   "title": "GTA 6 sales hit $3.8bn in a single day - the biggest entertainment launch in history",
-   "link": "https://www.bbc.co.uk/news/articles/c9zr5nyv5dj2o?at_medium=RSS&at_campaign=rss",
-   "summary": "The mammoth figure surpasses every video game launch and single-day film box office record.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-20T22:53:24Z"
-  },
-  {
-   "title": "'My biggest fear was getting changed in front of them' - why teenage girls stop playing sport",
-   "link": "https://www.bbc.co.uk/news/articles/ck9q84gwr533o?at_medium=RSS&at_campaign=rss",
-   "summary": "There has been a drop in teenage girls participating in sport. But what are the reasons behind that?",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-20T22:45:26Z"
-  },
-  {
-   "title": "S&P 500 sinks 3.7% and the Nasdaq composite goes negative for the year",
-   "link": "https://www.npr.org/2026/11/20/g-s1-154797/nasdaq-sp500-stock-market-ai-sink-negative",
-   "summary": "AI stocks have hefty market values and have a much bigger impact on the market's direction. They were responsible for Wall Street's big gains this year and are now behind the big slide for the market.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-20T22:11:29Z"
-  },
-  {
-   "title": "Tech stocks end the week on a down note, despite Anthropic's mega-IPO",
-   "link": "https://www.npr.org/2026/11/20/nx-s1-6048645/tech-stocks-end-the-week-on-a-down-note-despite-anthropics-mega-ipo",
-   "summary": "The stock market is ending the week down despite Anthropic's blockbuster IPO and a strong Nvidia earnings report, largely thanks to investor jitters about the future of AI.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-20T21:38:32Z"
   },
   {
    "title": "New research gives insight to where your brain plans out your speech",
@@ -80,14 +176,6 @@
    "source": "NPR",
    "topic": "Science",
    "date": "2026-11-20T21:38:25Z"
-  },
-  {
-   "title": "Machine Gods: Anthropic's early days",
-   "link": "https://www.npr.org/2026/11/20/nx-s1-6047503/machine-gods-anthropics-early-days",
-   "summary": "In the wake of AI giant Anthropic's record-breaking IPO, Machine Gods hosts Kevin Roose and Casey Newton look back on the early days of the company, when less than 200 workers in a cramped office obsessed over AI…",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-20T21:38:14Z"
   },
   {
    "title": "Cop31 talks go into overtime as debate rages over lack of fossil fuels in draft deal",
@@ -104,14 +192,6 @@
    "source": "The Guardian",
    "topic": "Environment",
    "date": "2026-11-20T18:26:08Z"
-  },
-  {
-   "title": "US Senate approves bill to speed up permitting reviews for energy projects and datacenters",
-   "link": "https://www.theguardian.com/us-news/2026/nov/20/senate-energy-datacenters-review-bill",
-   "summary": "Bipartisan legislation now goes to the House amid concerns by some Democrats and environmental groups The Senate approved bipartisan legislation on Thursday aimed at speeding up permitting reviews to build power…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-20T15:09:09Z"
   },
   {
    "title": "Is Wonder the dinner company for our anti-social times?",
@@ -138,22 +218,6 @@
    "date": "2026-11-20T10:24:52Z"
   },
   {
-   "title": "Wildlife conservation cash targets ex-colliery sites",
-   "link": "https://www.bbc.co.uk/news/articles/cmx2785nzpw2o?at_medium=RSS&at_campaign=rss",
-   "summary": "The project aims to create and restore habitats for amphibians and lizards at sites in Yorkshire.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-20T06:21:50Z"
-  },
-  {
-   "title": "Mysterious Mercury is about to get a visitor - after spacecraft's eight-year epic voyage",
-   "link": "https://www.bbc.co.uk/news/articles/c39w9l4v1p9ro?at_medium=RSS&at_campaign=rss",
-   "summary": "The mission is set to give us our best ever view of Mercury - the closest planet to the Sun.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-20T05:59:56Z"
-  },
-  {
    "title": "Spacecraft reaches Mercury on second-ever mission to enter its orbit",
    "link": "https://www.theguardian.com/science/2026/nov/20/spacecraft-mercury-second-ever-mission-orbit-bepicolombo",
    "summary": "BepiColombo double probe will map planet’s surface and study its interior to shed light on its unusually large core After a voyage of more than eight years and 6bn miles, a joint European-Japanese space mission has…",
@@ -176,157 +240,413 @@
    "source": "NPR",
    "topic": "Education",
    "date": "2026-11-19T22:03:28Z"
-  },
-  {
-   "title": "Spuds in space: scientists say potatoes could be key food source for future moon base",
-   "link": "https://www.theguardian.com/science/2026/nov/19/potatoes-moon-base-nasa",
-   "summary": "New report details how potatoes were successfully cultivated in simulated lunar soil The humble potato could be the key to sustaining human life on the moon , according to a new scientific report asserting that…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-19T18:49:54Z"
-  },
-  {
-   "title": "The 'Magic Six': How to strengthen your marriage in midlife",
-   "link": "https://www.npr.org/2026/11/19/nx-s1-5996688/magic-6-marriage-tips-nina-totenberg-relationships",
-   "summary": "How do we maintain healthy romantic relationships as we age? Allison Aubrey and Scott Detrow talk about about the science of healthy, later-in-life relationships.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-19T18:28:23Z"
-  },
-  {
-   "title": "World Toilet Day is a funny idea with a serious goal: A world awash in toilets",
-   "link": "https://www.npr.org/2026/11/19/g-s1-154159/world-toilet-day-gender-equality-menstruation",
-   "summary": "Yahoo for the loo! November 19 marks the 25th anniversary of World Toilet Day. The theme this year: \"Sanitation and Gender Equality: Safe Toilets, Equal Futures.\"",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-19T12:26:31Z"
-  },
-  {
-   "title": "Almost all of Anthropic’s employees are now millionaires",
-   "link": "https://lite.cnn.com/2026/11/19/tech/anthropic-employees-now-millionaires",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-19T12:00:00Z"
-  },
-  {
-   "title": "Anthropic passed the IPO test. Now comes the hard part.",
-   "link": "https://lite.cnn.com/2026/11/19/business/anthropic-ipo-stock-test-ai",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-19T12:00:00Z"
-  },
-  {
-   "title": "Super El Niño will vanish by next hurricane season and that could spell danger",
-   "link": "https://lite.cnn.com/2026/11/19/weather/el-nino-hurricanes-storms-la-nina-climate",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Weather",
-   "date": "2026-11-19T12:00:00Z"
-  },
-  {
-   "title": "Florida being pummeled by developing storm that could snarl early Thanksgiving travel on the East Coast",
-   "link": "https://lite.cnn.com/2026/11/18/weather/florida-flooding-rain-storm-thanksgiving-travel-climate",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Weather",
-   "date": "2026-11-18T12:00:00Z"
-  },
-  {
-   "title": "Vincent van Gogh painting sells for $190 million, smashing auction record",
-   "link": "https://lite.cnn.com/2026/11/18/style/vincent-van-gogh-painting-auction-record",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-18T12:00:00Z"
   }
  ],
  "lessons": [
   {
-   "link": "https://www.bbc.co.uk/news/articles/c9zr5nyv5dj2o?at_medium=RSS&at_campaign=rss",
+   "link": "https://www.bbc.co.uk/news/articles/c6ly5w40eg07o?at_medium=RSS&at_campaign=rss",
    "source": "BBC",
-   "topic": "Tech",
-   "title": "GTA 6 breaks records as sales top $2bn - industry estimate",
-   "title_zh": "業界估計：《俠盜獵車手 6》銷售額突破 20 億美元創下紀錄",
+   "topic": "Science",
+   "title": "Fight over fossil fuels leaves COP31 climate talks in deadlock",
+   "title_zh": "化石燃料爭議使 COP31 氣候談判陷入僵局",
    "paragraphs": [
     {
-     "en": "Grand Theft Auto 6, commonly known as GTA 6, has arrived after a long 13-year wait. According to the analytics platform Sensor Tower, the blockbuster action-adventure game has already sold over 24.5 million copies as of Thursday. It is estimated to have earned about 2.36 billion dollars, which could make it the biggest entertainment release in history. To put this in perspective, this year's top-earning movie, Spider-Man: Brand New Day, brought in 2.5 billion dollars during its whole time in movie theaters.",
-     "zh": "俗稱《GTA 6》的《俠盜獵車手 6》在漫長的 13 年等待後終於登場。根據數據分析平台 Sensor Tower 的資料，截至週四，這款暢銷的動作冒險遊戲已經賣出超過 2,450 萬套。估計其收入約為 23.6 億美元，這可能使其成為史上規模最大的娛樂發行產品。相較之下，今年票房最高的電影《蜘蛛人：嶄新之日》（Spider-Man: Brand New Day）在戲院上映的整個期間共賺進了 25 億美元。"
+     "en": "Negotiations at the COP31 United Nations (UN) climate summit in Turkey have reached a deadlock. The talks were suspended for the night after running more than a full day past their scheduled deadline. Diplomats could not reach a consensus on a final global agreement, which is required by UN rules. If countries fail to agree, the summit could end without a deal and meet again next year.",
+     "zh": "在土耳其舉行的聯合國（UN）第31屆氣候峰會（COP31）談判已陷入僵局。這場談判在超過預定截止時間一天多之後，已於夜間暫停。外交官們無法就最終的全球協議達成共識，而這是聯合國規則所要求的。如果各國無法達成一致，這場峰會可能會在未達成協議的情況下結束，並於明年再次召開。"
     },
     {
-     "en": "Although developer Rockstar and its parent company Take-Two have not shared exact sales figures, they stated that player demand has been \"unprecedented.\" The game represents the newest addition to Rockstar's nearly thirty-year-old crime simulator series. At its heart, the franchise offers a satirical view of the American dream, placing players in the shoes of lawbreakers in Leonida, a fictional state inspired by Florida. The story focuses on Lucia and her partner Jason, who are small-time criminals.",
-     "zh": "雖然開發商 Rockstar 及其母公司 Take-Two 尚未公布確切的銷售數據，但他們表示玩家的需求是「前所未有的」。這款遊戲代表了 Rockstar 擁有近三十年歷史的犯罪模擬系列中的最新續作。該系列的核心是對美國夢的諷刺視角，讓玩家在受到佛羅里達州啟發的虛構州「里奧尼達」（Leonida）中扮演違法者。故事主要圍繞在身為基層犯罪者的露西亞（Lucia）和她的夥伴傑森（Jason）身上。"
+     "en": "A major conflict centers on fossil fuels. Nations including the European Union (EU) and Pacific island countries strongly oppose the latest draft because it omits any mention of cutting the demand for coal, oil, and gas. Major oil-producing nations, led by Saudi Arabia, fought to remove this language. Furthermore, critics like France's environment minister warned that relying on carbon capture technology should not serve as an excuse to continue burning fossil fuels.",
+     "zh": "一項重大衝突圍繞在化石燃料上。包括歐洲聯盟（EU）與太平洋島國在內的國家強烈反對最新草案，因為該草案完全沒有提及減少對煤炭、石油和天然氣的需求。以沙烏地阿拉伯為首的主要產油國則極力爭取刪除這些措辭。此外，法國環境部長等批評人士警告，依賴碳捕捉技術不應成為繼續燃燒化石燃料的藉口。"
     },
     {
-     "en": "Sensor Tower based its revenue calculations on statistical sources and email receipts that track millions of people every day. The firm also monitors public profiles on major platforms like PlayStation and Xbox, where players can purchase and play the title. Sensor Tower even predicted that the immense popularity of GTA 6 will cause gamers to reduce the time they spend on other single-player titles by 10 percent.",
-     "zh": "Sensor Tower 的營收估算是基於統計來源以及每日追蹤數百萬人的電子郵件收據資料。該機構還監控 PlayStation 和 Xbox 等各大平台上的公開個人檔案，玩家可以在這些平台上購買並遊玩這款遊戲。Sensor Tower 甚至預測，《GTA 6》的超高人氣將會使玩家在其他單人遊戲上所花費的時間減少 10%。"
+     "en": "Another serious disagreement involves financial assistance for developing nations. The African Group demanded firm promises for adaptation funding to handle climate damage. Although an earlier draft proposed raising adaptation funds to 120 billion dollars by 2035, that target was completely removed. EU officials stated they would not support additional financial promises, while African representatives argued that wealthy countries must pay for the damage caused by human activities.",
+     "zh": "另一項嚴重分歧涉及對開發中國家的財政援助。非洲集團要求各國對適應資金做出堅定承諾，以應對氣候損害。儘管先前的草案提議在2035年前將適應資金提高至1200億美元，但該目標現已被完全刪除。歐盟官員表示他們不會支持額外的資金承諾，而非洲代表則主張富裕國家必須為人類活動所造成的損害負責。"
     },
     {
-     "en": "Critics have praised the release, with some reviewers calling it one of the most impressive gaming experiences of all time. Media website IGN even labeled it a masterfully constructed work of art. The game launched at midnight on Thursday across different time zones, prompting enthusiastic fans around the world to stay up all night or take the next day off work just to enjoy it.",
-     "zh": "評論家對這次的發行讚譽有加，部分評論員稱其為有史以來最令人印象深刻的遊戲體驗之一。娛樂媒體網站 IGN 甚至將其形容為精心打造的藝術傑作。這款遊戲於週四午夜在各個不同時區上線，促使全球熱情的粉絲熬夜不睡，或是在隔天請假不上班，只為了盡情暢玩這款遊戲。"
+     "en": "The draft agreement, known as the Antalya Accords, could officially admit that the world has failed to prevent temperatures from rising beyond 1.5 degrees Celsius. Meanwhile, observers and environmental activists have strongly criticized the event. Mohamed Adow from Powershift Africa stated, \"this has been the worst COP ever.\" With many delegates preparing to leave, the summit risks collapsing completely if common ground cannot be found soon.",
+     "zh": "這份被稱為《安塔利亞協議》（Antalya Accords）的協議草案，可能會正式承認全球未能阻止氣溫上升超過攝氏1.5度。與此同時，觀察員與環保人士強烈批評了這次會議。來自非洲權力轉移組織（Powershift Africa）的穆罕默德．阿道（Mohamed Adow）表示：「這是有史以來最糟糕的一屆 COP。」隨著許多代表準備離開，如果無法盡快找到共識，這場峰會將面臨徹底破局的風險。"
     }
    ],
-   "words": 290,
+   "words": 272,
    "v": 2,
    "vocab": [
     {
-     "word": "blockbuster",
+     "word": "deadlock",
      "pos": "n.",
-     "zh": "極為成功的巨作（電影、遊戲等）"
+     "zh": "僵局"
     },
     {
-     "word": "unprecedented",
-     "pos": "adj.",
-     "zh": "史無前例的；空前的"
-    },
-    {
-     "word": "satirical",
-     "pos": "adj.",
-     "zh": "諷刺的"
-    },
-    {
-     "word": "immense",
-     "pos": "adj.",
-     "zh": "巨大的；廣大的"
-    },
-    {
-     "word": "critic",
+     "word": "consensus",
      "pos": "n.",
-     "zh": "評論家；批評者"
+     "zh": "共識"
     },
     {
-     "word": "prompt",
+     "word": "omit",
      "pos": "v.",
-     "zh": "促使；引起"
+     "zh": "省略、刪去"
+    },
+    {
+     "word": "assistance",
+     "pos": "n.",
+     "zh": "援助、協助"
+    },
+    {
+     "word": "adaptation",
+     "pos": "n.",
+     "zh": "（對環境變遷的）適應"
+    },
+    {
+     "word": "delegate",
+     "pos": "n.",
+     "zh": "代表"
+    },
+    {
+     "word": "collapse",
+     "pos": "v.",
+     "zh": "崩潰、瓦解"
     }
    ],
    "phrases": [
     {
-     "phrase": "in the shoes of",
-     "zh": "處在……的立場或處境"
+     "phrase": "center on",
+     "zh": "以……為中心、聚焦於"
     },
     {
-     "phrase": "stay up",
-     "zh": "熬夜；不睡覺"
+     "phrase": "serve as",
+     "zh": "作為、充當"
     },
     {
-     "phrase": "base on",
-     "zh": "以……為基礎；依據"
+     "phrase": "common ground",
+     "zh": "共同點、共識"
+    },
+    {
+     "phrase": "reach a consensus",
+     "zh": "達成共識"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "關係代名詞非限定用法 (Non-restrictive Relative Clause)",
+     "explain": "逗號後使用關係代名詞 which 引導非限定子句，指代前面所提及「在最終協議上達成共識」這整件事。",
+     "example": "Diplomats could not reach a consensus on a final global agreement, which is required by UN rules.",
+     "focus": ", which is required by UN rules"
+    },
+    {
+     "point": "過去分詞作後置修飾語 (Past Participle as a Post-modifier)",
+     "explain": "過去分詞片語 known as 置於名詞後方，用來說明該協議草案「被稱作」什麼名稱。",
+     "example": "The draft agreement, known as the Antalya Accords, could officially admit that the world has failed to prevent temperatures from rising beyond 1.5 degrees Celsius.",
+     "focus": "known as the Antalya Accords"
+    },
+    {
+     "point": "不定詞表示目的 (Infinitive of Purpose)",
+     "explain": "句中的不定詞片語 to handle 表達目的，說明爭取適應資金是「為了處理」氣候損害。",
+     "example": "The African Group demanded firm promises for adaptation funding to handle climate damage.",
+     "focus": "to handle climate damage"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.bbc.co.uk/news/articles/c61k9mwxmplxo?at_medium=RSS&at_campaign=rss",
+   "source": "BBC",
+   "topic": "Science",
+   "title": "How red squirrels made island their home",
+   "title_zh": "紅松鼠如何將這座島嶼變成牠們的家園",
+   "paragraphs": [
+    {
+     "en": "While red squirrels face the danger of extinction in England, the Channel Island of Jersey has become a safe shelter for them. In the UK, red squirrels are endangered, with only about 120,000 to 160,000 remaining in the wild. Scotland holds around 75 percent of the British population. Unlike the UK mainland, Jersey completely lacks grey squirrels, which carry a deadly virus that harms their red cousins.",
+     "zh": "雖然紅松鼠在英格蘭面臨滅絕的危險，但海峽群島的澤西島（Jersey）已成為牠們的安全庇護所。在英國，紅松鼠屬於瀕危物種，野外僅存約12萬至16萬隻。蘇格蘭擁有大約百分之75的英國族群。與英國本土不同的是，澤西島完全沒有灰松鼠，而灰松鼠攜帶一種對牠們的紅松鼠近親致命的病毒。"
+    },
+    {
+     "en": "Red squirrels are not native to Jersey, as they were introduced to the island in 1885. Even so, ecologist Henry Glynn from the National Trust of Jersey explained that they have become naturalised over time. Glynn stated that they \"really are iconic for Jersey.\" Many UK tourists hope to spot them on the island because they are very rare and difficult to see back home. Red squirrels are also legally protected, making it a crime to harm them.",
+     "zh": "紅松鼠並非澤西島的原生物種，因為牠們是在1885年被引進該島的。即便如此，澤西島國家信託（National Trust of Jersey）的生態學家Henry Glynn解釋說，隨著時間推移，牠們已經歸化了。Glynn表示，牠們「對澤西島來說真的極具代表性」。許多英國遊客希望在島上看到牠們，因為牠們在英國本土非常罕見且難以見到。紅松鼠也受到法律保護，傷害牠們屬於犯罪行為。"
+    },
+    {
+     "en": "According to the National Trust of Jersey, these creatures are fairly widespread and often appear in inland valleys and woodlands. In addition, Nina Powell from the Jersey Society for the Prevention of Cruelty to Animals (JSPCA) shared that Jersey maintains a healthy squirrel population. She pointed out that caring local residents play an important role in helping the species survive.",
+     "zh": "根據澤西島國家信託的說法，這些生物分布相當廣泛，並且經常出現在內陸山谷和林地中。此外，澤西島防止虐待動物協會（JSPCA）的Nina Powell分享表示，澤西島保持著健康的松鼠族群數量。她指出，充滿愛心的當地居民在幫助該物種生存方面扮演著重要角色。"
+    },
+    {
+     "en": "Island residents frequently put out feeders in their gardens to provide food. Local areas also feature nature reserves and special rope bridges that allow squirrels to cross roads safely. Drivers follow low speed limits as well. So far this year, the JSPCA has cared for 50 red squirrels, including raising eight young babies, and workers try to remain as hands-off as possible so the animals stay wild.",
+     "zh": "島上居民經常在花園裡放置餵食器以提供食物。當地地區還設有自然保護區和特殊的繩橋，讓松鼠能夠安全過馬路。駕駛人也遵守較低的速限。今年到目前為止，JSPCA已經照顧了50隻紅松鼠，其中包括撫養8隻幼獸，工作人員並盡量避免過多接觸，以便讓動物保持野性。"
+    }
+   ],
+   "words": 272,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "extinction",
+     "pos": "n.",
+     "zh": "滅絕"
+    },
+    {
+     "word": "shelter",
+     "pos": "n.",
+     "zh": "庇護所；避難處"
+    },
+    {
+     "word": "deadly",
+     "pos": "adj.",
+     "zh": "致命的"
+    },
+    {
+     "word": "naturalised",
+     "pos": "adj.",
+     "zh": "（動植物）歸化的"
+    },
+    {
+     "word": "iconic",
+     "pos": "adj.",
+     "zh": "具代表性的；指標性的"
+    },
+    {
+     "word": "widespread",
+     "pos": "adj.",
+     "zh": "分布廣泛的"
+    },
+    {
+     "word": "reserve",
+     "pos": "n.",
+     "zh": "保護區"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "over time",
+     "zh": "隨著時間過去；逐漸"
+    },
+    {
+     "phrase": "put out",
+     "zh": "擺出；放置"
+    },
+    {
+     "phrase": "so far",
+     "zh": "到目前為止"
     }
    ],
    "grammar": [
     {
      "point": "非限定關係子句 (Non-defining Relative Clause)",
-     "explain": "先行詞為前面的金額或名詞，以逗號加上 which 引導補充說明的非限定子句，此處指代前面的推估金額。",
-     "example": "It is estimated to have earned about 2.36 billion dollars, which could make it the biggest entertainment release in history.",
-     "focus": "which could make it the biggest entertainment release in history"
+     "explain": "由逗號隔開、關係代名詞 which 引導的形容詞子句，用來對先行詞 grey squirrels 補充額外資訊。",
+     "example": "Unlike the UK mainland, Jersey completely lacks grey squirrels, which carry a deadly virus that harms their red cousins.",
+     "focus": "which carry a deadly virus that harms their red cousins"
     },
     {
-     "point": "關係副詞引導的關係子句 (Relative Clause with Relative Adverb)",
-     "explain": "關係副詞 where 修飾先行詞 platforms，在子句中表示地點。",
-     "example": "The firm also monitors public profiles on major platforms like PlayStation and Xbox, where players can purchase and play the title.",
-     "focus": "where players can purchase and play the title"
+     "point": "虛主詞 it 引導的結構 (Dummy Subject 'It')",
+     "explain": "it 作為虛受詞／形式主詞，真正的受詞是後面的不定詞片語 to harm them。",
+     "example": "Red squirrels are also legally protected, making it a crime to harm them.",
+     "focus": "making it a crime to harm them"
+    },
+    {
+     "point": "不定詞表示目的 (Infinitive of Purpose)",
+     "explain": "to provide food 為不定詞片語，用來說明居民放置餵食器的目的。",
+     "example": "Island residents frequently put out feeders in their gardens to provide food.",
+     "focus": "to provide food"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://lite.cnn.com/2026/11/21/health/body-fat-butt-conversation",
+   "source": "CNN",
+   "topic": "Health",
+   "title": "Why does your body store fat in your butt?",
+   "title_zh": "為什麼你的身體會把脂肪儲存在臀部？",
+   "paragraphs": [
+    {
+     "en": "Have you ever wondered why parts of your body, like your elbows, are firm while your butt is soft? This difference comes from fat distribution. Fat, or adipose tissue, is not just stored energy; it also protects our internal organs and regulates hormones. White fat stores energy and keeps us warm under the skin, while brown fat contains many mitochondria that generate heat to warm the body when we get cold.",
+     "zh": "你是否曾好奇過，為什麼身體有些部位（如手肘）很結實，而臀部等其他部位卻比較鬆軟？這種差異來自於脂肪分佈。脂肪（或稱脂肪組織）不僅僅是儲存的能量；它還能保護我們的內臟器官並調節荷爾蒙。白色脂肪能儲存能量並在皮膚下保暖，而棕色脂肪則含有大量的粒線體，能在我們感到寒冷時產生熱量來為身體加溫。"
+    },
+    {
+     "en": "Three main factors determine where white fat gathers: genetics, hormones, and age. For example, the hormone estrogen often directs fat to accumulate in the butt, thighs, and arms. In contrast, cortisol, which is related to stress, directs fat toward the belly. Furthermore, our bodies avoid storing fat near joints like elbows or around the head, where it could limit movement or cause the brain to overheat. Therefore, areas like the butt and thighs are safer places for storage.",
+     "zh": "有三個主要因素決定白色脂肪聚集的位置：基因、荷爾蒙和年齡。例如，雌激素這種荷爾蒙通常會引導脂肪堆積在臀部、大腿和手臂。相反地，與壓力相關的皮質醇則會將脂肪導向腹部。此外，我們的身體會避免在手肘等關節附近或頭部周圍儲存脂肪，因為這可能會限制活動或導致大腦過熱。因此，臀部和大腿等部位是較安全的儲存場所。"
+    },
+    {
+     "en": "Interestingly, humans carry far more fat than most other mammals. Even a hippopotamus only has about two percent body fat, while an average human woman has over thirty percent. Outside of hibernating bears or marine mammals like whales, few animals store this much fat. Anthropologists believe our ancestors developed this trait as a food insurance policy. Because they could not always rely on hunting and gathering, extra body fat helped early humans survive when food became scarce.",
+     "zh": "有趣的是，人類身上的脂肪遠多於大多數其他哺乳動物。即使是河馬，其體脂肪率也只有大約百分之二，而一般人類女性的體脂肪率則超過百分之三十。除了冬眠的熊或像鯨魚這樣的海洋哺乳動物之外，很少有動物會儲存這麼多脂肪。人類學家認為，我們的祖先發展出這種特徵是作為一種食物保險機制。因為他們無法總是依靠狩獵和採集，多餘的體脂肪能幫助早期人類在食物變得短缺時存活下來。"
+    },
+    {
+     "en": "Ancient art supports this evolutionary theory. Small stone figures known as Gravettian statues, created between 25,000 and 28,000 years ago across Europe and Russia, show feminine figures with significant body fat. These realistic sculptures suggest that ancient people actually carried extra fat to endure freezing winters. Thus, storing fat in your butt is an ancient survival adaptation that still protects our bodies today.",
+     "zh": "古代藝術為這項演化理論提供了支持。被稱為格拉維特雕像的小型石雕於兩萬五千至兩萬八千年前在歐洲和俄羅斯各地被創作出來，描繪了具有大量體脂肪的女性形象。這些寫實的雕塑表明，古代人確實帶有額外的脂肪以度過嚴寒的冬天。因此，將脂肪儲存在臀部是一種古老的生存適應機制，至今仍在保護著我們的身體。"
+    }
+   ],
+   "words": 289,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "distribution",
+     "pos": "n.",
+     "zh": "分佈"
+    },
+    {
+     "word": "regulate",
+     "pos": "v.",
+     "zh": "調節"
+    },
+    {
+     "word": "accumulate",
+     "pos": "v.",
+     "zh": "堆積；累積"
+    },
+    {
+     "word": "insurance",
+     "pos": "n.",
+     "zh": "保險；保障"
+    },
+    {
+     "word": "scarce",
+     "pos": "adj.",
+     "zh": "稀缺的；短缺的"
+    },
+    {
+     "word": "endure",
+     "pos": "v.",
+     "zh": "忍受；度過（困境）"
+    },
+    {
+     "word": "adaptation",
+     "pos": "n.",
+     "zh": "適應（機制或特徵）"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "in contrast",
+     "zh": "相反地"
+    },
+    {
+     "phrase": "be related to",
+     "zh": "與……有關"
+    },
+    {
+     "phrase": "rely on",
+     "zh": "依靠；仰賴"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "名詞子句 (Noun Clause)",
+     "explain": "疑問詞 why 引導名詞子句，在主要子句中作為及物動詞 wondered 的受詞。",
+     "example": "Have you ever wondered why parts of your body, like your elbows, are firm while your butt is soft?",
+     "focus": "why parts of your body, like your elbows, are firm while your butt is soft"
+    },
+    {
+     "point": "非限定關係子句 (Non-defining Relative Clause)",
+     "explain": "由關係代名詞 which 引導非限定關係子句，置於逗號後，補充說明前面的先行詞 cortisol。",
+     "example": "In contrast, cortisol, which is related to stress, directs fat toward the belly.",
+     "focus": "which is related to stress"
+    },
+    {
+     "point": "不定詞表目的 (Infinitive of Purpose)",
+     "explain": "to endure 形成的不定詞片語，用來說明古人身上帶有額外脂肪的目的。",
+     "example": "These realistic sculptures suggest that ancient people actually carried extra fat to endure freezing winters.",
+     "focus": "to endure freezing winters"
+    }
+   ],
+   "model": "gemini-flash-latest"
+  },
+  {
+   "link": "https://www.theguardian.com/environment/2026/nov/21/china-commits-low-carbon-electrification-help-others-improve",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "title": "China commits to low-carbon electrification and help for others to improve",
+   "title_zh": "中國承諾推動低碳電氣化並協助其他國家改善",
+   "paragraphs": [
+    {
+     "en": "At the Cop31 United Nations (UN) climate summit, countries are considering a goal to get 35 percent of their energy from electricity by 2035. Australia, leading the talks, and host country Turkey promoted this target. On Friday night, Australia and China signed a joint statement supporting the plan. However, a recent draft text reduced this pledge to a voluntary choice for nations trying to lower their greenhouse gas emissions.",
+     "zh": "在第31屆聯合國（UN）氣候峰會（Cop31）上，各國正在考慮一項目標，即在2035年前將其能源消耗的百分之三十五轉由電力提供。領導談判的澳洲與主辦國土耳其推動了這項目標。週五晚間，澳洲與中國簽署了一項支持該計畫的聯合聲明。然而，一份近期的草案文本將這項承諾降級為各國試圖減少溫室氣體排放時的自願性選項。"
+    },
+    {
+     "en": "China is currently the largest producer of greenhouse gases, releasing over one-quarter of the global total. Wang Yi, a senior adviser to the Chinese government and professor at the Chinese Academy of Sciences, said China wants to expand clean electricity use and assist other nations. Last year, electricity accounted for nearly 30 percent of China's energy consumption, and the nation is on track to reach 35 percent by 2030.",
+     "zh": "中國目前是全球最大的溫室氣體排放國，其排放量超過全球總量的四分之一。中國科學院教授兼中國政府高階顧問王毅表示，中國希望擴大清潔電力的使用並協助其他國家。去年，電力占了中國能源消耗的近百分之三十，且該國預計將在2030年前達到百分之三十五。"
+    },
+    {
+     "en": "Experts explain that electrification is essential because electric systems operate much more efficiently than fossil fuels in transport, heating, and industry. However, Wang noted that requiring all electricity to come from low-carbon sources would be difficult. China still maintains many coal-fired plants and plans some new ones to serve as backup power during the clean energy transition.",
+     "zh": "專家解釋，電氣化至關重要，因為電力系統在交通、暖氣和工業領域的運作效率遠高於化石燃料。然而，王毅指出，要求所有電力都必須來自低碳來源將會很困難。中國仍保有許多燃煤電廠，並計畫興建一些新電廠，以便在清潔能源轉型期間作為備用電力。"
+    },
+    {
+     "en": "China is also worried about international trade barriers that affect its clean technology exports. These obstacles include United States tariffs and the European Union's Carbon Border Adjustment Mechanism (CBAM), which penalizes imports from areas with weaker carbon rules. Wang urged countries to work together on trade policies, while some developing nations also warned that CBAM could damage their manufacturing industries.",
+     "zh": "中國也擔憂影響其清潔技術出口的國際貿易壁壘。這些障礙包括美國的關稅以及歐洲聯盟的碳邊境調整機制（CBAM），該機制會對來自碳法規較寬鬆地區的進口商品進行懲罰。王毅呼籲各國在貿易政策上攜手合作，而一些開發中國家也警告，CBAM可能會損害其製造業。"
+    },
+    {
+     "en": "Jiangwen Guo, a researcher at the Chatham House thinktank, said China \"is creating the model for the globe\" through clear national policies. Meanwhile, the summit negotiations stalled late Friday afternoon after negotiators failed to agree on a final text. As a result, the discussions are likely to extend through Saturday.",
+     "zh": "智庫皇家國際事務研究所（Chatham House）的研究員郭江汶表示，中國透過明確的國家政策「正在為全球建立典範」。與此同時，由於談判代表未能就最終文本達成共識，這場峰會談判於週五下午晚些時候陷入停滯。因此，討論很可能會延續到週六。"
+    }
+   ],
+   "words": 305,
+   "v": 2,
+   "vocab": [
+    {
+     "word": "consumption",
+     "pos": "n.",
+     "zh": "消耗量；消耗"
+    },
+    {
+     "word": "essential",
+     "pos": "adj.",
+     "zh": "極為重要的；不可或缺的"
+    },
+    {
+     "word": "efficiently",
+     "pos": "adv.",
+     "zh": "有效率地"
+    },
+    {
+     "word": "barrier",
+     "pos": "n.",
+     "zh": "障礙；壁壘"
+    },
+    {
+     "word": "penalize",
+     "pos": "v.",
+     "zh": "懲罰；使處於不利地位"
+    },
+    {
+     "word": "negotiator",
+     "pos": "n.",
+     "zh": "談判代表；協商者"
+    },
+    {
+     "word": "stall",
+     "pos": "v.",
+     "zh": "陷入停滯；拖延"
+    }
+   ],
+   "phrases": [
+    {
+     "phrase": "account for",
+     "zh": "占（比例）"
+    },
+    {
+     "phrase": "on track",
+     "zh": "按進度進行；有望達到"
+    },
+    {
+     "phrase": "serve as",
+     "zh": "充當；作為"
+    },
+    {
+     "phrase": "work together",
+     "zh": "合作；齊心協力"
+    }
+   ],
+   "grammar": [
+    {
+     "point": "分詞構句 (Participle Construction)",
+     "explain": "在此句中，現在分詞短語「releasing...」省略了連接詞與主詞，用來補充說明主句中中國溫室氣體排放量占全球總量的情形。",
+     "example": "China is currently the largest producer of greenhouse gases, releasing over one-quarter of the global total.",
+     "focus": "releasing over one-quarter of the global total"
+    },
+    {
+     "point": "關係代名詞引導的非限定子句 (Non-restrictive Relative Clause)",
+     "explain": "逗號後的關係代名詞「which」指涉先行詞歐盟的 CBAM 機制，引導非限定關係子句補充說明其對高碳產品進口的規範作用。",
+     "example": "These obstacles include United States tariffs and the European Union's Carbon Border Adjustment Mechanism (CBAM), which penalizes imports from areas with weaker carbon rules.",
+     "focus": "which penalizes imports from areas with weaker carbon rules"
+    },
+    {
+     "point": "不定詞表示目的 (Infinitive of Purpose)",
+     "explain": "此處使用「to + 原形動詞」結構「to serve as」，說明中國保留與興建電廠的目的在於充當轉型時期的備用電力。",
+     "example": "China still maintains many coal-fired plants and plans some new ones to serve as backup power during the clean energy transition.",
+     "focus": "to serve as backup power"
     }
    ],
    "model": "gemini-flash-latest"
@@ -439,5 +759,5 @@
    "model": "gemini-flash-latest"
   }
  ],
- "lessonsDate": "2026-11-20"
+ "lessonsDate": "2026-11-22"
 }
