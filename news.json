@@ -1,37 +1,125 @@
 {
- "updated": "2026-11-22T01:33:20Z",
+ "updated": "2026-11-23T01:56:58Z",
  "items": [
   {
-   "title": "US lawmaker upbeat on Taiwan ties",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/22/2003868165",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-22T00:00:00Z"
-  },
-  {
-   "title": "FSC announces measures after stock market losses",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/22/2003868166",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-22T00:00:00Z"
-  },
-  {
-   "title": "COP31 extended as countries unable to reach an agreement",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/22/2003868167",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-22T00:00:00Z"
-  },
-  {
-   "title": "Fight over fossil fuels leaves COP31 climate talks in deadlock",
-   "link": "https://www.bbc.co.uk/news/articles/c6ly5w40eg07o?at_medium=RSS&at_campaign=rss",
-   "summary": "Countries from nearly 200 countries are in a deadlock to try and get a new global climate agreement.",
+   "title": "COP31 fails to reach major climate deal as talks expose deep divisions",
+   "link": "https://www.bbc.co.uk/news/articles/cqwy06zrd26lo?at_medium=RSS&at_campaign=rss",
+   "summary": "Hopes for an agreement on tackling climate change collapsed after a row about mentioning fossil fuels",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-11-21T22:19:43Z"
+   "date": "2026-11-23T00:50:35Z"
+  },
+  {
+   "title": "CCP legal warfare evolving: minister",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/23/2003868215",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-23T00:00:00Z"
+  },
+  {
+   "title": "Taiwan warns Canada over dependence on China",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/23/2003868216",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-23T00:00:00Z"
+  },
+  {
+   "title": "2026 Elections: Parties hold ‘Super Sunday’ events ahead of elections",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/23/2003868217",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-23T00:00:00Z"
+  },
+  {
+   "title": "The good news out of Cop31? That most of the world’s governments said no to an agreement stripped of meaning | Bill Hare",
+   "link": "https://www.theguardian.com/environment/commentisfree/2026/nov/23/cop31-climate-summit-no-agreement",
+   "summary": "Co-chairing global climate talks is clearly not something to be repeated, certainly not by Australia, which is exporting climate pain The failure of Cop31 in Antalya was a line in the sand moment, a victory for…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-22T22:30:48Z"
+  },
+  {
+   "title": "Meet the young authors! A literacy program inspires kids in South Africa",
+   "link": "https://www.npr.org/2026/11/22/g-s1-154387/books-children-authors-south-africa-literacy",
+   "summary": "South Africa is working to overcome a children's literacy crisis. In one Johannesburg township, a reading club is instilling a love of books in kids — and inspiring them to become authors.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-22T17:34:20Z"
+  },
+  {
+   "title": "CEO of funding agency for UK science and research criticised by union over cuts",
+   "link": "https://www.theguardian.com/education/2026/nov/22/prospect-union-leader-uk-funding-agency-science-research-ukri",
+   "summary": "Exclusive: Prospect’s Mike Clancy tells Ian Chapman at UKRI that union has ‘lost confidence’ in his leadership A trade union that counts scientists and engineers among its members says it has lost confidence in the…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-22T12:00:28Z"
+  },
+  {
+   "title": "Tarik Skubal agrees to record $450 million contract with New York Mets",
+   "link": "https://lite.cnn.com/2026/11/22/sport/tarik-skubal-mets-signing",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-22T12:00:00Z"
+  },
+  {
+   "title": "San Francisco braces for massive tides. Mayor urges residents to reconsider travel",
+   "link": "https://lite.cnn.com/2026/11/22/weather/san-francisco-king-tides-warning",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Weather",
+   "date": "2026-11-22T12:00:00Z"
+  },
+  {
+   "title": "What a wealth tax looks like in the age of AI billionaires",
+   "link": "https://lite.cnn.com/2026/11/22/tech/wealth-tax-ai-billionaires",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Tech",
+   "date": "2026-11-22T12:00:00Z"
+  },
+  {
+   "title": "In China’s tech mecca, Trump and Xi touted AI cooperation. Now comes the harsh reality",
+   "link": "https://lite.cnn.com/2026/11/22/business/trump-xi-apec-tech-rivalry-intl-hnk",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-22T12:00:00Z"
+  },
+  {
+   "title": "Mysterious Mercury gets a visitor - after spacecraft's eight-year epic voyage",
+   "link": "https://www.bbc.co.uk/news/articles/c39w9l4v1p9ro?at_medium=RSS&at_campaign=rss",
+   "summary": "The mission is set to give us our best ever view of Mercury - the closest planet to the Sun.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-22T10:44:12Z"
+  },
+  {
+   "title": "NPR's Senior Podcast Challenge: Early entries we love",
+   "link": "https://www.npr.org/2026/11/22/nx-s1-6044221/npr-senior-podcast-challenge-early-entries",
+   "summary": "People 65 and older have been submitting stories for a chance to win our grand prize — a visit to NPR watch your podcast air live on Weekend Edition . There's still time to enter!",
+   "source": "NPR",
+   "topic": "Education",
+   "date": "2026-11-22T10:00:00Z"
+  },
+  {
+   "title": "New draft deal aims to avert collapse of talks at COP31 climate summit",
+   "link": "https://www.bbc.co.uk/news/articles/cq7827z2841zo?at_medium=RSS&at_campaign=rss",
+   "summary": "The UN COP31 meeting in Turkey enters a second day of overtime as countries struggle to reach an agreement.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-22T06:54:06Z"
+  },
+  {
+   "title": "The real people finding their work copied and stolen by AI characters",
+   "link": "https://www.bbc.co.uk/news/articles/cm7527kp4qrpo?at_medium=RSS&at_campaign=rss",
+   "summary": "Musicians, comedians and dancers are among those finding their videos cloned with AI generated characters.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-22T05:00:38Z"
   },
   {
    "title": "Google employees protest AI in schools policy",
@@ -58,14 +146,6 @@
    "date": "2026-11-21T12:40:10Z"
   },
   {
-   "title": "How red squirrels made island their home",
-   "link": "https://www.bbc.co.uk/news/articles/c61k9mwxmplxo?at_medium=RSS&at_campaign=rss",
-   "summary": "Conservationists say that, with red squirrels dwindling in the UK, Jersey is an \"important refuge\".",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-21T12:18:55Z"
-  },
-  {
    "title": "Why does your body store fat in your butt?",
    "link": "https://lite.cnn.com/2026/11/21/health/body-fat-butt-conversation",
    "summary": "",
@@ -90,22 +170,6 @@
    "date": "2026-11-21T12:00:00Z"
   },
   {
-   "title": "How a young couple can become multimillionaires by retirement age, according to an expert",
-   "link": "https://lite.cnn.com/2026/11/21/business/savings-challenge-dont-be-afraid-to-ask-tip",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-21T12:00:00Z"
-  },
-  {
-   "title": "Your 401(k) is full of AI. How to deal with the volatility",
-   "link": "https://lite.cnn.com/2026/11/21/business/ai-stocks-volatility-investing",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-21T12:00:00Z"
-  },
-  {
    "title": "The AI boom had a really bad week — and it's raising loud alarms",
    "link": "https://www.npr.org/2026/11/21/nx-s1-6048729/ai-stock-markets-anthropic-nvidia",
    "summary": "AI stocks — and the broader markets — got pummeled this week, raising major concerns about the financial system and the wider economy. Here's what to know.",
@@ -120,14 +184,6 @@
    "source": "NPR",
    "topic": "Tech",
    "date": "2026-11-21T10:00:00Z"
-  },
-  {
-   "title": "China commits to low-carbon electrification and help for others to improve",
-   "link": "https://www.theguardian.com/environment/2026/nov/21/china-commits-low-carbon-electrification-help-others-improve",
-   "summary": "Exclusive: Countries at Cop31 are being urged to commit to deriving 35% of their energy from electricity by 2035 Cop31 live – latest updates China is pushing for rapid electrification of its economy using low-carbon…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-21T09:47:57Z"
   },
   {
    "title": "'My biggest fear was getting changed in front of them' - why teenage girls stop playing sport",
@@ -162,30 +218,6 @@
    "date": "2026-11-21T00:06:11Z"
   },
   {
-   "title": "In a year of AI solving maths problems, an Anthropic worker says he may have cracked the biggest",
-   "link": "https://www.bbc.co.uk/news/articles/c6pqr2g7w059o?at_medium=RSS&at_campaign=rss",
-   "summary": "A mathematician at Anthropic says he used an AI to prove the famed Riemann hypothesis, though verification will take some time.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-20T23:08:57Z"
-  },
-  {
-   "title": "New research gives insight to where your brain plans out your speech",
-   "link": "https://www.npr.org/2026/11/20/nx-s1-6047695/new-research-gives-insight-to-where-your-brain-plans-out-your-speech",
-   "summary": "New research shows where this all takes place and what it means for possibly treating those who have speech difficulties.",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-11-20T21:38:25Z"
-  },
-  {
-   "title": "Cop31 talks go into overtime as debate rages over lack of fossil fuels in draft deal",
-   "link": "https://www.theguardian.com/environment/2026/nov/20/cop31-talks-overtime-fossil-fuels-vanish-from-draft-deal",
-   "summary": "African ministers say they ‘didn’t come here to beg’, with civil society groups calling it the ‘worst Cop ever’ Crucial climate talks headed into overtime on the last official day of the Cop31 UN summit as countries…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-20T20:04:46Z"
-  },
-  {
    "title": "What to know about the US permitting bill, from datacenters to Trump’s arch",
    "link": "https://www.theguardian.com/us-news/2026/nov/20/what-to-know-permitting-bill-energy-passed",
    "summary": "Environmental groups are aghast, but supporters say bill might be only chance to speed up clean energy projects The US Senate has passed a bill to fast-track energy and datacenter projects by removing environmental and…",
@@ -194,28 +226,12 @@
    "date": "2026-11-20T18:26:08Z"
   },
   {
-   "title": "Is Wonder the dinner company for our anti-social times?",
-   "link": "https://lite.cnn.com/2026/11/20/business/wonder-food-delivery-marc-lore",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-20T12:00:00Z"
-  },
-  {
-   "title": "The young star painter seducing the art world with glittering curtains. (Just don’t ask what’s behind them)",
-   "link": "https://lite.cnn.com/2026/11/20/style/louise-giovanelli-interview-white-cube-exhibition",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-20T12:00:00Z"
-  },
-  {
-   "title": "What are heat pumps and how much do they cost?",
-   "link": "https://www.bbc.co.uk/news/articles/c8xgdv9e007o?at_medium=RSS&at_campaign=rss",
-   "summary": "The government wants more homes to have heat pumps to cut fossil fuel use and drive down energy bills.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-20T10:24:52Z"
+   "title": "US Senate approves bill to speed up permitting reviews for energy projects and datacenters",
+   "link": "https://www.theguardian.com/us-news/2026/nov/20/senate-energy-datacenters-review-bill",
+   "summary": "Bipartisan legislation now goes to the House amid concerns by some Democrats and environmental groups The Senate approved bipartisan legislation on Thursday aimed at speeding up permitting reviews to build power…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-20T15:09:09Z"
   },
   {
    "title": "Spacecraft reaches Mercury on second-ever mission to enter its orbit",
@@ -224,76 +240,40 @@
    "source": "The Guardian",
    "topic": "Science",
    "date": "2026-11-20T00:01:15Z"
-  },
-  {
-   "title": "An elevator, a brick wall and a bathroom: scientists use gravity to send ‘practically unblockable’ message",
-   "link": "https://www.theguardian.com/science/2026/nov/20/scientists-communicate-using-gravity-elevator-brick-wall-bathroom-experiment",
-   "summary": "Australian physicists chose to transmit the word ‘gravity’ in binary code through brick wall Get our breaking news email , free app or daily news podcast Australian scientists have used gravity as a means of…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-19T23:30:26Z"
-  },
-  {
-   "title": "The cost of college is confusing. Some schools are trying to change that",
-   "link": "https://www.npr.org/2026/11/19/nx-s1-6023392-e1/the-cost-of-college-is-confusing-some-schools-are-trying-to-change-that",
-   "summary": "A growing number of colleges are trying to reduce widespread public confusion about what college actually costs.",
-   "source": "NPR",
-   "topic": "Education",
-   "date": "2026-11-19T22:03:28Z"
   }
  ],
  "lessons": [
   {
-   "link": "https://www.bbc.co.uk/news/articles/c6ly5w40eg07o?at_medium=RSS&at_campaign=rss",
+   "link": "https://www.bbc.co.uk/news/articles/cqwy06zrd26lo?at_medium=RSS&at_campaign=rss",
    "source": "BBC",
    "topic": "Science",
-   "title": "Fight over fossil fuels leaves COP31 climate talks in deadlock",
-   "title_zh": "化石燃料爭議使 COP31 氣候談判陷入僵局",
+   "title": "COP31 fails to reach major climate deal as talks expose deep divisions",
+   "title_zh": "COP31未達成重大氣候協議，談話暴露出嚴重分歧",
    "paragraphs": [
     {
-     "en": "Negotiations at the COP31 United Nations (UN) climate summit in Turkey have reached a deadlock. The talks were suspended for the night after running more than a full day past their scheduled deadline. Diplomats could not reach a consensus on a final global agreement, which is required by UN rules. If countries fail to agree, the summit could end without a deal and meet again next year.",
-     "zh": "在土耳其舉行的聯合國（UN）第31屆氣候峰會（COP31）談判已陷入僵局。這場談判在超過預定截止時間一天多之後，已於夜間暫停。外交官們無法就最終的全球協議達成共識，而這是聯合國規則所要求的。如果各國無法達成一致，這場峰會可能會在未達成協議的情況下結束，並於明年再次召開。"
+     "en": "The United Nations COP31 climate conference in Turkey has concluded without a major new agreement after fierce debates over money and fossil fuels. Negotiations ran longer than planned as delegates searched for common ground, making this gathering the longest UN climate meeting in history. However, the final text proved unacceptable to the European Union and Pacific island nations because it omitted any direct mention of fossil fuels.",
+     "zh": "在針對資金與化石燃料展開激烈辯論後，土耳其的聯合國第31屆氣候變遷綱要公約締約方大會（COP31）在未達成重大新協議的情況下閉幕。隨著代表們尋找共識，談判時間比預期更長，這使本次會議成為聯合國歷史上最長的氣候會議。然而，最終文本對歐盟和太平洋島國而言是無法接受的，因為它省略了對化石燃料的任何直接提及。"
     },
     {
-     "en": "A major conflict centers on fossil fuels. Nations including the European Union (EU) and Pacific island countries strongly oppose the latest draft because it omits any mention of cutting the demand for coal, oil, and gas. Major oil-producing nations, led by Saudi Arabia, fought to remove this language. Furthermore, critics like France's environment minister warned that relying on carbon capture technology should not serve as an excuse to continue burning fossil fuels.",
-     "zh": "一項重大衝突圍繞在化石燃料上。包括歐洲聯盟（EU）與太平洋島國在內的國家強烈反對最新草案，因為該草案完全沒有提及減少對煤炭、石油和天然氣的需求。以沙烏地阿拉伯為首的主要產油國則極力爭取刪除這些措辭。此外，法國環境部長等批評人士警告，依賴碳捕捉技術不應成為繼續燃燒化石燃料的藉口。"
+     "en": "Many poorer nations also expressed frustration regarding the lack of clear financial promises from wealthier countries to help them manage rising temperatures. This marks the first major collapse of a political agreement at a COP since 2009 in Copenhagen. UN Secretary General Antonio Guterres stated that he was deeply disappointed with the outcome. Meanwhile, Australian Prime Minister Anthony Albanese blamed the breakdown on difficult geopolitical times.",
+     "zh": "許多較貧窮的國家也對富裕國家缺乏明確的財務承諾以協助其應對氣溫上升表達了不滿。這是自2009年哥本哈根會議以來，COP政治協議首次發生重大破裂。聯合國祕書長古特瑞斯（Antonio Guterres）表示，他對這個結果感到深深的失望。同時，澳洲總理艾班尼斯（Anthony Albanese）將破局歸咎於艱難的地緣政治時期。"
     },
     {
-     "en": "Another serious disagreement involves financial assistance for developing nations. The African Group demanded firm promises for adaptation funding to handle climate damage. Although an earlier draft proposed raising adaptation funds to 120 billion dollars by 2035, that target was completely removed. EU officials stated they would not support additional financial promises, while African representatives argued that wealthy countries must pay for the damage caused by human activities.",
-     "zh": "另一項嚴重分歧涉及對開發中國家的財政援助。非洲集團要求各國對適應資金做出堅定承諾，以應對氣候損害。儘管先前的草案提議在2035年前將適應資金提高至1200億美元，但該目標現已被完全刪除。歐盟官員表示他們不會支持額外的資金承諾，而非洲代表則主張富裕國家必須為人類活動所造成的損害負責。"
+     "en": "During the final days of the talks, a draft deal was presented to exhausted delegates, but the words fossil fuels were completely missing from the text. The European Union strongly objected to the absence, with Irish Minister Darragh O'Brien calling it unconscionable. Conversely, oil-producing nations defended their positions. Saudi Arabia argued that Arab countries account for only a small proportion of historical greenhouse gas emissions, while Russia warned that moving away from energy sources too quickly could cause severe fuel poverty.",
+     "zh": "在談判的最後幾天，一份協定草案被提交給筋疲力盡的代表們，但「化石燃料」這個詞在文本中完全消失了。歐盟強烈反對這種缺失，愛爾蘭部長達拉·歐布萊恩（Darragh O'Brien）稱其為不可理喻。相反地，產油國則為自己的立場辯護。沙烏地阿拉伯主張，阿拉伯國家在歷史溫室氣體排放量中僅占極小比例，而俄羅斯則警告說，過快放棄能源來源可能會導致嚴重的燃料貧窮。"
     },
     {
-     "en": "The draft agreement, known as the Antalya Accords, could officially admit that the world has failed to prevent temperatures from rising beyond 1.5 degrees Celsius. Meanwhile, observers and environmental activists have strongly criticized the event. Mohamed Adow from Powershift Africa stated, \"this has been the worst COP ever.\" With many delegates preparing to leave, the summit risks collapsing completely if common ground cannot be found soon.",
-     "zh": "這份被稱為《安塔利亞協議》（Antalya Accords）的協議草案，可能會正式承認全球未能阻止氣溫上升超過攝氏1.5度。與此同時，觀察員與環保人士強烈批評了這次會議。來自非洲權力轉移組織（Powershift Africa）的穆罕默德．阿道（Mohamed Adow）表示：「這是有史以來最糟糕的一屆 COP。」隨著許多代表準備離開，如果無法盡快找到共識，這場峰會將面臨徹底破局的風險。"
+     "en": "Another major obstacle in the discussions was the provision of money for developing nations to adapt to intense heatwaves and droughts. Last year, countries agreed to triple such financial support, but the current deal contained no specific figures or baseline measurements, leading to fears that rich nations would have too much flexibility. Although the main agreement failed, participants still made progress on a just transition mechanism to support workers shifting toward clean energy.",
+     "zh": "討論中的另一大障礙是為開發中國家提供適應劇烈熱浪和乾旱的資金。去年，各國同意將此類財政支援增加三倍，但目前的協議未包含具體數字或基準測量，引發了人們對富裕國家將擁有過多彈性的擔憂。儘管主要協議宣告失敗，與會者仍在支援勞工轉向乾淨能源的正義轉型機制上取得了進展。"
     }
    ],
-   "words": 272,
+   "words": 287,
    "v": 2,
    "vocab": [
     {
-     "word": "deadlock",
-     "pos": "n.",
-     "zh": "僵局"
-    },
-    {
-     "word": "consensus",
-     "pos": "n.",
-     "zh": "共識"
-    },
-    {
-     "word": "omit",
+     "word": "conclude",
      "pos": "v.",
-     "zh": "省略、刪去"
-    },
-    {
-     "word": "assistance",
-     "pos": "n.",
-     "zh": "援助、協助"
-    },
-    {
-     "word": "adaptation",
-     "pos": "n.",
-     "zh": "（對環境變遷的）適應"
+     "zh": "結束"
     },
     {
      "word": "delegate",
@@ -301,149 +281,44 @@
      "zh": "代表"
     },
     {
-     "word": "collapse",
-     "pos": "v.",
-     "zh": "崩潰、瓦解"
+     "word": "frustration",
+     "pos": "n.",
+     "zh": "挫折、不滿"
+    },
+    {
+     "word": "obstacle",
+     "pos": "n.",
+     "zh": "障礙"
+    },
+    {
+     "word": "flexibility",
+     "pos": "n.",
+     "zh": "彈性"
     }
    ],
    "phrases": [
     {
-     "phrase": "center on",
-     "zh": "以……為中心、聚焦於"
+     "phrase": "run longer than planned",
+     "zh": "比預期持續時間更長"
     },
     {
-     "phrase": "serve as",
-     "zh": "作為、充當"
+     "phrase": "search for",
+     "zh": "尋找"
     },
     {
-     "phrase": "common ground",
-     "zh": "共同點、共識"
-    },
-    {
-     "phrase": "reach a consensus",
-     "zh": "達成共識"
+     "phrase": "make progress",
+     "zh": "取得進展"
     }
    ],
    "grammar": [
     {
-     "point": "關係代名詞非限定用法 (Non-restrictive Relative Clause)",
-     "explain": "逗號後使用關係代名詞 which 引導非限定子句，指代前面所提及「在最終協議上達成共識」這整件事。",
-     "example": "Diplomats could not reach a consensus on a final global agreement, which is required by UN rules.",
-     "focus": ", which is required by UN rules"
-    },
-    {
-     "point": "過去分詞作後置修飾語 (Past Participle as a Post-modifier)",
-     "explain": "過去分詞片語 known as 置於名詞後方，用來說明該協議草案「被稱作」什麼名稱。",
-     "example": "The draft agreement, known as the Antalya Accords, could officially admit that the world has failed to prevent temperatures from rising beyond 1.5 degrees Celsius.",
-     "focus": "known as the Antalya Accords"
-    },
-    {
-     "point": "不定詞表示目的 (Infinitive of Purpose)",
-     "explain": "句中的不定詞片語 to handle 表達目的，說明爭取適應資金是「為了處理」氣候損害。",
-     "example": "The African Group demanded firm promises for adaptation funding to handle climate damage.",
-     "focus": "to handle climate damage"
+     "point": "分詞構句 (Participial Clause)",
+     "explain": "使用現在分詞 making 引導的子句，表示前面整句情況所產生的結果。",
+     "example": "Negotiations ran longer than planned as delegates searched for common ground, making this gathering the longest UN climate meeting in history.",
+     "focus": "making this gathering the longest UN climate meeting in history"
     }
    ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://www.bbc.co.uk/news/articles/c61k9mwxmplxo?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Science",
-   "title": "How red squirrels made island their home",
-   "title_zh": "紅松鼠如何將這座島嶼變成牠們的家園",
-   "paragraphs": [
-    {
-     "en": "While red squirrels face the danger of extinction in England, the Channel Island of Jersey has become a safe shelter for them. In the UK, red squirrels are endangered, with only about 120,000 to 160,000 remaining in the wild. Scotland holds around 75 percent of the British population. Unlike the UK mainland, Jersey completely lacks grey squirrels, which carry a deadly virus that harms their red cousins.",
-     "zh": "雖然紅松鼠在英格蘭面臨滅絕的危險，但海峽群島的澤西島（Jersey）已成為牠們的安全庇護所。在英國，紅松鼠屬於瀕危物種，野外僅存約12萬至16萬隻。蘇格蘭擁有大約百分之75的英國族群。與英國本土不同的是，澤西島完全沒有灰松鼠，而灰松鼠攜帶一種對牠們的紅松鼠近親致命的病毒。"
-    },
-    {
-     "en": "Red squirrels are not native to Jersey, as they were introduced to the island in 1885. Even so, ecologist Henry Glynn from the National Trust of Jersey explained that they have become naturalised over time. Glynn stated that they \"really are iconic for Jersey.\" Many UK tourists hope to spot them on the island because they are very rare and difficult to see back home. Red squirrels are also legally protected, making it a crime to harm them.",
-     "zh": "紅松鼠並非澤西島的原生物種，因為牠們是在1885年被引進該島的。即便如此，澤西島國家信託（National Trust of Jersey）的生態學家Henry Glynn解釋說，隨著時間推移，牠們已經歸化了。Glynn表示，牠們「對澤西島來說真的極具代表性」。許多英國遊客希望在島上看到牠們，因為牠們在英國本土非常罕見且難以見到。紅松鼠也受到法律保護，傷害牠們屬於犯罪行為。"
-    },
-    {
-     "en": "According to the National Trust of Jersey, these creatures are fairly widespread and often appear in inland valleys and woodlands. In addition, Nina Powell from the Jersey Society for the Prevention of Cruelty to Animals (JSPCA) shared that Jersey maintains a healthy squirrel population. She pointed out that caring local residents play an important role in helping the species survive.",
-     "zh": "根據澤西島國家信託的說法，這些生物分布相當廣泛，並且經常出現在內陸山谷和林地中。此外，澤西島防止虐待動物協會（JSPCA）的Nina Powell分享表示，澤西島保持著健康的松鼠族群數量。她指出，充滿愛心的當地居民在幫助該物種生存方面扮演著重要角色。"
-    },
-    {
-     "en": "Island residents frequently put out feeders in their gardens to provide food. Local areas also feature nature reserves and special rope bridges that allow squirrels to cross roads safely. Drivers follow low speed limits as well. So far this year, the JSPCA has cared for 50 red squirrels, including raising eight young babies, and workers try to remain as hands-off as possible so the animals stay wild.",
-     "zh": "島上居民經常在花園裡放置餵食器以提供食物。當地地區還設有自然保護區和特殊的繩橋，讓松鼠能夠安全過馬路。駕駛人也遵守較低的速限。今年到目前為止，JSPCA已經照顧了50隻紅松鼠，其中包括撫養8隻幼獸，工作人員並盡量避免過多接觸，以便讓動物保持野性。"
-    }
-   ],
-   "words": 272,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "extinction",
-     "pos": "n.",
-     "zh": "滅絕"
-    },
-    {
-     "word": "shelter",
-     "pos": "n.",
-     "zh": "庇護所；避難處"
-    },
-    {
-     "word": "deadly",
-     "pos": "adj.",
-     "zh": "致命的"
-    },
-    {
-     "word": "naturalised",
-     "pos": "adj.",
-     "zh": "（動植物）歸化的"
-    },
-    {
-     "word": "iconic",
-     "pos": "adj.",
-     "zh": "具代表性的；指標性的"
-    },
-    {
-     "word": "widespread",
-     "pos": "adj.",
-     "zh": "分布廣泛的"
-    },
-    {
-     "word": "reserve",
-     "pos": "n.",
-     "zh": "保護區"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "over time",
-     "zh": "隨著時間過去；逐漸"
-    },
-    {
-     "phrase": "put out",
-     "zh": "擺出；放置"
-    },
-    {
-     "phrase": "so far",
-     "zh": "到目前為止"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "非限定關係子句 (Non-defining Relative Clause)",
-     "explain": "由逗號隔開、關係代名詞 which 引導的形容詞子句，用來對先行詞 grey squirrels 補充額外資訊。",
-     "example": "Unlike the UK mainland, Jersey completely lacks grey squirrels, which carry a deadly virus that harms their red cousins.",
-     "focus": "which carry a deadly virus that harms their red cousins"
-    },
-    {
-     "point": "虛主詞 it 引導的結構 (Dummy Subject 'It')",
-     "explain": "it 作為虛受詞／形式主詞，真正的受詞是後面的不定詞片語 to harm them。",
-     "example": "Red squirrels are also legally protected, making it a crime to harm them.",
-     "focus": "making it a crime to harm them"
-    },
-    {
-     "point": "不定詞表示目的 (Infinitive of Purpose)",
-     "explain": "to provide food 為不定詞片語，用來說明居民放置餵食器的目的。",
-     "example": "Island residents frequently put out feeders in their gardens to provide food.",
-     "focus": "to provide food"
-    }
-   ],
-   "model": "gemini-flash-latest"
+   "model": "gemini-flash-lite-latest"
   },
   {
    "link": "https://lite.cnn.com/2026/11/21/health/body-fat-butt-conversation",
@@ -540,113 +415,6 @@
      "explain": "to endure 形成的不定詞片語，用來說明古人身上帶有額外脂肪的目的。",
      "example": "These realistic sculptures suggest that ancient people actually carried extra fat to endure freezing winters.",
      "focus": "to endure freezing winters"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://www.theguardian.com/environment/2026/nov/21/china-commits-low-carbon-electrification-help-others-improve",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "title": "China commits to low-carbon electrification and help for others to improve",
-   "title_zh": "中國承諾推動低碳電氣化並協助其他國家改善",
-   "paragraphs": [
-    {
-     "en": "At the Cop31 United Nations (UN) climate summit, countries are considering a goal to get 35 percent of their energy from electricity by 2035. Australia, leading the talks, and host country Turkey promoted this target. On Friday night, Australia and China signed a joint statement supporting the plan. However, a recent draft text reduced this pledge to a voluntary choice for nations trying to lower their greenhouse gas emissions.",
-     "zh": "在第31屆聯合國（UN）氣候峰會（Cop31）上，各國正在考慮一項目標，即在2035年前將其能源消耗的百分之三十五轉由電力提供。領導談判的澳洲與主辦國土耳其推動了這項目標。週五晚間，澳洲與中國簽署了一項支持該計畫的聯合聲明。然而，一份近期的草案文本將這項承諾降級為各國試圖減少溫室氣體排放時的自願性選項。"
-    },
-    {
-     "en": "China is currently the largest producer of greenhouse gases, releasing over one-quarter of the global total. Wang Yi, a senior adviser to the Chinese government and professor at the Chinese Academy of Sciences, said China wants to expand clean electricity use and assist other nations. Last year, electricity accounted for nearly 30 percent of China's energy consumption, and the nation is on track to reach 35 percent by 2030.",
-     "zh": "中國目前是全球最大的溫室氣體排放國，其排放量超過全球總量的四分之一。中國科學院教授兼中國政府高階顧問王毅表示，中國希望擴大清潔電力的使用並協助其他國家。去年，電力占了中國能源消耗的近百分之三十，且該國預計將在2030年前達到百分之三十五。"
-    },
-    {
-     "en": "Experts explain that electrification is essential because electric systems operate much more efficiently than fossil fuels in transport, heating, and industry. However, Wang noted that requiring all electricity to come from low-carbon sources would be difficult. China still maintains many coal-fired plants and plans some new ones to serve as backup power during the clean energy transition.",
-     "zh": "專家解釋，電氣化至關重要，因為電力系統在交通、暖氣和工業領域的運作效率遠高於化石燃料。然而，王毅指出，要求所有電力都必須來自低碳來源將會很困難。中國仍保有許多燃煤電廠，並計畫興建一些新電廠，以便在清潔能源轉型期間作為備用電力。"
-    },
-    {
-     "en": "China is also worried about international trade barriers that affect its clean technology exports. These obstacles include United States tariffs and the European Union's Carbon Border Adjustment Mechanism (CBAM), which penalizes imports from areas with weaker carbon rules. Wang urged countries to work together on trade policies, while some developing nations also warned that CBAM could damage their manufacturing industries.",
-     "zh": "中國也擔憂影響其清潔技術出口的國際貿易壁壘。這些障礙包括美國的關稅以及歐洲聯盟的碳邊境調整機制（CBAM），該機制會對來自碳法規較寬鬆地區的進口商品進行懲罰。王毅呼籲各國在貿易政策上攜手合作，而一些開發中國家也警告，CBAM可能會損害其製造業。"
-    },
-    {
-     "en": "Jiangwen Guo, a researcher at the Chatham House thinktank, said China \"is creating the model for the globe\" through clear national policies. Meanwhile, the summit negotiations stalled late Friday afternoon after negotiators failed to agree on a final text. As a result, the discussions are likely to extend through Saturday.",
-     "zh": "智庫皇家國際事務研究所（Chatham House）的研究員郭江汶表示，中國透過明確的國家政策「正在為全球建立典範」。與此同時，由於談判代表未能就最終文本達成共識，這場峰會談判於週五下午晚些時候陷入停滯。因此，討論很可能會延續到週六。"
-    }
-   ],
-   "words": 305,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "consumption",
-     "pos": "n.",
-     "zh": "消耗量；消耗"
-    },
-    {
-     "word": "essential",
-     "pos": "adj.",
-     "zh": "極為重要的；不可或缺的"
-    },
-    {
-     "word": "efficiently",
-     "pos": "adv.",
-     "zh": "有效率地"
-    },
-    {
-     "word": "barrier",
-     "pos": "n.",
-     "zh": "障礙；壁壘"
-    },
-    {
-     "word": "penalize",
-     "pos": "v.",
-     "zh": "懲罰；使處於不利地位"
-    },
-    {
-     "word": "negotiator",
-     "pos": "n.",
-     "zh": "談判代表；協商者"
-    },
-    {
-     "word": "stall",
-     "pos": "v.",
-     "zh": "陷入停滯；拖延"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "account for",
-     "zh": "占（比例）"
-    },
-    {
-     "phrase": "on track",
-     "zh": "按進度進行；有望達到"
-    },
-    {
-     "phrase": "serve as",
-     "zh": "充當；作為"
-    },
-    {
-     "phrase": "work together",
-     "zh": "合作；齊心協力"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "分詞構句 (Participle Construction)",
-     "explain": "在此句中，現在分詞短語「releasing...」省略了連接詞與主詞，用來補充說明主句中中國溫室氣體排放量占全球總量的情形。",
-     "example": "China is currently the largest producer of greenhouse gases, releasing over one-quarter of the global total.",
-     "focus": "releasing over one-quarter of the global total"
-    },
-    {
-     "point": "關係代名詞引導的非限定子句 (Non-restrictive Relative Clause)",
-     "explain": "逗號後的關係代名詞「which」指涉先行詞歐盟的 CBAM 機制，引導非限定關係子句補充說明其對高碳產品進口的規範作用。",
-     "example": "These obstacles include United States tariffs and the European Union's Carbon Border Adjustment Mechanism (CBAM), which penalizes imports from areas with weaker carbon rules.",
-     "focus": "which penalizes imports from areas with weaker carbon rules"
-    },
-    {
-     "point": "不定詞表示目的 (Infinitive of Purpose)",
-     "explain": "此處使用「to + 原形動詞」結構「to serve as」，說明中國保留與興建電廠的目的在於充當轉型時期的備用電力。",
-     "example": "China still maintains many coal-fired plants and plans some new ones to serve as backup power during the clean energy transition.",
-     "focus": "to serve as backup power"
     }
    ],
    "model": "gemini-flash-latest"
@@ -759,5 +527,5 @@
    "model": "gemini-flash-latest"
   }
  ],
- "lessonsDate": "2026-11-22"
+ "lessonsDate": "2026-11-23"
 }
