@@ -1,69 +1,189 @@
 {
- "updated": "2026-11-26T03:44:51Z",
+ "updated": "2026-11-27T03:46:22Z",
  "items": [
   {
-   "title": "California warns of flooding as King Tides peak over Thanksgiving",
-   "link": "https://www.bbc.co.uk/news/articles/ckn806qq760po?at_medium=RSS&at_campaign=rss",
-   "summary": "Parts of the Canadian province of British Columbia may also be affected by the storms and flooding, which come as millions of people travel for the holiday.",
+   "title": "I spend £200 a month on fancy meals by myself - would you dine solo?",
+   "link": "https://www.bbc.co.uk/news/articles/cw8dv11dp2yeo?at_medium=RSS&at_campaign=rss",
+   "summary": "Solo-dining is being embraced as a self-care trend and it's reshaping the restaurant industry.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-27T00:54:45Z"
+  },
+  {
+   "title": "Major Thanksgiving storm brings flooding, flight delays across US",
+   "link": "https://www.bbc.co.uk/news/articles/ckm2mz3prq77o?at_medium=RSS&at_campaign=rss",
+   "summary": "Almost one million customers in the US had no power on Thursday evening as storms descended on both US coasts, bringing wind gusts, heavy rain and flooding.",
    "source": "BBC",
    "topic": "Science",
-   "date": "2026-11-26T01:22:55Z"
+   "date": "2026-11-27T00:52:11Z"
   },
   {
-   "title": "Expect fewer frosts and more hot days as UK seasons shift, says Met Office",
-   "link": "https://www.bbc.co.uk/weather/articles/cr3eg1py3gv5o?at_medium=RSS&at_campaign=rss",
-   "summary": "Changing seasons are affecting wildlife and leading some farmers to grow different crops.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-26T00:08:07Z"
-  },
-  {
-   "title": "US approves SpaceX plan to send a million data satellites to space",
-   "link": "https://www.bbc.co.uk/news/articles/cwp836l8n1jgo?at_medium=RSS&at_campaign=rss",
-   "summary": "The Starmind constellation aims to be the most cost and energy-efficient way to meet the growing demand for AI computing power.",
-   "source": "BBC",
-   "topic": "Science",
-   "date": "2026-11-26T00:07:51Z"
-  },
-  {
-   "title": "US report warns of Chinese AI persona tactics targeting Taiwan elections",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/26/2003868404",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-26T00:00:00Z"
-  },
-  {
-   "title": "US proposed new tariffs on 14 trading partners, including Taiwan, China",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/26/2003868405",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-26T00:00:00Z"
-  },
-  {
-   "title": "Huawei found guilty in US case",
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/26/2003868406",
-   "summary": "",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "date": "2026-11-26T00:00:00Z"
-  },
-  {
-   "title": "Record-breaking California tides cause major flooding of roads and businesses",
-   "link": "https://www.theguardian.com/us-news/2026/nov/25/california-flooding-high-tides",
-   "summary": "Beaches close as Los Angeles and La Jolla see all-time high tides and big waves batter landmark pier in Pacifica Super El Niño weather brought record-breaking high tides up and down the California coast on Wednesday,…",
+   "title": "Golden ginkgos and rich red maples: Japan’s autumn colours – in pictures",
+   "link": "https://www.theguardian.com/world/gallery/2026/nov/27/golden-ginkgos-and-rich-red-maples-japans-autumn-colours-in-pictures",
+   "summary": "Across Japan, the changing of the season is dazzling people with vibrant displays of reds and yellows Continue reading...",
    "source": "The Guardian",
    "topic": "Environment",
-   "date": "2026-11-25T22:56:36Z"
+   "date": "2026-11-27T00:28:39Z"
   },
   {
-   "title": "It’s time for Australia to tax our gas industry. It is a public policy no-brainer | Rod Simms",
-   "link": "https://www.theguardian.com/commentisfree/2026/nov/26/its-time-for-australia-to-tax-our-gas-industry-it-is-a-public-policy-no-brainer",
-   "summary": "Fossil fuel companies are effectively not paying for the natural resource on which their businesses depend Raising more tax revenue from our gas industry is the closest thing you will find to a public policy no-brainer…",
+   "title": "Why is there a shortage of 'wizard' elevator mechanics?",
+   "link": "https://www.bbc.co.uk/news/articles/c52e8k19y94mo?at_medium=RSS&at_campaign=rss",
+   "summary": "The pay is good and there's lots of work, so what's behind the shortage of elevator mechanics?",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-27T00:02:19Z"
+  },
+  {
+   "title": "Tariff terms with US solid, official says",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/27/2003868470",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-27T00:00:00Z"
+  },
+  {
+   "title": "2026 ELECTIONS: Puma Shen moves event online after traffic issues",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/27/2003868471",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-27T00:00:00Z"
+  },
+  {
+   "title": "Japan and China trade accusations over ships incident",
+   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/27/2003868473",
+   "summary": "",
+   "source": "Taipei Times",
+   "topic": "Taiwan",
+   "date": "2026-11-27T00:00:00Z"
+  },
+  {
+   "title": "Asia made a big AI bet on Nvidia. What happens now?",
+   "link": "https://www.bbc.co.uk/news/articles/cqevr4lnd1nxo?at_medium=RSS&at_campaign=rss",
+   "summary": "Asian stocks have been on a rollercoaster ride after Jensen Huang's shock return as Nvidia CEO.",
+   "source": "BBC",
+   "topic": "Tech",
+   "date": "2026-11-26T23:08:12Z"
+  },
+  {
+   "title": "This week in science: anxiety in college students, potatoes on the moon and whale snot",
+   "link": "https://www.npr.org/2026/11/26/nx-s1-6044622/this-week-in-science-anxiety-in-college-students-potatoes-on-the-moon-and-whale-snot",
+   "summary": "Science reporters Nate Rott and Sanden Totten talk about the growing risk of anxiety among college students, a simulation of growing potatoes on the Moon, and the genetic secrets in whale snot.",
+   "source": "NPR",
+   "topic": "Science",
+   "date": "2026-11-26T22:55:53Z"
+  },
+  {
+   "title": "Floating nature islands installed in parks as Glasgow Games legacy",
+   "link": "https://www.bbc.co.uk/news/articles/cwe9kxdm1k4lo?at_medium=RSS&at_campaign=rss",
+   "summary": "The islands, being planted in five Glasgow parks, are designed to encourage wildlife and help clean the water.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-26T22:54:18Z"
+  },
+  {
+   "title": "Southern and central Australia face summer of heightened bushfire risk and heatwaves",
+   "link": "https://www.theguardian.com/environment/2026/nov/27/southern-and-central-australia-face-summer-of-heightened-bushfire-risk-and-heatwaves",
+   "summary": "Fire chiefs say large swathes of the country are at risk from fires driven by high fuel loads, dry soil and hot weather Get our breaking news email , free app or daily news podcast Large parts of southern and central…",
    "source": "The Guardian",
    "topic": "Environment",
-   "date": "2026-11-25T22:00:37Z"
+   "date": "2026-11-26T21:33:36Z"
+  },
+  {
+   "title": "BBC Inside Science",
+   "link": "https://www.bbc.co.uk/sounds/play/w3ct978n?at_medium=RSS&at_campaign=rss",
+   "summary": "One of the greatest problems in the history of mathematics has been solved by AI.",
+   "source": "BBC",
+   "topic": "Science",
+   "date": "2026-11-26T21:00:00Z"
+  },
+  {
+   "title": "‘Disaster’ unfolding as Sydney fire ant outbreak partly blamed on ignored biosecurity recommendations",
+   "link": "https://www.theguardian.com/australia-news/2026/nov/27/sydney-fire-ants-outbreak-biosecurity-experts-ignored",
+   "summary": "Farmers’ Federation president says Australia ‘can’t even keep [illicit] cigarettes out of the country … let alone some of these difficult-to-detect pests’ Get our breaking news email , free app or daily news podcast…",
+   "source": "The Guardian",
+   "topic": "Environment",
+   "date": "2026-11-26T20:33:26Z"
+  },
+  {
+   "title": "Students vote to retain university campus' historic name",
+   "link": "https://www.bbc.co.uk/news/articles/cmly7qjx82djo?at_medium=RSS&at_campaign=rss",
+   "summary": "Magee: The campus is named after Martha Magee, who bequeathed a sum of money in the mid-1800s to establish a theological college in Derry.",
+   "source": "BBC",
+   "topic": "Education",
+   "date": "2026-11-26T16:36:12Z"
+  },
+  {
+   "title": "Contraceptive pill usage in Great Britain fell drastically in last decade, research finds",
+   "link": "https://www.theguardian.com/society/2026/nov/26/contraceptive-pill-usage-in-great-britain-fell-drastically-in-last-decade-research-finds",
+   "summary": "Survey published in Lancet reveals ‘hormonal hesitancy’ on the rise – with implants and injections also increasingly spurned The number of young women using hormonal contraception fell drastically in the past decade,…",
+   "source": "The Guardian",
+   "topic": "Science",
+   "date": "2026-11-26T13:00:51Z"
+  },
+  {
+   "title": "European Central Bank set to appoint its first Spanish leader",
+   "link": "https://lite.cnn.com/2026/11/26/business/ecb-president-pablo-hernandez-de-cos-intl",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-26T12:00:00Z"
+  },
+  {
+   "title": "US authorizes SpaceX to deploy 1 million satellites for AI data centers in space",
+   "link": "https://lite.cnn.com/2026/11/26/business/spacex-satellites-space-data-centers-intl",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-26T12:00:00Z"
+  },
+  {
+   "title": "At the gym with the CEO who made us wait 13 years for GTA VI",
+   "link": "https://lite.cnn.com/2026/11/26/business/strauss-zelnick-gta-vi-the-program",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Business",
+   "date": "2026-11-26T12:00:00Z"
+  },
+  {
+   "title": "A doctor’s guide to surviving — and enjoying — holiday feasting while on GLP‑1 medication",
+   "link": "https://lite.cnn.com/2026/11/26/health/holiday-eating-glp-1",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Health",
+   "date": "2026-11-26T12:00:00Z"
+  },
+  {
+   "title": "Aaron Rodgers’ strange NFL trip may be over. The incendiary final act is a fitting last chapter",
+   "link": "https://lite.cnn.com/2026/11/26/sport/aaron-rodgers-pittsburgh-steelers-analysis",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Sports",
+   "date": "2026-11-26T12:00:00Z"
+  },
+  {
+   "title": "Artists are quitting Instagram and Facebook over fears AI will steal their work",
+   "link": "https://lite.cnn.com/2026/11/26/tech/artists-meta-ai-slop-instagram-facebook",
+   "summary": "",
+   "source": "CNN",
+   "topic": "Tech",
+   "date": "2026-11-26T12:00:00Z"
+  },
+  {
+   "title": "Public health specialist discusses the aftermath of the munitions detonation in Iowa",
+   "link": "https://www.npr.org/2026/11/26/nx-s1-6053950/public-health-specialist-discusses-the-aftermath-of-the-munitions-detonation-in-iowa",
+   "summary": "NPR's A Martinez speaks with public health specialist Will Sander of the University of Illinois Urbana-Champaign about the aftermath of the Iowa munitions detonation.",
+   "source": "NPR",
+   "topic": "Health",
+   "date": "2026-11-26T09:42:38Z"
+  },
+  {
+   "title": "FCC says SpaceX can deploy 1 million satellites for data centers in space. Scientists are skeptical",
+   "link": "https://www.npr.org/2026/11/26/g-s1-155940/fcc-spacex-satellites-data-centers-in-space",
+   "summary": "The Trump administration gave Elon Musk's SpaceX the green light to deploy 1 million satellites that it said would create data centers in space, a move that has raised skepticism among scientists.",
+   "source": "NPR",
+   "topic": "Tech",
+   "date": "2026-11-26T06:53:09Z"
   },
   {
    "title": "How to talk AI around the Thanksgiving table",
@@ -74,22 +194,6 @@
    "date": "2026-11-25T21:33:59Z"
   },
   {
-   "title": "High levels of salmonella found in some products from nation’s biggest turkey producer",
-   "link": "https://www.theguardian.com/environment/2026/nov/25/turkey-salmonella-butterball",
-   "summary": "Two years of inspections at four Butterball plants show rates far exceeding US averages in ground or chopped meat Inspectors found salmonella bacteria in more than a third of ground or chopped turkey samples at…",
-   "source": "The Guardian",
-   "topic": "Environment",
-   "date": "2026-11-25T20:00:34Z"
-  },
-  {
-   "title": "Badenoch challenges Burnham over university fees for EU students",
-   "link": "https://www.bbc.co.uk/news/articles/cw4gn8lxj5r1o?at_medium=RSS&at_campaign=rss",
-   "summary": "The PM says EU students paying the same as British students is the European position and \"won't be put on the table\".",
-   "source": "BBC",
-   "topic": "Education",
-   "date": "2026-11-25T16:46:17Z"
-  },
-  {
    "title": "China sends first foreign astronaut to ISS rival as it globalises space operations",
    "link": "https://www.theguardian.com/science/2026/nov/25/china-sends-first-pakistani-astronaut-into-space",
    "summary": "Muhammad Zeeshan Ali – the first Pakistani to reach orbit – greeted with Chinese ‘space handshake’ at Tiangong station China has flown the first foreign astronaut to its Tiangong space station, starting what it says…",
@@ -98,7 +202,7 @@
    "date": "2026-11-25T14:18:29Z"
   },
   {
-   "title": "How American Thanksgiving took root -- and evolved -- in Liberia",
+   "title": "How American Thanksgiving took root — and evolved — in Liberia",
    "link": "https://www.npr.org/2026/11/25/nx-s1-6048614/thanksgiving-liberia-gratitude-prayer",
    "summary": "The first settlers of Liberia were African Americans who brought along the holiday of Thanksgiving — which has evolved to reflect the history and identity of this new nation.",
    "source": "NPR",
@@ -122,62 +226,6 @@
    "date": "2026-11-25T12:00:00Z"
   },
   {
-   "title": "Russian oil firm Lukoil’s overseas assets sold to investors led by US billionaire Todd Boehly",
-   "link": "https://lite.cnn.com/2026/11/25/business/lukoil-sale-todd-boehly-intl",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Business",
-   "date": "2026-11-25T12:00:00Z"
-  },
-  {
-   "title": "New images reveal stadium-size crater left by humanity’s first planetary defense test",
-   "link": "https://lite.cnn.com/2026/11/25/science/hera-mission-dimorphos-asteroid-arrival-images",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Science",
-   "date": "2026-11-25T12:00:00Z"
-  },
-  {
-   "title": "The world is heating up catastrophically yet climate action is in chaos. What happened?",
-   "link": "https://lite.cnn.com/2026/11/25/climate/cop31-chaos-fossil-fuels-oil-producing-countries",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Environment",
-   "date": "2026-11-25T12:00:00Z"
-  },
-  {
-   "title": "The Steelers are benching Aaron Rodgers, with Mason Rudolph to start at QB vs Broncos",
-   "link": "https://lite.cnn.com/2026/11/25/sport/aaron-rodgers-benched",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Sports",
-   "date": "2026-11-25T12:00:00Z"
-  },
-  {
-   "title": "Miss Universe crowns winner after another turbulent year for world’s biggest pageant",
-   "link": "https://lite.cnn.com/2026/11/25/style/miss-universe-2026-winner",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Culture",
-   "date": "2026-11-25T12:00:00Z"
-  },
-  {
-   "title": "Huawei found guilty of stealing US trade secrets but acquitted of racketeering",
-   "link": "https://www.bbc.co.uk/news/articles/cmy49ngydqzpo?at_medium=RSS&at_campaign=rss",
-   "summary": "The verdict follows a months-long trial in New York.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-25T10:52:09Z"
-  },
-  {
-   "title": "EA adds AI-generated John Motson to FC 27 video game",
-   "link": "https://www.bbc.co.uk/news/articles/c65y10j841jpo?at_medium=RSS&at_campaign=rss",
-   "summary": "The AI-generated Motson will appear in the game on 26 November, with the consent of his son and wife.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-25T10:11:34Z"
-  },
-  {
    "title": "AI's shock-and-awe raid on maths looks like pride before a fall | Rafael Behr",
    "link": "https://www.theguardian.com/commentisfree/2026/nov/25/ai-mathematics-human-knowledge-progress-technology-industry",
    "summary": "Machines are bulldozing through hard problems to assert the power of their tech bro creators, not to advance human knowledge In most walks of life, trying something 12,363,153,437,138 times and getting the same result…",
@@ -186,270 +234,12 @@
    "date": "2026-11-25T10:05:15Z"
   },
   {
-   "title": "Zoe Kleinman: Nobody is irreplaceable - unless you're Jensen Huang",
-   "link": "https://www.bbc.co.uk/news/articles/c3rrgqj2zx5yo?at_medium=RSS&at_campaign=rss",
-   "summary": "The BBC's technology and AI editor on how Nvidia's boss made himself impossible to fire.",
-   "source": "BBC",
-   "topic": "Tech",
-   "date": "2026-11-25T10:03:12Z"
-  },
-  {
-   "title": "Buying new things feels wonderful. But it can also be a trap",
-   "link": "https://www.npr.org/2026/11/25/nx-s1-6052361/buying-new-things-feels-wonderful-can-be-trap-break-the-cycle",
-   "summary": "Constantly buying new things can be problematic, says journalist Eric Athas, author of the new book \"Saying No to New.\" Here's how to break the cycle and find joy in what you already have.",
-   "source": "NPR",
-   "topic": "Tech",
-   "date": "2026-11-25T10:02:00Z"
-  },
-  {
-   "title": "Dolphins with active social lives and big friendship groups live longer, Australian researchers discover",
-   "link": "https://www.theguardian.com/environment/2026/nov/25/dolphins-with-active-social-lives-and-big-friendship-groups-live-longer",
-   "summary": "Decades of data collected at WA’s Shark Bay shows level of socialising may affect longevity for Indo-Pacific bottlenose dolphins Dolphins who spend time socialising in large and consistently sized social groups tend to…",
-   "source": "The Guardian",
-   "topic": "Science",
-   "date": "2026-11-25T06:02:05Z"
-  },
-  {
-   "title": "Like ‘family businesses’: Inside the Nvidia board that ousted and rehired Jensen Huang",
-   "link": "https://lite.cnn.com/2026/11/24/tech/nvidia-board-jensen-huang",
-   "summary": "",
-   "source": "CNN",
-   "topic": "Tech",
-   "date": "2026-11-24T12:00:00Z"
-  },
-  {
    "title": "Doctors struggle to save babies after parents refuse vitamin K",
    "link": "https://www.npr.org/2026/11/24/nx-s1-6001723/vitamin-k-deficiency-refusal-vaccine-misinformation-newborn-bleeding",
    "summary": "Doctors are fighting an uphill battle against disinformation about routine vitamin K shots given to newborns in the hospital. It helps prevent a rare but devastating bleeding disorder.",
    "source": "NPR",
    "topic": "Health",
    "date": "2026-11-24T10:00:00Z"
-  },
-  {
-   "title": "'Medicare for all' is back on the drawing board. Does it stand a better chance this time?",
-   "link": "https://www.npr.org/2026/11/23/nx-s1-6047706/health-medicare-for-all-chances",
-   "summary": "Several newly elected Democratic U.S. senators campaigned on Medicare for All. Could this be the time it actually gets traction?",
-   "source": "NPR",
-   "topic": "Science",
-   "date": "2026-11-23T16:00:49Z"
-  },
-  {
-   "title": "Mushroom supplements promise health benefits. What does the science say?",
-   "link": "https://www.npr.org/2026/11/23/nx-s1-6047791/mushroom-supplements-health-research",
-   "summary": "Wellness influencers say mushroom supplements can help with your gut health, focus and immune system. Here is where research suggests there are some links.",
-   "source": "NPR",
-   "topic": "Health",
-   "date": "2026-11-23T10:00:00Z"
   }
- ],
- "lessons": [
-  {
-   "link": "https://www.bbc.co.uk/news/articles/ckn806qq760po?at_medium=RSS&at_campaign=rss",
-   "source": "BBC",
-   "topic": "Science",
-   "title": "California warns of flooding as King Tides peak over Thanksgiving",
-   "title_zh": "加州示警：感恩節期間大潮達到高峰恐引發洪水",
-   "paragraphs": [
-    {
-     "en": "Coastal areas in California are bracing for serious flooding because exceptionally high king tides are arriving during the Thanksgiving holiday. According to the National Weather Service (NWS), ocean levels could reach over eight feet in multiple places, surpassing records established only last month. Low-lying areas face significant danger, and water has already begun invading communities in the San Francisco Bay Area.",
-     "zh": "加州沿海地區正準備應對嚴重的洪水，因為異常高漲的大潮（king tides）正逢感恩節假期達到高峰。根據美國國家氣象局（NWS）的說法，許多地方的海平面高度可能超過八英尺，打破上個月才創下的紀錄。地勢低窪的地區面臨重大危險，舊金山灣區的社區也已經開始出現淹水情況。"
-    },
-    {
-     "en": "The powerful ocean conditions have already caused physical damage. In northern California, intense waves and tides destroyed parts of a wooden pier, sending them into the sea. Forecasters have urged visitors to remain far from the water because unexpected large waves could overturn small boats and smash structures. Record tide heights were reported in several cities, including San Diego, Los Angeles, Santa Barbara, and La Jolla.",
-     "zh": "強勁的海洋環境已經造成了實體損壞。在北加州，強烈的波浪與潮水摧毀了一座木製碼頭的部分結構，將其沖入大海。氣象預報員敦促遊客遠離水邊，因為意想不到的巨浪可能會使小型船隻翻覆並破壞建築物。包含聖地牙哥、洛杉磯、聖塔芭芭拉以及拉荷亞在內的數座城市，都通報了破紀錄的潮位高度。"
-    },
-    {
-     "en": "King tides are the highest tides that scientists predict each year. Although they usually appear only once or twice annually, rising sea levels are making them happen more frequently. Furthermore, these current high waters are being intensified by an El Niño weather pattern that is the strongest on record.",
-     "zh": "大潮是科學家預測一年之中最高的潮汐。儘管它們通常每年只出現一兩次，但海平面上升使它們發生的頻率越來越高。此外，這些目前的洶湧海水正受到有記錄以來最強的聖嬰現象氣候模式所加劇。"
-    },
-    {
-     "en": "At the same time, harsh winter storms are threatening other regions across North America. In Canada, authorities issued flood warnings for the coastline around Vancouver, British Columbia. On the American east coast, a developing Nor'easter is forecast to bring powerful winds and several inches of rain, prompting Macy's to delay its famous New York parade until Saturday.",
-     "zh": "與此同時，嚴酷的冬季風暴也正在威脅整個北美洲的其他地區。在加拿大，有關當局已針對卑詩省溫哥華周邊的海岸線發布了洪水警報。在美國東海岸，一場正在發展的東北風暴預計將帶來強風與數英吋的降雨，促使梅西百貨將其著名的紐約遊行延期至星期六。"
-    },
-    {
-     "en": "These extreme weather events on both sides of the nation could severely affect holiday travelers. The American Automobile Association (AAA) estimated that approximately 81.5 million Americans would journey away from home for the Thanksgiving break, facing potential road delays and dangerous conditions.",
-     "zh": "美國兩岸的這些極端天氣事件可能會嚴重影響假期旅客。美國汽車協會（AAA）預估，大約有八千一百五十萬名美國人會在感恩節假期離家出遊，面臨潛在的道路延誤與危險狀況。"
-    }
-   ],
-   "words": 275,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "coastal",
-     "pos": "adj.",
-     "zh": "沿海的；海岸的"
-    },
-    {
-     "word": "surpass",
-     "pos": "v.",
-     "zh": "超過；超越"
-    },
-    {
-     "word": "overturn",
-     "pos": "v.",
-     "zh": "使翻覆；推翻"
-    },
-    {
-     "word": "frequently",
-     "pos": "adv.",
-     "zh": "頻繁地；常常"
-    },
-    {
-     "word": "intensify",
-     "pos": "v.",
-     "zh": "加劇；強化"
-    },
-    {
-     "word": "potential",
-     "pos": "adj.",
-     "zh": "潛在的；可能的"
-    },
-    {
-     "word": "delay",
-     "pos": "v.",
-     "zh": "延期；耽擱"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "brace for",
-     "zh": "準備面對（困難或災害）"
-    },
-    {
-     "phrase": "on record",
-     "zh": "有記錄以來的"
-    },
-    {
-     "phrase": "at the same time",
-     "zh": "與此同時"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "分詞構句 (Participle Construction)",
-     "explain": "逗號後使用現在分詞「sending」形成分詞構句，用來表示伴隨主要子句動作而產生的結果。",
-     "example": "In northern California, intense waves and tides destroyed parts of a wooden pier, sending them into the sea.",
-     "focus": ", sending them into the sea"
-    },
-    {
-     "point": "關係代名詞引導的形容詞子句 (Relative Clause with Relative Pronoun)",
-     "explain": "關係代名詞「that」用來修飾先行詞「highest tides」，並在後方的關係子句中擔任動詞 predict 的受詞。",
-     "example": "King tides are the highest tides that scientists predict each year.",
-     "focus": "that scientists predict each year"
-    },
-    {
-     "point": "不定詞作受詞補語 (Infinitive as Object Complement)",
-     "explain": "動詞「urge」後面接人稱受詞「visitors」，並使用不定詞「to remain」作為補語，表示要求對方所做出的行為。",
-     "example": "Forecasters have urged visitors to remain far from the water because unexpected large waves could overturn small boats and smash structures.",
-     "focus": "urged visitors to remain"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  },
-  {
-   "link": "https://www.taipeitimes.com/News/front/archives/2026/11/26/2003868404",
-   "source": "Taipei Times",
-   "topic": "Taiwan",
-   "title": "US report warns of Chinese AI persona tactics targeting Taiwan elections",
-   "title_zh": "美報告示警中國利用 AI 人設策略鎖定台灣選舉",
-   "paragraphs": [
-    {
-     "en": "Researchers from Vanderbilt University and the Taiwan-based organization Doublethink Lab have uncovered Chinese operations aimed at disrupting Taiwan's local elections. According to their findings, artificial intelligence (AI) personas connected to Beijing are being deployed to influence voters. The investigation began after researchers discovered that a Chinese firm called GoLaxy was creating advanced AI tools to generate sophisticated disinformation campaigns.",
-     "zh": "來自范德堡大學（Vanderbilt University）與台灣組織「台灣民主實驗室」（Doublethink Lab）的研究人員，揭露了旨在干擾台灣地方選舉的中國行動。根據他們的研究結果，與北京有關聯的人工智慧（AI）虛擬人設正被部署來影響選民。這項調查始於研究人員發現一家名為「中科天璣」（GoLaxy）的中國公司正在開發先進的 AI 工具，以製造精密的假訊息活動。"
-    },
-    {
-     "en": "By utilizing a detection tool that spots differences in tone and vocabulary between humans and automated agents, the team identified unusual social media activity. Unlike older Chinese propaganda that lacked subtlety, these new efforts appear more advanced and may have borrowed tactics from Russian operations. Many fake accounts avoided political topics at first. Instead, they shared harmless content about food, pets, or celebrities to attract real followers.",
-     "zh": "透過使用一種能辨識人類與自動化代理人之間語氣及詞彙差異的偵測工具，該團隊發現了異常的社群媒體活動。不同於以往缺乏細緻度的中國宣傳，這些新作為顯得更為先進，且可能借鑑了俄羅斯行動的手法。許多虛假帳號起初避開政治議題；相反地，它們分享關於美食、寵物或名人的無害內容，以吸引真實的追蹤者。"
-    },
-    {
-     "en": "Once these accounts established credibility, pro-Beijing viewpoints and unification propaganda were gradually mixed into their feeds. Some accounts launched direct attacks against the Democratic Progressive Party (DPP), claiming that it suffered from corruption. In contrast, other deceptive profiles pretended to support the ruling party while interacting with pro-China posts to boost their visibility online. Similar strategies of hiding political agendas within entertainment feeds had previously appeared during US elections.",
-     "zh": "一旦這些帳號建立起可信度，親北京的觀點與統一宣傳便會逐漸被混入動態中。部分帳號對民主進步黨（DPP）發動直接攻擊，聲稱該黨存在貪腐問題。相反地，其他具欺騙性的個人檔案則假裝支持執政黨，同時與親中貼文互動，以提升後者在網路上的能見度。這種將政治意圖隱藏在娛樂動態中的類似策略，先前也曾出現在美國選舉期間。"
-    },
-    {
-     "en": "Scientists noted that many of these profiles functioned as \"cyborgs,\" which combine AI-generated pictures with messages written by human handlers. Many profiles posted during regular working hours, proving that people still managed them. Associate professor Brett Benson observed that China's disinformation campaign displayed remarkable patience. Benson warned that \"AI is making it easier to construct and maintain synthetic identities\" before they are mobilized for political goals.",
-     "zh": "學者們指出，其中許多個人檔案以「生化人」（cyborgs）的形式運作，結合了 AI 生成的圖片與人類管理者撰寫的訊息。許多個人檔案在正常工作時間發文，證明仍有人在管理它們。副教授布雷特．班森（Brett Benson）觀察到，中國的假訊息活動展現出非凡的耐心。班森警告指出，「AI 正讓建構並維持虛擬身分變得更容易」，隨後才會為了政治目的動員這些身分。"
-    }
-   ],
-   "words": 261,
-   "v": 2,
-   "vocab": [
-    {
-     "word": "disrupt",
-     "pos": "v.",
-     "zh": "擾亂，干擾"
-    },
-    {
-     "word": "investigation",
-     "pos": "n.",
-     "zh": "調查"
-    },
-    {
-     "word": "sophisticated",
-     "pos": "adj.",
-     "zh": "精密的，複雜的"
-    },
-    {
-     "word": "subtlety",
-     "pos": "n.",
-     "zh": "細緻，微妙"
-    },
-    {
-     "word": "credibility",
-     "pos": "n.",
-     "zh": "可信度，信用"
-    },
-    {
-     "word": "deceptive",
-     "pos": "adj.",
-     "zh": "欺騙的，誤導的"
-    },
-    {
-     "word": "construct",
-     "pos": "v.",
-     "zh": "構建，建造"
-    },
-    {
-     "word": "mobilize",
-     "pos": "v.",
-     "zh": "動員"
-    }
-   ],
-   "phrases": [
-    {
-     "phrase": "aim at",
-     "zh": "旨在，針對"
-    },
-    {
-     "phrase": "connect to",
-     "zh": "與……有關聯"
-    },
-    {
-     "phrase": "interact with",
-     "zh": "與……互動"
-    }
-   ],
-   "grammar": [
-    {
-     "point": "關係代名詞引導的形容詞子句 (Relative Clause)",
-     "explain": "關係代名詞 that 在子句中作主詞，引導形容詞子句修飾先行詞 a detection tool。",
-     "example": "By utilizing a detection tool that spots differences in tone and vocabulary between humans and automated agents, the team identified unusual social media activity.",
-     "focus": "that spots differences in tone and vocabulary between humans and automated agents"
-    },
-    {
-     "point": "分詞構句 (Participle Construction)",
-     "explain": "逗號後使用現在分詞 proving 引導分詞構句，用以補充說明前方主要子句所產生的結果。",
-     "example": "Many profiles posted during regular working hours, proving that people still managed them.",
-     "focus": "proving that people still managed them"
-    },
-    {
-     "point": "不定詞表目的 (Infinitive of Purpose)",
-     "explain": "to generate 為不定詞片語，在此作副詞修飾動詞 was creating，表達該行動的目的。",
-     "example": "The investigation began after researchers discovered that a Chinese firm called GoLaxy was creating advanced AI tools to generate sophisticated disinformation campaigns.",
-     "focus": "to generate sophisticated disinformation campaigns"
-    }
-   ],
-   "model": "gemini-flash-latest"
-  }
- ],
- "lessonsDate": "2026-11-26"
+ ]
 }
